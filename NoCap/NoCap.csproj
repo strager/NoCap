@@ -47,9 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureScreen\CaptureScreen.cs" />
-    <Compile Include="CaptureScreen\PlatFormInvokeGDI32.cs" />
-    <Compile Include="CaptureScreen\PlatformInvokeUSER32.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
