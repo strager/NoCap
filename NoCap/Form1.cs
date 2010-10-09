@@ -5,18 +5,19 @@ using NoCap.Destinations;
 
 namespace NoCap {
     public partial class Form1 : Form {
+        private readonly DataRouter router;
+
         public Form1() {
             InitializeComponent();
+
+            this.router = new DataRouter();
+            router.Routes[DestinationType.Image] = new FileSystemDestination(@".");
         }
 
         private void button1_Click(object sender, EventArgs e) {
             var img = ScreenCapturer.CaptureEntireDesktop();
 
-            IImageDestination destination = new FileSystemDestination(@".");
-
-            destination.PutImage(img, "img", new FormResultThing(this));
-
-            MessageBox.Show("done");
+            this.router.Put(DestinationType.Image, img, "img", new FormResultThing(this));
         }
 
         public void Log(string message) {
