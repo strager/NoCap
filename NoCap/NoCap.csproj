@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Destinations\FileSystemDestination.cs" />
+    <Compile Include="IImageDestination.cs" />
+    <Compile Include="Destinations\IResultThing.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
