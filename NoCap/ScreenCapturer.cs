@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace NoCap {
-    class ScreenCapturer {
+    public static class ScreenCapturer {
         public static Bitmap CaptureEntireDesktop() {
             // TODO Multiple monitors.
             return CaptureScreen(Screen.PrimaryScreen);
