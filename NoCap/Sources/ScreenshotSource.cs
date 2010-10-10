@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NoCap.Destinations;
-
-namespace NoCap.Sources {
+﻿namespace NoCap.Sources {
     public class ScreenshotSource : ISource {
         private readonly ScreenshotSourceType type;
 
@@ -12,19 +6,17 @@ namespace NoCap.Sources {
             this.type = type;
         }
 
-        public bool Get(ISourceResultThing sourceResultThing) {
+        public IOperation Get() {
             switch (this.type) {
                 case ScreenshotSourceType.EntireDesktop:
-                    sourceResultThing.Start();
+                    return new EasyOperation((op) => {
+                        var image = ScreenCapturer.CaptureEntireDesktop();
 
-                    var image = ScreenCapturer.CaptureEntireDesktop();
-
-                    sourceResultThing.Done(DestinationType.Image, image, "screenshot");
-
-                    return true;
+                        return new TypedData(TypedDataType.Image, image, "screenshot");
+                    });
 
                 default:
-                    return false;
+                    return null;
             }
         }
     }

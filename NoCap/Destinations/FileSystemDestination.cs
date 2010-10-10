@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace NoCap.Destinations {
     public class FileSystemDestination : IDestination {
@@ -14,20 +10,19 @@ namespace NoCap.Destinations {
             this.rootPath = rootPath;
         }
 
-        public bool Put(DestinationType type, object data, string name, IResultThing result) {
-            switch (type) {
-                case DestinationType.Image:
-                    string path = Path.Combine(this.rootPath, name + ".bmp");
-                    result.Start();
+        public IOperation Put(TypedData data) {
+            switch (data.Type) {
+                case TypedDataType.Image:
+                    return new EasyOperation((op) => {
+                        string path = Path.Combine(this.rootPath, data.Name + ".bmp");
 
-                    ((Image)data).Save(path, ImageFormat.Bmp);
+                        ((Image)data.Data).Save(path, ImageFormat.Bmp);
 
-                    result.Done(path);
-
-                    return true;
+                        return new TypedData(TypedDataType.Uri, path, "output file");
+                    });
 
                 default:
-                    return false;
+                    return null;
             }
         }
     }

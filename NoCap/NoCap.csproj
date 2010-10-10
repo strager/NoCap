@@ -50,7 +50,8 @@
     <Compile Include="DataRouter.cs" />
     <Compile Include="Destinations\FileSystemDestination.cs" />
     <Compile Include="Destinations\IDestination.cs" />
-    <Compile Include="IResultThing.cs" />
+    <Compile Include="EasyOperation.cs" />
+    <Compile Include="IOperation.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +63,7 @@
     <Compile Include="ScreenCapturer.cs" />
     <Compile Include="Sources\ISource.cs" />
     <Compile Include="Sources\ScreenshotSource.cs" />
+    <Compile Include="TypedData.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

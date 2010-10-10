@@ -3,26 +3,26 @@ using NoCap.Destinations;
 
 namespace NoCap {
     public class DataRouter : IDestination {
-        private readonly IDictionary<DestinationType, IDestination> routes = new Dictionary<DestinationType, IDestination>();
+        private readonly IDictionary<TypedDataType, IDestination> routes = new Dictionary<TypedDataType, IDestination>();
 
-        public IDictionary<DestinationType, IDestination> Routes {
+        public IDictionary<TypedDataType, IDestination> Routes {
             get {
                 return routes;
             }
         }
 
-        public bool Put(DestinationType type, object data, string name, IResultThing result) {
+        public IOperation Put(TypedData data) {
             IDestination destination;
 
-            if (!routes.TryGetValue(type , out destination)) {
-                return false;
+            if (!routes.TryGetValue(data.Type , out destination)) {
+                return null;
             }
 
             if (destination == null) {
-                return false;
+                return null;
             }
 
-            return destination.Put(type, data, name, result);
+            return destination.Put(data);
         }
     }
 }
