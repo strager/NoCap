@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace NoCap.Destinations {
     public class FileSystemDestination : IDestination {
@@ -14,14 +15,26 @@ namespace NoCap.Destinations {
                     return new EasyOperation((op) => {
                         string path = Path.Combine(this.rootPath, data.Name);
 
-                        using (var file = File.Open(path, FileMode.CreateNew, FileAccess.Write)) {
+                        var file = File.Open(path, FileMode.Create, FileAccess.Write);
+
+                        try {
                             var rawData = (byte[])data.Data;
 
                             // TODO Async
-                            file.Write(rawData, 0, rawData.Length);
+                            file.BeginWrite(rawData, 0, rawData.Length, (asyncResult) => {
+                                file.EndWrite(asyncResult);
+
+                                file.Dispose();
+
+                                op.Done(TypedData.FromUri(path, "output file"));
+                            }, null);
+                        } catch (Exception) {
+                            file.Dispose();
+
+                            throw;
                         }
 
-                        return TypedData.FromUri(path, "output file");
+                        return null;
                     });
 
                 default:

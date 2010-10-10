@@ -4,7 +4,6 @@ namespace NoCap {
     public class EasyOperation : IOperation {
         private double progress;
         private OperationState state;
-        private TypedData data;
 
         public double Progress {
             get {
@@ -27,7 +26,7 @@ namespace NoCap {
                 this.state = value;
 
                 if (this.state == OperationState.Completed) {
-                    InvokeCompleted(new OperationResultEventArgs(this.data));
+                    InvokeCompleted(new OperationResultEventArgs(this.Data));
                 }
             }
         }
@@ -38,14 +37,8 @@ namespace NoCap {
         }
 
         public TypedData Data {
-            get {
-                return this.data;
-            }
-
-            private set {
-                this.data = value;
-                State = OperationState.Completed;
-            }
+            get;
+            private set;
         }
 
         public Func<EasyOperation, TypedData> StartFunc {
@@ -86,11 +79,21 @@ namespace NoCap {
             }
 
             State = OperationState.Started;
-            Data = StartFunc(this);
+
+            var data = StartFunc(this);
+
+            if (data != null) {
+                Done(data);
+            }
         }
 
         public void Cancel() {
             throw new NotImplementedException();
+        }
+
+        public void Done(TypedData data) {
+            Data = data;
+            State = OperationState.Completed;
         }
     }
 }
