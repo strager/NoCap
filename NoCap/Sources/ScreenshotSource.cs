@@ -12,7 +12,7 @@
                     return new EasyOperation((op) => {
                         var image = ScreenCapturer.CaptureEntireDesktop();
 
-                        return new TypedData(TypedDataType.Image, image, "screenshot");
+                        return TypedData.FromImage(image, "screenshot");
                     });
 
                 default:

@@ -18,7 +18,7 @@ namespace NoCap.Destinations {
 
                         ((Image)data.Data).Save(path, ImageFormat.Bmp);
 
-                        return new TypedData(TypedDataType.Uri, path, "output file");
+                        return TypedData.FromUri(path, "output file");
                     });
 
                 default:
