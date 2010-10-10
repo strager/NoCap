@@ -7,8 +7,9 @@ namespace NoCap {
         Image,
         Text,
         Uri,
+        RawData,
 
-        // Add new destination types here
+        // Add new types here
 
         User = 9001
     }
@@ -45,6 +46,18 @@ namespace NoCap {
 
         public static TypedData FromImage(Image image, string name) {
             return new TypedData(TypedDataType.Image, image, name);
+        }
+
+        public static TypedData FromText(string text, string name) {
+            return new TypedData(TypedDataType.Text, text, name);
+        }
+
+        public static TypedData FromRawData(byte[] rawData, string name) {
+            return new TypedData(TypedDataType.RawData, rawData, name);
+        }
+
+        public override string ToString() {
+            return string.Format("{0} ({1}: {2})", Name, Type, Data);
         }
     }
 }

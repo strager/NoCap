@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
+﻿using System.IO;
 
 namespace NoCap.Destinations {
     public class FileSystemDestination : IDestination {
@@ -12,11 +10,16 @@ namespace NoCap.Destinations {
 
         public IOperation Put(TypedData data) {
             switch (data.Type) {
-                case TypedDataType.Image:
+                case TypedDataType.RawData:
                     return new EasyOperation((op) => {
-                        string path = Path.Combine(this.rootPath, data.Name + ".bmp");
+                        string path = Path.Combine(this.rootPath, data.Name);
 
-                        ((Image)data.Data).Save(path, ImageFormat.Bmp);
+                        using (var file = File.Open(path, FileMode.CreateNew, FileAccess.Write)) {
+                            var rawData = (byte[])data.Data;
+
+                            // TODO Async
+                            file.Write(rawData, 0, rawData.Length);
+                        }
 
                         return TypedData.FromUri(path, "output file");
                     });

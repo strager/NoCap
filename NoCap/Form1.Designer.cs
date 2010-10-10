@@ -23,19 +23,21 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.button1 = new System.Windows.Forms.Button();
+            this.screenshot = new System.Windows.Forms.Button();
             this.log = new System.Windows.Forms.TextBox();
+            this.clipboard = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // screenshot
             // 
-            this.button1.Location = new System.Drawing.Point(61, 53);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.screenshot.AutoSize = true;
+            this.screenshot.Location = new System.Drawing.Point(12, 12);
+            this.screenshot.Name = "screenshot";
+            this.screenshot.Size = new System.Drawing.Size(90, 27);
+            this.screenshot.TabIndex = 0;
+            this.screenshot.Text = "Screenshot";
+            this.screenshot.UseVisualStyleBackColor = true;
+            this.screenshot.Click += new System.EventHandler(this.ScreenshotClicked);
             // 
             // log
             // 
@@ -45,13 +47,25 @@
             this.log.Size = new System.Drawing.Size(258, 151);
             this.log.TabIndex = 1;
             // 
+            // clipboard
+            // 
+            this.clipboard.AutoSize = true;
+            this.clipboard.Location = new System.Drawing.Point(180, 12);
+            this.clipboard.Name = "clipboard";
+            this.clipboard.Size = new System.Drawing.Size(90, 27);
+            this.clipboard.TabIndex = 2;
+            this.clipboard.Text = "Clipboard";
+            this.clipboard.UseVisualStyleBackColor = true;
+            this.clipboard.Click += new System.EventHandler(this.ClipboardClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 255);
+            this.Controls.Add(this.clipboard);
             this.Controls.Add(this.log);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.screenshot);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -61,8 +75,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button screenshot;
         private System.Windows.Forms.TextBox log;
+        private System.Windows.Forms.Button clipboard;
     }
 }
 
