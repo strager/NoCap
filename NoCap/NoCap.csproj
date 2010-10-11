@@ -54,7 +54,7 @@
     <Compile Include="Destinations\ImageWriter.cs" />
     <Compile Include="Destinations\SlexyUploader.cs" />
     <Compile Include="Destinations\TextUploader.cs" />
-    <Compile Include="WebHelpers\HttpUploader.cs" />
+    <Compile Include="Destinations\HttpUploader.cs" />
     <Compile Include="EasyOperation.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="Form1.cs">

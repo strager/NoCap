@@ -1,28 +1,19 @@
-﻿using System.Collections.Specialized;
-using NoCap.WebHelpers;
+﻿using System.Net;
 
 namespace NoCap.Destinations {
-    public abstract class TextUploader : IDestination {
-        public IOperation<TypedData> Put(TypedData data) {
+    public abstract class TextUploader : HttpUploader {
+        public override IOperation<TypedData> Put(TypedData data) {
             switch (data.Type) {
                 case TypedDataType.Text:
-                    return new EasyOperation<TypedData>((op) => {
-                        var responseOp = HttpUploader.Upload(GetUri(), GetParameters(data));
-                        responseOp.Completed += (sender, e) => {
-                            op.Done(TypedData.FromUri(e.Data.ResponseUri.OriginalString, data.Name));
-                        };
-
-                        responseOp.Start();
-
-                        return null;
-                    });
+                    return Upload(data);
 
                 default:
                     return null;
             }
         }
 
-        protected abstract string GetUri();
-        protected abstract NameValueCollection GetParameters(TypedData data);
+        protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
+            return TypedData.FromUri(response.ResponseUri.OriginalString, originalData.Name);
+        }
     }
 }
