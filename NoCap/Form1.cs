@@ -24,6 +24,7 @@ namespace NoCap {
                 new ImageWriter(codecs.FirstOrDefault()),
                 new FileSystemDestination(@".")
             });
+            router.Routes[TypedDataType.Text] = new SlexyUploader();
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
@@ -41,6 +42,13 @@ namespace NoCap {
         private void ClipboardClicked(object sender, EventArgs e) {
             var sourceOp = this.clipboardSource.Get();
             sourceOp.Completed += (sender2, e2) => {
+                var destOp = this.router.Put(e2.Data);
+                destOp.Completed += (sender3, e3) => {
+                    Log(e3.Data.ToString());
+                };
+
+                destOp.Start();
+
                 Log(sourceOp.Data.ToString());
             };
 
