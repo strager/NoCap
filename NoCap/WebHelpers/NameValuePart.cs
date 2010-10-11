@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NoCap.WebHelpers
 {
-    class NameValuePart : MimePart
+    public class NameValuePart : MimePart
     {
         private NameValueCollection nameValues;
 

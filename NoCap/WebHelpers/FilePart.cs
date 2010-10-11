@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NoCap.WebHelpers
 {
-    class FilePart : MimePart
+    public class FilePart : MimePart
     {
         private Stream input;
         private String contentType;

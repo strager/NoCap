@@ -49,11 +49,7 @@ namespace NoCap {
         public event EventHandler<OperationProgressEventArgs> ProgressUpdated;
         public event EventHandler<OperationResultEventArgs<T>> Completed;
 
-        public EasyOperation(Func<EasyOperation<T>, T> startFunc) {
-            if (startFunc == null) {
-                throw new ArgumentNullException("startFunc");
-            }
-
+        public EasyOperation(Func<EasyOperation<T>, T> startFunc = null) {
             StartFunc = startFunc;
         }
 
@@ -79,6 +75,10 @@ namespace NoCap {
             }
 
             State = OperationState.Started;
+
+            if (StartFunc == null) {
+                return;
+            }
 
             var data = StartFunc(this);
 

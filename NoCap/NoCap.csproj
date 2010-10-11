@@ -51,9 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataRouter.cs" />
+    <Compile Include="Destinations\ImageBinUploader.cs" />
     <Compile Include="Destinations\DestinationChain.cs" />
     <Compile Include="Destinations\FileSystemDestination.cs" />
     <Compile Include="Destinations\IDestination.cs" />
+    <Compile Include="Destinations\ImageUploader.cs" />
     <Compile Include="Destinations\ImageWriter.cs" />
     <Compile Include="Destinations\IsgdShortener.cs" />
     <Compile Include="Destinations\SlexyUploader.cs" />

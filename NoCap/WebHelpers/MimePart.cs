@@ -9,7 +9,7 @@ namespace NoCap.WebHelpers
     /// MimePart
     /// Abstract class for all MimeParts
     /// </summary>
-    abstract class MimePart
+    public abstract class MimePart
     {
         public string Name { get; set; }
 

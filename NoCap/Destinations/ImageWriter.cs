@@ -5,13 +5,17 @@ using System.IO;
 
 namespace NoCap.Destinations {
     public class ImageWriter : IDestination {
-        private readonly ImageCodecInfo codecInfo;
         private readonly EncoderParameters encoderParameters;
+
+        public ImageCodecInfo CodecInfo {
+            get;
+            private set;
+        }
 
         private string Extension {
             get {
                 // FIXME I'm sure this isn't correct
-                return this.codecInfo.FormatDescription;
+                return this.CodecInfo.FormatDescription;
             }
         }
 
@@ -28,7 +32,7 @@ namespace NoCap.Destinations {
                 throw new ArgumentException("Codec must support bitmap writing", "codecInfo");
             }
 
-            this.codecInfo = codecInfo;
+            this.CodecInfo = codecInfo;
             this.encoderParameters = encoderParameters;
         }
 
@@ -48,7 +52,7 @@ namespace NoCap.Destinations {
                 byte[] rawData;
 
                 using (var stream = new MemoryStream()) {
-                    ((Image)data.Data).Save(stream, this.codecInfo, this.encoderParameters);
+                    ((Image)data.Data).Save(stream, this.CodecInfo, this.encoderParameters);
 
                     stream.Position = 0;
 

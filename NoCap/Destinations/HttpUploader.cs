@@ -25,6 +25,8 @@ namespace NoCap.Destinations {
                         uriBuilder.Query = ToQueryString(parameters);
 
                         request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+                        request.Method = requestMethod;
+                        PreprocessRequest(request);
 
                         break;
 
@@ -36,21 +38,20 @@ namespace NoCap.Destinations {
                         }
 
                         request = (HttpWebRequest)WebRequest.Create(GetUri());
-
+                        request.Method = requestMethod;
                         request.ContentType = "multipart/form-data; boundary=" + helper.Boundary;
-
                         PreprocessRequest(request);
 
+                        PreprocessRequestData(helper, originalData);
+
                         var requestStream = request.GetRequestStream();
-                        helper.LoadInto(requestStream);
+                        helper.CopyTo(requestStream);
 
                         break;
 
                     default:
                         throw new InvalidOperationException("Unknown request method");
                 }
-
-                request.Method = requestMethod;
                 
                 request.BeginGetResponse((asyncResult) => {
                     var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
@@ -60,6 +61,10 @@ namespace NoCap.Destinations {
 
                 return null;
             });
+        }
+
+        protected virtual void PreprocessRequestData(MultipartHelper helper, TypedData originalData) {
+            // Do nothing
         }
 
         private static string ToQueryString(NameValueCollection nvc) {

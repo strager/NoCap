@@ -20,10 +20,13 @@ namespace NoCap {
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             this.router = new DataRouter();
-            router.Routes[TypedDataType.Image] = new DestinationChain(new IDestination[] {
+            /*router.Routes[TypedDataType.Image] = new DestinationChain(new IDestination[] {
                 new ImageWriter(codecs.FirstOrDefault()),
                 new FileSystemDestination(@".")
-            });
+            });*/
+            router.Routes[TypedDataType.Image] = new ImageBinUploader(
+                new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))
+            );
             router.Routes[TypedDataType.Text] = new SlexyUploader();
             router.Routes[TypedDataType.Uri] = new IsgdShortener();
         }
@@ -32,6 +35,10 @@ namespace NoCap {
             var sourceOp = this.screenshotSource.Get();
             sourceOp.Completed += (sender2, e2) => {
                 var destOp = this.router.Put(e2.Data);
+                destOp.Completed += (sender3, e3) => {
+                    Log(e3.Data.ToString());
+                };
+
                 destOp.Start();
 
                 Log(sourceOp.Data.ToString());
