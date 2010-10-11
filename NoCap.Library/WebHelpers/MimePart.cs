@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 
-namespace NoCap.WebHelpers
+namespace NoCap.Library.WebHelpers
 {
     /// <summary>
     /// MimePart

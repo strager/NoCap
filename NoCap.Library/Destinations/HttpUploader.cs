@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Web;
-using NoCap.WebHelpers;
+using NoCap.Library.WebHelpers;
 
 namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {

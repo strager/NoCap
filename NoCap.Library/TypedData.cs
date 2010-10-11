@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace NoCap {
+namespace NoCap.Library {
     public enum TypedDataType {
         Any = 0,
         Image,

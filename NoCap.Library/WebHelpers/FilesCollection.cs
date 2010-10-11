@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace NoCap.WebHelpers
+namespace NoCap.Library.WebHelpers
 {
     /// <summary>
     /// Helper class that encapsulates all file uploads

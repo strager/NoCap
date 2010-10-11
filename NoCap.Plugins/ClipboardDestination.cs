@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows.Forms;
+using NoCap.Library;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {

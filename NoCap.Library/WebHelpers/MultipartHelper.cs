@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace NoCap.WebHelpers
+namespace NoCap.Library.WebHelpers
 {
     /// <summary>
     /// Helper class to aid in uploading multipart

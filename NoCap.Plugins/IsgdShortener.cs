@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Collections.Specialized;
+using NoCap.Library;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {

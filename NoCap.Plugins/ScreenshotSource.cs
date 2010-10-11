@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using NoCap.Library;
 using NoCap.Library.Sources;
 
 namespace NoCap.Plugins {

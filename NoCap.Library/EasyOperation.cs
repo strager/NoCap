@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NoCap {
+namespace NoCap.Library {
     public class EasyOperation<T> : IOperation<T> {
         private double progress;
         private OperationState state;

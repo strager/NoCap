@@ -5,8 +5,9 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using NoCap.Library;
 using NoCap.Library.Destinations;
-using NoCap.WebHelpers;
+using NoCap.Library.WebHelpers;
 
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]

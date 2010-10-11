@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace NoCap.WebHelpers
+namespace NoCap.Library.WebHelpers
 {
     public class FilePart : MimePart
     {

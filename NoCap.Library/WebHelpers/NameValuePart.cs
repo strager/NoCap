@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 
-namespace NoCap.WebHelpers
+namespace NoCap.Library.WebHelpers
 {
     public class NameValuePart : MimePart
     {

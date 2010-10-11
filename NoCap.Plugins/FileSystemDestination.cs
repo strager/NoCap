@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using NoCap.Library;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {

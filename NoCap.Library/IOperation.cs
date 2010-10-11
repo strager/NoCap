@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NoCap {
+namespace NoCap.Library {
     public interface IOperation<T> {
         double Progress { get; }
         OperationState State { get; }
