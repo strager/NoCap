@@ -16,7 +16,7 @@ namespace NoCap {
         public Form1() {
             InitializeComponent();
 
-            this.screenshotSource = new ScreenshotSource(ScreenshotSourceType.EntireDesktop);
+            this.screenshotSource = new ScreenshotSource { Type = ScreenshotSourceType.EntireDesktop };
             this.clipboardSource = new ClipboardSource();
             this.cropShotSource = new CropShotSource();
 

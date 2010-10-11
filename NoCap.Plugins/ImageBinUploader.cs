@@ -9,11 +9,12 @@ using NoCap.Library.Destinations;
 using NoCap.WebHelpers;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(IDestination))]
     public class ImageBinUploader : ImageUploader {
         private static Regex linkInHtml = new Regex(@"http://imagebin.ca/view/(?<Code>.*?).html", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public ImageBinUploader(ImageWriter imageWriter) :
+        [ImportingConstructor]
+        public ImageBinUploader([Import(AllowDefault = true)] ImageWriter imageWriter) :
             base(imageWriter) {
         }
 

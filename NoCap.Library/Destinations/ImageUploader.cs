@@ -38,9 +38,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] {
-                TypedDataType.Image
-            };
+            return new[] { TypedDataType.Image };
         }
 
         public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {

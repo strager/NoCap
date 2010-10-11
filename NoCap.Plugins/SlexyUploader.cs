@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(IDestination))]
     public class SlexyUploader : TextUploader {
         protected override string GetUri() {
             return @"http://slexy.org/index.php/submit";

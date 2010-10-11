@@ -5,19 +5,25 @@ using System.IO;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(IDestination))]
     public class FileSystemDestination : IDestination {
-        private readonly string rootPath;
+        public string RootPath {
+            get;
+            set;
+        }
+
+        public FileSystemDestination() {
+        }
 
         public FileSystemDestination(string rootPath) {
-            this.rootPath = rootPath;
+            RootPath = rootPath;
         }
 
         public IOperation<TypedData> Put(TypedData data) {
             switch (data.Type) {
                 case TypedDataType.RawData:
                     return new EasyOperation<TypedData>((op) => {
-                        string path = Path.Combine(this.rootPath, data.Name);
+                        string path = Path.Combine(this.RootPath, data.Name);
 
                         var file = File.Open(path, FileMode.Create, FileAccess.Write);
 

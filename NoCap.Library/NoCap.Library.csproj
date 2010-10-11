@@ -46,7 +46,7 @@
     <Compile Include="Destinations\IDestination.cs" />
     <Compile Include="Destinations\ImageUploader.cs" />
     <Compile Include="Destinations\ImageWriter.cs" />
-    <Compile Include="Destinations\LinqHelpers.cs" />
+    <Compile Include="LinqHelpers.cs" />
     <Compile Include="Destinations\TextUploader.cs" />
     <Compile Include="Destinations\UrlShortener.cs" />
     <Compile Include="EasyOperation.cs" />

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace NoCap.Library.Destinations {
-    static class LinqHelpers {
+namespace NoCap.Library {
+    public static class LinqHelpers {
         public static IEnumerable<T> Unique<T>(this IEnumerable<T> source) {
             var uniqueItems = new HashSet<T>();
 

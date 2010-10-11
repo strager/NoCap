@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using NoCap.Library.Sources;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(ISource))]
     public class CropShotSource : ISource {
         public IOperation<TypedData> Get() {
             var cropShotForm = new CropShotForm {

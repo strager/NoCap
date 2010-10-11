@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(IDestination))]
     public class IsgdShortener : UrlShortener {
         protected override string GetUri() {
             return @"http://is.gd/api.php";

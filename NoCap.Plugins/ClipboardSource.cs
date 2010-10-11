@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using NoCap.Library.Sources;
 
 namespace NoCap.Plugins {
-    [Export]
+    [Export(typeof(ISource))]
     public class ClipboardSource : ISource {
         public IOperation<TypedData> Get() {
             return new EasyOperation<TypedData>((op) => {
