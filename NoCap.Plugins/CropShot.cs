@@ -2,23 +2,25 @@
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows.Forms;
-using NoCap.Library.Sources;
+using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export(typeof(ISource))]
-    public class CropShotSource : ISource {
-        public IOperation<TypedData> Get() {
+    [Export(typeof(IDestination))]
+    public class CropShot : IDestination {
+        public IOperation<TypedData> Put(TypedData data) {
             var cropShotForm = new CropShotForm {
-                SourceImage = ScreenCapturer.CaptureEntireDesktop()
+                SourceImage = (Image)data.Data
             };
 
             return cropShotForm.Operation;
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return new[] {
-                TypedDataType.Image
-            };
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] { TypedDataType.Image };
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return new[] { TypedDataType.Image };
         }
     }
 
@@ -33,7 +35,7 @@ namespace NoCap.Plugins {
             }
         }
 
-        private EasyOperation<TypedData> operation;
+        private readonly EasyOperation<TypedData> operation;
 
         public IOperation<TypedData> Operation {
             get {

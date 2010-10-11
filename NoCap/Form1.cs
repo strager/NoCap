@@ -11,19 +11,18 @@ namespace NoCap {
         private readonly DataRouter router;
         private readonly ISource screenshotSource;
         private readonly ISource clipboardSource;
-        private readonly ISource cropShotSource;
 
         public Form1() {
             InitializeComponent();
 
             this.screenshotSource = new ScreenshotSource { Type = ScreenshotSourceType.EntireDesktop };
             this.clipboardSource = new ClipboardSource();
-            this.cropShotSource = new CropShotSource();
 
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             this.router = new DataRouter();
             router[TypedDataType.Image] = new DestinationChain(new IDestination[] {
+                new CropShot(),
                 new ImageWriter(codecs.FirstOrDefault()),
                 new FileSystemDestination(@".")
             });
@@ -40,10 +39,6 @@ namespace NoCap {
 
         private void ClipboardClicked(object sender, EventArgs e) {
             PerformRequest(this.clipboardSource);
-        }
-
-        private void CropShotClicked(object sender, EventArgs e) {
-            PerformRequest(this.cropShotSource);
         }
 
         private void PerformRequest(ISource source) {

@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="ClipboardDestination.cs" />
     <Compile Include="ClipboardSource.cs" />
-    <Compile Include="CropShotSource.cs">
+    <Compile Include="CropShot.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FileSystemDestination.cs" />

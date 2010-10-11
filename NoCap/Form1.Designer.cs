@@ -26,7 +26,6 @@
             this.screenshot = new System.Windows.Forms.Button();
             this.log = new System.Windows.Forms.TextBox();
             this.clipboard = new System.Windows.Forms.Button();
-            this.cropShot = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // screenshot
@@ -59,23 +58,11 @@
             this.clipboard.UseVisualStyleBackColor = true;
             this.clipboard.Click += new System.EventHandler(this.ClipboardClicked);
             // 
-            // cropShot
-            // 
-            this.cropShot.AutoSize = true;
-            this.cropShot.Location = new System.Drawing.Point(12, 45);
-            this.cropShot.Name = "cropShot";
-            this.cropShot.Size = new System.Drawing.Size(90, 27);
-            this.cropShot.TabIndex = 3;
-            this.cropShot.Text = "Crop Shot";
-            this.cropShot.UseVisualStyleBackColor = true;
-            this.cropShot.Click += new System.EventHandler(this.CropShotClicked);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 255);
-            this.Controls.Add(this.cropShot);
             this.Controls.Add(this.clipboard);
             this.Controls.Add(this.log);
             this.Controls.Add(this.screenshot);
@@ -91,7 +78,6 @@
         private System.Windows.Forms.Button screenshot;
         private System.Windows.Forms.TextBox log;
         private System.Windows.Forms.Button clipboard;
-        private System.Windows.Forms.Button cropShot;
     }
 }
 
