@@ -25,6 +25,7 @@ namespace NoCap {
                 new FileSystemDestination(@".")
             });
             router.Routes[TypedDataType.Text] = new SlexyUploader();
+            router.Routes[TypedDataType.Uri] = new IsgdShortener();
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
@@ -56,7 +57,9 @@ namespace NoCap {
         }
 
         public void Log(string message) {
-            this.log.Text += message + Environment.NewLine;
+            Invoke((MethodInvoker)delegate {
+                this.log.Text += message + Environment.NewLine;
+            });
         }
     }
 }

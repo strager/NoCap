@@ -1,5 +1,7 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Net;
+using System.Web;
 using NoCap.WebHelpers;
 
 namespace NoCap.Destinations {
@@ -12,40 +14,65 @@ namespace NoCap.Destinations {
 
         public IOperation<TypedData> Upload(TypedData originalData) {
             return new EasyOperation<TypedData>((op) => {
-                var responseOp = Upload(GetUri(), GetParameters(originalData));
-                responseOp.Completed += (sender, e) => {
-                    op.Done(GetResponseData(e.Data, originalData));
-                };
+                string requestMethod = GetRequestMethod();
+                var parameters = GetParameters(originalData);
 
-                responseOp.Start();
+                HttpWebRequest request;
+                
+                switch (requestMethod) {
+                    case @"GET":
+                        var uriBuilder = new UriBuilder(GetUri());
+                        uriBuilder.Query = ToQueryString(parameters);
+
+                        request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+
+                        break;
+
+                    case @"POST":
+                        var helper = new MultipartHelper();
+
+                        if (parameters != null) {
+                            helper.Add(new NameValuePart(parameters));
+                        }
+
+                        request = (HttpWebRequest)WebRequest.Create(GetUri());
+
+                        request.ContentType = "multipart/form-data; boundary=" + helper.Boundary;
+
+                        PreprocessRequest(request);
+
+                        var requestStream = request.GetRequestStream();
+                        helper.LoadInto(requestStream);
+
+                        break;
+
+                    default:
+                        throw new InvalidOperationException("Unknown request method");
+                }
+
+                request.Method = requestMethod;
+                
+                request.BeginGetResponse((asyncResult) => {
+                    var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
+
+                    op.Done(GetResponseData(response, originalData));
+                }, null);
 
                 return null;
             });
         }
 
-        public static IOperation<HttpWebResponse> Upload(string uri, NameValueCollection parameters) {
-            return new EasyOperation<HttpWebResponse>((op) => {
-                var helper = new MultipartHelper();
+        private static string ToQueryString(NameValueCollection nvc) {
+            // http://stackoverflow.com/questions/829080/how-to-build-a-query-string-for-a-url-in-c/829138#829138
+            return string.Join("&", Array.ConvertAll(nvc.AllKeys, key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
+        }
 
-                if (parameters != null) {
-                    helper.Add(new NameValuePart(parameters));
-                }
+        protected virtual string GetRequestMethod() {
+            return @"POST";
+        }
 
-                var request = (HttpWebRequest)WebRequest.Create(uri);
-                request.Method = "POST";
-                request.ContentType = "multipart/form-data; boundary=" + helper.Boundary;
-
-                var requestStream = request.GetRequestStream();
-                helper.LoadInto(requestStream);
-
-                request.BeginGetResponse((asyncResult) => {
-                    var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
-
-                    op.Done(response);
-                }, null);
-
-                return null;
-            });
+        protected virtual void PreprocessRequest(HttpWebRequest request) {
+            // Do nothing
         }
     }
 }
