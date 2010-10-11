@@ -40,6 +40,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClipboardDestination.cs" />
     <Compile Include="ClipboardSource.cs" />
     <Compile Include="CropShotSource.cs">
       <SubType>Form</SubType>
