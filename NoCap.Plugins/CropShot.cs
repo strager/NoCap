@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows.Forms;
@@ -79,7 +80,14 @@ namespace NoCap.Plugins {
                 return;
             }
 
-            var selectedImage = GetSelectedImage(Rectangle.FromLTRB(this.dragStart.X, this.dragStart.Y, location.X, location.Y));
+            var region = Rectangle.FromLTRB(
+                Math.Min(this.dragStart.X, location.X),
+                Math.Min(this.dragStart.Y, location.Y),
+                Math.Max(this.dragStart.X, location.X),
+                Math.Max(this.dragStart.Y, location.Y)
+            );
+
+            var selectedImage = GetSelectedImage(region);
             this.operation.Done(TypedData.FromImage(selectedImage, "crop shot"));
 
             Close();
