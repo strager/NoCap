@@ -27,7 +27,7 @@ namespace NoCap.Library.Destinations {
                         var uriBuilder = new UriBuilder(GetUri());
                         uriBuilder.Query = ToQueryString(parameters);
 
-                        request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+                        request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
                         request.Method = requestMethod;
                         PreprocessRequest(request);
 
@@ -40,7 +40,7 @@ namespace NoCap.Library.Destinations {
                             helper.Add(new NameValuePart(parameters));
                         }
 
-                        request = (HttpWebRequest)WebRequest.Create(GetUri());
+                        request = (HttpWebRequest) WebRequest.Create(GetUri());
                         request.Method = requestMethod;
                         request.ContentType = "multipart/form-data; boundary=" + helper.Boundary;
                         PreprocessRequest(request);
@@ -57,7 +57,7 @@ namespace NoCap.Library.Destinations {
                 }
                 
                 request.BeginGetResponse((asyncResult) => {
-                    var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
+                    var response = (HttpWebResponse) request.EndGetResponse(asyncResult);
 
                     op.Done(GetResponseData(response, originalData));
                 }, null);

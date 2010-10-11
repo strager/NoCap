@@ -23,12 +23,12 @@ namespace NoCap.Plugins {
             switch (data.Type) {
                 case TypedDataType.RawData:
                     return new EasyOperation<TypedData>((op) => {
-                        string path = Path.Combine(this.RootPath, data.Name);
+                        string path = Path.Combine(RootPath, data.Name);
 
                         var file = File.Open(path, FileMode.Create, FileAccess.Write);
 
                         try {
-                            var rawData = (byte[])data.Data;
+                            var rawData = (byte[]) data.Data;
 
                             // TODO Async
                             file.BeginWrite(rawData, 0, rawData.Length, (asyncResult) => {
@@ -53,9 +53,7 @@ namespace NoCap.Plugins {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] {
-                TypedDataType.RawData
-            };
+            return new[] { TypedDataType.RawData };
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {

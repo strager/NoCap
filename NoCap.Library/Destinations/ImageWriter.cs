@@ -6,7 +6,10 @@ using System.IO;
 
 namespace NoCap.Library.Destinations {
     public class ImageWriter : IDestination {
-        private readonly EncoderParameters encoderParameters;
+        public EncoderParameters EncoderParameters {
+            get;
+            private set;
+        }
 
         public ImageCodecInfo CodecInfo {
             get;
@@ -33,8 +36,8 @@ namespace NoCap.Library.Destinations {
                 throw new ArgumentException("Codec must support bitmap writing", "codecInfo");
             }
 
-            this.CodecInfo = codecInfo;
-            this.encoderParameters = encoderParameters;
+            CodecInfo = codecInfo;
+            EncoderParameters = encoderParameters;
         }
 
         public static bool IsCodecValid(ImageCodecInfo codecInfo) {
@@ -53,7 +56,7 @@ namespace NoCap.Library.Destinations {
                 byte[] rawData;
 
                 using (var stream = new MemoryStream()) {
-                    ((Image)data.Data).Save(stream, this.CodecInfo, this.encoderParameters);
+                    ((Image) data.Data).Save(stream, CodecInfo, EncoderParameters);
 
                     stream.Position = 0;
 
@@ -66,9 +69,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] {
-                TypedDataType.Image
-            };
+            return new[] { TypedDataType.Image };
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {

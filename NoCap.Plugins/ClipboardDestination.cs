@@ -17,7 +17,7 @@ namespace NoCap.Plugins {
                         break;
 
                     case TypedDataType.Image:
-                        Clipboard.SetImage((Image)data.Data);
+                        Clipboard.SetImage((Image) data.Data);
 
                         break;
 

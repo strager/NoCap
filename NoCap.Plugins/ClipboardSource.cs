@@ -25,7 +25,7 @@ namespace NoCap.Plugins {
 
                 // Image
                 if (clipboardData.GetDataPresent(DataFormats.Bitmap)) {
-                    return TypedData.FromImage((Bitmap)clipboardData.GetData(DataFormats.Bitmap), clipboardText ?? "clipboard image");
+                    return TypedData.FromImage((Bitmap) clipboardData.GetData(DataFormats.Bitmap), clipboardText ?? "clipboard image");
                 }
                 
                 // TODO Handle more clipboard data types
@@ -46,9 +46,7 @@ namespace NoCap.Plugins {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return new[] {
-                TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri
-            };
+            return new[] { TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri };
         }
     }
 }

@@ -30,9 +30,7 @@ namespace NoCap.Plugins {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return new[] {
-                TypedDataType.Image
-            };
+            return new[] { TypedDataType.Image };
         }
     }
     

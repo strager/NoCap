@@ -11,7 +11,10 @@ using NoCap.WebHelpers;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class ImageBinUploader : ImageUploader {
-        private static Regex linkInHtml = new Regex(@"http://imagebin.ca/view/(?<Code>.*?).html", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex LinkInHtml = new Regex(
+            @"http://imagebin.ca/view/(?<Code>.*?).html",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled
+        );
 
         [ImportingConstructor]
         public ImageBinUploader([Import(AllowDefault = true)] ImageWriter imageWriter) :
@@ -23,7 +26,7 @@ namespace NoCap.Plugins {
         }
 
         protected override void PreprocessRequestData(MultipartHelper helper, TypedData originalData) {
-            var stream = new MemoryStream((byte[])originalData.Data);
+            var stream = new MemoryStream((byte[]) originalData.Data);
 
             helper.Add(new FilePart(stream, @"f", ImageWriter.CodecInfo.MimeType) {
                 FileName = originalData.Name
@@ -58,7 +61,7 @@ namespace NoCap.Plugins {
                 // including an HTML parsing library as a
                 // dependency is just too much
 
-                var match = linkInHtml.Match(html);
+                var match = LinkInHtml.Match(html);
 
                 if (match.Success) {
                     return TypedData.FromUri(GetImageUriFromCode(match.Groups["Code"].Value), originalData.Name);

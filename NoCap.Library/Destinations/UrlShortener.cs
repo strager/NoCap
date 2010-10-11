@@ -29,9 +29,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] {
-                TypedDataType.Uri
-            };
+            return new[] { TypedDataType.Uri };
         }
 
         public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {

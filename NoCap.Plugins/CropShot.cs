@@ -10,7 +10,8 @@ namespace NoCap.Plugins {
     public class CropShot : IDestination {
         public IOperation<TypedData> Put(TypedData data) {
             var cropShotForm = new CropShotForm {
-                SourceImage = (Image)data.Data
+                SourceImage = (Image) data.Data,
+                DataName = data.Name
             };
 
             return cropShotForm.Operation;
@@ -34,6 +35,11 @@ namespace NoCap.Plugins {
             set {
                 BackgroundImage = value;
             }
+        }
+
+        public string DataName {
+            get;
+            set;
         }
 
         private readonly EasyOperation<TypedData> operation;
@@ -88,7 +94,7 @@ namespace NoCap.Plugins {
             );
 
             var selectedImage = GetSelectedImage(region);
-            this.operation.Done(TypedData.FromImage(selectedImage, "crop shot"));
+            this.operation.Done(TypedData.FromImage(selectedImage, DataName ?? "crop shot"));
 
             Close();
         }

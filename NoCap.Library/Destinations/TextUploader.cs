@@ -18,9 +18,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] {
-                TypedDataType.Text
-            };
+            return new[] { TypedDataType.Text };
         }
 
         public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
