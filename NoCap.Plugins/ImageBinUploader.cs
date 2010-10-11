@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -8,6 +9,7 @@ using NoCap.Library.Destinations;
 using NoCap.WebHelpers;
 
 namespace NoCap.Plugins {
+    [Export]
     public class ImageBinUploader : ImageUploader {
         private static Regex linkInHtml = new Regex(@"http://imagebin.ca/view/(?<Code>.*?).html", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 

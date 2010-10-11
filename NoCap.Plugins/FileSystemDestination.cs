@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
+    [Export]
     public class FileSystemDestination : IDestination {
         private readonly string rootPath;
 
@@ -41,6 +44,16 @@ namespace NoCap.Plugins {
                 default:
                     return null;
             }
+        }
+
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] {
+                TypedDataType.RawData
+            };
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return new[] { TypedDataType.Uri };
         }
     }
 }

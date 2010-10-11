@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 
 namespace NoCap.Library.Destinations {
     public abstract class TextUploader : HttpUploader {
@@ -14,6 +15,16 @@ namespace NoCap.Library.Destinations {
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
             return TypedData.FromUri(response.ResponseUri.OriginalString, originalData.Name);
+        }
+
+        public override IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] {
+                TypedDataType.Text
+            };
+        }
+
+        public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return new[] { TypedDataType.Uri };
         }
     }
 }

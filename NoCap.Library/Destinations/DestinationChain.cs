@@ -22,6 +22,22 @@ namespace NoCap.Library.Destinations {
         public IOperation<TypedData> Put(TypedData data) {
             return new DestinationChainOperation(this.destinations, data);
         }
+
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            if (!this.destinations.Any()) {
+                return new TypedDataType[] {
+                };
+            }
+
+            return this.destinations.First().GetInputDataTypes();
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return this.destinations.Aggregate(
+                (IEnumerable<TypedDataType>)new[] { input },
+                (types, destination) => types.SelectMany((type) => destination.GetOutputDataTypes(type)).Unique()
+            );
+        }
     }
 
     class DestinationChainOperation : IOperation<TypedData> {

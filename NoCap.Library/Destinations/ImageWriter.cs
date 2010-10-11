@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -62,6 +63,16 @@ namespace NoCap.Library.Destinations {
 
                 return TypedData.FromRawData(rawData, data.Name + "." + Extension);
             });
+        }
+
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] {
+                TypedDataType.Image
+            };
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return new[] { TypedDataType.RawData };
         }
     }
 }

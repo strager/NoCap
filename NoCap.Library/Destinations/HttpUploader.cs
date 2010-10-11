@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Web;
@@ -9,7 +10,9 @@ namespace NoCap.Library.Destinations {
         public abstract IOperation<TypedData> Put(TypedData data);
 
         protected abstract string GetUri();
+
         protected abstract NameValueCollection GetParameters(TypedData data);
+
         protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
 
         public IOperation<TypedData> Upload(TypedData originalData) {
@@ -79,5 +82,8 @@ namespace NoCap.Library.Destinations {
         protected virtual void PreprocessRequest(HttpWebRequest request) {
             // Do nothing
         }
+
+        public abstract IEnumerable<TypedDataType> GetInputDataTypes();
+        public abstract IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
     }
 }

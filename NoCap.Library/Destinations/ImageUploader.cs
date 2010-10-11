@@ -1,4 +1,6 @@
-﻿namespace NoCap.Library.Destinations {
+﻿using System.Collections.Generic;
+
+namespace NoCap.Library.Destinations {
     public abstract class ImageUploader : HttpUploader {
         public ImageWriter ImageWriter {
             get;
@@ -33,6 +35,16 @@
                 default:
                     return null;
             }
+        }
+
+        public override IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] {
+                TypedDataType.Image
+            };
+        }
+
+        public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            return new[] { TypedDataType.Uri };
         }
     }
 }

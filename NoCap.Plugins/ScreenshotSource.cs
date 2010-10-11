@@ -1,7 +1,10 @@
-﻿using NoCap.Library.Sources;
-using NoCap.Sources;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using NoCap.Library.Sources;
 
 namespace NoCap.Plugins {
+    [Export]
     public class ScreenshotSource : ISource {
         private readonly ScreenshotSourceType type;
 
@@ -21,6 +24,12 @@ namespace NoCap.Plugins {
                 default:
                     return null;
             }
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes() {
+            return new[] {
+                TypedDataType.Image
+            };
         }
     }
     

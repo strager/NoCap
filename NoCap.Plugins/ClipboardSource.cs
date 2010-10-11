@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows.Forms;
 using NoCap.Library.Sources;
-using NoCap.Sources;
 
 namespace NoCap.Plugins {
+    [Export]
     public class ClipboardSource : ISource {
         public IOperation<TypedData> Get() {
             return new EasyOperation<TypedData>((op) => {
@@ -41,6 +43,12 @@ namespace NoCap.Plugins {
                 // Text
                 return TypedData.FromText(clipboardText, "clipboard text");
             });
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes() {
+            return new[] {
+                TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri
+            };
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Drawing;
 using System.Windows.Forms;
 using NoCap.Library.Sources;
-using NoCap.Sources;
 
 namespace NoCap.Plugins {
+    [Export]
     public class CropShotSource : ISource {
         public IOperation<TypedData> Get() {
             var cropShotForm = new CropShotForm {
@@ -12,10 +14,14 @@ namespace NoCap.Plugins {
 
             return cropShotForm.Operation;
         }
-    }
-}
 
-namespace NoCap.Sources {
+        public IEnumerable<TypedDataType> GetOutputDataTypes() {
+            return new[] {
+                TypedDataType.Image
+            };
+        }
+    }
+
     public class CropShotForm : Form {
         public Image SourceImage {
             get {
@@ -62,12 +68,12 @@ namespace NoCap.Sources {
         }
 
         private void StartDragging(Point location) {
-            isDragging = true;
-            dragStart = location;
+            this.isDragging = true;
+            this.dragStart = location;
         }
 
         private void EndDragging(Point location) {
-            if (!isDragging) {
+            if (!this.isDragging) {
                 return;
             }
 
@@ -86,12 +92,12 @@ namespace NoCap.Sources {
         }
 
         private void StopDragging() {
-            isDragging = false;
+            this.isDragging = false;
         }
 
         private void KeyPressed(Keys keyCode) {
             if (keyCode.HasFlag(Keys.Escape)) {
-                if (isDragging) {
+                if (this.isDragging) {
                     StopDragging();
                 }
 

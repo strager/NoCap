@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NoCap.Library.Destinations {
     public class DataRouter : IDestination {
@@ -18,10 +19,24 @@ namespace NoCap.Library.Destinations {
             }
 
             if (destination == null) {
-                return null;
+                throw new InvalidOperationException("Routed destination must not be null");
             }
 
             return destination.Put(data);
+        }
+
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            return this.Routes.Keys;
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+            IDestination destination;
+
+            if (!routes.TryGetValue(input, out destination)) {
+                return null;
+            }
+
+            return destination.GetOutputDataTypes(input);
         }
     }
 }
