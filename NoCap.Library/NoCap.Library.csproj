@@ -52,7 +52,6 @@
     <Compile Include="EasyOperation.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SourceAttribute.cs" />
     <Compile Include="Sources\ISource.cs" />
     <Compile Include="TypedData.cs" />
     <Compile Include="WebHelpers\FilePart.cs" />
