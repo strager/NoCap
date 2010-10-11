@@ -1,16 +1,16 @@
 ﻿using System;
 
 namespace NoCap {
-    public interface IOperation {
+    public interface IOperation<T> {
         double Progress { get; }
         OperationState State { get; }
 
         Exception Exception { get; }
 
-        TypedData Data { get; }
+        T Data { get; }
 
         event EventHandler<OperationProgressEventArgs> ProgressUpdated;
-        event EventHandler<OperationResultEventArgs> Completed;
+        event EventHandler<OperationResultEventArgs<T>> Completed;
 
         void Start();
         void Cancel();
@@ -23,16 +23,16 @@ namespace NoCap {
         Cancelled
     }
 
-    public class OperationResultEventArgs : EventArgs {
-        private readonly TypedData data;
+    public class OperationResultEventArgs<T> : EventArgs {
+        private readonly T data;
 
-        public TypedData Data {
+        public T Data {
             get {
                 return this.data;
             }
         }
 
-        public OperationResultEventArgs(TypedData data) {
+        public OperationResultEventArgs(T data) {
             this.data = data;
         }
     }

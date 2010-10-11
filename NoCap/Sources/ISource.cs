@@ -1,5 +1,5 @@
 ﻿namespace NoCap.Sources {
     public interface ISource {
-        IOperation Get();
+        IOperation<TypedData> Get();
     }
 }

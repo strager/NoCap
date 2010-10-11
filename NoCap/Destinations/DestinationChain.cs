@@ -19,12 +19,12 @@ namespace NoCap.Destinations {
             this.destinations.AddRange(destinations);
         }
 
-        public IOperation Put(TypedData data) {
+        public IOperation<TypedData> Put(TypedData data) {
             return new DestinationChainOperation(this.destinations, data);
         }
     }
 
-    class DestinationChainOperation : IOperation {
+    class DestinationChainOperation : IOperation<TypedData> {
         private readonly IEnumerable<IDestination> destinations;
 
         private double progress;
@@ -51,7 +51,7 @@ namespace NoCap.Destinations {
                 this.state = value;
 
                 if (this.state == OperationState.Completed) {
-                    InvokeCompleted(new OperationResultEventArgs(Data));
+                    InvokeCompleted(new OperationResultEventArgs<TypedData>(Data));
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace NoCap.Destinations {
         }
 
         public event EventHandler<OperationProgressEventArgs> ProgressUpdated;
-        public event EventHandler<OperationResultEventArgs> Completed;
+        public event EventHandler<OperationResultEventArgs<TypedData>> Completed;
 
         private void InvokeProgressUpdated(OperationProgressEventArgs e) {
             var handler = ProgressUpdated;
@@ -84,7 +84,7 @@ namespace NoCap.Destinations {
             }
         }
 
-        private void InvokeCompleted(OperationResultEventArgs e) {
+        private void InvokeCompleted(OperationResultEventArgs<TypedData> e) {
             var handler = Completed;
 
             if (handler != null) {

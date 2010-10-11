@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace NoCap.Sources {
     public class ClipboardSource : ISource {
-        public IOperation Get() {
-            return new EasyOperation((op) => {
+        public IOperation<TypedData> Get() {
+            return new EasyOperation<TypedData>((op) => {
                 var clipboardData = Clipboard.GetDataObject();
 
                 if (clipboardData == null) {

@@ -6,10 +6,10 @@
             this.type = type;
         }
 
-        public IOperation Get() {
+        public IOperation<TypedData> Get() {
             switch (this.type) {
                 case ScreenshotSourceType.EntireDesktop:
-                    return new EasyOperation((op) => {
+                    return new EasyOperation<TypedData>((op) => {
                         var image = ScreenCapturer.CaptureEntireDesktop();
 
                         return TypedData.FromImage(image, "screenshot");

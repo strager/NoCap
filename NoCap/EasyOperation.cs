@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace NoCap {
-    public class EasyOperation : IOperation {
+    public class EasyOperation<T> : IOperation<T> {
         private double progress;
         private OperationState state;
 
@@ -26,7 +26,7 @@ namespace NoCap {
                 this.state = value;
 
                 if (this.state == OperationState.Completed) {
-                    InvokeCompleted(new OperationResultEventArgs(this.Data));
+                    InvokeCompleted(new OperationResultEventArgs<T>(Data));
                 }
             }
         }
@@ -36,20 +36,20 @@ namespace NoCap {
             set;
         }
 
-        public TypedData Data {
+        public T Data {
             get;
             private set;
         }
 
-        public Func<EasyOperation, TypedData> StartFunc {
+        public Func<EasyOperation<T>, T> StartFunc {
             get;
             set;
         }
 
         public event EventHandler<OperationProgressEventArgs> ProgressUpdated;
-        public event EventHandler<OperationResultEventArgs> Completed;
+        public event EventHandler<OperationResultEventArgs<T>> Completed;
 
-        public EasyOperation(Func<EasyOperation, TypedData> startFunc) {
+        public EasyOperation(Func<EasyOperation<T>, T> startFunc) {
             if (startFunc == null) {
                 throw new ArgumentNullException("startFunc");
             }
@@ -65,7 +65,7 @@ namespace NoCap {
             }
         }
 
-        private void InvokeCompleted(OperationResultEventArgs e) {
+        private void InvokeCompleted(OperationResultEventArgs<T> e) {
             var handler = Completed;
 
             if (handler != null) {
@@ -91,7 +91,7 @@ namespace NoCap {
             throw new NotImplementedException();
         }
 
-        public void Done(TypedData data) {
+        public void Done(T data) {
             Data = data;
             State = OperationState.Completed;
         }

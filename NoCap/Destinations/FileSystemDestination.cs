@@ -9,10 +9,10 @@ namespace NoCap.Destinations {
             this.rootPath = rootPath;
         }
 
-        public IOperation Put(TypedData data) {
+        public IOperation<TypedData> Put(TypedData data) {
             switch (data.Type) {
                 case TypedDataType.RawData:
-                    return new EasyOperation((op) => {
+                    return new EasyOperation<TypedData>((op) => {
                         string path = Path.Combine(this.rootPath, data.Name);
 
                         var file = File.Open(path, FileMode.Create, FileAccess.Write);

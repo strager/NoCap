@@ -11,7 +11,7 @@ namespace NoCap {
             }
         }
 
-        public IOperation Put(TypedData data) {
+        public IOperation<TypedData> Put(TypedData data) {
             IDestination destination;
 
             if (!routes.TryGetValue(data.Type, out destination)) {

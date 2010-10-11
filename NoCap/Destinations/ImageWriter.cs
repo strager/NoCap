@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace NoCap.Destinations {
     public class ImageWriter : IDestination {
@@ -42,12 +39,12 @@ namespace NoCap.Destinations {
                 codecInfo.Flags.HasFlag(ImageCodecFlags.SupportBitmap);
         }
 
-        public IOperation Put(TypedData data) {
+        public IOperation<TypedData> Put(TypedData data) {
             if (data.Type != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }
 
-            return new EasyOperation((op) => {
+            return new EasyOperation<TypedData>((op) => {
                 byte[] rawData;
 
                 using (var stream = new MemoryStream()) {
