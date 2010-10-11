@@ -4,7 +4,7 @@ using System.Net;
 using System.Web;
 using NoCap.WebHelpers;
 
-namespace NoCap.Destinations {
+namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {
         public abstract IOperation<TypedData> Put(TypedData data);
 

@@ -1,4 +1,7 @@
-﻿namespace NoCap.Sources {
+﻿using NoCap.Library.Sources;
+using NoCap.Sources;
+
+namespace NoCap.Plugins {
     public class ScreenshotSource : ISource {
         private readonly ScreenshotSourceType type;
 
@@ -20,7 +23,7 @@
             }
         }
     }
-
+    
     public enum ScreenshotSourceType {
         EntireDesktop
     }

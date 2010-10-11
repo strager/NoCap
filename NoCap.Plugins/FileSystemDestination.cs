@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using NoCap.Library.Destinations;
 
-namespace NoCap.Destinations {
+namespace NoCap.Plugins {
     public class FileSystemDestination : IDestination {
         private readonly string rootPath;
 

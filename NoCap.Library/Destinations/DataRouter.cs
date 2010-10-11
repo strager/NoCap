@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using NoCap.Destinations;
 
-namespace NoCap {
+namespace NoCap.Library.Destinations {
     public class DataRouter : IDestination {
         private readonly IDictionary<TypedDataType, IDestination> routes = new Dictionary<TypedDataType, IDestination>();
 

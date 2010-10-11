@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
+using NoCap.Library.Destinations;
 
-namespace NoCap.Destinations {
+namespace NoCap.Plugins {
     public class SlexyUploader : TextUploader {
         protected override string GetUri() {
             return @"http://slexy.org/index.php/submit";

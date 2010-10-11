@@ -1,4 +1,4 @@
-﻿namespace NoCap.Destinations {
+﻿namespace NoCap.Library.Destinations {
     public abstract class ImageUploader : HttpUploader {
         public ImageWriter ImageWriter {
             get;

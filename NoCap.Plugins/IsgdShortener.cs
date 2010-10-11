@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
+using NoCap.Library.Destinations;
 
-namespace NoCap.Destinations {
+namespace NoCap.Plugins {
     public class IsgdShortener : UrlShortener {
         protected override string GetUri() {
             return @"http://is.gd/api.php";

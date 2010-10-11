@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace NoCap.Destinations {
+namespace NoCap.Library.Destinations {
     public class ImageWriter : IDestination {
         private readonly EncoderParameters encoderParameters;
 

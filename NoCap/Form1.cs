@@ -2,8 +2,9 @@
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Linq;
-using NoCap.Destinations;
-using NoCap.Sources;
+using NoCap.Library.Destinations;
+using NoCap.Library.Sources;
+using NoCap.Plugins;
 
 namespace NoCap {
     public partial class Form1 : Form {

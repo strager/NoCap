@@ -4,9 +4,10 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using NoCap.Library.Destinations;
 using NoCap.WebHelpers;
 
-namespace NoCap.Destinations {
+namespace NoCap.Plugins {
     public class ImageBinUploader : ImageUploader {
         private static Regex linkInHtml = new Regex(@"http://imagebin.ca/view/(?<Code>.*?).html", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 

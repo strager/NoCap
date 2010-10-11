@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NoCap.Destinations {
+namespace NoCap.Library.Destinations {
     public class DestinationChain : IDestination {
         private readonly List<IDestination> destinations = new List<IDestination>();
 

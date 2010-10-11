@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using NoCap.Library.Sources;
+using NoCap.Sources;
 
-namespace NoCap.Sources {
+namespace NoCap.Plugins {
     public class CropShotSource : ISource {
         public IOperation<TypedData> Get() {
             var cropShotForm = new CropShotForm {
@@ -11,7 +13,9 @@ namespace NoCap.Sources {
             return cropShotForm.Operation;
         }
     }
+}
 
+namespace NoCap.Sources {
     public class CropShotForm : Form {
         public Image SourceImage {
             get {

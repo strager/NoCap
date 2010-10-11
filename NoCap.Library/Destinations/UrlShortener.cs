@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace NoCap.Destinations {
+namespace NoCap.Library.Destinations {
     public abstract class UrlShortener : HttpUploader {
         public override IOperation<TypedData> Put(TypedData data) {
             switch (data.Type) {

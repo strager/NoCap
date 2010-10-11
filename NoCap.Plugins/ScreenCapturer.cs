@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace NoCap {
+namespace NoCap.Plugins {
     public static class ScreenCapturer {
         public static Bitmap CaptureEntireDesktop() {
             // TODO Multiple monitors.

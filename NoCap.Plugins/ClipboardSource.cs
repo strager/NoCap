@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using NoCap.Library.Sources;
+using NoCap.Sources;
 
-namespace NoCap.Sources {
+namespace NoCap.Plugins {
     public class ClipboardSource : ISource {
         public IOperation<TypedData> Get() {
             return new EasyOperation<TypedData>((op) => {

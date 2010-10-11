@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace NoCap.Destinations {
+namespace NoCap.Library.Destinations {
     public abstract class TextUploader : HttpUploader {
         public override IOperation<TypedData> Put(TypedData data) {
             switch (data.Type) {
