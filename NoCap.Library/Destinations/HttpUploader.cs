@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Web;
-using System.Linq;
 using NoCap.Web;
 
 namespace NoCap.Library.Destinations {
@@ -14,12 +12,16 @@ namespace NoCap.Library.Destinations {
                 string requestMethod = RequestMethod;
                 var parameters = GetParameters(originalData);
 
-                var request = BuildRequest(originalData, requestMethod, parameters);
-                
-                request.BeginGetResponse((asyncResult) => {
-                    var response = (HttpWebResponse) request.EndGetResponse(asyncResult);
+                var buildRequestAsync = new Func<TypedData, string, IDictionary<string, string>, HttpWebRequest>(BuildRequest);
 
-                    op.Done(GetResponseData(response, originalData));
+                buildRequestAsync.BeginInvoke(originalData, requestMethod, parameters, (asyncResult) => {
+                    var request = buildRequestAsync.EndInvoke(asyncResult);
+
+                    request.BeginGetResponse((asyncResult2) => {
+                        var response = (HttpWebResponse) request.EndGetResponse(asyncResult2);
+
+                        op.Done(GetResponseData(response, originalData));
+                    }, null);
                 }, null);
 
                 return null;
