@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using NoCap.Library;
 using NoCap.Library.Destinations;
@@ -10,24 +11,35 @@ namespace NoCap.Plugins {
     public class ClipboardDestination : IDestination {
         public IOperation<TypedData> Put(TypedData data) {
             return new EasyOperation<TypedData>((op) => {
-                switch (data.DataType) {
-                    case TypedDataType.Text:
-                    case TypedDataType.Uri:
-                        Clipboard.SetText(data.Data.ToString(), TextDataFormat.UnicodeText);
+                var thread = new Thread(() => op.Done(SetClipboardData(data)));
 
-                        break;
+                // Clipboard object uses COM; make sure we're in STA
+                thread.SetApartmentState(ApartmentState.STA);
 
-                    case TypedDataType.Image:
-                        Clipboard.SetImage((Image) data.Data);
+                thread.Start();
 
-                        break;
-
-                    default:
-                        break;
-                }
-
-                return data;
+                return null;
             });
+        }
+
+        private TypedData SetClipboardData(TypedData data) {
+            switch (data.DataType) {
+                case TypedDataType.Text:
+                case TypedDataType.Uri:
+                    Clipboard.SetText(data.Data.ToString(), TextDataFormat.UnicodeText);
+
+                    break;
+
+                case TypedDataType.Image:
+                    Clipboard.SetImage((Image) data.Data);
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            return data;
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
