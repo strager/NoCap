@@ -11,30 +11,30 @@ using NoCap.Library.Sources;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class Clipboard : ISource, IDestination {
-        public IOperation<TypedData> Get() {
-            return new EasyOperation<TypedData>((op) => {
-                var thread = new Thread(() => op.Done(GetClipboardData()));
+        public TypedData Get(IProgressTracker progress) {
+            TypedData data = null;
 
-                // Clipboard object uses COM; make sure we're in STA
-                thread.SetApartmentState(ApartmentState.STA);
+            var thread = new Thread(() => data = GetClipboardData());
 
-                thread.Start();
+            // Clipboard object uses COM; make sure we're in STA
+            thread.SetApartmentState(ApartmentState.STA);
 
-                return null;
-            });
+            thread.Start();
+            thread.Join();
+
+            return data;
         }
 
-        public IOperation<TypedData> Put(TypedData data) {
-            return new EasyOperation<TypedData>((op) => {
-                var thread = new Thread(() => op.Done(SetClipboardData(data)));
+        public TypedData Put(TypedData data, IProgressTracker progress) {
+            var thread = new Thread(() => SetClipboardData(data));
 
-                // Clipboard object uses COM; make sure we're in STA
-                thread.SetApartmentState(ApartmentState.STA);
+            // Clipboard object uses COM; make sure we're in STA
+            thread.SetApartmentState(ApartmentState.STA);
 
-                thread.Start();
+            thread.Start();
+            thread.Join();
 
-                return null;
-            });
+            return data;
         }
 
         private static TypedData GetClipboardData() {
@@ -72,7 +72,7 @@ namespace NoCap.Plugins {
             return TypedData.FromText(clipboardText, "clipboard text");
         }
 
-        private static TypedData SetClipboardData(TypedData data) {
+        private static void SetClipboardData(TypedData data) {
             switch (data.DataType) {
                 case TypedDataType.Text:
                 case TypedDataType.Uri:
@@ -88,8 +88,6 @@ namespace NoCap.Plugins {
                 default:
                     break;
             }
-
-            return data;
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

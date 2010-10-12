@@ -9,13 +9,15 @@ using NoCap.Library.Destinations;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class CropShot : IDestination {
-        public IOperation<TypedData> Put(TypedData data) {
+        public TypedData Put(TypedData data, IProgressTracker progress) {
             var cropShotForm = new CropShotForm {
                 SourceImage = (Image) data.Data,
                 DataName = data.Name
             };
 
-            return cropShotForm.Operation;
+            cropShotForm.ShowDialog();
+
+            return cropShotForm.Data;
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
@@ -43,24 +45,15 @@ namespace NoCap.Plugins {
             set;
         }
 
-        private readonly EasyOperation<TypedData> operation;
-
-        public IOperation<TypedData> Operation {
-            get {
-                return this.operation;
-            }
+        public TypedData Data {
+            get;
+            private set;
         }
 
         private Point dragStart;
         private bool isDragging;
 
         public CropShotForm() {
-            this.operation = new EasyOperation<TypedData>((op) => {
-                Show();
-
-                return null;
-            });
-
             ShowInTaskbar = false;
 
             Shown     += (sender, e) => PutOnTop();
@@ -68,9 +61,7 @@ namespace NoCap.Plugins {
             LostFocus += (sender, e) => Close();
 
             Closed += (sender, e) => {
-                if (this.operation.State != OperationState.Completed) {
-                    this.operation.Cancel();
-                }
+                // TODO
             };
 
             MouseDown += (sender, e) => StartDragging(e.Location);
@@ -95,7 +86,8 @@ namespace NoCap.Plugins {
             );
 
             var selectedImage = GetSelectedImage(region);
-            this.operation.Done(TypedData.FromImage(selectedImage, DataName ?? "crop shot"));
+
+            Data = TypedData.FromImage(selectedImage, DataName);
 
             Close();
         }

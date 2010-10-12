@@ -15,14 +15,12 @@ namespace NoCap.Plugins {
             SourceType = ScreenshotSourceType.EntireDesktop;
         }
 
-        public IOperation<TypedData> Get() {
+        public TypedData Get(IProgressTracker progress) {
             switch (SourceType) {
                 case ScreenshotSourceType.EntireDesktop:
-                    return new EasyOperation<TypedData>((op) => {
-                        var image = ScreenCapturer.CaptureEntireDesktop();
+                    var image = ScreenCapturer.CaptureEntireDesktop();
 
-                        return TypedData.FromImage(image, "screenshot");
-                    });
+                    return TypedData.FromImage(image, "screenshot");
 
                 default:
                     return null;

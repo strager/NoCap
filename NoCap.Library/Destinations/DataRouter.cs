@@ -8,34 +8,27 @@ namespace NoCap.Library.Destinations {
     public class DataRouter : IDestination, IDictionary<TypedDataType, IDestination> {
         private readonly IDictionary<TypedDataType, IDestination> routes = new Dictionary<TypedDataType, IDestination>();
 
-        public IOperation<TypedData> Put(TypedData data) {
+        public TypedData Put(TypedData data, IProgressTracker progress) {
             IDestination destination;
 
             if (!routes.TryGetValue(data.DataType, out destination)) {
                 return null;
             }
 
-            return destination.Put(data);
+            return destination.Put(data, progress);
         }
 
-        public IOperation<TypedData> RouteFrom(ISource source) {
-            return RouteFrom(source.Get());
-        }
+        public TypedData RouteFrom(ISource source, IProgressTracker progress) {
+            // TODO AggregateProgress thingy
+            var data = source.Get(progress);
 
-        public IOperation<TypedData> RouteFrom(IOperation<TypedData> sourceOperation) {
-            return new EasyOperation<TypedData>((op) => {
-                sourceOperation.Completed += (sourceSender, sourceEvent) => {
-                    var destinationOperation = Put(sourceEvent.Data);
-                    destinationOperation.Completed +=
-                        (destinationSender, destinationEvent) => op.Done(destinationEvent.Data);
-
-                    destinationOperation.Start();
-                };
-
-                sourceOperation.Start();
-
+            if (data == null) {
                 return null;
-            });
+            }
+
+            data = Put(data, progress);
+
+            return data;
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

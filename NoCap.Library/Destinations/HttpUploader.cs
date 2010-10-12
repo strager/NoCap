@@ -5,27 +5,17 @@ using NoCap.Web;
 
 namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {
-        public abstract IOperation<TypedData> Put(TypedData data);
+        public abstract TypedData Put(TypedData data, IProgressTracker progress);
 
-        public IOperation<TypedData> Upload(TypedData originalData) {
-            return new EasyOperation<TypedData>((op) => {
-                string requestMethod = RequestMethod;
-                var parameters = GetParameters(originalData);
+        public TypedData Upload(TypedData originalData, IProgressTracker progress) {
+            string requestMethod = RequestMethod;
+            var parameters = GetParameters(originalData);
 
-                var buildRequestAsync = new Func<TypedData, string, IDictionary<string, string>, HttpWebRequest>(BuildRequest);
+            var request = BuildRequest(originalData, requestMethod, parameters);
 
-                buildRequestAsync.BeginInvoke(originalData, requestMethod, parameters, (asyncResult) => {
-                    var request = buildRequestAsync.EndInvoke(asyncResult);
+            var response = (HttpWebResponse) request.GetResponse();
 
-                    request.BeginGetResponse((asyncResult2) => {
-                        var response = (HttpWebResponse) request.EndGetResponse(asyncResult2);
-
-                        op.Done(GetResponseData(response, originalData));
-                    }, null);
-                }, null);
-
-                return null;
-            });
+            return GetResponseData(response, originalData);
         }
 
         private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters) {

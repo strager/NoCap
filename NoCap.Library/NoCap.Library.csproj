@@ -45,11 +45,10 @@
     <Compile Include="Destinations\IDestination.cs" />
     <Compile Include="Destinations\ImageUploader.cs" />
     <Compile Include="Destinations\ImageWriter.cs" />
+    <Compile Include="IProgressTracker.cs" />
     <Compile Include="LinqHelpers.cs" />
     <Compile Include="Destinations\TextUploader.cs" />
     <Compile Include="Destinations\UrlShortener.cs" />
-    <Compile Include="EasyOperation.cs" />
-    <Compile Include="IOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\ISource.cs" />
     <Compile Include="TypedData.cs" />

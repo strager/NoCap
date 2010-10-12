@@ -2,6 +2,8 @@
 
 namespace NoCap.Library.Destinations {
     public abstract class ImageUploader : HttpUploader {
+        // TODO Accept *raw data* instead of an image (less coupling)
+
         public ImageWriter ImageWriter {
             get;
             set;
@@ -11,26 +13,12 @@ namespace NoCap.Library.Destinations {
             ImageWriter = writer;
         }
 
-        public override IOperation<TypedData> Put(TypedData data) {
+        public override TypedData Put(TypedData data, IProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Image:
-                    var convertOp = ImageWriter.Put(data);
-                    var rootOp = new EasyOperation<TypedData>((op) => {
-                        convertOp.Start();
+                    var rawImageData = ImageWriter.Put(data, progress);
 
-                        return null;
-                    });
-
-                    convertOp.Completed += (sender1, e1) => {
-                        var uploadOp = Upload(e1.Data);
-                        uploadOp.Completed += (sender2, e2) => {
-                            rootOp.Done(e2.Data);
-                        };
-
-                        uploadOp.Start();
-                    };
-
-                    return rootOp;
+                    return Upload(rawImageData, progress);
 
                 default:
                     return null;

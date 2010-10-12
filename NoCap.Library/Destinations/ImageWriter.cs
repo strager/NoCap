@@ -47,25 +47,23 @@ namespace NoCap.Library.Destinations {
                 codecInfo.Flags.HasFlag(ImageCodecFlags.SupportBitmap);
         }
 
-        public IOperation<TypedData> Put(TypedData data) {
+        public TypedData Put(TypedData data, IProgressTracker progress) {
             if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }
 
-            return new EasyOperation<TypedData>((op) => {
-                byte[] rawData;
+            byte[] rawData;
 
-                using (var stream = new MemoryStream()) {
-                    ((Image) data.Data).Save(stream, CodecInfo, EncoderParameters);
+            using (var stream = new MemoryStream()) {
+                ((Image) data.Data).Save(stream, CodecInfo, EncoderParameters);
 
-                    stream.Position = 0;
+                stream.Position = 0;
 
-                    rawData = new byte[stream.Length];
-                    stream.Read(rawData, 0, rawData.Length);
-                }
+                rawData = new byte[stream.Length];
+                stream.Read(rawData, 0, rawData.Length);
+            }
 
-                return TypedData.FromRawData(rawData, data.Name + "." + Extension);
-            });
+            return TypedData.FromRawData(rawData, data.Name + "." + Extension);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

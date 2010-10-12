@@ -20,33 +20,23 @@ namespace NoCap.Plugins {
             RootPath = rootPath;
         }
 
-        public IOperation<TypedData> Put(TypedData data) {
+        public TypedData Put(TypedData data, IProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.RawData:
-                    return new EasyOperation<TypedData>((op) => {
-                        string path = Path.Combine(RootPath, data.Name);
+                    string path = Path.Combine(RootPath, data.Name);
 
-                        var file = File.Open(path, FileMode.Create, FileAccess.Write);
+                    using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {
+                        var rawData = (byte[]) data.Data;
 
-                        try {
-                            var rawData = (byte[]) data.Data;
+                        file.Write(rawData, 0, rawData.Length);
 
-                            // TODO Async
-                            file.BeginWrite(rawData, 0, rawData.Length, (asyncResult) => {
-                                file.EndWrite(asyncResult);
+                        var uriBuilder = new UriBuilder {
+                            Scheme = Uri.UriSchemeFile,
+                            Path = path
+                        };
 
-                                file.Dispose();
-
-                                op.Done(TypedData.FromUri(path, "output file"));
-                            }, null);
-                        } catch (Exception) {
-                            file.Dispose();
-
-                            throw;
-                        }
-
-                        return null;
-                    });
+                        return TypedData.FromUri(uriBuilder.Uri, "output file");
+                    }
 
                 default:
                     return null;

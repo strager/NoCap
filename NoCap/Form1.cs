@@ -55,12 +55,9 @@ namespace NoCap {
         }
 
         private void PerformRequest(ISource source) {
-            var op = this.router.RouteFrom(source.Get());
+            var data = this.router.RouteFrom(source, null);
 
-            op.Completed +=
-                (sender, e) => Log(e.Data.ToString());
-
-            op.Start();
+            Log(data.ToString());
         }
 
         public void Log(string message) {
