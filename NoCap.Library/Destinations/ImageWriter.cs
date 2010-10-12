@@ -19,7 +19,7 @@ namespace NoCap.Library.Destinations {
         private string Extension {
             get {
                 // FIXME I'm sure this isn't correct
-                return this.CodecInfo.FormatDescription;
+                return CodecInfo.FormatDescription;
             }
         }
 

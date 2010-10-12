@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using NoCap.Library;
 using NoCap.Library.Destinations;
@@ -24,8 +19,8 @@ namespace NoCap
         private IEnumerable<IDestination> destinations;
 #pragma warning restore 649
 
-        private object dummyValue = new object();
-        private TreeNode rootNode;
+        private readonly object dummyValue = new object();
+        private readonly TreeNode rootNode;
 
         public RouteBuilder() {
             InitializeComponent();
@@ -41,22 +36,24 @@ namespace NoCap
         }
 
         private void RouteExpanded(object sender, TreeViewEventArgs e) {
-            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Tag == dummyValue) {
-                e.Node.Nodes.Clear();
+            if (e.Node.Nodes.Count != 1 || e.Node.Nodes[0].Tag != this.dummyValue) {
+                return;
+            }
 
-                var parent = e.Node.Parent;
+            e.Node.Nodes.Clear();
 
-                if (parent == null) {
-                    e.Node.Nodes.AddRange(sources.Select(MakeNode).ToArray());
-                } else {
-                    e.Node.Nodes.AddRange(
-                        GetNodeTypes(e.Node).SelectMany(
-                            (type) => this.destinations.Where(
-                                (dest) => dest.GetInputDataTypes().Contains(type)
-                            )
-                        ).Unique().Select(MakeNode).ToArray()
-                    );
-                }
+            var parent = e.Node.Parent;
+
+            if (parent == null) {
+                e.Node.Nodes.AddRange(this.sources.Select(MakeNode).ToArray());
+            } else {
+                e.Node.Nodes.AddRange(
+                    GetNodeTypes(e.Node).SelectMany(
+                        (type) => this.destinations.Where(
+                            (dest) => dest.GetInputDataTypes().Contains(type)
+                        )
+                    ).Unique().Select(MakeNode).ToArray()
+                );
             }
         }
 
