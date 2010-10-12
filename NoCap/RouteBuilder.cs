@@ -26,7 +26,7 @@ namespace NoCap
             InitializeComponent();
 
             var catalog = new AggregateCatalog();
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ClipboardSource).Assembly));
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(ImageBinUploader).Assembly));
 
             var container = new CompositionContainer(catalog);
             container.SatisfyImportsOnce(this);

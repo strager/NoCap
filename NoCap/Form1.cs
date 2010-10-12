@@ -6,6 +6,7 @@ using NoCap.Library;
 using NoCap.Library.Destinations;
 using NoCap.Library.Sources;
 using NoCap.Plugins;
+using Clipboard = NoCap.Plugins.Clipboard;
 
 namespace NoCap {
     public partial class Form1 : Form {
@@ -20,9 +21,9 @@ namespace NoCap {
             InitializeComponent();
 
             this.screenshotSource = new ScreenshotSource { SourceType = ScreenshotSourceType.EntireDesktop };
-            this.clipboardSource = new ClipboardSource();
+            this.clipboardSource = new Clipboard();
 
-            this.clipboardDestination = new ClipboardDestination();
+            this.clipboardDestination = new Clipboard();
 
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
