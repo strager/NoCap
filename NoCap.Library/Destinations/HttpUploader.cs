@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Web;
 using System.Linq;
@@ -21,44 +20,7 @@ namespace NoCap.Library.Destinations {
                 string requestMethod = GetRequestMethod();
                 var parameters = GetParameters(originalData);
 
-                HttpWebRequest request;
-                
-                switch (requestMethod) {
-                    case @"GET":
-                        var uriBuilder = new UriBuilder(GetUri());
-                        uriBuilder.Query = ToQueryString(parameters);
-
-                        request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
-                        request.Method = requestMethod;
-                        PreprocessRequest(request);
-
-                        break;
-
-                    case @"POST":
-                        var builder = new MultipartBuilder();
-
-                        if (parameters != null) {
-                            builder.KeyValuePairs(parameters);
-                        }
-                        
-                        var boundary = builder.Boundary;
-
-                        request = (HttpWebRequest) WebRequest.Create(GetUri());
-                        request.Method = requestMethod;
-                        request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-                        PreprocessRequest(request);
-
-                        PreprocessRequestData(builder, originalData);
-
-                        var requestStream = request.GetRequestStream();
-                        Util.WriteBoundary(requestStream, boundary);
-                        builder.Write(requestStream);
-
-                        break;
-
-                    default:
-                        throw new InvalidOperationException("Unknown request method");
-                }
+                var request = BuildRequest(originalData, requestMethod, parameters);
                 
                 request.BeginGetResponse((asyncResult) => {
                     var response = (HttpWebResponse) request.EndGetResponse(asyncResult);
@@ -68,6 +30,54 @@ namespace NoCap.Library.Destinations {
 
                 return null;
             });
+        }
+
+        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters) {
+            switch (requestMethod) {
+                case @"GET":
+                    return BuildGetRequest(parameters);
+
+                case @"POST":
+                    return BuildPostRequest(parameters, originalData);
+
+                default:
+                    throw new InvalidOperationException("Unknown request method");
+            }
+        }
+
+        private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters) {
+            var uriBuilder = new UriBuilder(GetUri()) {
+                Query = ToQueryString(parameters)
+            };
+
+            var request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
+            request.Method = @"GET";
+            PreprocessRequest(request);
+
+            return request;
+        }
+
+        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData) {
+            var builder = new MultipartBuilder();
+
+            if (parameters != null) {
+                builder.KeyValuePairs(parameters);
+            }
+
+            PreprocessRequestData(builder, originalData);
+
+            var boundary = builder.Boundary;
+
+            var request = (HttpWebRequest) WebRequest.Create(GetUri());
+            request.Method = @"POST";
+            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
+            PreprocessRequest(request);
+
+            var requestStream = request.GetRequestStream();
+            Util.WriteBoundary(requestStream, boundary);
+            builder.Write(requestStream);
+
+            return request;
         }
 
         protected virtual void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
