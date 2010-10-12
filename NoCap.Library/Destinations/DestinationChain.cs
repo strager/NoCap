@@ -14,6 +14,10 @@ namespace NoCap.Library.Destinations {
 
         public DestinationChain() {
         }
+        
+        public DestinationChain(params IDestination[] destinations) :
+            this((IEnumerable<IDestination>)destinations) {
+        }
 
         public DestinationChain(IEnumerable<IDestination> destinations) {
             this.destinations.AddRange(destinations);

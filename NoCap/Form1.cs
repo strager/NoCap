@@ -10,8 +10,11 @@ using NoCap.Plugins;
 namespace NoCap {
     public partial class Form1 : Form {
         private readonly DataRouter router;
+
         private readonly ISource screenshotSource;
         private readonly ISource clipboardSource;
+
+        private readonly IDestination clipboardDestination;
 
         public Form1() {
             InitializeComponent();
@@ -19,19 +22,27 @@ namespace NoCap {
             this.screenshotSource = new ScreenshotSource { SourceType = ScreenshotSourceType.EntireDesktop };
             this.clipboardSource = new ClipboardSource();
 
+            this.clipboardDestination = new ClipboardDestination();
+
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             this.router = new DataRouter();
-            router[TypedDataType.Image] = new DestinationChain(new IDestination[] {
+
+            router[TypedDataType.Image] = new DestinationChain(
                 new CropShot(),
-                new ImageWriter(codecs.FirstOrDefault()),
-                new FileSystemDestination(@".")
-            });
-            router[TypedDataType.Image] = new ImageBinUploader(
-                new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))
+                new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
+                this.clipboardDestination
             );
-            router[TypedDataType.Text] = new SlexyUploader();
-            router[TypedDataType.Uri] = new IsgdShortener();
+
+            router[TypedDataType.Text] = new DestinationChain(
+                new SlexyUploader(),
+                this.clipboardDestination
+            );
+
+            router[TypedDataType.Uri] = new DestinationChain(
+                new IsgdShortener(),
+                this.clipboardDestination
+            );
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
@@ -43,23 +54,16 @@ namespace NoCap {
         }
 
         private void PerformRequest(ISource source) {
-            var sourceOp = source.Get();
-            sourceOp.Completed += (sender2, e2) => {
-                var destOp = this.router.Put(e2.Data);
-                destOp.Completed += (sender3, e3) => {
-                    Log(e3.Data.ToString());
-                };
+            var op = this.router.RouteFrom(source.Get());
 
-                destOp.Start();
+            op.Completed +=
+                (sender, e) => Log(e.Data.ToString());
 
-                Log(sourceOp.Data.ToString());
-            };
-
-            sourceOp.Start();
+            op.Start();
         }
 
         public void Log(string message) {
-            Invoke((MethodInvoker)delegate {
+            Invoke((MethodInvoker) delegate {
                 this.log.Text += message + Environment.NewLine;
             });
         }

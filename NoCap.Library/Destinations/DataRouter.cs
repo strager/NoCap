@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using NoCap.Library.Sources;
 
 namespace NoCap.Library.Destinations {
     public class DataRouter : IDestination, IDictionary<TypedDataType, IDestination> {
@@ -15,6 +16,26 @@ namespace NoCap.Library.Destinations {
             }
 
             return destination.Put(data);
+        }
+
+        public IOperation<TypedData> RouteFrom(ISource source) {
+            return RouteFrom(source.Get());
+        }
+
+        public IOperation<TypedData> RouteFrom(IOperation<TypedData> sourceOperation) {
+            return new EasyOperation<TypedData>((op) => {
+                sourceOperation.Completed += (sourceSender, sourceEvent) => {
+                    var destinationOperation = Put(sourceEvent.Data);
+                    destinationOperation.Completed +=
+                        (destinationSender, destinationEvent) => op.Done(destinationEvent.Data);
+
+                    destinationOperation.Start();
+                };
+
+                sourceOperation.Start();
+
+                return null;
+            });
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
