@@ -20,7 +20,7 @@ namespace NoCap.Library {
         NotYetStarted = 0,  // TODO Better name
         Started,
         Completed,
-        Cancelled
+        Canceled
     }
 
     public class OperationResultEventArgs<T> : EventArgs {

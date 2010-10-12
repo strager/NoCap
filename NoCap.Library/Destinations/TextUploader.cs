@@ -4,7 +4,7 @@ using System.Net;
 namespace NoCap.Library.Destinations {
     public abstract class TextUploader : HttpUploader {
         public override IOperation<TypedData> Put(TypedData data) {
-            switch (data.Type) {
+            switch (data.DataType) {
                 case TypedDataType.Text:
                     return Upload(data);
 
@@ -14,7 +14,7 @@ namespace NoCap.Library.Destinations {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            return TypedData.FromUri(response.ResponseUri.OriginalString, originalData.Name);
+            return TypedData.FromUri(response.ResponseUri, originalData.Name);
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {

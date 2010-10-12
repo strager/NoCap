@@ -22,14 +22,16 @@ namespace NoCap.Plugins {
             base(imageWriter) {
         }
 
-        protected override string GetUri() {
-            return @"http://imagebin.ca/upload.php";
+        protected override Uri Uri {
+            get {
+                return new Uri(@"http://imagebin.ca/upload.php");
+            }
         }
 
         protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
             var stream = new MemoryStream((byte[]) originalData.Data);
 
-            helper.Stream(stream, "f", originalData.Name);
+            helper.File(stream, "f", originalData.Name);
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
@@ -62,16 +64,16 @@ namespace NoCap.Plugins {
 
                 var match = LinkInHtml.Match(html);
 
-                if (match.Success) {
-                    return TypedData.FromUri(GetImageUriFromCode(match.Groups["Code"].Value), originalData.Name);
-                } else {
+                if (!match.Success) {
                     return null;
                 }
+
+                return TypedData.FromUri(GetImageUriFromCode(match.Groups["Code"].Value), originalData.Name);
             }
         }
 
-        private string GetImageUriFromCode(string code) {
-            return string.Format(@"http://imagebin.ca/img/{0}", code);
+        private Uri GetImageUriFromCode(string code) {
+            return new Uri(string.Format(@"http://imagebin.ca/img/{0}", code));
         }
 
         protected string Name {

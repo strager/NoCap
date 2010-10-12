@@ -10,7 +10,7 @@ namespace NoCap.Plugins {
     public class ClipboardDestination : IDestination {
         public IOperation<TypedData> Put(TypedData data) {
             return new EasyOperation<TypedData>((op) => {
-                switch (data.Type) {
+                switch (data.DataType) {
                     case TypedDataType.Text:
                     case TypedDataType.Uri:
                         Clipboard.SetText(data.Data.ToString(), TextDataFormat.UnicodeText);

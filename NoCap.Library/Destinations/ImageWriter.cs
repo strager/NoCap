@@ -48,7 +48,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public IOperation<TypedData> Put(TypedData data) {
-            if (data.Type != TypedDataType.Image) {
+            if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }
 

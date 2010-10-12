@@ -6,17 +6,17 @@ using NoCap.Library.Sources;
 namespace NoCap.Plugins {
     [Export(typeof(ISource))]
     public class ScreenshotSource : ISource {
-        public ScreenshotSourceType Type {
+        public ScreenshotSourceType SourceType {
             get;
             set;
         }
 
         public ScreenshotSource() {
-            Type = ScreenshotSourceType.EntireDesktop;
+            SourceType = ScreenshotSourceType.EntireDesktop;
         }
 
         public IOperation<TypedData> Get() {
-            switch (Type) {
+            switch (SourceType) {
                 case ScreenshotSourceType.EntireDesktop:
                     return new EasyOperation<TypedData>((op) => {
                         var image = ScreenCapturer.CaptureEntireDesktop();

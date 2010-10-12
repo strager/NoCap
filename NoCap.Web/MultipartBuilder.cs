@@ -16,12 +16,12 @@ namespace NoCap.Web {
 
         public MultipartBuilder() {
             Entries = new List<IMultipartEntry>();
-            Boundary = Util.GetRandomBoundary();
+            Boundary = Utility.GetRandomBoundary();
         }
         
         public MultipartBuilder(IEnumerable<IMultipartEntry> entries) {
             Entries = entries.ToList();
-            Boundary = Util.GetRandomBoundary();
+            Boundary = Utility.GetRandomBoundary();
         }
 
         public MultipartBuilder KeyValuePair(string name, string value) {
@@ -37,7 +37,7 @@ namespace NoCap.Web {
             );
         }
 
-        public MultipartBuilder Stream(Stream stream, string name = null, string fileName = null) {
+        public MultipartBuilder File(Stream stream, string name = null, string fileName = null) {
             Entries.Add(new FileMultipartEntry(stream, name) {
                 FileName = fileName
             });
@@ -47,7 +47,7 @@ namespace NoCap.Web {
 
         public void Write(Stream stream) {
             foreach (var entry in Entries) {
-                var separator = Util.Encoding.GetBytes(Util.LineSeparator);
+                var separator = Utility.Encoding.GetBytes(Utility.LineSeparator);
 
                 entry.WriteHeaders(stream);
                 stream.Write(separator, 0, separator.Length);
@@ -55,7 +55,7 @@ namespace NoCap.Web {
                 entry.WriteContents(stream);
                 stream.Write(separator, 0, separator.Length);
 
-                Util.WriteBoundary(stream, Boundary);
+                Utility.WriteBoundary(stream, Boundary);
             }
         }
     }

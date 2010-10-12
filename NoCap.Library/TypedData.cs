@@ -15,7 +15,7 @@ namespace NoCap.Library {
     }
 
     public class TypedData {
-        public TypedDataType Type {
+        public TypedDataType DataType {
             get;
             private set;
         }
@@ -30,18 +30,18 @@ namespace NoCap.Library {
             private set;
         }
 
-        public TypedData(TypedDataType type, object data, string name) {
-            Type = type;
+        public TypedData(TypedDataType dataType, object data, string name) {
+            DataType = dataType;
             Data = data;
             Name = name;
         }
 
         public static TypedData FromUri(string uri, string name) {
-            return new TypedData(TypedDataType.Uri, uri, name);
+            return FromUri(new Uri(uri), name);
         }
 
         public static TypedData FromUri(Uri uri, string name) {
-            return FromUri(uri.ToString(), name);
+            return new TypedData(TypedDataType.Uri, uri, name);
         }
 
         public static TypedData FromImage(Image image, string name) {
@@ -57,7 +57,7 @@ namespace NoCap.Library {
         }
 
         public override string ToString() {
-            return string.Format("{0} ({1}: {2})", Name, Type, Data);
+            return string.Format("{0} ({1}: {2})", Name, DataType, Data);
         }
     }
 }

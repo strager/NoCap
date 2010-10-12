@@ -12,7 +12,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public override IOperation<TypedData> Put(TypedData data) {
-            switch (data.Type) {
+            switch (data.DataType) {
                 case TypedDataType.Image:
                     var convertOp = ImageWriter.Put(data);
                     var rootOp = new EasyOperation<TypedData>((op) => {

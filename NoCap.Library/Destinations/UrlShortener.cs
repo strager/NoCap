@@ -7,7 +7,7 @@ using System.Text;
 namespace NoCap.Library.Destinations {
     public abstract class UrlShortener : HttpUploader {
         public override IOperation<TypedData> Put(TypedData data) {
-            switch (data.Type) {
+            switch (data.DataType) {
                 case TypedDataType.Uri:
                     return Upload(data);
 
@@ -32,7 +32,7 @@ namespace NoCap.Library.Destinations {
             return new[] { TypedDataType.Uri };
         }
 
-        public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+        public override IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Uri };
         }
     }

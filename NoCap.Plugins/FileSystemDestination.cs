@@ -21,7 +21,7 @@ namespace NoCap.Plugins {
         }
 
         public IOperation<TypedData> Put(TypedData data) {
-            switch (data.Type) {
+            switch (data.DataType) {
                 case TypedDataType.RawData:
                     return new EasyOperation<TypedData>((op) => {
                         string path = Path.Combine(RootPath, data.Name);

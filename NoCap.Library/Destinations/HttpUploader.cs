@@ -9,15 +9,9 @@ namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {
         public abstract IOperation<TypedData> Put(TypedData data);
 
-        protected abstract string GetUri();
-
-        protected abstract IDictionary<string, string> GetParameters(TypedData data);
-
-        protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
-
         public IOperation<TypedData> Upload(TypedData originalData) {
             return new EasyOperation<TypedData>((op) => {
-                string requestMethod = GetRequestMethod();
+                string requestMethod = RequestMethod;
                 var parameters = GetParameters(originalData);
 
                 var request = BuildRequest(originalData, requestMethod, parameters);
@@ -46,8 +40,8 @@ namespace NoCap.Library.Destinations {
         }
 
         private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters) {
-            var uriBuilder = new UriBuilder(GetUri()) {
-                Query = ToQueryString(parameters)
+            var uriBuilder = new UriBuilder(Uri) {
+                Query = Utility.ToQueryString(parameters)
             };
 
             var request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
@@ -68,31 +62,34 @@ namespace NoCap.Library.Destinations {
 
             var boundary = builder.Boundary;
 
-            var request = (HttpWebRequest) WebRequest.Create(GetUri());
+            var request = (HttpWebRequest) WebRequest.Create(Uri);
             request.Method = @"POST";
             request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
             PreprocessRequest(request);
 
             var requestStream = request.GetRequestStream();
-            Util.WriteBoundary(requestStream, boundary);
+            Utility.WriteBoundary(requestStream, boundary);
             builder.Write(requestStream);
 
             return request;
         }
 
+        protected abstract Uri Uri {
+            get;
+        }
+
+        protected abstract IDictionary<string, string> GetParameters(TypedData data);
+
+        protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
+
         protected virtual void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
             // Do nothing
         }
 
-        private static string ToQueryString(IDictionary<string, string> pairs) {
-            // http://stackoverflow.com/questions/829080/how-to-build-a-query-string-for-a-url-in-c/829138#829138
-            return string.Join("&", pairs.Select(
-                (pair) => string.Format("{0}={1}", HttpUtility.UrlEncode(pair.Key), HttpUtility.UrlEncode(pair.Value))
-            ));
-        }
-
-        protected virtual string GetRequestMethod() {
-            return @"POST";
+        protected virtual string RequestMethod {
+            get {
+                return @"POST";
+            }
         }
 
         protected virtual void PreprocessRequest(HttpWebRequest request) {

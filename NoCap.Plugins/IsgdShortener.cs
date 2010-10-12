@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Library.Destinations;
@@ -6,8 +7,10 @@ using NoCap.Library.Destinations;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class IsgdShortener : UrlShortener {
-        protected override string GetUri() {
-            return @"http://is.gd/api.php";
+        protected override Uri Uri {
+            get {
+                return new Uri(@"http://is.gd/api.php");
+            }
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
@@ -17,8 +20,10 @@ namespace NoCap.Plugins {
             return parameters;
         }
 
-        protected override string GetRequestMethod() {
-            return @"GET";
+        protected override string RequestMethod {
+            get {
+                return @"GET";
+            }
         }
     }
 }

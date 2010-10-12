@@ -10,7 +10,7 @@ namespace NoCap.Library.Destinations {
         public IOperation<TypedData> Put(TypedData data) {
             IDestination destination;
 
-            if (!routes.TryGetValue(data.Type, out destination)) {
+            if (!routes.TryGetValue(data.DataType, out destination)) {
                 return null;
             }
 

@@ -7,8 +7,10 @@ using NoCap.Library.Destinations;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class SlexyUploader : TextUploader {
-        protected override string GetUri() {
-            return @"http://slexy.org/index.php/submit";
+        protected override Uri Uri {
+            get {
+                return new Uri(@"http://slexy.org/index.php/submit");
+            }
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
