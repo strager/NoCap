@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace NoCap.Web {
     public class FileMultipartEntry : MultipartEntryBase {
-        private string Boundary {
-            get;
-            set;
-        }
-
         public string Name {
             get;
             set;
@@ -52,8 +46,6 @@ namespace NoCap.Web {
             Name = name;
             InputStream = inputStream;
             ContentType = contentType;
-
-            Boundary = Util.GetRandomBoundary();
         }
 
         public override void WriteContents(Stream stream) {
