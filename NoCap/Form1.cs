@@ -27,9 +27,9 @@ namespace NoCap {
                 new ImageWriter(codecs.FirstOrDefault()),
                 new FileSystemDestination(@".")
             });
-            /*router.Routes[TypedDataType.Image] = new ImageBinUploader(
+            router[TypedDataType.Image] = new ImageBinUploader(
                 new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))
-            );*/
+            );
             router[TypedDataType.Text] = new SlexyUploader();
             router[TypedDataType.Uri] = new IsgdShortener();
         }

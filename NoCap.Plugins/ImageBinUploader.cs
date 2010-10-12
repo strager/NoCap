@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Net;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Library;
 using NoCap.Library.Destinations;
-using NoCap.Library.WebHelpers;
+using NoCap.Web;
 
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
@@ -26,16 +26,14 @@ namespace NoCap.Plugins {
             return @"http://imagebin.ca/upload.php";
         }
 
-        protected override void PreprocessRequestData(MultipartHelper helper, TypedData originalData) {
+        protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
             var stream = new MemoryStream((byte[]) originalData.Data);
 
-            helper.Add(new FilePart(stream, @"f", ImageWriter.CodecInfo.MimeType) {
-                FileName = originalData.Name
-            });
+            helper.Stream(stream, "f", originalData.Name);
         }
 
-        protected override NameValueCollection GetParameters(TypedData data) {
-            var parameters = new NameValueCollection();
+        protected override IDictionary<string, string> GetParameters(TypedData data) {
+            IDictionary<string, string> parameters = new Dictionary<string, string>();
             parameters["t"] = "file";
             parameters["name"] = Name ?? "";
             parameters["tags"] = "zscreen";

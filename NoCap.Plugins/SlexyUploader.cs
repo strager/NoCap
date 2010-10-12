@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Library.Destinations;
@@ -11,8 +11,8 @@ namespace NoCap.Plugins {
             return @"http://slexy.org/index.php/submit";
         }
 
-        protected override NameValueCollection GetParameters(TypedData data) {
-            var parameters = new NameValueCollection();
+        protected override IDictionary<string, string> GetParameters(TypedData data) {
+            IDictionary<string, string> parameters = new Dictionary<string, string>();
             parameters["raw_paste"] = data.Data.ToString();
             parameters["comment"] = "";
             parameters["author"] = Author ?? "";
