@@ -1,61 +1,152 @@
 ﻿using System;
+using System.Collections;
 using System.Drawing;
 
 namespace NoCap.Library {
+    /// <summary>
+    /// The type of a <see cref="TypedData"/> instance.
+    /// </summary>
     public enum TypedDataType {
+        /// <summary>Do not use.</summary>
+        [Obsolete]
         Any = 0,
+
+        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Drawing.Image"/>.</summary>
         Image,
+
+        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.String"/>.</summary>
         Text,
+
+        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Uri"/>.</summary>
         Uri,
+
+        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Byte[]"/>.</summary>
         RawData,
 
         // Add new types here
 
+        /// <summary>
+        /// A user-defined type.  Implementors which wish to define more data
+        /// types must use enum values no less than <see cref="User"/>.
+        /// </summary>
         User = 9001
     }
 
     public class TypedData {
+        /// <summary>
+        /// Gets or sets the type of the data.
+        /// </summary>
+        /// <value>The type of the data.</value>
         public TypedDataType DataType {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the data stored in the reference.
+        /// </summary>
+        /// <value>The data with the type described by <see cref="DataType"/>.</value>
         public object Data {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the name of the data.
+        /// </summary>
+        /// <remarks>
+        /// The name has no true semantic value.  It is purely intended for
+        /// user convenience.
+        /// </remarks>
+        /// <value>The name of the data.</value>
         public string Name {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypedData"/> class.
+        /// </summary>
+        /// <param name="dataType">Type of the data.</param>
+        /// <param name="data">The data with the type described by <paramref name="dataType"/>.</param>
+        /// <param name="name">The name of the data.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="data"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
         public TypedData(TypedDataType dataType, object data, string name) {
+            if (data == null) {
+                throw new ArgumentNullException("data");
+            }
+
+            if (name == null) {
+                throw new ArgumentNullException("name");
+            }
+
             DataType = dataType;
             Data = data;
             Name = name;
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypedData"/>
+        /// class representing the given URI.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A new TypedData instance.</returns>
         public static TypedData FromUri(string uri, string name) {
             return FromUri(new Uri(uri), name);
         }
-
+        
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypedData"/>
+        /// class representing the given URI.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A new TypedData instance.</returns>
         public static TypedData FromUri(Uri uri, string name) {
             return new TypedData(TypedDataType.Uri, uri, name);
         }
-
+        
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypedData"/>
+        /// class representing the given image.
+        /// </summary>
+        /// <param name="image">The Image instance.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A new TypedData instance.</returns>
         public static TypedData FromImage(Image image, string name) {
             return new TypedData(TypedDataType.Image, image, name);
         }
-
+        
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypedData"/>
+        /// class representing the given string.
+        /// </summary>
+        /// <param name="text">The string data.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A new TypedData instance.</returns>
         public static TypedData FromText(string text, string name) {
             return new TypedData(TypedDataType.Text, text, name);
         }
-
+        
+        /// <summary>
+        /// Creates a new instance of the <see cref="TypedData"/>
+        /// class representing the given raw data.
+        /// </summary>
+        /// <param name="rawData">The raw data.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A new TypedData instance.</returns>
         public static TypedData FromRawData(byte[] rawData, string name) {
             return new TypedData(TypedDataType.RawData, rawData, name);
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString() {
             return string.Format("{0} ({1}: {2})", Name, DataType, Data);
         }
