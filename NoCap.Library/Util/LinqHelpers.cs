@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NoCap.Library.Util {
     public static class LinqHelpers {
         public static IEnumerable<T> Unique<T>(this IEnumerable<T> source) {
-            var uniqueItems = new HashSet<T>();
+            if (source == null) {
+                throw new ArgumentNullException("source");
+            }
 
-            foreach (T element in source) {
+            var uniqueItems = new HashSet<T>(EqualityComparer<T>.Default);
+
+            foreach (var element in source) {
                 uniqueItems.Add(element);
             }
 
