@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using NoCap.Library.Util;
 
-namespace NoCap.Library.Sources {
+namespace NoCap.Library {
     public interface ISource {
         TypedData Get(IMutableProgressTracker progress);
 

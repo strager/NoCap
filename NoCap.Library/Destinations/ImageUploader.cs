@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
     public abstract class ImageUploader : HttpUploader {

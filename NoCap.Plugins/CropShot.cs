@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Windows.Forms;
 using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]

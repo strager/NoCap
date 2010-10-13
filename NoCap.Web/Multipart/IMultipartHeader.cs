@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace NoCap.Web {
+namespace NoCap.Web.Multipart {
     public interface IMultipartHeader {
         string Name { get; }
         string Value { get; }

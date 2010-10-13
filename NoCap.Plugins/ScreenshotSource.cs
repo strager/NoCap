@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NoCap.Library;
-using NoCap.Library.Sources;
+using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
     [Export(typeof(ISource))]

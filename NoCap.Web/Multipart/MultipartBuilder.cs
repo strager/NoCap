@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace NoCap.Web {
+namespace NoCap.Web.Multipart {
     public class MultipartBuilder {
         public ICollection<IMultipartEntry> Entries {
             get;

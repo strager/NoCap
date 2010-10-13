@@ -42,16 +42,20 @@
     <Compile Include="Destinations\DataRouter.cs" />
     <Compile Include="Destinations\DestinationChain.cs" />
     <Compile Include="Destinations\HttpUploader.cs" />
-    <Compile Include="Destinations\IDestination.cs" />
+    <Compile Include="IDestination.cs" />
     <Compile Include="Destinations\ImageUploader.cs" />
     <Compile Include="Destinations\ImageWriter.cs" />
-    <Compile Include="IProgressTracker.cs" />
-    <Compile Include="LinqHelpers.cs" />
+    <Compile Include="Util\AggregateProgressTracker.cs" />
+    <Compile Include="Util\IMutableProgressTracker.cs" />
+    <Compile Include="Util\IProgressTracker.cs" />
+    <Compile Include="Util\LinqHelpers.cs" />
     <Compile Include="Destinations\TextUploader.cs" />
     <Compile Include="Destinations\UrlShortener.cs" />
-    <Compile Include="ProgressTrackingStreamWrapper.cs" />
+    <Compile Include="Util\NotifyingProgressTracker.cs" />
+    <Compile Include="Util\ProgressTrackerHelpers.cs" />
+    <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\ISource.cs" />
+    <Compile Include="ISource.cs" />
     <Compile Include="TypedData.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +63,9 @@
       <Project>{48EAB6A5-2882-4DF7-9846-FD06581B33B5}</Project>
       <Name>NoCap.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

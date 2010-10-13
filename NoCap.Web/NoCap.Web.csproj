@@ -41,16 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormMultipartEntry.cs" />
-    <Compile Include="IMultipartEntry.cs" />
-    <Compile Include="IMultipartHeader.cs" />
-    <Compile Include="MultipartBuilder.cs" />
-    <Compile Include="MultipartEntry.cs" />
-    <Compile Include="MultipartEntryBase.cs" />
-    <Compile Include="MultipartHeader.cs" />
+    <Compile Include="Multipart\FormMultipartEntry.cs" />
+    <Compile Include="HttpUtility.cs" />
+    <Compile Include="Multipart\IMultipartEntry.cs" />
+    <Compile Include="Multipart\IMultipartHeader.cs" />
+    <Compile Include="Multipart\MultipartBuilder.cs" />
+    <Compile Include="Multipart\MultipartEntry.cs" />
+    <Compile Include="Multipart\MultipartEntryBase.cs" />
+    <Compile Include="Multipart\MultipartHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileMultipartEntry.cs" />
-    <Compile Include="Utility.cs" />
+    <Compile Include="Multipart\FileMultipartEntry.cs" />
+    <Compile Include="Multipart\Utility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

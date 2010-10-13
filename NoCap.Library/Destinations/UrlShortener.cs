@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
     public abstract class UrlShortener : HttpUploader {

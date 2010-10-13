@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 
-namespace NoCap.Library {
+namespace NoCap.Library.Util {
     public class ProgressTrackingStreamWrapper : Stream, IProgressTracker {
         private readonly Stream wrappedStream;
         private long expectedLength;

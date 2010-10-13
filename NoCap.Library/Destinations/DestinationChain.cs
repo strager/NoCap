@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
     public class DestinationChain : IDestination {

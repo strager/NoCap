@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Library;
 using NoCap.Library.Destinations;
-using NoCap.Web;
+using NoCap.Web.Multipart;
 
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]

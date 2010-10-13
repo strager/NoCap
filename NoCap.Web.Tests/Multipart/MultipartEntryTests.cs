@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using NoCap.Web.Multipart;
 using NUnit.Framework;
 
-namespace NoCap.Web.Tests {
+namespace NoCap.Web.Tests.Multipart {
     [TestFixture]
     public class MultipartEntryTests {
         [Test]

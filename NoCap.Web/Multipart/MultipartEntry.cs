@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace NoCap.Web {
+namespace NoCap.Web.Multipart {
     public class MultipartEntry : MultipartEntryBase {
         private readonly ICollection<IMultipartHeader> headers = new HashSet<IMultipartHeader>();
 

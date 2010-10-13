@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Web;
 
-namespace NoCap.Web {
+namespace NoCap.Web.Multipart {
     public static class Utility {
         private static readonly Random Random = new Random(Environment.TickCount);
 
@@ -45,13 +42,6 @@ namespace NoCap.Web {
             writer.Write(LineSeparator);
 
             writer.Flush();
-        }
-
-        public static string ToQueryString(IDictionary<string, string> pairs) {
-            // http://stackoverflow.com/questions/829080/how-to-build-a-query-string-for-a-url-in-c/829138#829138
-            return String.Join("&", pairs.Select(
-                (pair) => String.Format("{0}={1}", HttpUtility.UrlEncode(pair.Key), HttpUtility.UrlEncode(pair.Value))
-            ));
         }
     }
 }

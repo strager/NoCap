@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace NoCap.Web {
+namespace NoCap.Web.Multipart {
     public class FormMultipartEntry : MultipartEntryBase {
         public string Name {
             get;

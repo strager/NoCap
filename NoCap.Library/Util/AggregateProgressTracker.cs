@@ -1,73 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Collections.Generic;
 
-namespace NoCap.Library {
-    public interface IProgressTracker : INotifyPropertyChanged {
-        double Progress {
-            get;
-        }
-    }
-
-    public interface IMutableProgressTracker : IProgressTracker {
-        new double Progress {
-            get;
-            set;
-        }
-    }
-
-    public class NullProgressTracker : IMutableProgressTracker {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public double Progress {
-            get {
-                return 0;
-            }
-
-            set {
-                // Do nothing
-            }
-        }
-    }
-
-    public static class ProgressTrackerHelpers {
-        public static void BindTo(this IProgressTracker from, IMutableProgressTracker to) {
-            from.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress") {
-                    to.Progress = from.Progress;
-                }
-            };
-        }
-    }
-
-    public class NotifyingProgressTracker : IMutableProgressTracker {
-        private double progress;
-
-        public double Progress {
-            get {
-                return this.progress;
-            }
-
-            set {
-                this.progress = value;
-
-                Notify("Progress");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void Notify(string propertyName) {
-            var handler = PropertyChanged;
-
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-
+namespace NoCap.Library.Util {
     public class AggregateProgressTracker : IProgressTracker {
         private readonly ReadOnlyCollection<IProgressTracker> progressTrackers;
 

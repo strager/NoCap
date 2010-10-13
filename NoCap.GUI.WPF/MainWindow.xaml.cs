@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Destinations;
-using NoCap.Library.Sources;
+using NoCap.Library.Util;
 using NoCap.Plugins;
 
 namespace NoCap.GUI.WPF {

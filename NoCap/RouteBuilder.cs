@@ -4,8 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Windows.Forms;
 using NoCap.Library;
-using NoCap.Library.Destinations;
-using NoCap.Library.Sources;
+using NoCap.Library.Util;
 using NoCap.Plugins;
 
 namespace NoCap

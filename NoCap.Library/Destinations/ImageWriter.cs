@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
     public class ImageWriter : IDestination {

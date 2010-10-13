@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Destinations;
-using NoCap.Library.Sources;
 using NoCap.Plugins;
 using Clipboard = NoCap.Plugins.Clipboard;
 

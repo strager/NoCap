@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using NoCap.Library.Util;
 using NoCap.Web;
+using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {
@@ -40,7 +42,7 @@ namespace NoCap.Library.Destinations {
 
         private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress) {
             var uriBuilder = new UriBuilder(Uri) {
-                Query = Utility.ToQueryString(parameters)
+                Query = HttpUtility.ToQueryString(parameters)
             };
 
             var request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
