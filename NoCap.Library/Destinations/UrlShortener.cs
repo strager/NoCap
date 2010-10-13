@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NoCap.Library.Destinations {
     public abstract class UrlShortener : HttpUploader {
-        public override TypedData Put(TypedData data, IProgressTracker progress) {
+        public override TypedData Put(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Uri:
                     return Upload(data, progress);

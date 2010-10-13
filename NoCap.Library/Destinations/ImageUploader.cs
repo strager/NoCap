@@ -13,7 +13,7 @@ namespace NoCap.Library.Destinations {
             ImageWriter = writer;
         }
 
-        public override TypedData Put(TypedData data, IProgressTracker progress) {
+        public override TypedData Put(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Image:
                     var rawImageData = ImageWriter.Put(data, progress);

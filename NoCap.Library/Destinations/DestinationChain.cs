@@ -22,10 +22,20 @@ namespace NoCap.Library.Destinations {
             this.destinations.AddRange(destinations);
         }
 
-        public TypedData Put(TypedData data, IProgressTracker progress) {
-            // TODO AggregateProgressable thingy
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+            // ToList is needed for some strange reason
+            var progressTrackers = this.destinations.Select((destination) => new NotifyingProgressTracker()).ToList();
+            var aggregateProgress = new AggregateProgressTracker(progressTrackers);
+            aggregateProgress.BindTo(progress);
 
-            return this.destinations.Aggregate(data, (current, destination) => destination.Put(current, progress));
+            using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
+                foreach (var destination in Destinations) {
+                    trackerEnumerator.MoveNext();
+                    data = destination.Put(data, trackerEnumerator.Current);
+                }
+            }
+
+            return data;
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

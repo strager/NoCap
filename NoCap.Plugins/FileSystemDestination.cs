@@ -20,7 +20,7 @@ namespace NoCap.Plugins {
             RootPath = rootPath;
         }
 
-        public TypedData Put(TypedData data, IProgressTracker progress) {
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.RawData:
                     string path = Path.Combine(RootPath, data.Name);
@@ -34,6 +34,8 @@ namespace NoCap.Plugins {
                             Scheme = Uri.UriSchemeFile,
                             Path = path
                         };
+
+                        progress.Progress = 1;  // TODO
 
                         return TypedData.FromUri(uriBuilder.Uri, "output file");
                     }

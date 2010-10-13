@@ -3,7 +3,7 @@ using System.Net;
 
 namespace NoCap.Library.Destinations {
     public abstract class TextUploader : HttpUploader {
-        public override TypedData Put(TypedData data, IProgressTracker progress) {
+        public override TypedData Put(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Text:
                     return Upload(data, progress);

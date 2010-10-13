@@ -9,13 +9,15 @@ using NoCap.Library.Destinations;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class CropShot : IDestination {
-        public TypedData Put(TypedData data, IProgressTracker progress) {
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
             var cropShotForm = new CropShotForm {
                 SourceImage = (Image) data.Data,
                 DataName = data.Name
             };
 
             cropShotForm.ShowDialog();
+
+            progress.Progress = 1;  // TODO ?
 
             return cropShotForm.Data;
         }

@@ -11,7 +11,7 @@ using NoCap.Library.Sources;
 namespace NoCap.Plugins {
     [Export(typeof(IDestination))]
     public class Clipboard : ISource, IDestination {
-        public TypedData Get(IProgressTracker progress) {
+        public TypedData Get(IMutableProgressTracker progress) {
             TypedData data = null;
 
             var thread = new Thread(() => data = GetClipboardData());
@@ -22,10 +22,14 @@ namespace NoCap.Plugins {
             thread.Start();
             thread.Join();
 
+            progress.Progress = 1;
+
             return data;
         }
 
-        public TypedData Put(TypedData data, IProgressTracker progress) {
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+            // TODO Refactor common parts of Get
+
             var thread = new Thread(() => SetClipboardData(data));
 
             // Clipboard object uses COM; make sure we're in STA
@@ -33,6 +37,8 @@ namespace NoCap.Plugins {
 
             thread.Start();
             thread.Join();
+
+            progress.Progress = 1;
 
             return data;
         }

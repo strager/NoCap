@@ -8,7 +8,7 @@ namespace NoCap.Library.Destinations {
     public class DataRouter : IDestination, IDictionary<TypedDataType, IDestination> {
         private readonly IDictionary<TypedDataType, IDestination> routes = new Dictionary<TypedDataType, IDestination>();
 
-        public TypedData Put(TypedData data, IProgressTracker progress) {
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
             IDestination destination;
 
             if (!routes.TryGetValue(data.DataType, out destination)) {
@@ -18,15 +18,20 @@ namespace NoCap.Library.Destinations {
             return destination.Put(data, progress);
         }
 
-        public TypedData RouteFrom(ISource source, IProgressTracker progress) {
-            // TODO AggregateProgress thingy
-            var data = source.Get(progress);
+        public TypedData RouteFrom(ISource source, IMutableProgressTracker progress) {
+            var sourceProgress = new NotifyingProgressTracker();
+            var destProgress = new NotifyingProgressTracker();
+
+            var aggregateProgress = new AggregateProgressTracker(sourceProgress, destProgress);
+            aggregateProgress.BindTo(progress);
+
+            var data = source.Get(sourceProgress);
 
             if (data == null) {
                 return null;
             }
 
-            data = Put(data, progress);
+            data = Put(data, destProgress);
 
             return data;
         }

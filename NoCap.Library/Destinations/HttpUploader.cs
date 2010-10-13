@@ -5,33 +5,40 @@ using NoCap.Web;
 
 namespace NoCap.Library.Destinations {
     public abstract class HttpUploader : IDestination {
-        public abstract TypedData Put(TypedData data, IProgressTracker progress);
+        public abstract TypedData Put(TypedData data, IMutableProgressTracker progress);
 
-        public TypedData Upload(TypedData originalData, IProgressTracker progress) {
+        public TypedData Upload(TypedData originalData, IMutableProgressTracker progress) {
             string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
-            var request = BuildRequest(originalData, requestMethod, parameters);
+            var requestProgress = new NotifyingProgressTracker();
+            var responseProgress = new NotifyingProgressTracker();
+
+            var aggregateProgress = new AggregateProgressTracker(requestProgress, responseProgress);
+            aggregateProgress.BindTo(progress);
+
+            var request = BuildRequest(originalData, requestMethod, parameters, requestProgress);
 
             var response = (HttpWebResponse) request.GetResponse();
+            responseProgress.Progress = 1;  // TODO
 
             return GetResponseData(response, originalData);
         }
 
-        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters) {
+        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress) {
             switch (requestMethod) {
                 case @"GET":
-                    return BuildGetRequest(parameters);
+                    return BuildGetRequest(parameters, progress);
 
                 case @"POST":
-                    return BuildPostRequest(parameters, originalData);
+                    return BuildPostRequest(parameters, originalData, progress);
 
                 default:
-                    throw new InvalidOperationException("Unknown request method");
+                    throw new ArgumentException("Unknown request method", "requestMethod");
             }
         }
 
-        private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters) {
+        private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress) {
             var uriBuilder = new UriBuilder(Uri) {
                 Query = Utility.ToQueryString(parameters)
             };
@@ -40,10 +47,12 @@ namespace NoCap.Library.Destinations {
             request.Method = @"GET";
             PreprocessRequest(request);
 
+            progress.Progress = 1;
+
             return request;
         }
 
-        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData) {
+        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData, IMutableProgressTracker progress) {
             var builder = new MultipartBuilder();
 
             if (parameters != null) {
@@ -62,6 +71,8 @@ namespace NoCap.Library.Destinations {
             var requestStream = request.GetRequestStream();
             Utility.WriteBoundary(requestStream, boundary);
             builder.Write(requestStream);
+
+            progress.Progress = 1;  // TODO
 
             return request;
         }

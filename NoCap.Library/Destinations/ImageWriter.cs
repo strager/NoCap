@@ -47,7 +47,7 @@ namespace NoCap.Library.Destinations {
                 codecInfo.Flags.HasFlag(ImageCodecFlags.SupportBitmap);
         }
 
-        public TypedData Put(TypedData data, IProgressTracker progress) {
+        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
             if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }
@@ -62,6 +62,8 @@ namespace NoCap.Library.Destinations {
                 rawData = new byte[stream.Length];
                 stream.Read(rawData, 0, rawData.Length);
             }
+
+            progress.Progress = 1;  // TODO
 
             return TypedData.FromRawData(rawData, data.Name + "." + Extension);
         }

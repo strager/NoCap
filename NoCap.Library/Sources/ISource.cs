@@ -2,7 +2,7 @@
 
 namespace NoCap.Library.Sources {
     public interface ISource {
-        TypedData Get(IProgressTracker progress);
+        TypedData Get(IMutableProgressTracker progress);
 
         IEnumerable<TypedDataType> GetOutputDataTypes();
     }
