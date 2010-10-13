@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Drawing;
 
 namespace NoCap.Library {
@@ -7,21 +6,17 @@ namespace NoCap.Library {
     /// The type of a <see cref="TypedData"/> instance.
     /// </summary>
     public enum TypedDataType {
-        /// <summary>Do not use.</summary>
-        [Obsolete]
-        Any = 0,
-
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Drawing.Image"/>.</summary>
-        Image,
+        Image = 1,
 
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.String"/>.</summary>
-        Text,
+        Text = 2,
 
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Uri"/>.</summary>
-        Uri,
+        Uri = 3,
 
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Byte[]"/>.</summary>
-        RawData,
+        RawData = 4,
 
         // Add new types here
 

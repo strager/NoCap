@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Web.Tests", "NoCap.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.GUI.WPF", "NoCap.GUI.WPF\NoCap.GUI.WPF.csproj", "{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Library.Tests", "NoCap.Library.Tests\NoCap.Library.Tests.csproj", "{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}.Release|x86.ActiveCfg = Release|x86
 		{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}.Release|x86.Build.0 = Release|x86
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
