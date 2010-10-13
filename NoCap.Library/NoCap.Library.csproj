@@ -49,6 +49,7 @@
     <Compile Include="LinqHelpers.cs" />
     <Compile Include="Destinations\TextUploader.cs" />
     <Compile Include="Destinations\UrlShortener.cs" />
+    <Compile Include="ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\ISource.cs" />
     <Compile Include="TypedData.cs" />

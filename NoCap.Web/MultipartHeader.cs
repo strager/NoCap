@@ -42,6 +42,14 @@ namespace NoCap.Web {
             }
         }
 
+        public long GetByteCount() {
+            using (var writer = new StringWriter()) {
+                Write(writer);
+
+                return Utility.Encoding.GetByteCount(writer.ToString());
+            }
+        }
+
         public static string KeyValuePair(string key, string value) {
             return string.Format("{0}={1}", key, value);
         }

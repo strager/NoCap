@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -45,6 +46,10 @@ namespace NoCap.Web {
             writer.Write(Value);
 
             writer.Flush();
+        }
+
+        public override long GetContentsByteCount() {
+            return ValueEncoding.GetByteCount(Value);
         }
     }
 }

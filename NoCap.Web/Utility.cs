@@ -25,6 +25,10 @@ namespace NoCap.Web {
             }
         }
 
+        public static long GetBoundaryByteCount(string boundary) {
+            return Encoding.GetByteCount(string.Format("--{0}" + LineSeparator, boundary));
+        }
+
         public static void WriteBoundary(Stream stream, string boundary) {
             if (stream == null) {
                 throw new ArgumentNullException("stream");

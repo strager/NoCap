@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace NoCap.Web {
@@ -56,6 +57,10 @@ namespace NoCap.Web {
                 stream.Write(readBuffer, 0, bytesRead);
                 bytesRead = InputStream.Read(readBuffer, 0, readBuffer.Length);
             }
+        }
+
+        public override long GetContentsByteCount() {
+            return InputStream.Length;
         }
     }
 }

@@ -8,5 +8,6 @@ namespace NoCap.Web {
         IDictionary<string, string> Properties { get; }
 
         void Write(TextWriter writer);
+        long GetByteCount();
     }
 }

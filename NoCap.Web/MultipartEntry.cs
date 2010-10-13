@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -21,6 +22,10 @@ namespace NoCap.Web {
 
         public override void WriteContents(Stream stream) {
             // Do nothing
+        }
+
+        public override long GetContentsByteCount() {
+            throw new NotImplementedException();
         }
     }
 }

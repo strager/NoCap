@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace NoCap.Web {
     public abstract class MultipartEntryBase : IMultipartEntry {
@@ -24,5 +26,18 @@ namespace NoCap.Web {
         }
 
         public abstract void WriteContents(Stream stream);
+
+        public long GetHeadersByteCount() {
+            long separatorLength = Utility.Encoding.GetByteCount(Utility.LineSeparator);
+
+            return Headers.AsParallel().Aggregate((long) 0, (count, header) => {
+                count += header.GetByteCount();
+                count += separatorLength;
+
+                return count;
+            });
+        }
+
+        public abstract long GetContentsByteCount();
     }
 }

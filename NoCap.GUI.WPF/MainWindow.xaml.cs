@@ -62,6 +62,8 @@ namespace NoCap.GUI.WPF {
             var setProgress = new Action(() => this.progressBar.Value = progress);
 
             Dispatcher.BeginInvoke(setProgress);
+
+            Log("Progress: {0}", progress);
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
@@ -79,6 +81,12 @@ namespace NoCap.GUI.WPF {
                 System.Diagnostics.Debug.WriteLine(this.progressTracker.Progress.ToString());
                 routeFromAsync.EndInvoke(ar);
             }, null);
+        }
+
+        private void Log(string format, params object[] args) {
+            var log = new Action(() => this.messageLog.AppendText(string.Format(format, args) + Environment.NewLine));
+
+            Dispatcher.BeginInvoke(log);
         }
     }
 }

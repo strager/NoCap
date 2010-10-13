@@ -68,11 +68,16 @@ namespace NoCap.Library.Destinations {
             request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
             PreprocessRequest(request);
 
-            var requestStream = request.GetRequestStream();
-            Utility.WriteBoundary(requestStream, boundary);
-            builder.Write(requestStream);
+            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
 
-            progress.Progress = 1;  // TODO
+            var requestStream = request.GetRequestStream();
+            var progressStream = new ProgressTrackingStreamWrapper(requestStream, request.ContentLength);
+            progressStream.BindTo(progress);
+
+            Utility.WriteBoundary(progressStream, boundary);
+            builder.Write(progressStream);
+
+            System.Diagnostics.Debug.Assert(progress.Progress == 1);
 
             return request;
         }

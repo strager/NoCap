@@ -46,10 +46,25 @@ namespace NoCap.Web {
             return this;
         }
 
-        public void Write(Stream stream) {
-            foreach (var entry in Entries) {
-                var separator = Utility.Encoding.GetBytes(Utility.LineSeparator);
+        public long GetByteCount() {
+            long separatorLength = Utility.Encoding.GetByteCount(Utility.LineSeparator);
+            long boundaryLength = Utility.GetBoundaryByteCount(Boundary);
 
+            return Entries.AsParallel().Aggregate((long) 0, (count, entry) => {
+                count += entry.GetHeadersByteCount();
+                count += separatorLength;
+                count += entry.GetContentsByteCount();
+                count += separatorLength;
+                count += boundaryLength;
+
+                return count;
+            });
+        }
+
+        public void Write(Stream stream) {
+            var separator = Utility.Encoding.GetBytes(Utility.LineSeparator);
+
+            foreach (var entry in Entries) {
                 entry.WriteHeaders(stream);
                 stream.Write(separator, 0, separator.Length);
 
