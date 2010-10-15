@@ -4,7 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300">
+        d:DesignHeight="300" d:DesignWidth="300" xmlns:my="clr-namespace:NoCap.GUI.WPF.Settings">
+    
+    <ContentControl.Resources>
+        <my:NullableBooleanConverter x:Key="NullableBooleanConverter" />
+    </ContentControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -12,25 +17,26 @@
         </Grid.RowDefinitions>
 
         <ListView Name="bindingsList" ItemsSource="{Binding Path=ProgramSettings.Bindings, Mode=TwoWay}" Grid.Row="0">
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="ChangeBindingClicked" />
+                </Style>
+            </ListView.Resources>
+            
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Bind">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Grid.Column="0" Text="{Binding Path=Input.GetHumanString}" />
-                                    <TextBlock>
-                                        <Hyperlink Click="SetBindingClicked">Set</Hyperlink>
-                                    </TextBlock>
-                                </StackPanel>
+                                <TextBlock Text="{Binding Path=Input.HumanString}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
+                    
                     <GridViewColumn Header="Command">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox Grid.Column="2" SelectedItem="{Binding Path=Command}" DisplayMemberPath="Name" />
+                                <ComboBox Grid.Column="2" SelectedItem="{Binding Path=Command, Mode=TwoWay}" DisplayMemberPath="Name" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -38,8 +44,9 @@
             </ListView.View>
         </ListView>
         
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Content="Add Binding" Click="AddBindingClicked" />
+            <Button Content="Change Binding" Click="ChangeBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
         </StackPanel>
     </Grid>
 </ContentControl>

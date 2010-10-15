@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -38,19 +40,35 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         private void AddBindingClicked(object sender, RoutedEventArgs e) {
-            ProgramSettings.Bindings.Add(new SourceDestinationCommandBinding(null, null));
-        }
-
-        private void SetBindingClicked(object sender, RoutedEventArgs e) {
-            // Hackish way to get the binding from the hyperlink
-            var hyperlink = (Hyperlink) sender;
-            var binding = (SourceDestinationCommandBinding) hyperlink.DataContext;
-
             IInputSequence inputSequence;
 
-            if (TryGetInputSequence(out inputSequence)) {
-                binding.Input = inputSequence;
+            if (!TryGetInputSequence(out inputSequence)) {
+                return;
             }
+
+            var binding = new SourceDestinationCommandBinding(null, null) {
+                Input = inputSequence
+            };
+
+            ProgramSettings.Bindings.Add(binding);
+        }
+
+        private void ChangeBindingClicked(object sender, RoutedEventArgs e) {
+            ChangeBinding((SourceDestinationCommandBinding) this.bindingsList.SelectedItem);
+        }
+
+        private void ChangeBinding(SourceDestinationCommandBinding binding) {
+            IInputSequence inputSequence;
+
+            if (!TryGetInputSequence(out inputSequence)) {
+                return;
+            }
+
+            // We use this instead of direct assignment to inform binders
+            // of the update
+            var properties = TypeDescriptor.GetProperties(binding);
+            var inputProperty = properties.Find("Input", false);
+            inputProperty.SetValue(binding, inputSequence);
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence) {
@@ -65,6 +83,16 @@ namespace NoCap.GUI.WPF.Settings {
 
                 return false;
             }
+        }
+    }
+
+    public class NullableBooleanConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return value != null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
         }
     }
 }

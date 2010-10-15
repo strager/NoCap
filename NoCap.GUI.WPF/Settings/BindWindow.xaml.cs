@@ -36,8 +36,10 @@ namespace NoCap.GUI.WPF.Settings {
             InputSequence = input;
 
             var closeSuccess = new Action(() => {
-                DialogResult = true;
-                Close();
+                if (IsVisible) {
+                    DialogResult = true;
+                    Close();
+                }
             });
 
             Dispatcher.BeginInvoke(closeSuccess);

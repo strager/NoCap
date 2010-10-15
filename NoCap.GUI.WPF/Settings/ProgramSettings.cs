@@ -31,9 +31,20 @@ namespace NoCap.GUI.WPF.Settings {
             Commands = new ObservableCollection<SourceDestinationCommand>();
         }
 
+        /// <summary>
+        /// Deep clones this instance.
+        /// </summary>
+        /// <returns>A cloned copy of this instance.</returns>
         public ProgramSettings Clone() {
+            // I have a feeling this is a hack.
+
             return new ProgramSettings {
-                Bindings = new ObservableCollection<SourceDestinationCommandBinding>(Bindings),
+                Bindings = new ObservableCollection<SourceDestinationCommandBinding>(
+                    Bindings.Select((binding) => new SourceDestinationCommandBinding(
+                        binding.Input,
+                        binding.Command == null ? null : new SourceDestinationCommand(binding.Command.Name, binding.Command.Source, binding.Command.Destination)
+                    ))
+                ),
                 InputProvider = InputProvider
             };
         }
