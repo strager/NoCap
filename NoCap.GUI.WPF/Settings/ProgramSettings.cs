@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NoCap.Library;
@@ -38,15 +39,57 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings Clone() {
             // I have a feeling this is a hack.
 
+            var commandMappings = new Dictionary<SourceDestinationCommand, SourceDestinationCommand>(new ReferenceComparer());
+
+            var getNewCommand = new Func<SourceDestinationCommand, SourceDestinationCommand>((command) => {
+                if (command == null) {
+                    return null;
+                }
+
+                SourceDestinationCommand newCommand;
+
+                if (commandMappings.TryGetValue(command, out newCommand)) {
+                    return newCommand;
+                }
+
+                return new SourceDestinationCommand(command.Name, command.Source, command.Destination);
+            });
+
+            var newCommands = new ObservableCollection<SourceDestinationCommand>();
+
+            foreach (var command in Commands) {
+                var newCommand = getNewCommand(command);
+
+                commandMappings[command] = newCommand;
+                newCommands.Add(newCommand);
+            }
+
+            var newBindings = new ObservableCollection<SourceDestinationCommandBinding>(
+                Bindings.Select((binding) => new SourceDestinationCommandBinding(
+                    binding.Input,
+                    getNewCommand(binding.Command)
+                ))
+            );
+
             return new ProgramSettings {
-                Bindings = new ObservableCollection<SourceDestinationCommandBinding>(
-                    Bindings.Select((binding) => new SourceDestinationCommandBinding(
-                        binding.Input,
-                        binding.Command == null ? null : new SourceDestinationCommand(binding.Command.Name, binding.Command.Source, binding.Command.Destination)
-                    ))
-                ),
+                Bindings = newBindings,
+                Commands = newCommands,
                 InputProvider = InputProvider
             };
+        }
+    }
+
+    public class ReferenceComparer : IEqualityComparer<object> {
+        public bool Equals(object x, object y) {
+            return ReferenceEquals(x, y);
+        }
+
+        public int GetHashCode(object obj) {
+            if (obj == null) {
+                return 42;
+            }
+
+            return obj.GetHashCode();
         }
     }
 

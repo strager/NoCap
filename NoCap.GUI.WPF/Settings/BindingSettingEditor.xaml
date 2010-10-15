@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        x:Name="self"
         d:DesignHeight="300" d:DesignWidth="300" xmlns:my="clr-namespace:NoCap.GUI.WPF.Settings">
     
     <ContentControl.Resources>
@@ -36,7 +37,7 @@
                     <GridViewColumn Header="Command" Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedItem="{Binding Path=Command, Mode=TwoWay}" DisplayMemberPath="Name" />
+                                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedItem="{Binding Path=Command, Mode=TwoWay}" ItemsSource="{Binding ElementName=self, Path=ProgramSettings.Commands}" DisplayMemberPath="Name" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
