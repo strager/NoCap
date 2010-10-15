@@ -9,12 +9,12 @@
         </Grid.RowDefinitions>
         
         <TabControl Grid.Row="0" Name="tabControl" Margin="6">
-            <!-- Contents inserted by code -->
+            <!-- Contents inserted by code dynamically -->
         </TabControl>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" Margin="6" MinWidth="50" />
-            <Button Content="Cancel" Margin="6" MinWidth="50" />
+            <Button Content="OK" IsDefault="True" Click="OkButtonClicked" />
+            <Button Content="Cancel" IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

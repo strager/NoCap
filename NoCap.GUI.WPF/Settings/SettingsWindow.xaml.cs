@@ -5,8 +5,18 @@ namespace NoCap.GUI.WPF.Settings {
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow {
+        private readonly ProgramSettings programSettings;
+
+        public ProgramSettings ProgramSettings {
+            get {
+                return this.programSettings;
+            }
+        }
+
         public SettingsWindow(ProgramSettings programSettings) {
             InitializeComponent();
+            
+            this.programSettings = programSettings;
 
             var editors = new ISettingsEditor[] {
                 new ProviderSettingsEditor(programSettings)
@@ -20,6 +30,12 @@ namespace NoCap.GUI.WPF.Settings {
 
                 this.tabControl.Items.Add(tab);
             }
+        }
+
+        private void OkButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
+            DialogResult = true;
+
+            Close();
         }
     }
 }

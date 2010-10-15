@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:pt="clr-namespace:XAMLPowerToys.Controls;assembly=XAMLPowerToys.Controls"
-      mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+      mc:Ignorable="d" d:DesignHeight="202" d:DesignWidth="206">
     <pt:Form Padding="6">
         <ComboBox Name="inputProviders" pt:FormItem.LabelContent="_Input provider" Margin="6" ItemsSource="{Binding Path=Providers.InputProviders}" DisplayMemberPath="Name" SelectedItem="{Binding Path=ProgramSettings.InputProvider}" IsSynchronizedWithCurrentItem="True" />
     </pt:Form>

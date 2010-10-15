@@ -3,6 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="6" />
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="MinWidth" Value="65" />
+        </Style>
     </Application.Resources>
 </Application>
