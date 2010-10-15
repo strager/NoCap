@@ -16,17 +16,21 @@ namespace NoCap.GUI.WPF {
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow {
-        public SettingsWindow() {
+        public SettingsWindow(Settings settings) {
             InitializeComponent();
 
-            var tab = new TabItem {
-                Header = "Providers"
+            var editors = new ISettingsEditor[] {
+                new ProviderEditor(settings)
             };
 
-            var providerCollections = new ProviderCollections();
-            tab.Content = new ProviderEditor(providerCollections, providerCollections.GetDefaultModules());
+            foreach (var editor in editors) {
+                var tab = new TabItem {
+                    Header = editor.DisplayName,
+                    Content = editor
+                };
 
-            this.tabControl.Items.Add(tab);
+                this.tabControl.Items.Add(tab);
+            }
         }
     }
 }

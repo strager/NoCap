@@ -76,7 +76,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SettingsClicked(object sender, EventArgs e) {
-            new SettingsWindow().ShowDialog();
+            new SettingsWindow(new Settings()).ShowDialog();
         }
 
         private void PerformRequest(ISource source) {

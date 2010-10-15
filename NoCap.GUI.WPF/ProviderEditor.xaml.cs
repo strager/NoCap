@@ -17,24 +17,36 @@ namespace NoCap.GUI.WPF {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class ProviderEditor {
-        public ProviderCollections ProviderCollections {
+    public partial class ProviderEditor : ISettingsEditor {
+        public Providers Providers {
             get;
             private set;
         }
 
-        public ProviderModules ProviderModules {
+        public Settings Settings {
             get;
-            set;
+            private set;
         }
 
-        public ProviderEditor(ProviderCollections collections, ProviderModules modules) {
-            InitializeComponent();
+        public string DisplayName {
+            get {
+                return "Providers";
+            }
+        }
 
-            ProviderCollections = collections;
-            ProviderModules = modules;
+        public ProviderEditor(Settings settings) {
+            InitializeComponent();
+            
+            Settings = settings;
+            Providers = Providers.Instance;
 
             DataContext = this;
+        }
+    }
+
+    public interface ISettingsEditor {
+        string DisplayName {
+            get;
         }
     }
 }
