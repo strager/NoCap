@@ -1,0 +1,3 @@
+[submodule "vendor/WinputDotNet"]
+	path = vendor/WinputDotNet
+	url = "f:/Projects/C#/WinputDotNet/.git"

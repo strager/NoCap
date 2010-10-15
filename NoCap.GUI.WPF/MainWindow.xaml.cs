@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition.Hosting;
 using System.Drawing.Imaging;
 using System.Linq;
 using NoCap.Library;
@@ -72,6 +73,10 @@ namespace NoCap.GUI.WPF {
 
         private void ClipboardClicked(object sender, EventArgs e) {
             PerformRequest(this.clipboardSource);
+        }
+
+        private void SettingsClicked(object sender, EventArgs e) {
+            new SettingsWindow().ShowDialog();
         }
 
         private void PerformRequest(ISource source) {
