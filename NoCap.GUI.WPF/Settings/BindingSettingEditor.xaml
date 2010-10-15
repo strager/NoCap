@@ -25,7 +25,7 @@
             
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Bind">
+                    <GridViewColumn Header="Bind" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Input.HumanString}" />
@@ -33,10 +33,10 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     
-                    <GridViewColumn Header="Command">
+                    <GridViewColumn Header="Command" Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox Grid.Column="2" SelectedItem="{Binding Path=Command, Mode=TwoWay}" DisplayMemberPath="Name" />
+                                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedItem="{Binding Path=Command, Mode=TwoWay}" DisplayMemberPath="Name" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -44,9 +44,21 @@
             </ListView.View>
         </ListView>
         
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Add Binding" Click="AddBindingClicked" />
-            <Button Content="Change Binding" Click="ChangeBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
-        </StackPanel>
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
+                <Button Content="_Add..." Click="AddBindingClicked" />
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Left">
+                <Button Content="_Change..." Click="ChangeBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
+                <Button Content="_Delete" Click="DeleteBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </ContentControl>

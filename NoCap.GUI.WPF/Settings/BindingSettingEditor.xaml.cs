@@ -31,6 +31,12 @@ namespace NoCap.GUI.WPF.Settings {
             private set;
         }
 
+        private SourceDestinationCommandBinding SelectedBinding {
+            get {
+                return (SourceDestinationCommandBinding) this.bindingsList.SelectedItem;
+            }
+        }
+
         public BindingSettingEditor(ProgramSettings settings) {
             InitializeComponent();
 
@@ -53,11 +59,23 @@ namespace NoCap.GUI.WPF.Settings {
             ProgramSettings.Bindings.Add(binding);
         }
 
+        private void DeleteBindingClicked(object sender, RoutedEventArgs e) {
+            if (SelectedBinding != null) {
+                ProgramSettings.Bindings.Remove(SelectedBinding);
+            }
+        }
+
         private void ChangeBindingClicked(object sender, RoutedEventArgs e) {
-            ChangeBinding((SourceDestinationCommandBinding) this.bindingsList.SelectedItem);
+            if (SelectedBinding != null) {
+                ChangeBinding(SelectedBinding);
+            }
         }
 
         private void ChangeBinding(SourceDestinationCommandBinding binding) {
+            if (binding == null) {
+                throw new ArgumentNullException("binding");
+            }
+
             IInputSequence inputSequence;
 
             if (!TryGetInputSequence(out inputSequence)) {
