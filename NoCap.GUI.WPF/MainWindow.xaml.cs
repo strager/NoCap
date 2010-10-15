@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition.Hosting;
 using System.Drawing.Imaging;
 using System.Linq;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 using NoCap.Library.Destinations;
 using NoCap.Library.Util;
@@ -76,7 +77,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SettingsClicked(object sender, EventArgs e) {
-            new SettingsWindow(new Settings()).ShowDialog();
+            new SettingsWindow(new ProgramSettings()).ShowDialog();
         }
 
         private void PerformRequest(ISource source) {

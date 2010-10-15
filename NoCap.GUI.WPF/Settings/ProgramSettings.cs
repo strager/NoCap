@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NoCap.Library;
 using WinputDotNet;
 
-namespace NoCap.GUI.WPF {
-    public class Settings {
+namespace NoCap.GUI.WPF.Settings {
+    public class ProgramSettings {
         public IInputProvider InputProvider {
             get;
             set;
@@ -17,23 +15,29 @@ namespace NoCap.GUI.WPF {
             set;
         }
 
-        public Settings() :
+        public ProgramSettings() :
             this(Providers.Instance) {
         }
 
-        public Settings(Providers providers) {
+        public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
             Bindings = new List<SourceDestinationCommandBinding>();
         }
 
-        public Settings Clone() {
-            return new Settings {
+        public ProgramSettings Clone() {
+            return new ProgramSettings {
                 Bindings = Bindings.ToList(),
                 InputProvider = InputProvider
             };
         }
     }
 
+    public interface ISettingsEditor {
+        string DisplayName {
+            get;
+        }
+    }
+    
     public class SourceDestinationCommandBinding : ICommandBinding {
         private readonly IInputSequence input;
         private readonly SourceDestinationCommand command;

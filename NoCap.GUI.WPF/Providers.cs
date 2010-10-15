@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Linq;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
     public class Providers {
-        private static readonly CompositionContainer CompositionContainer = new CompositionContainer(new DirectoryCatalog("."));
+        private readonly CompositionContainer compositionContainer;
 
-        private Providers() {
-			CompositionContainer.ComposeParts(this);
+        private Providers() :
+            this(new CompositionContainer(new DirectoryCatalog("."))) {
+        }
+
+        private Providers(CompositionContainer compositionContainer) {
+            this.compositionContainer = compositionContainer;
+
+            compositionContainer.ComposeParts(this);
         }
 
         private static readonly Providers PrivateInstance = new Providers();
