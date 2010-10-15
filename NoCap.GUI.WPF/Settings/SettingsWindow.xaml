@@ -1,7 +1,7 @@
 ﻿<Window x:Class="NoCap.GUI.WPF.Settings.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SettingsWindow" Height="300" Width="300" Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
+        Title="NoCap Settings" Height="300" Width="300" Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
     <Grid Margin="3,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
