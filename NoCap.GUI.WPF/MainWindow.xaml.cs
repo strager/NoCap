@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -21,6 +23,7 @@ namespace NoCap.GUI.WPF {
         private readonly IDestination clipboardDestination;
 
         private readonly NotifyingProgressTracker progressTracker;
+        private ProgramSettings settings;
 
         public MainWindow() {
             InitializeComponent();
@@ -58,6 +61,12 @@ namespace NoCap.GUI.WPF {
                 new IsgdShortener(),
                 this.clipboardDestination
             );
+
+            this.settings = new ProgramSettings {
+                Commands = new ObservableCollection<SourceDestinationCommand>(new List<SourceDestinationCommand> {
+                    new SourceDestinationCommand("Clipboard", this.screenshotSource, this.clipboardDestination),
+                })
+            };
         }
 
         private void SetProgress(double progress) {
@@ -77,7 +86,11 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SettingsClicked(object sender, EventArgs e) {
-            new SettingsWindow(new ProgramSettings()).ShowDialog();
+            var settingsWindow = new SettingsWindow(this.settings.Clone());
+            
+            if (settingsWindow.ShowDialog() == true) {
+                this.settings = settingsWindow.ProgramSettings;
+            }
         }
 
         private void PerformRequest(ISource source) {

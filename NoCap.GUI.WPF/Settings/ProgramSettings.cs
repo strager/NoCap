@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NoCap.Library;
 using WinputDotNet;
@@ -10,7 +11,12 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ICollection<SourceDestinationCommandBinding> Bindings {
+        public ObservableCollection<SourceDestinationCommandBinding> Bindings {
+            get;
+            set;
+        }
+
+        public ObservableCollection<SourceDestinationCommand> Commands {
             get;
             set;
         }
@@ -21,54 +27,63 @@ namespace NoCap.GUI.WPF.Settings {
 
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new List<SourceDestinationCommandBinding>();
+            Bindings = new ObservableCollection<SourceDestinationCommandBinding>();
+            Commands = new ObservableCollection<SourceDestinationCommand>();
         }
 
         public ProgramSettings Clone() {
             return new ProgramSettings {
-                Bindings = Bindings.ToList(),
+                Bindings = new ObservableCollection<SourceDestinationCommandBinding>(Bindings),
                 InputProvider = InputProvider
             };
         }
     }
 
     public interface ISettingsEditor {
+        // TODO Make these dependancy properties?
+
         string DisplayName {
+            get;
+        }
+
+        ProgramSettings ProgramSettings {
             get;
         }
     }
     
     public class SourceDestinationCommandBinding : ICommandBinding {
-        private readonly IInputSequence input;
-        private readonly SourceDestinationCommand command;
-
         public IInputSequence Input {
-            get {
-                return this.input;
-            }
+            get;
+            set;
         }
 
         ICommand ICommandBinding.Command {
             get {
-                return this.command;
+                return Command;
             }
         }
 
         public SourceDestinationCommand Command {
-            get {
-                return this.command;
-            }
+            get;
+            set;
         }
 
         public SourceDestinationCommandBinding(IInputSequence input, SourceDestinationCommand command) {
-            this.command = command;
-            this.input = input;
+            Input = input;
+            Command = command;
         }
     }
 
     public class SourceDestinationCommand : ICommand {
         private readonly ISource source;
         private readonly IDestination destination;
+        private readonly string name;
+
+        public string Name {
+            get {
+                return this.name;
+            }
+        }
 
         public ISource Source {
             get {
@@ -82,9 +97,10 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public SourceDestinationCommand(ISource source, IDestination destination) {
-            this.destination = destination;
+        public SourceDestinationCommand(string name, ISource source, IDestination destination) {
+            this.name = name;
             this.source = source;
+            this.destination = destination;
         }
     }
 }

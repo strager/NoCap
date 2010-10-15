@@ -1,0 +1,45 @@
+﻿<ContentControl x:Class="NoCap.GUI.WPF.Settings.BindingSettingEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListView Name="bindingsList" ItemsSource="{Binding Path=ProgramSettings.Bindings, Mode=TwoWay}" Grid.Row="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Bind">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Grid.Column="0" Text="{Binding Path=Input.GetHumanString}" />
+                                    <TextBlock>
+                                        <Hyperlink Click="SetBindingClicked">Set</Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Command">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox Grid.Column="2" SelectedItem="{Binding Path=Command}" DisplayMemberPath="Name" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right">
+            <Button Content="Add Binding" Click="AddBindingClicked" />
+        </StackPanel>
+    </Grid>
+</ContentControl>
