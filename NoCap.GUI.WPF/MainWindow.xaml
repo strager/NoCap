@@ -14,10 +14,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Button Content="Screenshot" Click="ScreenshotClicked" Grid.Column="0" />
-        <Button Content="Clipboard" Click="ClipboardClicked" Grid.Column="1" />
         <Button Content="Settings" Click="SettingsClicked" Grid.Column="3" />
         <ProgressBar Name="progressBar" Maximum="1" Minimum="0" Grid.ColumnSpan="4" Grid.Row="2" MinHeight="19" Margin="6" />
-        <TextBox Name="messageLog" AcceptsReturn="True" IsReadOnly="True" Grid.ColumnSpan="4" Grid.Row="1" Margin="6,0" />
     </Grid>
 </Window>

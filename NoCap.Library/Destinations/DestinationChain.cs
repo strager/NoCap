@@ -33,6 +33,11 @@ namespace NoCap.Library.Destinations {
                 foreach (var destination in Destinations) {
                     trackerEnumerator.MoveNext();
                     data = destination.Put(data, trackerEnumerator.Current);
+
+                    if (data == null) {
+                        // FIXME Maybe throw ...?
+                        break;
+                    }
                 }
             }
 

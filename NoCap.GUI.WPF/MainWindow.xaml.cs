@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition.Hosting;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Interop;
 using NoCap.GUI.WPF.Settings;
-using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.GUI.WPF.Templates;
 using NoCap.Library.Util;
-using NoCap.Plugins;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
@@ -17,13 +12,6 @@ namespace NoCap.GUI.WPF {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow {
-        private readonly DataRouter router;
-
-        private readonly ISource screenshotSource;
-        private readonly ISource clipboardSource;
-
-        private readonly IDestination clipboardDestination;
-
         private readonly NotifyingProgressTracker progressTracker;
 
         private ProgramSettings settings;
@@ -47,11 +35,6 @@ namespace NoCap.GUI.WPF {
 
             DataContext = this;
 
-            this.screenshotSource = new ScreenshotSource { SourceType = ScreenshotSourceType.EntireDesktop };
-            this.clipboardSource = new Clipboard();
-
-            this.clipboardDestination = new Clipboard();
-
             this.progressTracker = new NotifyingProgressTracker();
             this.progressTracker.PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "Progress") {
@@ -59,30 +42,15 @@ namespace NoCap.GUI.WPF {
                 }
             };
 
-            var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
-
-            this.router = new DataRouter();
-
-            router[TypedDataType.Image] = new DestinationChain(
-                new CropShot(),
-                new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
-                this.clipboardDestination
-            );
-
-            router[TypedDataType.Text] = new DestinationChain(
-                new SlexyUploader(),
-                this.clipboardDestination
-            );
-
-            router[TypedDataType.Uri] = new DestinationChain(
-                new IsgdShortener(),
-                this.clipboardDestination
-            );
+            var templates = new ITemplate[] {
+                new ClipboardUploaderTemplate(),
+                new CropShotUploaderTemplate(),
+            };
 
             Settings = new ProgramSettings {
-                Commands = new ObservableCollection<SourceDestinationCommand>(new List<SourceDestinationCommand> {
-                    new SourceDestinationCommand("Clipboard", this.clipboardSource, this.router),
-                })
+                Commands = new ObservableCollection<SourceDestinationCommand>(
+                    templates.Select((template) => template.GetCommand())
+                )
             };
         }
 
@@ -139,16 +107,6 @@ namespace NoCap.GUI.WPF {
             var setProgress = new Action(() => this.progressBar.Value = progress);
 
             Dispatcher.BeginInvoke(setProgress);
-
-            Log("Progress: {0}", progress);
-        }
-
-        private void ScreenshotClicked(object sender, EventArgs e) {
-            PerformRequest(this.screenshotSource);
-        }
-
-        private void ClipboardClicked(object sender, EventArgs e) {
-            PerformRequest(this.clipboardSource);
         }
 
         private void SettingsClicked(object sender, EventArgs e) {
@@ -163,16 +121,7 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private void PerformRequest(ISource source) {
-            var routeFromAsync = new Func<ISource, IMutableProgressTracker, TypedData>(this.router.RouteFrom);
-
-            routeFromAsync.BeginInvoke(source, this.progressTracker, (ar) => {
-                System.Diagnostics.Debug.WriteLine(this.progressTracker.Progress.ToString());
-                routeFromAsync.EndInvoke(ar);
-            }, null);
-        }
-
-        private void PerformRequestSync(SourceDestinationCommand command, IMutableProgressTracker progress) {
+        private static void PerformRequestSync(SourceDestinationCommand command, IMutableProgressTracker progress) {
             var sourceProgress = new NotifyingProgressTracker();
             var destProgress = new NotifyingProgressTracker();
 
@@ -192,12 +141,6 @@ namespace NoCap.GUI.WPF {
             var func = new Action<SourceDestinationCommand, IMutableProgressTracker>(PerformRequestSync);
 
             func.BeginInvoke(command, this.progressTracker, func.EndInvoke, null);
-        }
-
-        private void Log(string format, params object[] args) {
-            var log = new Action(() => this.messageLog.AppendText(string.Format(format, args) + Environment.NewLine));
-
-            Dispatcher.BeginInvoke(log);
         }
     }
 }

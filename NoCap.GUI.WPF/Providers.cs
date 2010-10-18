@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using NoCap.Library;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
@@ -28,11 +29,29 @@ namespace NoCap.GUI.WPF {
 #pragma warning disable 649 // Field is never assigned
         [ImportMany(AllowRecomposition = true)]
         private IEnumerable<IInputProvider> inputProviders;
+
+        [ImportMany(AllowRecomposition = true)]
+        private IEnumerable<ISource> sources;
+
+        [ImportMany(AllowRecomposition = true)]
+        private IEnumerable<IDestination> destinations;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
             get {
                 return inputProviders;
+            }
+        }
+
+        public IEnumerable<ISource> Sources {
+            get {
+                return this.sources;
+            }
+        }
+
+        public IEnumerable<IDestination> Destinations {
+            get {
+                return this.destinations;
             }
         }
     }

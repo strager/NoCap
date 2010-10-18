@@ -76,6 +76,10 @@
     <Compile Include="Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Templates\ClipboardUploaderTemplate.cs" />
+    <Compile Include="Templates\CropShotUploaderTemplate.cs" />
+    <Compile Include="Templates\ITemplate.cs" />
+    <Compile Include="Templates\ITemplateFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
