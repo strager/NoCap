@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF.Settings {
@@ -31,16 +25,23 @@ namespace NoCap.GUI.WPF.Settings {
             private set;
         }
 
-        private SourceDestinationCommandBinding SelectedBinding {
+        private MutableCommandBinding SelectedBinding {
             get {
-                return (SourceDestinationCommandBinding) this.bindingsList.SelectedItem;
+                return (MutableCommandBinding) this.bindingsList.SelectedItem;
             }
+        }
+
+        public MutableCommandBindingCollection Bindings {
+            get;
+            set;
         }
 
         public BindingSettingEditor(ProgramSettings settings) {
             InitializeComponent();
 
             ProgramSettings = settings;
+
+            Bindings = new MutableCommandBindingCollection(ProgramSettings.Bindings);
 
             DataContext = this;
         }
@@ -52,16 +53,14 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            var binding = new SourceDestinationCommandBinding(null, null) {
-                Input = inputSequence
-            };
+            var binding = new MutableCommandBinding(inputSequence, null);
 
-            ProgramSettings.Bindings.Add(binding);
+            Bindings.Add(binding);
         }
 
         private void DeleteBindingClicked(object sender, RoutedEventArgs e) {
             if (SelectedBinding != null) {
-                ProgramSettings.Bindings.Remove(SelectedBinding);
+                Bindings.Remove(SelectedBinding);
             }
         }
 
@@ -71,7 +70,7 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        private void ChangeBinding(SourceDestinationCommandBinding binding) {
+        private void ChangeBinding(MutableCommandBinding binding) {
             if (binding == null) {
                 throw new ArgumentNullException("binding");
             }
@@ -82,11 +81,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            // We use this instead of direct assignment to inform binders
-            // of the update
-            var properties = TypeDescriptor.GetProperties(binding);
-            var inputProperty = properties.Find("Input", false);
-            inputProperty.SetValue(binding, inputSequence);
+            binding.Input = inputSequence;
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence) {
@@ -102,6 +97,196 @@ namespace NoCap.GUI.WPF.Settings {
                 return false;
             }
         }
+    }
+
+    public class MutableCommandBindingCollection : ICollection<MutableCommandBinding>, INotifyCollectionChanged {
+        private readonly ICollection<SourceDestinationCommandBinding> originalBindings;
+        private readonly IDictionary<MutableCommandBinding, SourceDestinationCommandBinding> mapping = new Dictionary<MutableCommandBinding, SourceDestinationCommandBinding>();
+
+        public MutableCommandBindingCollection(ICollection<SourceDestinationCommandBinding> originalBindings) {
+            this.originalBindings = originalBindings;
+
+            foreach (var binding in this.originalBindings) {
+                var mutableBinding = GetMutableBinding(binding);
+                mutableBinding.PropertyChanged += UpdateBindingHandler;
+
+                mapping[mutableBinding] = binding;
+            }
+        }
+
+        private MutableCommandBinding GetMutableBinding(SourceDestinationCommandBinding binding) {
+            var mutableBinding = this.mapping.FirstOrDefault((kvp) => ReferenceEquals(kvp.Value, binding)).Key;
+
+            if (mutableBinding == null) {
+                mutableBinding = new MutableCommandBinding(binding);
+            }
+
+            return mutableBinding;
+        }
+
+        private bool RemoveMutableBinding(MutableCommandBinding binding) {
+            var immutableBinding = this.mapping[binding];
+
+            this.mapping.Remove(binding);
+            this.originalBindings.Remove(immutableBinding);
+
+            return true;
+        }
+
+        private SourceDestinationCommandBinding GetImmutableBinding(MutableCommandBinding binding) {
+            SourceDestinationCommandBinding immutableBinding;
+
+            if (!this.mapping.TryGetValue(binding, out immutableBinding)) {
+                immutableBinding = new SourceDestinationCommandBinding(binding.Input, binding.Command);
+            }
+
+            return immutableBinding;
+        }
+
+        private void UpdateBindingHandler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            UpdateBinding((MutableCommandBinding) sender);
+        }
+
+        private void UpdateBinding(MutableCommandBinding binding) {
+            // Be careful with the order here.
+
+            var originalBinding = this.mapping[binding];
+            this.originalBindings.Remove(originalBinding);
+            this.mapping.Remove(binding);
+
+            var newBinding = GetImmutableBinding(binding);
+            this.mapping[binding] = newBinding;
+            this.originalBindings.Add(newBinding);
+        }
+
+        public IEnumerator<MutableCommandBinding> GetEnumerator() {
+            return this.mapping.Keys.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
+        }
+
+        public void Add(MutableCommandBinding item) {
+            if (Contains(item)) {
+                throw new InvalidOperationException("Cannot add same item twice");
+            }
+
+            item.PropertyChanged += UpdateBindingHandler;
+
+            var immutableBinding = GetImmutableBinding(item);
+
+            this.mapping[item] = immutableBinding;
+            this.originalBindings.Add(immutableBinding);
+
+            Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+        }
+
+        public void Clear() {
+            this.mapping.Clear();
+            this.originalBindings.Clear();
+
+            Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        public bool Contains(MutableCommandBinding item) {
+            return this.mapping.ContainsKey(item);
+        }
+
+        public void CopyTo(MutableCommandBinding[] array, int arrayIndex) {
+            this.mapping.Keys.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(MutableCommandBinding item) {
+            SourceDestinationCommandBinding immutableBinding;
+            bool itemRemoved = false;
+
+            if (this.mapping.TryGetValue(item, out immutableBinding)) {
+                int itemIndex = this.mapping.TakeWhile((kvp) => kvp.Key != item).Count();
+
+                itemRemoved = RemoveMutableBinding(item);
+
+                if (itemRemoved) {
+                    item.PropertyChanged -= UpdateBindingHandler;
+
+                    this.originalBindings.Remove(immutableBinding);
+
+                    Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, itemIndex));
+                }
+            }
+
+            return itemRemoved;
+        }
+
+        public int Count {
+            get {
+                return this.mapping.Count;
+            }
+        }
+
+        public bool IsReadOnly {
+            get {
+                return false;
+            }
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public void Notify(NotifyCollectionChangedEventArgs e) {
+            var handler = CollectionChanged;
+
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+    }
+
+    public class MutableCommandBinding : INotifyPropertyChanged {
+        private IInputSequence input;
+        private SourceDestinationCommand command;
+
+        public IInputSequence Input {
+            get {
+                return this.input;
+            }
+
+            set {
+                this.input = value;
+
+                Notify("Input");
+            }
+        }
+
+        public SourceDestinationCommand Command {
+            get {
+                return this.command;
+            }
+
+            set {
+                this.command = value;
+
+                Notify("Command");
+            }
+        }
+
+        public MutableCommandBinding(IInputSequence input, SourceDestinationCommand command) {
+            this.input = input;
+            this.command = command;
+        }
+
+        public MutableCommandBinding(SourceDestinationCommandBinding source) :
+            this(source.Input, source.Command) {
+        }
+
+        private void Notify(string propertyName) {
+            var handler = PropertyChanged;
+
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class NullableBooleanConverter : IValueConverter {

@@ -12,12 +12,12 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ObservableCollection<SourceDestinationCommandBinding> Bindings {
+        public ICollection<SourceDestinationCommandBinding> Bindings {
             get;
             set;
         }
 
-        public ObservableCollection<SourceDestinationCommand> Commands {
+        public ICollection<SourceDestinationCommand> Commands {
             get;
             set;
         }
@@ -28,8 +28,8 @@ namespace NoCap.GUI.WPF.Settings {
 
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new ObservableCollection<SourceDestinationCommandBinding>();
-            Commands = new ObservableCollection<SourceDestinationCommand>();
+            Bindings = new List<SourceDestinationCommandBinding>();
+            Commands = new List<SourceDestinationCommand>();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace NoCap.GUI.WPF.Settings {
     }
 
     public class ReferenceComparer : IEqualityComparer<object> {
-        public bool Equals(object x, object y) {
+        bool IEqualityComparer<object>.Equals(object x, object y) {
             return ReferenceEquals(x, y);
         }
 
@@ -105,10 +105,14 @@ namespace NoCap.GUI.WPF.Settings {
         }
     }
     
-    public class SourceDestinationCommandBinding : ICommandBinding {
+    public sealed class SourceDestinationCommandBinding : ICommandBinding {
+        private readonly IInputSequence input;
+        private readonly SourceDestinationCommand command;
+
         public IInputSequence Input {
-            get;
-            set;
+            get {
+                return this.input;
+            }
         }
 
         ICommand ICommandBinding.Command {
@@ -118,17 +122,18 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public SourceDestinationCommand Command {
-            get;
-            set;
+            get {
+                return this.command;
+            }
         }
 
         public SourceDestinationCommandBinding(IInputSequence input, SourceDestinationCommand command) {
-            Input = input;
-            Command = command;
+            this.input = input;
+            this.command = command;
         }
     }
 
-    public class SourceDestinationCommand : ICommand {
+    public sealed class SourceDestinationCommand : ICommand {
         private readonly ISource source;
         private readonly IDestination destination;
         private readonly string name;
