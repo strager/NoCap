@@ -13,6 +13,8 @@ namespace NoCap.Library {
     /// referring to the name of the file which was written.
     /// </remarks>
     public interface IDestination {
+        // TODO INamedComponent
+
         /// <summary>
         /// Stores the specified data somewhere, optionally returning new data.
         /// </summary>
@@ -48,5 +50,25 @@ namespace NoCap.Library {
         /// A list of data types which can be legally returned by <see cref="Put"/>.
         /// </returns>
         IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
+    }
+
+    public static class DestinationHelpers {
+        public static TypedData RouteFrom(this IDestination destination, ISource source, IMutableProgressTracker progress) {
+            var sourceProgress = new NotifyingProgressTracker();
+            var destProgress = new NotifyingProgressTracker();
+
+            var aggregateProgress = new AggregateProgressTracker(sourceProgress, destProgress);
+            aggregateProgress.BindTo(progress);
+
+            var data = source.Get(sourceProgress);
+
+            if (data == null) {
+                return null;
+            }
+
+            data = destination.Put(data, destProgress);
+
+            return data;
+        }
     }
 }

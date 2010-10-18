@@ -68,6 +68,9 @@
     <Compile Include="Settings\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\CommandEditor.xaml.cs">
+      <DependentUpon>CommandEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings\ProviderSettingsEditor.xaml.cs">
       <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
     </Compile>
@@ -76,10 +79,16 @@
     <Compile Include="Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Templates\ClipboardUploaderTemplate.cs" />
-    <Compile Include="Templates\CropShotUploaderTemplate.cs" />
-    <Compile Include="Templates\ITemplate.cs" />
-    <Compile Include="Templates\ITemplateFactory.cs" />
+    <Compile Include="Templates\ClipboardUploaderCommand.cs" />
+    <Compile Include="Templates\ClipboardUploaderCommandEditor.xaml.cs">
+      <DependentUpon>ClipboardUploaderCommandEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\CropShotUploaderCommand.cs" />
+    <Compile Include="Templates\CropShotUploaderCommandEditor.xaml.cs">
+      <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\ICommand.cs" />
+    <Compile Include="Templates\ICommandFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,11 +109,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Settings\CommandEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Settings\ProviderSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Templates\ClipboardUploaderCommandEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Templates\CropShotUploaderCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

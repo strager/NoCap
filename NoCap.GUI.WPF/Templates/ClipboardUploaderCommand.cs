@@ -1,19 +1,22 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Linq;
-using NoCap.GUI.WPF.Settings;
+using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Destinations;
+using NoCap.Library.Util;
 using NoCap.Plugins;
 
 namespace NoCap.GUI.WPF.Templates {
-    public class ClipboardUploaderTemplate : ITemplate, INotifyPropertyChanged {
+    public class ClipboardUploaderCommand : ICommand, INotifyPropertyChanged {
         private TextUploader textUploader;
         private UrlShortener urlShortener;
         private ImageUploader imageUploader;
 
-        private readonly Clipboard clipboardSource;
-        private readonly Clipboard clipboardDestination;
+        private readonly Clipboard clipboardSource = new Clipboard();
+        private readonly Clipboard clipboardDestination = new Clipboard();
 
         private string name = "Clipboard uploader";
 
@@ -23,7 +26,7 @@ namespace NoCap.GUI.WPF.Templates {
             }
 
             set {
-                this.name = name;
+                this.name = value;
 
                 Notify("Name");
             }
@@ -65,11 +68,8 @@ namespace NoCap.GUI.WPF.Templates {
             }
         }
 
-        public ClipboardUploaderTemplate() {
-            this.clipboardSource = new Clipboard();
-            this.clipboardDestination = new Clipboard();
-
-            var codecs = ImageCodecInfo.GetImageEncoders().Where<ImageCodecInfo>(ImageWriter.IsCodecValid);
+        public ClipboardUploaderCommand() {
+            var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             ImageUploader = new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG")));
 
@@ -77,35 +77,52 @@ namespace NoCap.GUI.WPF.Templates {
             UrlShortener = new IsgdShortener();
         }
 
-        public SourceDestinationCommand GetCommand() {
+        internal ClipboardUploaderCommand(ImageUploader imageUploader, TextUploader textUploader, UrlShortener urlShortener) {
+            ImageUploader = imageUploader;
+            TextUploader = textUploader;
+            UrlShortener = urlShortener;
+        }
+
+        public ICommand Clone() {
+            return new ClipboardUploaderCommand(ImageUploader, TextUploader, UrlShortener);
+        }
+
+        public ICommandFactory GetFactory() {
+            return new ClipboardUploaderCommandFactory();
+        }
+
+        public TypedData Get(IMutableProgressTracker progress) {
             var router = new DataRouter {
                 {
                     TypedDataType.Image,
                     new DestinationChain(
-                        new CropShot(),
                         ImageUploader,
                         this.clipboardDestination
-                        )
-                    },
+                    )
+                },
 
                 {
                     TypedDataType.Text,
                     new DestinationChain(
                         TextUploader,
                         this.clipboardDestination
-                        )
-                    },
+                    )
+                },
 
                 {
                     TypedDataType.Uri,
                     new DestinationChain(
                         UrlShortener,
                         this.clipboardDestination
-                        )
-                    }
+                    )
+                }
             };
 
-            return new SourceDestinationCommand(Name, clipboardSource, router);
+            return router.RouteFrom(this.clipboardSource, progress);
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes() {
+            return null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -116,6 +133,22 @@ namespace NoCap.GUI.WPF.Templates {
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+    }
+
+    public class ClipboardUploaderCommandFactory : ICommandFactory {
+        public string Name {
+            get {
+                return "Clipboard uploader";
+            }
+        }
+
+        public ICommand CreateTemplate() {
+            return new ClipboardUploaderCommand();
+        }
+
+        public ContentControl GetCommandEditor(ICommand command) {
+            return new ClipboardUploaderCommandEditor();
         }
     }
 }

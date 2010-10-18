@@ -18,24 +18,6 @@ namespace NoCap.Library.Destinations {
             return destination.Put(data, progress);
         }
 
-        public TypedData RouteFrom(ISource source, IMutableProgressTracker progress) {
-            var sourceProgress = new NotifyingProgressTracker();
-            var destProgress = new NotifyingProgressTracker();
-
-            var aggregateProgress = new AggregateProgressTracker(sourceProgress, destProgress);
-            aggregateProgress.BindTo(progress);
-
-            var data = source.Get(sourceProgress);
-
-            if (data == null) {
-                return null;
-            }
-
-            data = Put(data, destProgress);
-
-            return data;
-        }
-
         public IEnumerable<TypedDataType> GetInputDataTypes() {
             return this.routes.Keys;
         }

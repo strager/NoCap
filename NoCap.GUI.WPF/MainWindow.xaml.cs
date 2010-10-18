@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Interop;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Templates;
 using NoCap.Library.Util;
 using WinputDotNet;
+using ICommand = NoCap.GUI.WPF.Templates.ICommand;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -42,15 +42,13 @@ namespace NoCap.GUI.WPF {
                 }
             };
 
-            var templates = new ITemplate[] {
-                new ClipboardUploaderTemplate(),
-                new CropShotUploaderTemplate(),
+            var templates = new ICommand[] {
+                new ClipboardUploaderCommand(),
+                new CropShotUploaderCommand(),
             };
 
             Settings = new ProgramSettings {
-                Commands = new ObservableCollection<SourceDestinationCommand>(
-                    templates.Select((template) => template.GetCommand())
-                )
+                Commands = new ObservableCollection<ICommand>(templates)
             };
         }
 
@@ -98,7 +96,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void CommandStateChanged(object sender, CommandStateChangedEventArgs e) {
-            var command = (SourceDestinationCommand) e.Command;
+            var command = (ICommand) e.Command;
 
             PerformRequestAsync(command);
         }
@@ -121,24 +119,12 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private static void PerformRequestSync(SourceDestinationCommand command, IMutableProgressTracker progress) {
-            var sourceProgress = new NotifyingProgressTracker();
-            var destProgress = new NotifyingProgressTracker();
-
-            var aggregateProgress = new AggregateProgressTracker(sourceProgress, destProgress);
-            aggregateProgress.BindTo(progress);
-
-            var data = command.Source.Get(sourceProgress);
-
-            if (data == null) {
-                return;
-            }
-
-            command.Destination.Put(data, destProgress);
+        private static void PerformRequestSync(ICommand command, IMutableProgressTracker progress) {
+            command.Get(progress);
         }
 
-        private void PerformRequestAsync(SourceDestinationCommand command) {
-            var func = new Action<SourceDestinationCommand, IMutableProgressTracker>(PerformRequestSync);
+        private void PerformRequestAsync(ICommand command) {
+            var func = new Action<ICommand, IMutableProgressTracker>(PerformRequestSync);
 
             func.BeginInvoke(command, this.progressTracker, func.EndInvoke, null);
         }

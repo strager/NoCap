@@ -100,10 +100,10 @@ namespace NoCap.GUI.WPF.Settings {
     }
 
     public class MutableCommandBindingCollection : ICollection<MutableCommandBinding>, INotifyCollectionChanged {
-        private readonly ICollection<SourceDestinationCommandBinding> originalBindings;
-        private readonly IDictionary<MutableCommandBinding, SourceDestinationCommandBinding> mapping = new Dictionary<MutableCommandBinding, SourceDestinationCommandBinding>();
+        private readonly ICollection<TemplateBinding> originalBindings;
+        private readonly IDictionary<MutableCommandBinding, TemplateBinding> mapping = new Dictionary<MutableCommandBinding, TemplateBinding>();
 
-        public MutableCommandBindingCollection(ICollection<SourceDestinationCommandBinding> originalBindings) {
+        public MutableCommandBindingCollection(ICollection<TemplateBinding> originalBindings) {
             this.originalBindings = originalBindings;
 
             foreach (var binding in this.originalBindings) {
@@ -114,7 +114,7 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        private MutableCommandBinding GetMutableBinding(SourceDestinationCommandBinding binding) {
+        private MutableCommandBinding GetMutableBinding(TemplateBinding binding) {
             var mutableBinding = this.mapping.FirstOrDefault((kvp) => ReferenceEquals(kvp.Value, binding)).Key;
 
             if (mutableBinding == null) {
@@ -133,11 +133,11 @@ namespace NoCap.GUI.WPF.Settings {
             return true;
         }
 
-        private SourceDestinationCommandBinding GetImmutableBinding(MutableCommandBinding binding) {
-            SourceDestinationCommandBinding immutableBinding;
+        private TemplateBinding GetImmutableBinding(MutableCommandBinding binding) {
+            TemplateBinding immutableBinding;
 
             if (!this.mapping.TryGetValue(binding, out immutableBinding)) {
-                immutableBinding = new SourceDestinationCommandBinding(binding.Input, binding.Command);
+                immutableBinding = new TemplateBinding(binding.Input, binding.Command);
             }
 
             return immutableBinding;
@@ -198,7 +198,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public bool Remove(MutableCommandBinding item) {
-            SourceDestinationCommandBinding immutableBinding;
+            TemplateBinding immutableBinding;
             bool itemRemoved = false;
 
             if (this.mapping.TryGetValue(item, out immutableBinding)) {
@@ -243,7 +243,7 @@ namespace NoCap.GUI.WPF.Settings {
 
     public class MutableCommandBinding : INotifyPropertyChanged {
         private IInputSequence input;
-        private SourceDestinationCommand command;
+        private Templates.ICommand command;
 
         public IInputSequence Input {
             get {
@@ -257,7 +257,7 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public SourceDestinationCommand Command {
+        public Templates.ICommand Command {
             get {
                 return this.command;
             }
@@ -269,12 +269,12 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public MutableCommandBinding(IInputSequence input, SourceDestinationCommand command) {
+        public MutableCommandBinding(IInputSequence input, Templates.ICommand command) {
             this.input = input;
             this.command = command;
         }
 
-        public MutableCommandBinding(SourceDestinationCommandBinding source) :
+        public MutableCommandBinding(TemplateBinding source) :
             this(source.Input, source.Command) {
         }
 

@@ -6,6 +6,8 @@ namespace NoCap.Library {
     /// Represents a source of typed data.
     /// </summary>
     public interface ISource {
+        // TODO INamedComponent
+
         /// <summary>
         /// Fetches some typed data from a data source.
         /// </summary>

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NoCap.Library;
 using WinputDotNet;
+using ICommand = NoCap.GUI.WPF.Templates.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     public class ProgramSettings {
@@ -12,12 +12,12 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ICollection<SourceDestinationCommandBinding> Bindings {
+        public ICollection<TemplateBinding> Bindings {
             get;
             set;
         }
 
-        public ICollection<SourceDestinationCommand> Commands {
+        public ICollection<ICommand> Commands {
             get;
             set;
         }
@@ -28,8 +28,8 @@ namespace NoCap.GUI.WPF.Settings {
 
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new List<SourceDestinationCommandBinding>();
-            Commands = new List<SourceDestinationCommand>();
+            Bindings = new List<TemplateBinding>();
+            Commands = new List<ICommand>();
         }
 
         /// <summary>
@@ -39,41 +39,41 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings Clone() {
             // I have a feeling this is a hack.
 
-            var commandMappings = new Dictionary<SourceDestinationCommand, SourceDestinationCommand>(new ReferenceComparer());
+            var templateMappings = new Dictionary<ICommand, ICommand>(new ReferenceComparer());
 
-            var getNewCommand = new Func<SourceDestinationCommand, SourceDestinationCommand>((command) => {
-                if (command == null) {
+            var getTemplate = new Func<ICommand, ICommand>((template) => {
+                if (template == null) {
                     return null;
                 }
 
-                SourceDestinationCommand newCommand;
+                ICommand newCommand;
 
-                if (commandMappings.TryGetValue(command, out newCommand)) {
+                if (templateMappings.TryGetValue(template, out newCommand)) {
                     return newCommand;
                 }
 
-                return new SourceDestinationCommand(command.Name, command.Source, command.Destination);
+                return template.Clone();
             });
 
-            var newCommands = new ObservableCollection<SourceDestinationCommand>();
+            var newTemplates = new ObservableCollection<ICommand>();
 
             foreach (var command in Commands) {
-                var newCommand = getNewCommand(command);
+                var newCommand = getTemplate(command);
 
-                commandMappings[command] = newCommand;
-                newCommands.Add(newCommand);
+                templateMappings[command] = newCommand;
+                newTemplates.Add(newCommand);
             }
 
-            var newBindings = new ObservableCollection<SourceDestinationCommandBinding>(
-                Bindings.Select((binding) => new SourceDestinationCommandBinding(
+            var newBindings = new ObservableCollection<TemplateBinding>(
+                Bindings.Select((binding) => new TemplateBinding(
                     binding.Input,
-                    getNewCommand(binding.Command)
+                    getTemplate(binding.Command)
                 ))
             );
 
             return new ProgramSettings {
                 Bindings = newBindings,
-                Commands = newCommands,
+                Commands = newTemplates,
                 InputProvider = InputProvider
             };
         }
@@ -105,9 +105,9 @@ namespace NoCap.GUI.WPF.Settings {
         }
     }
     
-    public sealed class SourceDestinationCommandBinding : ICommandBinding {
+    public sealed class TemplateBinding : ICommandBinding {
         private readonly IInputSequence input;
-        private readonly SourceDestinationCommand command;
+        private readonly ICommand command;
 
         public IInputSequence Input {
             get {
@@ -115,51 +115,21 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        ICommand ICommandBinding.Command {
+        WinputDotNet.ICommand ICommandBinding.Command {
             get {
                 return Command;
             }
         }
 
-        public SourceDestinationCommand Command {
+        public ICommand Command {
             get {
                 return this.command;
             }
         }
 
-        public SourceDestinationCommandBinding(IInputSequence input, SourceDestinationCommand command) {
+        public TemplateBinding(IInputSequence input, ICommand command) {
             this.input = input;
             this.command = command;
-        }
-    }
-
-    public sealed class SourceDestinationCommand : ICommand {
-        private readonly ISource source;
-        private readonly IDestination destination;
-        private readonly string name;
-
-        public string Name {
-            get {
-                return this.name;
-            }
-        }
-
-        public ISource Source {
-            get {
-                return this.source;
-            }
-        }
-
-        public IDestination Destination {
-            get {
-                return this.destination;
-            }
-        }
-
-        public SourceDestinationCommand(string name, ISource source, IDestination destination) {
-            this.name = name;
-            this.source = source;
-            this.destination = destination;
         }
     }
 }

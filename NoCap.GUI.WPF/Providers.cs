@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using NoCap.GUI.WPF.Templates;
 using NoCap.Library;
 using WinputDotNet;
 
@@ -35,6 +36,9 @@ namespace NoCap.GUI.WPF {
 
         [ImportMany(AllowRecomposition = true)]
         private IEnumerable<IDestination> destinations;
+
+        [ImportMany(AllowRecomposition = true)]
+        private IEnumerable<ICommandFactory> templateFactories;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
@@ -52,6 +56,12 @@ namespace NoCap.GUI.WPF {
         public IEnumerable<IDestination> Destinations {
             get {
                 return this.destinations;
+            }
+        }
+
+        public IEnumerable<ICommandFactory> TemplateFactories {
+            get {
+                return this.templateFactories;
             }
         }
     }
