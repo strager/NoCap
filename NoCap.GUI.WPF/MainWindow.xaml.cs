@@ -96,9 +96,11 @@ namespace NoCap.GUI.WPF {
         }
 
         private void CommandStateChanged(object sender, CommandStateChangedEventArgs e) {
-            var command = (ICommand) e.Command;
+            if (e.State == InputState.On) {
+                var command = (ICommand) e.Command;
 
-            PerformRequestAsync(command);
+                PerformRequestAsync(command);
+            }
         }
 
         private void SetProgress(double progress) {

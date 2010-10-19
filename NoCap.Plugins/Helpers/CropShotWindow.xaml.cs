@@ -125,11 +125,11 @@ namespace NoCap.Plugins.Helpers {
 
         private static Rectangle GetRectangle(Point a, Point b) {
             return Rectangle.FromLTRB(
-                                      Math.Min(b.X, a.X),
+                Math.Min(b.X, a.X),
                 Math.Min(b.Y, a.Y),
                 Math.Max(b.X, a.X),
                 Math.Max(b.Y, a.Y)
-                );
+            );
         }
 
         private void UpdateDragRectangle(Point a, Point b) {
