@@ -117,6 +117,7 @@ namespace NoCap.Plugins {
         }
 
         private void PutOnTop() {
+            TopMost = true;
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Normal;
             WindowState = FormWindowState.Maximized;
