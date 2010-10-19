@@ -33,18 +33,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CropShot.cs" />
+    <Compile Include="Helpers\BitmapElement.cs" />
     <Compile Include="Clipboard.cs" />
-    <Compile Include="CropShot.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Helpers\CropShotWindow.xaml.cs">
+      <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileSystemDestination.cs" />
+    <Compile Include="Helpers\ImageExtensions.cs" />
     <Compile Include="ImageBinUploader.cs" />
     <Compile Include="IsgdShortener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +73,12 @@
       <Project>{48EAB6A5-2882-4DF7-9846-FD06581B33B5}</Project>
       <Name>NoCap.Web</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Helpers\CropShotWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
