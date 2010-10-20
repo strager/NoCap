@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using System.Drawing.Imaging;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Util;
 using NoCap.Plugins.Processors;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
-    public class CropShotUploaderCommand : ICommand {
+    public class CropShotUploaderCommand : ICommand, INotifyPropertyChanged {
         private ImageUploader imageUploader;
 
         private string name = "Crop shot uploader";
@@ -17,8 +17,11 @@ namespace NoCap.GUI.WPF.Commands {
             get {
                 return this.name;
             }
+
             set {
                 this.name = value;
+
+                Notify("Name");
             }
         }
 
@@ -29,27 +32,20 @@ namespace NoCap.GUI.WPF.Commands {
 
             set {
                 this.imageUploader = value;
+
+                Notify("ImageUploader");
             }
         }
 
         public ICommand Clone() {
-            return new CropShotUploaderCommand(ImageUploader);
+            return new CropShotUploaderCommand {
+                Name = Name,
+                ImageUploader = ImageUploader,
+            };
         }
 
         public ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
-        }
-
-        public CropShotUploaderCommand() {
-            var imageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
-
-            this.imageUploader = new ImageBinUploader(
-                new ImageWriter(imageCodecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))
-            );
-        }
-
-        private CropShotUploaderCommand(ImageUploader imageUploader) {
-            ImageUploader = imageUploader;
         }
 
         public void Execute(IMutableProgressTracker progress) {
@@ -70,8 +66,19 @@ namespace NoCap.GUI.WPF.Commands {
         public IEnumerable<TypedDataType> GetOutputDataTypes() {
             return null;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void Notify(string propertyName) {
+            var handler = PropertyChanged;
+
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 
+    [Export(typeof(ICommandFactory))]
     public class CropShotUploaderCommandFactory : ICommandFactory {
         public string Name {
             get {
@@ -79,12 +86,16 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand CreateCommand() {
-            return new ClipboardUploaderCommand();
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
+            return new CropShotUploaderCommand {
+                ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault()
+            };
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command) {
-            return new CropShotUploaderCommandEditor();
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command) {
+                ImageUploaders = infoStuff.GetImageUploaders()
+            };
         }
     }
 }

@@ -10,7 +10,12 @@ namespace NoCap.GUI.WPF {
         private readonly CompositionContainer compositionContainer;
 
         private Providers() :
-            this(new CompositionContainer(new DirectoryCatalog("."))) {
+            this(new CompositionContainer(
+                new AggregateCatalog(
+                    new DirectoryCatalog("."),
+                    new AssemblyCatalog(typeof(Providers).Assembly)
+                )
+            )) {
         }
 
         private Providers(CompositionContainer compositionContainer) {

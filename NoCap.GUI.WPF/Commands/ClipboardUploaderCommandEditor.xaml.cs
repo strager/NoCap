@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using NoCap.Library;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
@@ -10,11 +7,6 @@ namespace NoCap.GUI.WPF.Commands {
     /// </summary>
     public partial class ClipboardUploaderCommandEditor : ICommandEditor {
         private readonly ClipboardUploaderCommand command;
-
-        public ObservableCollection<IProcessor> Processors {
-            get;
-            set;
-        }
 
         public ClipboardUploaderCommand Command {
             get {
@@ -25,21 +17,18 @@ namespace NoCap.GUI.WPF.Commands {
         // TODO Bindable Linq
 
         public IEnumerable<ImageUploader> ImageUploaders {
-            get {
-                return Processors.OfType<ImageUploader>();
-            }
+            get;
+            set;
         }
 
         public IEnumerable<TextUploader> TextUploaders {
-            get {
-                return Processors.OfType<TextUploader>();
-            }
+            get;
+            set;
         }
 
         public IEnumerable<UrlShortener> UrlShorteners {
-            get {
-                return Processors.OfType<UrlShortener>();
-            }
+            get;
+            set;
         }
 
         public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command) {

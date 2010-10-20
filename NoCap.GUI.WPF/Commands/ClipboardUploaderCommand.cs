@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Drawing.Imaging;
+using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Processors;
 using NoCap.Library.Util;
@@ -65,23 +64,13 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ClipboardUploaderCommand() {
-            var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
-
-            ImageUploader = new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG")));
-
-            TextUploader = new SlexyUploader();
-            UrlShortener = new IsgdShortener();
-        }
-
-        internal ClipboardUploaderCommand(ImageUploader imageUploader, TextUploader textUploader, UrlShortener urlShortener) {
-            ImageUploader = imageUploader;
-            TextUploader = textUploader;
-            UrlShortener = urlShortener;
-        }
-
         public ICommand Clone() {
-            return new ClipboardUploaderCommand(ImageUploader, TextUploader, UrlShortener);
+            return new ClipboardUploaderCommand {
+                Name = Name,
+                ImageUploader = ImageUploader,
+                TextUploader = TextUploader,
+                UrlShortener = UrlShortener,
+            };
         }
 
         public ICommandFactory GetFactory() {
@@ -132,6 +121,7 @@ namespace NoCap.GUI.WPF.Commands {
         }
     }
 
+    [Export(typeof(ICommandFactory))]
     public class ClipboardUploaderCommandFactory : ICommandFactory {
         public string Name {
             get {
@@ -139,12 +129,20 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand CreateCommand() {
-            return new ClipboardUploaderCommand();
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
+            return new ClipboardUploaderCommand {
+                ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault(),
+                UrlShortener = infoStuff.GetUrlShorteners().FirstOrDefault(),
+                TextUploader = infoStuff.GetTextUploaders().FirstOrDefault(),
+            };
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command);
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command) {
+                ImageUploaders = infoStuff.GetImageUploaders(),
+                UrlShorteners = infoStuff.GetUrlShorteners(),
+                TextUploaders = infoStuff.GetTextUploaders(),
+            };
         }
     }
 }

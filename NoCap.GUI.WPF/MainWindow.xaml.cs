@@ -46,16 +46,15 @@ namespace NoCap.GUI.WPF {
                 }
             };
 
-            Settings = new ProgramSettings {
-                Commands = new ObservableCollection<ICommand>(new ICommand[] {
-                    new ClipboardUploaderCommand(),
-                    new CropShotUploaderCommand(),
-                }),
+            Settings = new ProgramSettings();
 
-                Processors = new ObservableCollection<IProcessor>(
-                    Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor()).ToList()
-                ),
-            };
+            Settings.Processors = new ObservableCollection<IProcessor>(
+                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor()).ToList()
+            );
+
+            Settings.Commands = new ObservableCollection<ICommand>(
+                Providers.Instance.CommandFactories.Select((factory) => factory.CreateCommand(new ProgramSettingsInfoStuff(Settings)))
+            );
         }
 
         private void OnSettingsChanged(ProgramSettings oldSettings, ProgramSettings newSettings) {

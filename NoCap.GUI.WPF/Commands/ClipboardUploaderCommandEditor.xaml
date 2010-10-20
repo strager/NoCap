@@ -14,10 +14,10 @@
         </Grid.RowDefinitions>
 
         <Label Content="Image uploader" Grid.Row="0" Grid.Column="0" />
-        <ComboBox Grid.Column="1" Grid.Row="0" />
+        <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Path=ImageUploaders}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Command.ImageUploader}" />
 
         <Label Content="Text uploader" Grid.Row="1" Grid.Column="0" />
-        <ComboBox Grid.Column="1" Grid.Row="1" />
+        <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Path=TextUploaders}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Command.TextUploader}" />
 
         <Label Content="URL shortener" Grid.Row="2" Grid.Column="0" />
         <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding Path=UrlShorteners}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Command.UrlShortener}" />

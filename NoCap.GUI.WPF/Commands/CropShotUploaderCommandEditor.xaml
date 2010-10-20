@@ -10,8 +10,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Label Content="Image uploader" Grid.Row="0" Grid.Column="0" />
-        <ComboBox Grid.Column="1" Grid.Row="0" />
+        <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Path=ImageUploaders}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Command.ImageUploader}" />
     </Grid>
 </ContentControl>

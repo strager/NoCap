@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using NoCap.GUI.WPF.Commands;
+using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>
@@ -46,8 +49,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            var editor = commandFactory.GetCommandEditor(command);
-            editor.Processors = ProgramSettings.Processors;
+            var editor = commandFactory.GetCommandEditor(command, new ProgramSettingsInfoStuff(ProgramSettings));
 
             this.commandEditorContainer.Content = editor;
         }
@@ -76,6 +78,20 @@ namespace NoCap.GUI.WPF.Settings {
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+
+    internal class ProgramSettingsInfoStuff : IInfoStuff {
+        private readonly ProgramSettings programSettings;
+
+        public ProgramSettingsInfoStuff(ProgramSettings programSettings) {
+            this.programSettings = programSettings;
+        }
+
+        public ObservableCollection<IProcessor> Processors {
+            get {
+                return this.programSettings.Processors;
             }
         }
     }
