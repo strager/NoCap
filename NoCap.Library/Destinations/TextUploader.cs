@@ -4,7 +4,7 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
     public abstract class TextUploader : HttpUploader {
-        public override TypedData Put(TypedData data, IMutableProgressTracker progress) {
+        public override TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Text:
                     return Upload(data, progress);

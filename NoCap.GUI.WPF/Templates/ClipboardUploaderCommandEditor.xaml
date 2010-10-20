@@ -20,6 +20,6 @@
         <ComboBox Grid.Column="1" Grid.Row="1" />
 
         <Label Content="URL shortener" Grid.Row="2" Grid.Column="0" />
-        <ComboBox Grid.Column="1" Grid.Row="2" />
+        <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding Path=UrlShorteners}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Command.UrlShortener}" />
     </Grid>
 </ContentControl>

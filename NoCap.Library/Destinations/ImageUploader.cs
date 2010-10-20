@@ -14,7 +14,7 @@ namespace NoCap.Library.Destinations {
             ImageWriter = writer;
         }
 
-        public override TypedData Put(TypedData data, IMutableProgressTracker progress) {
+        public override TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.Image:
                     var rawImageProgress = new NotifyingProgressTracker();
@@ -22,7 +22,7 @@ namespace NoCap.Library.Destinations {
                     var aggregateProgress = new AggregateProgressTracker(rawImageProgress, uploadProgress);
                     aggregateProgress.BindTo(progress);
 
-                    var rawImageData = ImageWriter.Put(data, rawImageProgress);
+                    var rawImageData = ImageWriter.Process(data, rawImageProgress);
 
                     return Upload(rawImageData, uploadProgress);
 

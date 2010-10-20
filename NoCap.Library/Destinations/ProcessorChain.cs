@@ -1,29 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
-    public class DestinationChain : IDestination {
-        private readonly List<IDestination> destinations = new List<IDestination>();
+    public class ProcessorChain : IProcessor {
+        private readonly List<IProcessor> destinations = new List<IProcessor>();
 
-        public IList<IDestination> Destinations {
+        public string Name {
+            get { return "Destination chain"; }
+        }
+
+        public IList<IProcessor> Destinations {
             get {
                 return this.destinations;
             }
         }
 
-        public DestinationChain() {
-        }
-        
-        public DestinationChain(params IDestination[] destinations) :
-            this((IEnumerable<IDestination>)destinations) {
+        public ProcessorChain() {
         }
 
-        public DestinationChain(IEnumerable<IDestination> destinations) {
+        public ProcessorChain(params IProcessor[] processors) :
+            this((IEnumerable<IProcessor>)processors) {
+        }
+
+        public ProcessorChain(IEnumerable<IProcessor> destinations) {
             this.destinations.AddRange(destinations);
         }
 
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             // ToList is needed for some strange reason
             var progressTrackers = this.destinations.Select((destination) => new NotifyingProgressTracker()).ToList();
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
@@ -32,7 +37,7 @@ namespace NoCap.Library.Destinations {
             using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
                 foreach (var destination in Destinations) {
                     trackerEnumerator.MoveNext();
-                    data = destination.Put(data, trackerEnumerator.Current);
+                    data = destination.Process(data, trackerEnumerator.Current);
 
                     if (data == null) {
                         // FIXME Maybe throw ...?

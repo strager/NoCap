@@ -16,7 +16,7 @@ namespace NoCap.GUI.WPF {
         private Providers(CompositionContainer compositionContainer) {
             this.compositionContainer = compositionContainer;
 
-            compositionContainer.ComposeParts(this);
+            this.compositionContainer.ComposeParts(this);
         }
 
         private static readonly Providers PrivateInstance = new Providers();
@@ -32,13 +32,10 @@ namespace NoCap.GUI.WPF {
         private IEnumerable<IInputProvider> inputProviders;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<ISource> sources;
+        private IEnumerable<IProcessor> processors;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<IDestination> destinations;
-
-        [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<ICommandFactory> templateFactories;
+        private IEnumerable<ICommandFactory> commandFactories;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
@@ -47,21 +44,15 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public IEnumerable<ISource> Sources {
+        public IEnumerable<IProcessor> Processors {
             get {
-                return this.sources;
+                return this.processors;
             }
         }
 
-        public IEnumerable<IDestination> Destinations {
+        public IEnumerable<ICommandFactory> CommandFactories {
             get {
-                return this.destinations;
-            }
-        }
-
-        public IEnumerable<ICommandFactory> TemplateFactories {
-            get {
-                return this.templateFactories;
+                return this.commandFactories;
             }
         }
     }

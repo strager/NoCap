@@ -55,13 +55,13 @@
     <Compile Include="Helpers\CropShotWindow.xaml.cs">
       <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystemDestination.cs" />
+    <Compile Include="FileSystemProcessor.cs" />
     <Compile Include="Helpers\ImageExtensions.cs" />
     <Compile Include="ImageBinUploader.cs" />
     <Compile Include="IsgdShortener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenCapturer.cs" />
-    <Compile Include="ScreenshotSource.cs" />
+    <Compile Include="Screenshot.cs" />
     <Compile Include="SlexyUploader.cs" />
   </ItemGroup>
   <ItemGroup>

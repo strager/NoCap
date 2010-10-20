@@ -4,18 +4,24 @@ using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
-    [Export(typeof(ISource))]
-    public class ScreenshotSource : ISource {
+    [Export(typeof(IProcessor))]
+    public class Screenshot : IProcessor {
+        public string Name {
+            get { return "Screenshot"; }
+        }
+
         public ScreenshotSourceType SourceType {
             get;
             set;
         }
 
-        public ScreenshotSource() {
+        public Screenshot() {
             SourceType = ScreenshotSourceType.EntireDesktop;
         }
 
-        public TypedData Get(IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+            this.CheckValidInputType(data);
+
             switch (SourceType) {
                 case ScreenshotSourceType.EntireDesktop:
                     var image = ScreenCapturer.CaptureEntireDesktop();
@@ -29,7 +35,11 @@ namespace NoCap.Plugins {
             }
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes() {
+        public IEnumerable<TypedDataType> GetInputDataTypes() {
+            return new[] { TypedDataType.None };
+        }
+
+        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Image };
         }
     }

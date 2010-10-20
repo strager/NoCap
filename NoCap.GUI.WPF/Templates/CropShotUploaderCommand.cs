@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -53,16 +52,19 @@ namespace NoCap.GUI.WPF.Templates {
             ImageUploader = imageUploader;
         }
 
-        public TypedData Get(IMutableProgressTracker progress) {
-            var source = new ScreenshotSource();
+        public void Execute(IMutableProgressTracker progress) {
+            var source = new Screenshot();
 
-            var destination = new DestinationChain(
+            // TODO Progress
+            var screenshotData = source.Process(null, progress);
+
+            var destination = new ProcessorChain(
                 new CropShot(),
                 ImageUploader,
                 new Clipboard()
             );
 
-            return destination.RouteFrom(source, progress);
+            destination.Process(screenshotData, progress);
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes() {

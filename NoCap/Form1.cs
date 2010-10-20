@@ -11,50 +11,47 @@ namespace NoCap {
     public partial class Form1 : Form {
         private readonly DataRouter router;
 
-        private readonly ISource screenshotSource;
-        private readonly ISource clipboardSource;
+        private readonly IProcessor screenshotProcessor;
 
-        private readonly IDestination clipboardDestination;
+        private readonly IProcessor clipboardProcessor;
 
         public Form1() {
             InitializeComponent();
 
-            this.screenshotSource = new ScreenshotSource { SourceType = ScreenshotSourceType.EntireDesktop };
-            this.clipboardSource = new Clipboard();
-
-            this.clipboardDestination = new Clipboard();
+            this.screenshotProcessor = new Screenshot { SourceType = ScreenshotSourceType.EntireDesktop };
+            this.clipboardProcessor = new Clipboard();
 
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             this.router = new DataRouter();
 
-            router[TypedDataType.Image] = new DestinationChain(
+            router[TypedDataType.Image] = new ProcessorChain(
                 new CropShot(),
                 new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
-                this.clipboardDestination
+                this.clipboardProcessor
             );
 
-            router[TypedDataType.Text] = new DestinationChain(
+            router[TypedDataType.Text] = new ProcessorChain(
                 new SlexyUploader(),
-                this.clipboardDestination
+                this.clipboardProcessor
             );
 
-            router[TypedDataType.Uri] = new DestinationChain(
+            router[TypedDataType.Uri] = new ProcessorChain(
                 new IsgdShortener(),
-                this.clipboardDestination
+                this.clipboardProcessor
             );
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
-            PerformRequest(this.screenshotSource);
+            PerformRequest(this.screenshotProcessor);
         }
 
         private void ClipboardClicked(object sender, EventArgs e) {
-            PerformRequest(this.clipboardSource);
+            PerformRequest(this.clipboardProcessor);
         }
 
-        private void PerformRequest(ISource source) {
-            var data = this.router.RouteFrom(source, null);
+        private void PerformRequest(IProcessor source) {
+            var data = this.router.Process(source.Process(null, null), null);
 
             Log(data.ToString());
         }

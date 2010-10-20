@@ -10,12 +10,16 @@ using NoCap.Library.Destinations;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
+    [Export(typeof(IProcessor))]
     public class ImageBinUploader : ImageUploader {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
+
+        public override string Name {
+            get { return "ImageBin.ca uploader"; }
+        }
 
         [ImportingConstructor]
         public ImageBinUploader([Import(AllowDefault = true)] ImageWriter imageWriter) :
@@ -37,7 +41,7 @@ namespace NoCap.Plugins {
         protected override IDictionary<string, string> GetParameters(TypedData data) {
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             parameters["t"] = "file";
-            parameters["name"] = Name ?? "";
+            parameters["name"] = UploaderName ?? "";
             parameters["tags"] = "zscreen";
             parameters["description"] = data.Name ?? "";
             parameters["adult"] = "t";
@@ -76,7 +80,7 @@ namespace NoCap.Plugins {
             return new Uri(string.Format(@"http://imagebin.ca/img/{0}", code));
         }
 
-        protected string Name {
+        protected string UploaderName {
             get;
             set;
         }

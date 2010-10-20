@@ -5,8 +5,12 @@ using NoCap.Library;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
+    [Export(typeof(IProcessor))]
     public class IsgdShortener : UrlShortener {
+        public override string Name {
+            get { return "is.gd URL shortener"; }
+        }
+
         protected override Uri Uri {
             get {
                 return new Uri(@"http://is.gd/api.php");

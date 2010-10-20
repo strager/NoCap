@@ -1,8 +1,8 @@
-﻿using NoCap.Library;
+﻿using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Templates {
-    public interface ICommand : ISource, WinputDotNet.ICommand {
-        string Name { get; set; }
+    public interface ICommand : WinputDotNet.ICommand {
+        void Execute(IMutableProgressTracker progress);
 
         ICommand Clone();
 

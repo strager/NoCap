@@ -5,17 +5,21 @@ using System.Collections.Generic;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
-    public class DataRouter : IDestination, IDictionary<TypedDataType, IDestination> {
-        private readonly IDictionary<TypedDataType, IDestination> routes = new Dictionary<TypedDataType, IDestination>();
+    public class DataRouter : IProcessor, IDictionary<TypedDataType, IProcessor> {
+        private readonly IDictionary<TypedDataType, IProcessor> routes = new Dictionary<TypedDataType, IProcessor>();
 
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
-            IDestination destination;
+        public string Name {
+            get { return "Data router"; }
+        }
 
-            if (!routes.TryGetValue(data.DataType, out destination)) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+            IProcessor processor;
+
+            if (!routes.TryGetValue(data.DataType, out processor)) {
                 return null;
             }
 
-            return destination.Put(data, progress);
+            return processor.Process(data, progress);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
@@ -23,20 +27,20 @@ namespace NoCap.Library.Destinations {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            IDestination destination;
+            IProcessor processor;
 
-            if (!routes.TryGetValue(input, out destination)) {
+            if (!routes.TryGetValue(input, out processor)) {
                 return null;
             }
 
-            return destination.GetOutputDataTypes(input);
+            return processor.GetOutputDataTypes(input);
         }
 
-        public bool CanRoute(TypedDataType type, IDestination destination) {
-            return destination.GetInputDataTypes().Contains(type);
+        public bool CanRoute(TypedDataType type, IProcessor processor) {
+            return processor.GetInputDataTypes().Contains(type);
         }
 
-        public IEnumerator<KeyValuePair<TypedDataType, IDestination>> GetEnumerator() {
+        public IEnumerator<KeyValuePair<TypedDataType, IProcessor>> GetEnumerator() {
             return this.routes.GetEnumerator();
         }
 
@@ -44,7 +48,7 @@ namespace NoCap.Library.Destinations {
             return this.routes.GetEnumerator();
         }
 
-        public void Add(KeyValuePair<TypedDataType, IDestination> item) {
+        public void Add(KeyValuePair<TypedDataType, IProcessor> item) {
             Add(item.Key, item.Value);
         }
 
@@ -52,15 +56,15 @@ namespace NoCap.Library.Destinations {
             this.routes.Clear();
         }
 
-        public bool Contains(KeyValuePair<TypedDataType, IDestination> item) {
+        public bool Contains(KeyValuePair<TypedDataType, IProcessor> item) {
             return this.routes.Contains(item);
         }
 
-        public void CopyTo(KeyValuePair<TypedDataType, IDestination>[] array, int arrayIndex) {
+        public void CopyTo(KeyValuePair<TypedDataType, IProcessor>[] array, int arrayIndex) {
             this.routes.CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(KeyValuePair<TypedDataType, IDestination> item) {
+        public bool Remove(KeyValuePair<TypedDataType, IProcessor> item) {
             return this.routes.Remove(item);
         }
 
@@ -80,7 +84,7 @@ namespace NoCap.Library.Destinations {
             return this.routes.ContainsKey(key);
         }
 
-        public void Add(TypedDataType key, IDestination value) {
+        public void Add(TypedDataType key, IProcessor value) {
             if (value == null) {
                 throw new ArgumentNullException("value");
             }
@@ -96,11 +100,11 @@ namespace NoCap.Library.Destinations {
             return this.routes.Remove(key);
         }
 
-        public bool TryGetValue(TypedDataType key, out IDestination value) {
+        public bool TryGetValue(TypedDataType key, out IProcessor value) {
             return this.routes.TryGetValue(key, out value);
         }
 
-        public IDestination this[TypedDataType key] {
+        public IProcessor this[TypedDataType key] {
             get {
                 return this.routes[key];
             }
@@ -124,7 +128,7 @@ namespace NoCap.Library.Destinations {
             }
         }
 
-        public ICollection<IDestination> Values {
+        public ICollection<IProcessor> Values {
             get {
                 return this.routes.Values;
             }

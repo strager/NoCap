@@ -6,8 +6,10 @@ using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Destinations {
-    public abstract class HttpUploader : IDestination {
-        public abstract TypedData Put(TypedData data, IMutableProgressTracker progress);
+    public abstract class HttpUploader : IProcessor {
+        public abstract string Name { get; }
+
+        public abstract TypedData Process(TypedData data, IMutableProgressTracker progress);
 
         public TypedData Upload(TypedData originalData, IMutableProgressTracker progress) {
             string requestMethod = RequestMethod;
@@ -107,6 +109,7 @@ namespace NoCap.Library.Destinations {
         }
 
         public abstract IEnumerable<TypedDataType> GetInputDataTypes();
+
         public abstract IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
     }
 }

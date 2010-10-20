@@ -7,9 +7,13 @@ using NoCap.Library.Util;
 using NoCap.Plugins.Helpers;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
-    public class CropShot : IDestination {
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+    [Export(typeof(IProcessor))]
+    public class CropShot : IProcessor {
+        public string Name {
+            get { return "Crop shot"; }
+        }
+
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             CropShotWindow cropShotWindow = null;
 
             var thread = new Thread(() => {

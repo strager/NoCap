@@ -6,21 +6,25 @@ using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
-    public class FileSystemDestination : IDestination {
+    [Export(typeof(IProcessor))]
+    public class FileSystemProcessor : IProcessor {
+        public string Name {
+            get { return "File system"; }
+        }
+
         public string RootPath {
             get;
             set;
         }
 
-        public FileSystemDestination() {
+        public FileSystemProcessor() {
         }
 
-        public FileSystemDestination(string rootPath) {
+        public FileSystemProcessor(string rootPath) {
             RootPath = rootPath;
         }
 
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
                 case TypedDataType.RawData:
                     string path = Path.Combine(RootPath, data.Name);

@@ -5,8 +5,12 @@ using NoCap.Library;
 using NoCap.Library.Destinations;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
+    [Export(typeof(IProcessor))]
     public class SlexyUploader : TextUploader {
+        public override string Name {
+            get { return "Slexy.org text uploader"; }
+        }
+
         protected override Uri Uri {
             get {
                 return new Uri(@"http://slexy.org/index.php/submit");

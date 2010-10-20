@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -15,8 +14,7 @@ namespace NoCap.GUI.WPF.Templates {
         private UrlShortener urlShortener;
         private ImageUploader imageUploader;
 
-        private readonly Clipboard clipboardSource = new Clipboard();
-        private readonly Clipboard clipboardDestination = new Clipboard();
+        private readonly Clipboard clipboardProcessor = new Clipboard();
 
         private string name = "Clipboard uploader";
 
@@ -91,38 +89,37 @@ namespace NoCap.GUI.WPF.Templates {
             return new ClipboardUploaderCommandFactory();
         }
 
-        public TypedData Get(IMutableProgressTracker progress) {
+        public void Execute(IMutableProgressTracker progress) {
             var router = new DataRouter {
                 {
                     TypedDataType.Image,
-                    new DestinationChain(
+                    new ProcessorChain(
                         ImageUploader,
-                        this.clipboardDestination
+                        this.clipboardProcessor
                     )
                 },
 
                 {
                     TypedDataType.Text,
-                    new DestinationChain(
+                    new ProcessorChain(
                         TextUploader,
-                        this.clipboardDestination
+                        this.clipboardProcessor
                     )
                 },
 
                 {
                     TypedDataType.Uri,
-                    new DestinationChain(
+                    new ProcessorChain(
                         UrlShortener,
-                        this.clipboardDestination
+                        this.clipboardProcessor
                     )
                 }
             };
 
-            return router.RouteFrom(this.clipboardSource, progress);
-        }
+            // TODO Progress
+            var clipboardData = this.clipboardProcessor.Process(null, progress);
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return null;
+            router.Process(clipboardData, progress);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -148,7 +145,7 @@ namespace NoCap.GUI.WPF.Templates {
         }
 
         public ContentControl GetCommandEditor(ICommand command) {
-            return new ClipboardUploaderCommandEditor();
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command);
         }
     }
 }

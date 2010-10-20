@@ -8,28 +8,24 @@ using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
-    [Export(typeof(IDestination))]
-    public class Clipboard : ISource, IDestination {
-        public TypedData Get(IMutableProgressTracker progress) {
-            TypedData data = null;
-
-            var thread = new Thread(() => data = GetClipboardData());
-
-            // Clipboard object uses COM; make sure we're in STA
-            thread.SetApartmentState(ApartmentState.STA);
-
-            thread.Start();
-            thread.Join();
-
-            progress.Progress = 1;
-
-            return data;
+    [Export(typeof(IProcessor))]
+    public class Clipboard : IProcessor {
+        public string Name {
+            get { return "Clipboard"; }
         }
 
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
-            // TODO Refactor common parts of Get
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+            this.CheckValidInputType(data);
 
-            var thread = new Thread(() => SetClipboardData(data));
+            Action operation;
+
+            if (data == null) {
+                operation = () => data = GetClipboardData();
+            } else {
+                operation = () => SetClipboardData(data);
+            }
+
+            var thread = new Thread(new ThreadStart(operation));
 
             // Clipboard object uses COM; make sure we're in STA
             thread.SetApartmentState(ApartmentState.STA);
@@ -96,15 +92,15 @@ namespace NoCap.Plugins {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Text, TypedDataType.Uri, TypedDataType.Image };
+            return new[] { TypedDataType.None, TypedDataType.Text, TypedDataType.Uri, TypedDataType.Image };
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { input };
-        }
+            if (input == TypedDataType.None) {
+                return new[] { TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri };
+            }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return new[] { TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri };
+            return new[] { input };
         }
     }
 }

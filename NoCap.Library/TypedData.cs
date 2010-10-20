@@ -6,6 +6,9 @@ namespace NoCap.Library {
     /// The type of a <see cref="TypedData"/> instance.
     /// </summary>
     public enum TypedDataType {
+        /// <summary>Null data.</summary>
+        None = 0,
+
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Drawing.Image"/>.</summary>
         Image = 1,
 

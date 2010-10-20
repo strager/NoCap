@@ -6,7 +6,11 @@ using System.IO;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Destinations {
-    public class ImageWriter : IDestination {
+    public class ImageWriter : IProcessor {
+        public string Name {
+            get { return CodecInfo == null ? "Image writer" : string.Format("{0} writer", CodecInfo.FormatDescription); }
+        }
+
         public EncoderParameters EncoderParameters {
             get;
             private set;
@@ -48,7 +52,7 @@ namespace NoCap.Library.Destinations {
                 codecInfo.Flags.HasFlag(ImageCodecFlags.SupportBitmap);
         }
 
-        public TypedData Put(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }

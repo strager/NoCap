@@ -122,7 +122,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private static void PerformRequestSync(ICommand command, IMutableProgressTracker progress) {
-            command.Get(progress);
+            command.Execute(progress);
         }
 
         private void PerformRequestAsync(ICommand command) {
