@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public class ImageWriter : IProcessor {
         public string Name {
             get { return CodecInfo == null ? "Image writer" : string.Format("{0} writer", CodecInfo.FormatDescription); }

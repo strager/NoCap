@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Plugins {

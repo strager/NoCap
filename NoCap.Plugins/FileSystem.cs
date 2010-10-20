@@ -7,7 +7,7 @@ using NoCap.Library.Util;
 
 namespace NoCap.Plugins {
     [Export(typeof(IProcessor))]
-    public class FileSystemProcessor : IProcessor {
+    public class FileSystem : IProcessor {
         public string Name {
             get { return "File system"; }
         }
@@ -17,10 +17,10 @@ namespace NoCap.Plugins {
             set;
         }
 
-        public FileSystemProcessor() {
+        public FileSystem() {
         }
 
-        public FileSystemProcessor(string rootPath) {
+        public FileSystem(string rootPath) {
             RootPath = rootPath;
         }
 

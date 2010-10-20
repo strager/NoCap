@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 
 namespace NoCap.Plugins {
     [Export(typeof(IProcessor))]

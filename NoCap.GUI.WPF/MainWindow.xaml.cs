@@ -2,10 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Windows.Interop;
 using NoCap.GUI.WPF.Settings;
-using NoCap.GUI.WPF.Templates;
+using NoCap.GUI.WPF.Commands;
 using NoCap.Library.Util;
 using WinputDotNet;
-using ICommand = NoCap.GUI.WPF.Templates.ICommand;
+using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
 namespace NoCap.GUI.WPF {
     /// <summary>

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public class ProcessorChain : IProcessor {
         private readonly List<IProcessor> destinations = new List<IProcessor>();
 
@@ -61,7 +60,7 @@ namespace NoCap.Library.Destinations {
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return this.destinations.Aggregate(
                 (IEnumerable<TypedDataType>)new[] { input },
-                (types, destination) => types.SelectMany((type) => destination.GetOutputDataTypes(type)).Unique()
+                (types, destination) => types.SelectMany(destination.GetOutputDataTypes).Unique()
             );
         }
     }

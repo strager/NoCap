@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WinputDotNet;
-using ICommand = NoCap.GUI.WPF.Templates.ICommand;
+using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     public class ProgramSettings {

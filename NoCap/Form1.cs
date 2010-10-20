@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Linq;
 using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 using NoCap.Plugins;
 using Clipboard = NoCap.Plugins.Clipboard;
 

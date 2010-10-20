@@ -5,7 +5,7 @@ using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public abstract class HttpUploader : IProcessor {
         public abstract string Name { get; }
 

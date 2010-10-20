@@ -5,9 +5,9 @@ using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Util;
 using NoCap.Plugins;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 
-namespace NoCap.GUI.WPF.Templates {
+namespace NoCap.GUI.WPF.Commands {
     public class CropShotUploaderCommand : ICommand {
         private ImageUploader imageUploader;
 

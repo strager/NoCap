@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 
-namespace NoCap.GUI.WPF.Templates {
+namespace NoCap.GUI.WPF.Commands {
     /// <summary>
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>

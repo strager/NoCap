@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Controls;
 using NoCap.Library;
-using NoCap.Library.Destinations;
+using NoCap.Library.Processors;
 using NoCap.Library.Util;
 using NoCap.Plugins;
 
-namespace NoCap.GUI.WPF.Templates {
+namespace NoCap.GUI.WPF.Commands {
     public class ClipboardUploaderCommand : ICommand, INotifyPropertyChanged {
         private TextUploader textUploader;
         private UrlShortener urlShortener;

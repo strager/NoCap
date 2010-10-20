@@ -79,16 +79,16 @@
     <Compile Include="Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Templates\ClipboardUploaderCommand.cs" />
-    <Compile Include="Templates\ClipboardUploaderCommandEditor.xaml.cs">
+    <Compile Include="Commands\ClipboardUploaderCommand.cs" />
+    <Compile Include="Commands\ClipboardUploaderCommandEditor.xaml.cs">
       <DependentUpon>ClipboardUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Templates\CropShotUploaderCommand.cs" />
-    <Compile Include="Templates\CropShotUploaderCommandEditor.xaml.cs">
+    <Compile Include="Commands\CropShotUploaderCommand.cs" />
+    <Compile Include="Commands\CropShotUploaderCommandEditor.xaml.cs">
       <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Templates\ICommand.cs" />
-    <Compile Include="Templates\ICommandFactory.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,11 +121,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Templates\ClipboardUploaderCommandEditor.xaml">
+    <Page Include="Commands\ClipboardUploaderCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Templates\CropShotUploaderCommandEditor.xaml">
+    <Page Include="Commands\CropShotUploaderCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

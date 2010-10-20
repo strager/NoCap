@@ -39,19 +39,19 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Destinations\DataRouter.cs" />
-    <Compile Include="Destinations\ProcessorChain.cs" />
-    <Compile Include="Destinations\HttpUploader.cs" />
+    <Compile Include="Processors\DataRouter.cs" />
+    <Compile Include="Processors\ProcessorChain.cs" />
+    <Compile Include="Processors\HttpUploader.cs" />
     <Compile Include="IProcessor.cs" />
-    <Compile Include="Destinations\ImageUploader.cs" />
-    <Compile Include="Destinations\ImageWriter.cs" />
+    <Compile Include="Processors\ImageUploader.cs" />
+    <Compile Include="Processors\ImageWriter.cs" />
     <Compile Include="INamedComponent.cs" />
     <Compile Include="Util\AggregateProgressTracker.cs" />
     <Compile Include="Util\IMutableProgressTracker.cs" />
     <Compile Include="Util\IProgressTracker.cs" />
     <Compile Include="Util\LinqHelpers.cs" />
-    <Compile Include="Destinations\TextUploader.cs" />
-    <Compile Include="Destinations\UrlShortener.cs" />
+    <Compile Include="Processors\TextUploader.cs" />
+    <Compile Include="Processors\UrlShortener.cs" />
     <Compile Include="Util\NotifyingProgressTracker.cs" />
     <Compile Include="Util\ProgressTrackerHelpers.cs" />
     <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
@@ -64,9 +64,7 @@
       <Name>NoCap.Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
-using NoCap.GUI.WPF.Templates;
+using NoCap.GUI.WPF.Commands;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>

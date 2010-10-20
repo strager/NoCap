@@ -2,7 +2,7 @@
 using System.Net;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public abstract class TextUploader : HttpUploader {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {

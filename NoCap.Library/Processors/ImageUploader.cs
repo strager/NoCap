@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public abstract class ImageUploader : HttpUploader {
         // TODO Accept *raw data* instead of an image (less coupling)
 

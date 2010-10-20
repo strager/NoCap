@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using NoCap.GUI.WPF.Templates;
+using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using WinputDotNet;
 

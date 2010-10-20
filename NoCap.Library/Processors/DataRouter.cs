@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Destinations {
+namespace NoCap.Library.Processors {
     public class DataRouter : IProcessor, IDictionary<TypedDataType, IProcessor> {
         private readonly IDictionary<TypedDataType, IProcessor> routes = new Dictionary<TypedDataType, IProcessor>();
 
