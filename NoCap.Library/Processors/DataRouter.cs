@@ -36,6 +36,10 @@ namespace NoCap.Library.Processors {
             return processor.GetOutputDataTypes(input);
         }
 
+        public IProcessorFactory GetFactory() {
+            return null;
+        }
+
         public bool CanRoute(TypedDataType type, IProcessor processor) {
             return processor.GetInputDataTypes().Contains(type);
         }

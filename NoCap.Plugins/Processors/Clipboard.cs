@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using NoCap.Library;
 using NoCap.Library.Util;
+using NoCap.Plugins.Factories;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class Clipboard : IProcessor {
         public string Name {
             get { return "Clipboard"; }
@@ -101,6 +100,10 @@ namespace NoCap.Plugins {
             }
 
             return new[] { input };
+        }
+
+        public IProcessorFactory GetFactory() {
+            return new ClipboardFactory();
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Library.Processors;
+using NoCap.Plugins.Factories;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class SlexyUploader : TextUploader {
         public override string Name {
             get { return "Slexy.org text uploader"; }
@@ -32,6 +31,10 @@ namespace NoCap.Plugins {
             parameters["tabtype"] = "real";
 
             return parameters;
+        }
+
+        public override IProcessorFactory GetFactory() {
+            return new SlexyUploaderFactory();
         }
 
         protected TimeSpan Expiration {

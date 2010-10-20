@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
@@ -12,12 +13,17 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ICollection<TemplateBinding> Bindings {
+        public ObservableCollection<TemplateBinding> Bindings {
             get;
             set;
         }
 
-        public ICollection<ICommand> Commands {
+        public ObservableCollection<ICommand> Commands {
+            get;
+            set;
+        }
+
+        public ObservableCollection<IProcessor> Processors {
             get;
             set;
         }
@@ -28,8 +34,8 @@ namespace NoCap.GUI.WPF.Settings {
 
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new List<TemplateBinding>();
-            Commands = new List<ICommand>();
+            Bindings = new ObservableCollection<TemplateBinding>();
+            Commands = new ObservableCollection<ICommand>();
         }
 
         /// <summary>
@@ -38,42 +44,48 @@ namespace NoCap.GUI.WPF.Settings {
         /// <returns>A cloned copy of this instance.</returns>
         public ProgramSettings Clone() {
             // I have a feeling this is a hack.
+            // It is a hack.
+            // =[
+
+            return this; // Fuck it.
+            // XXX THIS IS WHY THE "CANCEL" BUTTON OF THE SETTINGS DIALOG SAVES XXX
 
             var templateMappings = new Dictionary<ICommand, ICommand>(new ReferenceComparer());
 
-            var getTemplate = new Func<ICommand, ICommand>((template) => {
-                if (template == null) {
+            var getCommand = new Func<ICommand, ICommand>((command) => {
+                if (command == null) {
                     return null;
                 }
 
                 ICommand newCommand;
 
-                if (templateMappings.TryGetValue(template, out newCommand)) {
+                if (templateMappings.TryGetValue(command, out newCommand)) {
                     return newCommand;
                 }
 
-                return template.Clone();
+                return command.Clone();
             });
 
-            var newTemplates = new ObservableCollection<ICommand>();
+            var newCommands = new ObservableCollection<ICommand>();
 
             foreach (var command in Commands) {
-                var newCommand = getTemplate(command);
+                var newCommand = getCommand(command);
 
                 templateMappings[command] = newCommand;
-                newTemplates.Add(newCommand);
+                newCommands.Add(newCommand);
             }
 
             var newBindings = new ObservableCollection<TemplateBinding>(
                 Bindings.Select((binding) => new TemplateBinding(
                     binding.Input,
-                    getTemplate(binding.Command)
+                    getCommand(binding.Command)
                 ))
             );
 
             return new ProgramSettings {
                 Bindings = newBindings,
-                Commands = newTemplates,
+                Commands = newCommands,
+                //Processors = newProcessors,
                 InputProvider = InputProvider
             };
         }

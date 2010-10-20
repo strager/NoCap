@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NoCap.Library.Util;
 
@@ -62,6 +63,10 @@ namespace NoCap.Library.Processors {
                 (IEnumerable<TypedDataType>)new[] { input },
                 (types, destination) => types.SelectMany(destination.GetOutputDataTypes).Unique()
             );
+        }
+
+        public IProcessorFactory GetFactory() {
+            return null;
         }
     }
 }

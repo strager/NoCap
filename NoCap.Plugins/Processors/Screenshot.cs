@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System;
+using System.Collections.Generic;
 using NoCap.Library;
 using NoCap.Library.Util;
+using NoCap.Plugins.Factories;
 using NoCap.Plugins.Helpers;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class Screenshot : IProcessor {
         public string Name {
             get { return "Screenshot"; }
@@ -42,6 +42,10 @@ namespace NoCap.Plugins {
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Image };
+        }
+
+        public IProcessorFactory GetFactory() {
+            return new ScreenshotFactory();
         }
     }
     

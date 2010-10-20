@@ -49,20 +49,27 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CropShot.cs" />
+    <Compile Include="Factories\ClipboardFactory.cs" />
+    <Compile Include="Factories\CropShot.cs" />
+    <Compile Include="Factories\FileSystemFactory.cs" />
+    <Compile Include="Factories\ImageBinUploaderFactory.cs" />
+    <Compile Include="Factories\IsgdShortenerFactory.cs" />
+    <Compile Include="Factories\ScreenshotFactory.cs" />
+    <Compile Include="Factories\SlexyUploader.cs" />
+    <Compile Include="Processors\CropShot.cs" />
     <Compile Include="Helpers\BitmapElement.cs" />
-    <Compile Include="Clipboard.cs" />
+    <Compile Include="Processors\Clipboard.cs" />
     <Compile Include="Helpers\CropShotWindow.xaml.cs">
       <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileSystem.cs" />
+    <Compile Include="Processors\FileSystem.cs" />
     <Compile Include="Helpers\ImageExtensions.cs" />
-    <Compile Include="ImageBinUploader.cs" />
-    <Compile Include="IsgdShortener.cs" />
+    <Compile Include="Processors\ImageBinUploader.cs" />
+    <Compile Include="Processors\IsgdShortener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ScreenCapturer.cs" />
-    <Compile Include="Screenshot.cs" />
-    <Compile Include="SlexyUploader.cs" />
+    <Compile Include="Processors\Screenshot.cs" />
+    <Compile Include="Processors\SlexyUploader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NoCap.Library\NoCap.Library.csproj">
@@ -79,6 +86,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Editors\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

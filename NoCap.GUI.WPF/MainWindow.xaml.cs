@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Interop;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Commands;
+using NoCap.Library;
 using NoCap.Library.Util;
+using NoCap.Plugins.Processors;
 using WinputDotNet;
 using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
@@ -42,13 +46,15 @@ namespace NoCap.GUI.WPF {
                 }
             };
 
-            var templates = new ICommand[] {
-                new ClipboardUploaderCommand(),
-                new CropShotUploaderCommand(),
-            };
-
             Settings = new ProgramSettings {
-                Commands = new ObservableCollection<ICommand>(templates)
+                Commands = new ObservableCollection<ICommand>(new ICommand[] {
+                    new ClipboardUploaderCommand(),
+                    new CropShotUploaderCommand(),
+                }),
+
+                Processors = new ObservableCollection<IProcessor>(
+                    Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor()).ToList()
+                ),
             };
         }
 

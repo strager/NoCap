@@ -32,7 +32,7 @@ namespace NoCap.GUI.WPF {
         private IEnumerable<IInputProvider> inputProviders;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<IProcessor> processors;
+        private IEnumerable<IProcessorFactory> processorFactories;
 
         [ImportMany(AllowRecomposition = true)]
         private IEnumerable<ICommandFactory> commandFactories;
@@ -44,9 +44,9 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public IEnumerable<IProcessor> Processors {
+        public IEnumerable<IProcessorFactory> ProcessorFactories {
             get {
-                return this.processors;
+                return this.processorFactories;
             }
         }
 

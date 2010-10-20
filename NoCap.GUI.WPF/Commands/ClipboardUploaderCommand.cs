@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Processors;
 using NoCap.Library.Util;
-using NoCap.Plugins;
+using NoCap.Plugins.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
     public class ClipboardUploaderCommand : ICommand, INotifyPropertyChanged {
@@ -139,11 +139,11 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand CreateTemplate() {
+        public ICommand CreateCommand() {
             return new ClipboardUploaderCommand();
         }
 
-        public ContentControl GetCommandEditor(ICommand command) {
+        public ICommandEditor GetCommandEditor(ICommand command) {
             return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command);
         }
     }

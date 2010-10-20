@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.IO;
 using NoCap.Library;
 using NoCap.Library.Util;
+using NoCap.Plugins.Factories;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class FileSystem : IProcessor {
         public string Name {
             get { return "File system"; }
@@ -55,6 +54,10 @@ namespace NoCap.Plugins {
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Uri };
+        }
+
+        public IProcessorFactory GetFactory() {
+            return new FileSystemFactory();
         }
     }
 }

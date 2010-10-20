@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Library.Util;
-using NoCap.Plugins;
+using NoCap.Plugins.Processors;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
@@ -79,11 +79,11 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand CreateTemplate() {
+        public ICommand CreateCommand() {
             return new ClipboardUploaderCommand();
         }
 
-        public ContentControl GetCommandEditor(ICommand command) {
+        public ICommandEditor GetCommandEditor(ICommand command) {
             return new CropShotUploaderCommandEditor();
         }
     }

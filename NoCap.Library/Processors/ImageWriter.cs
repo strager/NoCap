@@ -80,5 +80,9 @@ namespace NoCap.Library.Processors {
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.RawData };
         }
+
+        public IProcessorFactory GetFactory() {
+            return null;    // TODO
+        }
     }
 }

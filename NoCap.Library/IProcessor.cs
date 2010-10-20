@@ -56,6 +56,8 @@ namespace NoCap.Library {
         /// A list of data types which can be legally returned by <see cref="Process"/>.
         /// </returns>
         IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
+
+        IProcessorFactory GetFactory();
     }
 
     public static class ProcessorHelpers {

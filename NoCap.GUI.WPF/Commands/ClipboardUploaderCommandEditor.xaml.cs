@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using NoCap.Library;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
     /// <summary>
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>
-    public partial class ClipboardUploaderCommandEditor {
+    public partial class ClipboardUploaderCommandEditor : ICommandEditor {
         private readonly ClipboardUploaderCommand command;
-        private readonly Providers providers;
+
+        public ObservableCollection<IProcessor> Processors {
+            get;
+            set;
+        }
 
         public ClipboardUploaderCommand Command {
             get {
@@ -16,21 +22,23 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
+        // TODO Bindable Linq
+
         public IEnumerable<ImageUploader> ImageUploaders {
             get {
-                return this.providers.Processors.OfType<ImageUploader>();
+                return Processors.OfType<ImageUploader>();
             }
         }
 
         public IEnumerable<TextUploader> TextUploaders {
             get {
-                return this.providers.Processors.OfType<TextUploader>();
+                return Processors.OfType<TextUploader>();
             }
         }
 
         public IEnumerable<UrlShortener> UrlShorteners {
             get {
-                return this.providers.Processors.OfType<UrlShortener>();
+                return Processors.OfType<UrlShortener>();
             }
         }
 
@@ -38,7 +46,6 @@ namespace NoCap.GUI.WPF.Commands {
             InitializeComponent();
 
             this.command = command;
-            this.providers = Providers.Instance;
 
             DataContext = this;
         }

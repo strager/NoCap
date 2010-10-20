@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Linq;
-using NoCap.GUI.WPF.Commands;
+using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class CommandEditor : ISettingsEditor, INotifyPropertyChanged {
+    public partial class ProcessorEditor : ISettingsEditor, INotifyPropertyChanged {
         public Providers Providers {
             get;
             private set;
@@ -17,54 +17,53 @@ namespace NoCap.GUI.WPF.Settings {
             private set;
         }
 
-        private ICommand selectedCommand;
+        private IProcessor selectedProcessor;
 
-        public ICommand SelectedCommand {
+        public IProcessor SelectedProcessor {
             get {
-                return this.selectedCommand;
+                return this.selectedProcessor;
             }
 
             set {
-                this.selectedCommand = value;
+                this.selectedProcessor = value;
 
-                SetCommandEditor(value);
+                SetProcessorEditor(value);
 
-                Notify("SelectedCommand");
+                Notify("selectedProcessor");
             }
         }
 
-        private void SetCommandEditor(ICommand command) {
-            this.commandEditorContainer.Content = null;
+        private void SetProcessorEditor(IProcessor command) {
+            this.processorEditorContainer.Content = null;
 
             if (command == null) {
                 return;
             }
 
-            var commandFactory = command.GetFactory();
+            var processorFactory = command.GetFactory();
 
-            if (commandFactory == null) {
+            if (processorFactory == null) {
                 return;
             }
 
-            var editor = commandFactory.GetCommandEditor(command);
-            editor.Processors = ProgramSettings.Processors;
+            var editor = processorFactory.GetProcessorEditor(command);
 
-            this.commandEditorContainer.Content = editor;
+            this.processorEditorContainer.Content = editor;
         }
 
         public string DisplayName {
             get {
-                return "Commands";
+                return "Processors";
             }
         }
 
-        public CommandEditor(ProgramSettings programSettings) {
+        public ProcessorEditor(ProgramSettings programSettings) {
             InitializeComponent();
             
             ProgramSettings = programSettings;
             Providers = Providers.Instance;
 
-            SelectedCommand = ProgramSettings.Commands.FirstOrDefault();
+            SelectedProcessor = ProgramSettings.Processors.FirstOrDefault();
 
             DataContext = this;
         }

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Library.Processors;
+using NoCap.Plugins.Factories;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class IsgdShortener : UrlShortener {
         public override string Name {
             get { return "is.gd URL shortener"; }
@@ -28,6 +27,10 @@ namespace NoCap.Plugins {
             get {
                 return @"GET";
             }
+        }
+
+        public override IProcessorFactory GetFactory() {
+            return new IsgdShortenerFactory();
         }
     }
 }

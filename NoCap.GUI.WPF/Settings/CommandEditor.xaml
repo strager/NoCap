@@ -20,6 +20,6 @@
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
         <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />
 
-        <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="templateEditorContainer" />
+        <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="commandEditorContainer" />
     </Grid>
 </ContentControl>

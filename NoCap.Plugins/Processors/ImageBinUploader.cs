@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Library;
 using NoCap.Library.Processors;
+using NoCap.Plugins.Factories;
 using NoCap.Web.Multipart;
 
-namespace NoCap.Plugins {
-    [Export(typeof(IProcessor))]
+namespace NoCap.Plugins.Processors {
     public class ImageBinUploader : ImageUploader {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
@@ -21,8 +20,7 @@ namespace NoCap.Plugins {
             get { return "ImageBin.ca uploader"; }
         }
 
-        [ImportingConstructor]
-        public ImageBinUploader([Import(AllowDefault = true)] ImageWriter imageWriter) :
+        public ImageBinUploader(ImageWriter imageWriter) :
             base(imageWriter) {
         }
 
@@ -36,6 +34,10 @@ namespace NoCap.Plugins {
             var stream = new MemoryStream((byte[]) originalData.Data);
 
             helper.File(stream, "f", originalData.Name);
+        }
+
+        public override IProcessorFactory GetFactory() {
+            return new ImageBinUploaderFactory();
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
