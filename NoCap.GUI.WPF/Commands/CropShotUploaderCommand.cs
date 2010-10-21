@@ -9,7 +9,7 @@ using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
     public class CropShotUploaderCommand : ICommand, INotifyPropertyChanged {
-        private ImageUploader imageUploader;
+        private IProcessor imageUploader;
 
         private string name = "Crop shot uploader";
 
@@ -25,7 +25,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ImageUploader ImageUploader {
+        public IProcessor ImageUploader {
             get {
                 return this.imageUploader;
             }

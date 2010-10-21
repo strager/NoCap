@@ -8,9 +8,9 @@ using NoCap.Plugins.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
     public class ClipboardUploaderCommand : ICommand, INotifyPropertyChanged {
-        private TextUploader textUploader;
-        private UrlShortener urlShortener;
-        private ImageUploader imageUploader;
+        private IProcessor textUploader;
+        private IProcessor urlShortener;
+        private IProcessor imageUploader;
 
         private readonly Clipboard clipboardProcessor = new Clipboard();
 
@@ -28,7 +28,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public TextUploader TextUploader {
+        public IProcessor TextUploader {
             get {
                 return this.textUploader;
             }
@@ -40,7 +40,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public UrlShortener UrlShortener {
+        public IProcessor UrlShortener {
             get {
                 return this.urlShortener;
             }
@@ -52,7 +52,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ImageUploader ImageUploader {
+        public IProcessor ImageUploader {
             get {
                 return this.imageUploader;
             }

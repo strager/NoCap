@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NoCap.Library.Processors;
+using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Commands {
     /// <summary>
@@ -16,17 +16,17 @@ namespace NoCap.GUI.WPF.Commands {
 
         // TODO Bindable Linq
 
-        public IEnumerable<ImageUploader> ImageUploaders {
+        public IEnumerable<IProcessor> ImageUploaders {
             get;
             set;
         }
 
-        public IEnumerable<TextUploader> TextUploaders {
+        public IEnumerable<IProcessor> TextUploaders {
             get;
             set;
         }
 
-        public IEnumerable<UrlShortener> UrlShorteners {
+        public IEnumerable<IProcessor> UrlShorteners {
             get;
             set;
         }

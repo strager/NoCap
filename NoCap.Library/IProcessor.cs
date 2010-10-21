@@ -60,9 +60,13 @@ namespace NoCap.Library {
         IProcessorFactory GetFactory();
     }
 
-    public static class ProcessorHelpers {
+    public static class Processor {
+        private static TypedDataType GetEffectiveDataType(TypedData data) {
+            return data == null ? TypedDataType.None : data.DataType;
+        }
+
         public static bool IsValidInputType(this IProcessor processor, TypedData data) {
-            var type = data == null ? TypedDataType.None : data.DataType;
+            var type = GetEffectiveDataType(data);
 
             return processor.GetInputDataTypes().Contains(type);
         }
@@ -71,6 +75,18 @@ namespace NoCap.Library {
             if (!processor.IsValidInputType(data)) {
                 throw new InvalidOperationException("Invalid data type");
             }
+        }
+
+        public static bool IsValidInputOutputType(this IProcessor processor, TypedDataType inputDataType, TypedDataType outputDataType) {
+            if (!processor.GetInputDataTypes().Contains(inputDataType)) {
+                return false;
+            }
+
+            if (!processor.GetOutputDataTypes(inputDataType).Contains(outputDataType)) {
+                return false;
+            }
+
+            return true;
         }
     }
 }

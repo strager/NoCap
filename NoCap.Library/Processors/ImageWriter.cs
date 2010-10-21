@@ -7,40 +7,44 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Processors {
     public class ImageWriter : IProcessor {
+        private string name;
+        private string extension;
+
         public string Name {
-            get { return CodecInfo == null ? "Image writer" : string.Format("{0} writer", CodecInfo.FormatDescription); }
+            get {
+                if (this.name == null) {
+                    return CodecInfo == null ? "Image writer" : string.Format("{0} writer", CodecInfo.FormatDescription);
+                }
+
+                return this.name;
+            }
+
+            set {
+                this.name = value;
+            }
+        }
+
+        public string Extension {
+            get {
+                return this.extension ?? CodecInfo.FormatDescription;
+            }
+
+            set {
+                this.extension = value;
+            }
         }
 
         public EncoderParameters EncoderParameters {
             get;
-            private set;
+            set;
         }
 
         public ImageCodecInfo CodecInfo {
             get;
-            private set;
+            set;
         }
 
-        private string Extension {
-            get {
-                // FIXME I'm sure this isn't correct
-                return CodecInfo.FormatDescription;
-            }
-        }
-
-        public ImageWriter(ImageCodecInfo codecInfo, EncoderParameters encoderParameters = null) {
-            if (codecInfo == null) {
-                throw new ArgumentNullException("codecInfo");
-            }
-
-            if (!codecInfo.Flags.HasFlag(ImageCodecFlags.Encoder)) {
-                throw new ArgumentException("Codec must support encoding", "codecInfo");
-            }
-
-            if (!codecInfo.Flags.HasFlag(ImageCodecFlags.SupportBitmap)) {
-                throw new ArgumentException("Codec must support bitmap writing", "codecInfo");
-            }
-
+        public ImageWriter(ImageCodecInfo codecInfo = null, EncoderParameters encoderParameters = null) {
             CodecInfo = codecInfo;
             EncoderParameters = encoderParameters;
         }
@@ -55,6 +59,10 @@ namespace NoCap.Library.Processors {
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
+            }
+
+            if (!IsCodecValid(CodecInfo)) {
+                throw new InvalidOperationException("Codec must be non-null and support bitmap encoding");
             }
 
             byte[] rawData;

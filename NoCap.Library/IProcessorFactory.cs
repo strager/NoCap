@@ -1,9 +1,7 @@
-﻿using System.Windows.Controls;
-
-namespace NoCap.Library {
+﻿namespace NoCap.Library {
     public interface IProcessorFactory : INamedComponent {
         IProcessor CreateProcessor();
 
-        ContentControl GetProcessorEditor(IProcessor processor);
+        IProcessorEditor GetProcessorEditor(IProcessor processor);
     }
 }

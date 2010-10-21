@@ -43,6 +43,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editors\ImageWriterEditor.xaml.cs">
+      <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IProcessorEditor.cs" />
     <Compile Include="IProcessorFactory.cs" />
     <Compile Include="Processors\DataRouter.cs" />
     <Compile Include="Processors\ProcessorChain.cs" />
@@ -69,7 +73,15 @@
       <Name>NoCap.Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Factories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Editors\ImageWriterEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

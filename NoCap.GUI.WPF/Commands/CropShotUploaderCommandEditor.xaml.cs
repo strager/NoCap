@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NoCap.Library;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
@@ -8,7 +9,7 @@ namespace NoCap.GUI.WPF.Commands {
     public partial class CropShotUploaderCommandEditor : ICommandEditor {
         private readonly CropShotUploaderCommand command;
 
-        public IEnumerable<ImageUploader> ImageUploaders {
+        public IEnumerable<IProcessor> ImageUploaders {
             get;
             set;
         }

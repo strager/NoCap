@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Windows.Controls;
 using NoCap.Library;
+using NoCap.Library.Editors;
 using NoCap.Library.Processors;
 using NoCap.Plugins.Processors;
 
@@ -23,8 +23,8 @@ namespace NoCap.Plugins.Factories {
             );
         }
 
-        public ContentControl GetProcessorEditor(IProcessor processor) {
-            return null;
+        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
+            return new ImageWriterEditor(((ImageBinUploader) processor).ImageWriter);
         }
     }
 }

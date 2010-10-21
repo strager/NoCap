@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using System.Windows.Controls;
 using NoCap.Library;
 using NoCap.Plugins.Processors;
 
@@ -14,7 +13,7 @@ namespace NoCap.Plugins.Factories {
             return new IsgdShortener();
         }
 
-        public ContentControl GetProcessorEditor(IProcessor processor) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
             return null;
         }
     }

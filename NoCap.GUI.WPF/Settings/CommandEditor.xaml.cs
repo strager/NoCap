@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using NoCap.GUI.WPF.Commands;
-using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>
@@ -78,20 +75,6 @@ namespace NoCap.GUI.WPF.Settings {
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-
-    internal class ProgramSettingsInfoStuff : IInfoStuff {
-        private readonly ProgramSettings programSettings;
-
-        public ProgramSettingsInfoStuff(ProgramSettings programSettings) {
-            this.programSettings = programSettings;
-        }
-
-        public ObservableCollection<IProcessor> Processors {
-            get {
-                return this.programSettings.Processors;
             }
         }
     }

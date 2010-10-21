@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\ICommandEditor.cs" />
+    <Compile Include="Commands\IInfoStuff.cs" />
+    <Compile Include="Commands\InfoStuff.cs" />
     <Compile Include="Settings\BindingSettingEditor.xaml.cs">
       <DependentUpon>BindingSettingEditor.xaml</DependentUpon>
     </Compile>
@@ -74,6 +77,7 @@
     <Compile Include="Settings\ProcessorEditor.xaml.cs">
       <DependentUpon>ProcessorEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
     <Compile Include="Settings\ProviderSettingsEditor.xaml.cs">
       <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
     </Compile>

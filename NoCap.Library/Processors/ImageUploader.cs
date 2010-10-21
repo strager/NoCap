@@ -35,7 +35,7 @@ namespace NoCap.Library.Processors {
             return new[] { TypedDataType.Image };
         }
 
-        public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+        public override IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Uri };
         }
     }
