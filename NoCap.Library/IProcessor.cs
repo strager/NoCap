@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
@@ -57,36 +55,15 @@ namespace NoCap.Library {
         /// </returns>
         IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
 
+        /// <summary>
+        /// Gets a factory which can accept this instance as a parameter to the
+        /// <see cref="IProcessorFactory.GetProcessorEditor"/> method.
+        /// </summary>
+        /// <remarks>
+        /// The only method which is called on the value returned by this method
+        /// is <see cref="IProcessorFactory.GetProcessorEditor"/>.
+        /// </remarks>
+        /// <returns>A factory instance which can provide an editor to this instance.</returns>
         IProcessorFactory GetFactory();
-    }
-
-    public static class Processor {
-        private static TypedDataType GetEffectiveDataType(TypedData data) {
-            return data == null ? TypedDataType.None : data.DataType;
-        }
-
-        public static bool IsValidInputType(this IProcessor processor, TypedData data) {
-            var type = GetEffectiveDataType(data);
-
-            return processor.GetInputDataTypes().Contains(type);
-        }
-
-        public static void CheckValidInputType(this IProcessor processor, TypedData data) {
-            if (!processor.IsValidInputType(data)) {
-                throw new InvalidOperationException("Invalid data type");
-            }
-        }
-
-        public static bool IsValidInputOutputType(this IProcessor processor, TypedDataType inputDataType, TypedDataType outputDataType) {
-            if (!processor.GetInputDataTypes().Contains(inputDataType)) {
-                return false;
-            }
-
-            if (!processor.GetOutputDataTypes(inputDataType).Contains(outputDataType)) {
-                return false;
-            }
-
-            return true;
-        }
     }
 }

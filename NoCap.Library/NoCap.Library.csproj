@@ -48,6 +48,7 @@
     </Compile>
     <Compile Include="IProcessorEditor.cs" />
     <Compile Include="IProcessorFactory.cs" />
+    <Compile Include="Processor.cs" />
     <Compile Include="Processors\DataRouter.cs" />
     <Compile Include="Processors\ProcessorChain.cs" />
     <Compile Include="Processors\HttpUploader.cs" />
