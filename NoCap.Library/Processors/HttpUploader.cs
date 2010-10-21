@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;
@@ -93,6 +95,22 @@ namespace NoCap.Library.Processors {
         protected abstract IDictionary<string, string> GetParameters(TypedData data);
 
         protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
+
+        protected string GetResponseText(HttpWebResponse response) {
+            if (response == null) {
+                throw new ArgumentNullException("response");
+            }
+
+            var stream = response.GetResponseStream();
+            
+            if (stream == null) {
+                throw new ArgumentException("Response stream should not be null", "response");
+            }
+
+            using (var reader = new StreamReader(stream, Encoding.UTF8)) {  // FIXME should this be UTF-8?
+                return reader.ReadToEnd();
+            }
+        }
 
         protected virtual void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
             // Do nothing

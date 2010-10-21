@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Library;
 using NoCap.Library.Processors;
@@ -54,28 +53,19 @@ namespace NoCap.Plugins.Processors {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            // TODO Un-copy-pasta from UrlShortener
-            var stream = response.GetResponseStream();
-            
-            if (stream == null) {
-                throw new InvalidOperationException("Response stream should not be null");
+            string html = GetResponseText(response);
+
+            // Sorry for using regexp to parse HTML, but
+            // including an HTML parsing library as a
+            // dependency is just too much
+
+            var match = LinkInHtml.Match(html);
+
+            if (!match.Success) {
+                return null;
             }
 
-            using (var reader = new StreamReader(stream, Encoding.UTF8)) {  // FIXME should this be UTF-8?
-                string html = reader.ReadToEnd();
-
-                // Sorry for using regexp to parse HTML, but
-                // including an HTML parsing library as a
-                // dependency is just too much
-
-                var match = LinkInHtml.Match(html);
-
-                if (!match.Success) {
-                    return null;
-                }
-
-                return TypedData.FromUri(GetImageUriFromCode(match.Groups["Code"].Value), originalData.Name);
-            }
+            return TypedData.FromUri(GetImageUriFromCode(match.Groups["Code"].Value), originalData.Name);
         }
 
         private Uri GetImageUriFromCode(string code) {

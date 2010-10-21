@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Processors {
@@ -18,15 +15,9 @@ namespace NoCap.Library.Processors {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            var stream = response.GetResponseStream();
-            
-            if (stream == null) {
-                throw new InvalidOperationException("Response stream should not be null");
-            }
+            var urlText = GetResponseText(response);
 
-            using (var reader = new StreamReader(stream, Encoding.UTF8)) {  // FIXME should this be UTF-8?
-                return TypedData.FromUri(reader.ReadToEnd(), originalData.Name);
-            }
+            return TypedData.FromUri(urlText, originalData.Name);
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {

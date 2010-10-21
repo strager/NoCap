@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using NoCap.Library;
 using NoCap.Library.Processors;
 using NoCap.Plugins.Factories;
@@ -25,7 +26,7 @@ namespace NoCap.Plugins.Processors {
             parameters["permissions"] = IsPrivate ? "1" : "0";
             parameters["desc"] = data.Name ?? "";
             parameters["linenumbers"] = ShowLineNumbers ? "0" : "1";
-            parameters["expire"] = Expiration.TotalSeconds.ToString(); // TODO Format provider
+            parameters["expire"] = Expiration.TotalSeconds.ToString(NumberFormatInfo.InvariantInfo);
             parameters["submit"] = "Submit Paste";
             parameters["tabbing"] = "true";
             parameters["tabtype"] = "real";
