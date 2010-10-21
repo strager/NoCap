@@ -73,7 +73,7 @@ namespace NoCap.Library {
         /// <exception cref="ArgumentNullException"><paramref name="data"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
         public TypedData(TypedDataType dataType, object data, string name) {
-            if (data == null) {
+            if (data == null && dataType != TypedDataType.None) {
                 throw new ArgumentNullException("data");
             }
 

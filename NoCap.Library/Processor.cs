@@ -11,7 +11,8 @@ namespace NoCap.Library {
         /// </summary>
         /// <param name="data">The data of which to get the type.</param>
         /// <returns>The type describing <see cref="data"/>.</returns>
-        private static TypedDataType GetEffectiveDataType(TypedData data) {
+        public static TypedDataType GetEffectiveDataType(TypedData data) {
+            // TODO Move to TypedData
             return data == null ? TypedDataType.None : data.DataType;
         }
 
@@ -31,8 +32,9 @@ namespace NoCap.Library {
         /// </returns>
         public static bool IsValidInputType(this IProcessor processor, TypedData data) {
             var type = GetEffectiveDataType(data);
+            var inputTypes = processor.GetInputDataTypes();
 
-            return processor.GetInputDataTypes().Contains(type);
+            return inputTypes.Contains(type) || (type == TypedDataType.None && !inputTypes.Any());
         }
 
         /// <summary>
