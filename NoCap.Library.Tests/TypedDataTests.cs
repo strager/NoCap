@@ -11,6 +11,11 @@ namespace NoCap.Library.Tests {
         }
 
         [Test]
+        public void ConstructorDoesNotThrowOnNullNullTypeData() {
+            Assert.DoesNotThrow(() => new TypedData(TypedDataType.None, null, "null data"));
+        }
+
+        [Test]
         public void FromImage() {
             var image = new System.Drawing.Bitmap(128, 128);
 
