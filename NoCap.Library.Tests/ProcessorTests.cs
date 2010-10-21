@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Moq;
-using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests {
@@ -89,6 +85,58 @@ namespace NoCap.Library.Tests {
 
             Assert.IsFalse(isValid);
         }
+
+        [Test]
+        public void CheckValidInputTypeDoesNotThrow() {
+            var mock = GetProcessorMock();
+            mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+
+            Assert.DoesNotThrow(() => mock.Object.CheckValidInputType(GetTextData()));
+
+            mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
+        }
+
+        [Test]
+        public void CheckValidInputTypeThrows() {
+            var mock = GetProcessorMock();
+            mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
+
+            Assert.Throws<InvalidOperationException>(() => mock.Object.CheckValidInputType(GetTextData()));
+
+            mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
+        }
+
+        [Test]
+        public void CheckValidInputTypeDoesNotThrowEmpty() {
+            var mock = GetProcessorMock();
+            mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new TypedDataType[] { });
+
+            Assert.DoesNotThrow(() => mock.Object.CheckValidInputType(GetNullData()));
+
+            mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
+        }
+
+        [Test]
+        public void CheckValidInputTypeDoesNotThrowNone() {
+            var mock = GetProcessorMock();
+            mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.None });
+
+            Assert.DoesNotThrow(() => mock.Object.CheckValidInputType(GetNullData()));
+
+            mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
+        }
+
+        [Test]
+        public void CheckValidInputTypeThrowsEmpty() {
+            var mock = GetProcessorMock();
+            mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new TypedDataType[] { });
+
+            Assert.Throws<InvalidOperationException>(() => mock.Object.CheckValidInputType(GetTextData()));
+
+            mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
+        }
+
+        // TODO Test IsValidInputOutputType
 
         private static Mock<IProcessor> GetProcessorMock() {
             return new Mock<IProcessor>(MockBehavior.Strict);
