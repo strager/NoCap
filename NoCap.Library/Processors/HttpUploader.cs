@@ -26,7 +26,7 @@ namespace NoCap.Library.Processors {
             var request = BuildRequest(originalData, requestMethod, parameters, requestProgress);
 
             var response = (HttpWebResponse) request.GetResponse();
-            responseProgress.Progress = 1;  // TODO
+            responseProgress.Progress = 1;  // TODO HTTP Progress
 
             return GetResponseData(response, originalData);
         }
@@ -107,7 +107,19 @@ namespace NoCap.Library.Processors {
                 throw new ArgumentException("Response stream should not be null", "response");
             }
 
-            using (var reader = new StreamReader(stream, Encoding.UTF8)) {  // FIXME should this be UTF-8?
+            var encoding = Encoding.UTF8;   // Default encoding
+
+            // FIXME Do this without exceptions
+            try {
+                if (response.CharacterSet != null) {
+                    encoding = Encoding.GetEncoding(response.CharacterSet);
+                }
+            } catch (ArgumentException) {
+                // Bad character set given; ignore exception
+                // TODO Logging?
+            }
+
+            using (var reader = new StreamReader(stream, encoding)) {
                 return reader.ReadToEnd();
             }
         }
