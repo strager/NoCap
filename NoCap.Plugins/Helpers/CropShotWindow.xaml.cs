@@ -5,8 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using NoCap.Library;
 using Image = System.Drawing.Image;
-using Point = System.Drawing.Point;
-using Size = System.Windows.Size;
+using Point = System.Windows.Point;
 
 namespace NoCap.Plugins.Helpers {
     /// <summary>
@@ -64,11 +63,12 @@ namespace NoCap.Plugins.Helpers {
 
             Closed += (sender, e) => {
                 // TODO
+                // (What is there to do?)
             };
 
-            MouseDown += (sender, e) => StartDragging   (GetPixelPosition(e.GetPosition(this)));
-            MouseUp   += (sender, e) => EndDragging     (GetPixelPosition(e.GetPosition(this)));
-            MouseMove += (sender, e) => ContinueDragging(GetPixelPosition(e.GetPosition(this)));
+            MouseDown += (sender, e) => StartDragging   (e.GetPosition(this));
+            MouseUp   += (sender, e) => EndDragging     (e.GetPosition(this));
+            MouseMove += (sender, e) => ContinueDragging(e.GetPosition(this));
         }
 
         private void SetFullscreen() {
@@ -78,42 +78,33 @@ namespace NoCap.Plugins.Helpers {
             ResizeMode = ResizeMode.NoResize;
         }
 
-        private Point GetPixelPosition(System.Windows.Point diuPoint) {
+        private Point GetPixelPosition(Point diuPoint) {
             // FIXME Am I doin' it rite?
             return new Point(
-                (int) Math.Round(diuPoint.X * SourceImage.Width  / Width ),
-                (int) Math.Round(diuPoint.Y * SourceImage.Height / Height)
+                diuPoint.X * SourceImage.Width  / Width,
+                diuPoint.Y * SourceImage.Height / Height
             );
         }
 
-        private System.Windows.Point GetDiuPosition(Point pixelSize) {
-            // FIXME Am I doin' it rite?
-            return new System.Windows.Point(
-                Math.Round((double) pixelSize.X / SourceImage.Width  * Width ),
-                Math.Round((double) pixelSize.Y / SourceImage.Height * Height)
-            );
-        }
-
-        private void StartDragging(Point pixelLocation) {
+        private void StartDragging(Point diuLocation) {
             this.isDragging = true;
-            this.dragStart = pixelLocation;
+            this.dragStart = diuLocation;
         }
 
-        private void ContinueDragging(Point pixelLocation) {
+        private void ContinueDragging(Point diuLocation) {
             if (!this.isDragging) {
                 return;
             }
 
-            UpdateDragRectangle(this.dragStart, pixelLocation);
+            UpdateDragRectangle(this.dragStart, diuLocation);
         }
 
-        private void EndDragging(Point pixelLocation) {
+        private void EndDragging(Point diuLocation) {
             if (!this.isDragging) {
                 return;
             }
 
-            var region = GetRectangle(pixelLocation, this.dragStart);
-
+            var region = GetPixelRectangle(diuLocation, this.dragStart);
             var selectedImage = GetSelectedImage(region);
 
             if (selectedImage != null) {
@@ -123,45 +114,47 @@ namespace NoCap.Plugins.Helpers {
             }
         }
 
-        private static Rectangle GetRectangle(Point a, Point b) {
+        private Rectangle GetPixelRectangle(Point diuA, Point diuB) {
+            var pixelA = GetPixelPosition(diuA);
+            var pixelB = GetPixelPosition(diuB);
+
+            // A is not necessarily up and left of B,
+            // which is why we have this min and max logic.
+
             return Rectangle.FromLTRB(
-                Math.Min(b.X, a.X),
-                Math.Min(b.Y, a.Y),
-                Math.Max(b.X, a.X),
-                Math.Max(b.Y, a.Y)
+                (int) Math.Floor  (Math.Min(pixelB.X, pixelA.X)),
+                (int) Math.Floor  (Math.Min(pixelB.Y, pixelA.Y)),
+                (int) Math.Ceiling(Math.Max(pixelB.X, pixelA.X)),
+                (int) Math.Ceiling(Math.Max(pixelB.Y, pixelA.Y))
             );
         }
 
-        private void UpdateDragRectangle(Point a, Point b) {
+        private void UpdateDragRectangle(Point diuA, Point diuB) {
             if (!this.isDragging) {
                 this.cropRectangle.Visibility = Visibility.Hidden;
             }
 
             this.cropRectangle.Visibility = Visibility.Visible;
 
-            var region = GetRectangle(a, b);
+            // A is not necessarily up and left of B,
+            // which is why we have this abs and min logic.
 
-            var diuSizePoint = GetDiuPosition(new Point(region.Size));
-            var diuSize = new Size(diuSizePoint.X, diuSizePoint.Y);
+            this.cropRectangle.Width  = Math.Abs(diuA.X - diuB.X);
+            this.cropRectangle.Height = Math.Abs(diuA.Y - diuB.Y);
 
-            var diuTopLeft = GetDiuPosition(region.Location);
-
-            this.cropRectangle.Width  = diuSize.Width;
-            this.cropRectangle.Height = diuSize.Height;
-
-            Canvas.SetLeft(this.cropRectangle, diuTopLeft.X);
-            Canvas.SetTop (this.cropRectangle, diuTopLeft.Y);
+            Canvas.SetLeft(this.cropRectangle, Math.Min(diuA.X, diuB.X));
+            Canvas.SetTop (this.cropRectangle, Math.Min(diuA.Y, diuB.Y));
         }
 
-        private Image GetSelectedImage(Rectangle region) {
-            if (region.IsEmpty) {
+        private Image GetSelectedImage(Rectangle pixelRegion) {
+            if (pixelRegion.IsEmpty) {
                 return null;
             }
 
-            var selectedImage = new Bitmap(region.Width, region.Height);
+            var selectedImage = new Bitmap(pixelRegion.Width, pixelRegion.Height);
             
             using (var g = Graphics.FromImage(selectedImage)) {
-                g.DrawImageUnscaled(SourceImage, -region.X, -region.Y);
+                g.DrawImageUnscaled(SourceImage, -pixelRegion.X, -pixelRegion.Y);
             }
 
             return selectedImage;
