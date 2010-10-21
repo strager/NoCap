@@ -31,7 +31,7 @@ namespace NoCap.Plugins.Processors {
             thread.Start();
             thread.Join();
 
-            progress.Progress = 1;  // TODO ?
+            progress.Progress = 1;  // TODO Crop shot progress (?)
 
             return cropShotWindow.Data;
         }

@@ -76,7 +76,7 @@ namespace NoCap.Library.Processors {
                 stream.Read(rawData, 0, rawData.Length);
             }
 
-            progress.Progress = 1;  // TODO
+            progress.Progress = 1;  // TODO Image writing progress (?)
 
             return TypedData.FromRawData(rawData, data.Name + "." + Extension);
         }
@@ -90,7 +90,7 @@ namespace NoCap.Library.Processors {
         }
 
         public IProcessorFactory GetFactory() {
-            return null;    // TODO
+            return null;
         }
     }
 }

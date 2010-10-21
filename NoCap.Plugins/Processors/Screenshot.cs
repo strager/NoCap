@@ -27,7 +27,7 @@ namespace NoCap.Plugins.Processors {
                 case ScreenshotSourceType.EntireDesktop:
                     var image = ScreenCapturer.CaptureEntireDesktop();
 
-                    progress.Progress = 1;  // TODO
+                    progress.Progress = 1;  // Can't really track progress on this...
 
                     return TypedData.FromImage(image, "screenshot");
 

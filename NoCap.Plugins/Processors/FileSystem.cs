@@ -38,7 +38,7 @@ namespace NoCap.Plugins.Processors {
                             Path = path
                         };
 
-                        progress.Progress = 1;  // TODO
+                        progress.Progress = 1;  // TODO File reading progress (?)
 
                         return TypedData.FromUri(uriBuilder.Uri, "output file");
                     }
