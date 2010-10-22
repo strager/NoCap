@@ -16,10 +16,10 @@ namespace NoCap.Library.Tests.Processors {
             processorMock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             processorMock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processorMock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processorMock.Object);
 
-            dataRouter.Process(inputData, inputTracker);
+            chain.Process(inputData, inputTracker);
 
             processorMock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
         }
@@ -33,10 +33,10 @@ namespace NoCap.Library.Tests.Processors {
             processorMock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             processorMock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processorMock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processorMock.Object);
 
-            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker));
+            Assert.Throws<InvalidOperationException>(() => chain.Process(inputData, inputTracker));
         }
         
         [Test]
@@ -50,10 +50,10 @@ namespace NoCap.Library.Tests.Processors {
             processorMock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             processorMock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processorMock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processorMock.Object);
 
-            var actualData = dataRouter.Process(inputData, inputTracker);
+            var actualData = chain.Process(inputData, inputTracker);
             Assert.AreSame(expectedOutput, actualData);
         }
         
@@ -70,11 +70,11 @@ namespace NoCap.Library.Tests.Processors {
             processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             processor2Mock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processor1Mock.Object);
-            dataRouter.Add(processor2Mock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
 
-            dataRouter.Process(inputData, inputTracker);
+            chain.Process(inputData, inputTracker);
             
             processor1Mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
             processor2Mock.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
@@ -93,11 +93,11 @@ namespace NoCap.Library.Tests.Processors {
             processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             processor2Mock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processor1Mock.Object);
-            dataRouter.Add(processor2Mock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
 
-            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker));
+            Assert.Throws<InvalidOperationException>(() => chain.Process(inputData, inputTracker));
         }
 
         [Test]
@@ -113,11 +113,11 @@ namespace NoCap.Library.Tests.Processors {
             processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             processor2Mock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processor1Mock.Object);
-            dataRouter.Add(processor2Mock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
 
-            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker));
+            Assert.Throws<InvalidOperationException>(() => chain.Process(inputData, inputTracker));
         }
 
         [Test]
@@ -135,12 +135,34 @@ namespace NoCap.Library.Tests.Processors {
             processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             processor2Mock.Setup((processor) => processor.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
 
-            var dataRouter = new ProcessorChain();
-            dataRouter.Add(processor1Mock.Object);
-            dataRouter.Add(processor2Mock.Object);
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
 
-            var actualOutput = dataRouter.Process(inputData, inputTracker);
+            var actualOutput = chain.Process(inputData, inputTracker);
             Assert.AreSame(expectedOutput, actualOutput);
+        }
+
+        [Test]
+        public void GetInputDataTypesNone() {
+            var chain = new ProcessorChain();
+
+            CollectionAssert.AreEquivalent(new TypedDataType[] { }, chain.GetInputDataTypes());
+        }
+
+        [Test]
+        public void GetInputDataTypesGivesFirst() {
+            var processor1Mock = GetProcessorMock();
+            processor1Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Image, TypedDataType.Uri });
+
+            var processor2Mock = GetProcessorMock();
+            processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
+
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.Image, TypedDataType.Uri }, chain.GetInputDataTypes());
         }
 
         private static Mock<IProcessor> GetProcessorMock() {
