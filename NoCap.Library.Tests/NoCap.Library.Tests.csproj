@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Processors\DataRouterTests.cs" />
+    <Compile Include="Processors\ProcessorChainTests.cs" />
     <Compile Include="ProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypedDataTests.cs" />
