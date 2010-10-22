@@ -29,6 +29,50 @@ namespace NoCap.Library.Tests.Processors {
 
             destination.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeastOnce());
         }
+        
+        [Test]
+        public void RouteChecksTypes() {
+            var inputTracker = GetMutableProgressTracker();
+            var inputData = GetTextData();
+
+            var destination = GetProcessorMock();
+            destination.Setup((processor) => processor.Process(inputData, inputTracker)).Returns((TypedData) null);
+            
+            // .Add checks the type too, so we make sure it passes .Add's check first
+            destination.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+
+            var dataRouter = new DataRouter();
+            dataRouter.Add(TypedDataType.Text, destination.Object);
+
+            // No need to change the type here
+
+            dataRouter.Process(inputData, inputTracker);
+
+            // Two calls: one from .Add, one from .Process
+            destination.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeast(2));
+        }
+        
+        [Test]
+        public void RouteThrowsOnTypeMismatch() {
+            var inputTracker = GetMutableProgressTracker();
+            var inputData = GetTextData();
+
+            var destination = GetProcessorMock();
+            
+            // .Add checks the type too, so we make sure it passes .Add's check first
+            destination.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+
+            var dataRouter = new DataRouter();
+            dataRouter.Add(TypedDataType.Text, destination.Object);
+
+            // Change the types the processor accepts so the type check fails
+            destination.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
+
+            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker));
+
+            // Two calls: one from .Add, one from .Process
+            destination.Verify((processor) => processor.GetInputDataTypes(), Times.AtLeast(2));
+        }
 
         [Test]
         public void RouteCallsProcess() {

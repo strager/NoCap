@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using NoCap.Library.Util;
@@ -18,6 +17,8 @@ namespace NoCap.Library.Processors {
             if (!routes.TryGetValue(data.DataType, out processor)) {
                 return null;
             }
+
+            processor.CheckValidInputType(data);
 
             return processor.Process(data, progress);
         }
@@ -38,10 +39,6 @@ namespace NoCap.Library.Processors {
 
         public IProcessorFactory GetFactory() {
             return null;
-        }
-
-        public bool CanRoute(TypedDataType type, IProcessor processor) {
-            return processor.GetInputDataTypes().Contains(type);
         }
 
         public IEnumerator<KeyValuePair<TypedDataType, IProcessor>> GetEnumerator() {
@@ -93,7 +90,7 @@ namespace NoCap.Library.Processors {
                 throw new ArgumentNullException("value");
             }
 
-            if (!CanRoute(key, value)) {
+            if (!value.IsValidInputType(key)) {
                 throw new ArgumentException("Destination must accept type", "value");
             }
 
@@ -114,15 +111,7 @@ namespace NoCap.Library.Processors {
             }
 
             set {
-                if (value == null) {
-                    throw new ArgumentNullException("value");
-                }
-
-                if (!CanRoute(key, value)) {
-                    throw new ArgumentException("Destination must accept type", "value");
-                }
-
-                this.routes[key] = value;
+                Add(key, value);
             }
         }
 

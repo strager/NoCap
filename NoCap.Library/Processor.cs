@@ -31,7 +31,10 @@ namespace NoCap.Library {
         /// <c>true</c> if the given data is valid as input to the specified processor; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsValidInputType(this IProcessor processor, TypedData data) {
-            var type = GetEffectiveDataType(data);
+            return processor.IsValidInputType(GetEffectiveDataType(data));
+        }
+
+        public static bool IsValidInputType(this IProcessor processor, TypedDataType type) {
             var inputTypes = processor.GetInputDataTypes();
 
             return inputTypes.Contains(type) || (type == TypedDataType.None && !inputTypes.Any());
