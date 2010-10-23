@@ -50,9 +50,31 @@ namespace NoCap.Library.Processors {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return this.processors.Aggregate(
-                (IEnumerable<TypedDataType>) new[] { input },
-                (types, destination) => types.SelectMany(destination.GetOutputDataTypes).Unique()
+            if (!this.processors.Any()) {
+                return new[] { input };
+            }
+
+            this.CheckValidInputType(input);
+
+            return GetChainOutputDataTypes(input, this.processors).Unique();
+        }
+
+        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<IProcessor> processors) {
+            if (!processors.Any()) {
+                return new[] { input };
+            }
+
+            var processor = processors.First();
+
+            if (!processor.IsValidInputType(input)) {
+                return new TypedDataType[] { };
+            }
+
+            var outputTypes = processor.GetOutputDataTypes(input);
+
+            return outputTypes.Aggregate(
+                (IEnumerable<TypedDataType>) new TypedDataType[] { },
+                (types, type) => types.Concat(GetChainOutputDataTypes(type, processors.Skip(1)))
             );
         }
 

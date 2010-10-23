@@ -165,6 +165,58 @@ namespace NoCap.Library.Tests.Processors {
             CollectionAssert.AreEquivalent(new[] { TypedDataType.Image, TypedDataType.Uri }, chain.GetInputDataTypes());
         }
 
+        [Test]
+        public void GetOutputDataTypes0() {
+            var chain = new ProcessorChain();
+
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.None }, chain.GetOutputDataTypes(TypedDataType.None));
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.Text }, chain.GetOutputDataTypes(TypedDataType.Text));
+        }
+
+        [Test]
+        public void GetOutputDataTypes1() {
+            var processorMock = GetProcessorMock();
+            processorMock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text, TypedDataType.Uri });
+            processorMock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.Text)).Returns(new[] { TypedDataType.Image, TypedDataType.Uri });
+            processorMock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.Uri)).Returns(new[] { TypedDataType.Text, TypedDataType.Uri });
+
+            var chain = new ProcessorChain();
+            chain.Add(processorMock.Object);
+
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.Image, TypedDataType.Uri }, chain.GetOutputDataTypes(TypedDataType.Text));
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.Text, TypedDataType.Uri }, chain.GetOutputDataTypes(TypedDataType.Uri));
+        }
+
+        [Test]
+        public void GetOutputDataTypesBadInputThrows1() {
+            var processorMock = GetProcessorMock();
+            processorMock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+            processorMock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.Text)).Returns(new[] { TypedDataType.Image, TypedDataType.Uri });
+
+            var chain = new ProcessorChain();
+            chain.Add(processorMock.Object);
+
+            Assert.Throws<InvalidOperationException>(() => chain.GetOutputDataTypes(TypedDataType.Uri));
+        }
+
+        [Test]
+        public void GetOutputDataTypes2() {
+            var processor1Mock = GetProcessorMock();
+            processor1Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new TypedDataType[] { });
+            processor1Mock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.None)).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 2, TypedDataType.User + 3 });
+
+            var processor2Mock = GetProcessorMock();
+            processor2Mock.Setup((processor) => processor.GetInputDataTypes()).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 3 });
+            processor2Mock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.User + 1)).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 4 });
+            processor2Mock.Setup((processor) => processor.GetOutputDataTypes(TypedDataType.User + 3)).Returns(new[] { TypedDataType.User + 5 });
+
+            var chain = new ProcessorChain();
+            chain.Add(processor1Mock.Object);
+            chain.Add(processor2Mock.Object);
+
+            CollectionAssert.AreEquivalent(new[] { TypedDataType.User + 1, TypedDataType.User + 4, TypedDataType.User + 5 }, chain.GetOutputDataTypes(TypedDataType.None));
+        }
+
         private static Mock<IProcessor> GetProcessorMock() {
             return new Mock<IProcessor>(MockBehavior.Strict);
         }

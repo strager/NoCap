@@ -56,6 +56,12 @@ namespace NoCap.Library {
             }
         }
 
+        public static void CheckValidInputType(this IProcessor processor, TypedDataType type) {
+            if (!processor.IsValidInputType(type)) {
+                throw new InvalidOperationException("Invalid data type");
+            }
+        }
+
         /// <summary>
         /// Determines whether the given output type is a possible output from
         /// the specified processor if it is given the given input type.
