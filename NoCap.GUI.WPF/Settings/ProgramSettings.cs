@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using WinputDotNet;
-using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     public class ProgramSettings {
@@ -18,7 +18,7 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ObservableCollection<ICommand> Commands {
+        public ObservableCollection<HighLevelCommand> Commands {
             get;
             set;
         }
@@ -35,7 +35,7 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
             Bindings = new ObservableCollection<TemplateBinding>();
-            Commands = new ObservableCollection<ICommand>();
+            Commands = new ObservableCollection<HighLevelCommand>();
         }
 
         /// <summary>
@@ -50,23 +50,24 @@ namespace NoCap.GUI.WPF.Settings {
             return this; // Fuck it.
             // XXX THIS IS WHY THE "CANCEL" BUTTON OF THE SETTINGS DIALOG SAVES XXX
 
-            var templateMappings = new Dictionary<ICommand, ICommand>(new ReferenceComparer());
+            var templateMappings = new Dictionary<HighLevelCommand, HighLevelCommand>(new ReferenceComparer());
 
-            var getCommand = new Func<ICommand, ICommand>((command) => {
+            var getCommand = new Func<HighLevelCommand, HighLevelCommand>((command) => {
                 if (command == null) {
                     return null;
                 }
 
-                ICommand newCommand;
+                HighLevelCommand newCommand;
 
                 if (templateMappings.TryGetValue(command, out newCommand)) {
                     return newCommand;
                 }
 
-                return command.Clone();
+                //return command.Clone();
+                return null;
             });
 
-            var newCommands = new ObservableCollection<ICommand>();
+            var newCommands = new ObservableCollection<HighLevelCommand>();
 
             foreach (var command in Commands) {
                 var newCommand = getCommand(command);
@@ -78,7 +79,7 @@ namespace NoCap.GUI.WPF.Settings {
             var newBindings = new ObservableCollection<TemplateBinding>(
                 Bindings.Select((binding) => new TemplateBinding(
                     binding.Input,
-                    getCommand(binding.Command)
+                    getCommand(binding.HighLevelCommand)
                 ))
             );
 
@@ -119,7 +120,7 @@ namespace NoCap.GUI.WPF.Settings {
     
     public sealed class TemplateBinding : ICommandBinding {
         private readonly IInputSequence input;
-        private readonly ICommand command;
+        private readonly HighLevelCommand highLevelCommand;
 
         public IInputSequence Input {
             get {
@@ -129,19 +130,19 @@ namespace NoCap.GUI.WPF.Settings {
 
         WinputDotNet.ICommand ICommandBinding.Command {
             get {
-                return Command;
+                return this.HighLevelCommand;
             }
         }
 
-        public ICommand Command {
+        public HighLevelCommand HighLevelCommand {
             get {
-                return this.command;
+                return this.highLevelCommand;
             }
         }
 
-        public TemplateBinding(IInputSequence input, ICommand command) {
+        public TemplateBinding(IInputSequence input, HighLevelCommand highLevelCommand) {
             this.input = input;
-            this.command = command;
+            this.highLevelCommand = highLevelCommand;
         }
     }
 }

@@ -8,12 +8,12 @@ using NoCap.Plugins.Processors;
 using NoCap.Library.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
-    public class CropShotUploaderCommand : ICommand, INotifyPropertyChanged {
+    public class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private IProcessor imageUploader;
 
         private string name = "Crop shot uploader";
 
-        public string Name {
+        public override string Name {
             get {
                 return this.name;
             }
@@ -37,18 +37,18 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand Clone() {
+        public HighLevelCommand Clone() {
             return new CropShotUploaderCommand {
                 Name = Name,
                 ImageUploader = ImageUploader,
             };
         }
 
-        public ICommandFactory GetFactory() {
+        public override ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
         }
 
-        public void Execute(IMutableProgressTracker progress) {
+        protected override void Execute(IMutableProgressTracker progress) {
             var source = new Screenshot();
 
             // TODO Progress
@@ -86,14 +86,14 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
+        public HighLevelCommand CreateCommand(IInfoStuff infoStuff) {
             return new CropShotUploaderCommand {
                 ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault()
             };
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command) {
+        public ICommandEditor GetCommandEditor(HighLevelCommand highLevelCommand, IInfoStuff infoStuff) {
+            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) highLevelCommand) {
                 ImageUploaders = infoStuff.GetImageUploaders()
             };
         }

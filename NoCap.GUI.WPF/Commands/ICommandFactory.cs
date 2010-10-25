@@ -2,8 +2,8 @@
 
 namespace NoCap.GUI.WPF.Commands {
     public interface ICommandFactory : INamedComponent {
-        ICommand CreateCommand(IInfoStuff infoStuff);
+        HighLevelCommand CreateCommand(IInfoStuff infoStuff);
 
-        ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff);
+        ICommandEditor GetCommandEditor(HighLevelCommand highLevelCommand, IInfoStuff infoStuff);
     }
 }

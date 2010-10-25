@@ -94,7 +94,7 @@
     <Compile Include="Commands\CropShotUploaderCommandEditor.xaml.cs">
       <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\HighLevelCommand.cs" />
     <Compile Include="Commands\ICommandFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

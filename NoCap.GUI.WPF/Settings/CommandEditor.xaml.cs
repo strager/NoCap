@@ -17,9 +17,9 @@ namespace NoCap.GUI.WPF.Settings {
             private set;
         }
 
-        private ICommand selectedCommand;
+        private HighLevelCommand selectedCommand;
 
-        public ICommand SelectedCommand {
+        public HighLevelCommand SelectedCommand {
             get {
                 return this.selectedCommand;
             }
@@ -33,20 +33,20 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        private void SetCommandEditor(ICommand command) {
+        private void SetCommandEditor(HighLevelCommand highLevelCommand) {
             this.commandEditorContainer.Content = null;
 
-            if (command == null) {
+            if (highLevelCommand == null) {
                 return;
             }
 
-            var commandFactory = command.GetFactory();
+            var commandFactory = highLevelCommand.GetFactory();
 
             if (commandFactory == null) {
                 return;
             }
 
-            var editor = commandFactory.GetCommandEditor(command, new ProgramSettingsInfoStuff(ProgramSettings));
+            var editor = commandFactory.GetCommandEditor(highLevelCommand, new ProgramSettingsInfoStuff(ProgramSettings));
 
             this.commandEditorContainer.Content = editor;
         }

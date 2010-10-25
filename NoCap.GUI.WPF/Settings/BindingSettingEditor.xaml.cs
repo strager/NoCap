@@ -7,8 +7,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using NoCap.GUI.WPF.Commands;
 using WinputDotNet;
-using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>
@@ -244,7 +244,7 @@ namespace NoCap.GUI.WPF.Settings {
 
     public class MutableCommandBinding : INotifyPropertyChanged {
         private IInputSequence input;
-        private ICommand command;
+        private HighLevelCommand command;
 
         public IInputSequence Input {
             get {
@@ -258,7 +258,7 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public ICommand Command {
+        public HighLevelCommand Command {
             get {
                 return this.command;
             }
@@ -270,13 +270,13 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public MutableCommandBinding(IInputSequence input, ICommand command) {
+        public MutableCommandBinding(IInputSequence input, HighLevelCommand command) {
             this.input = input;
             this.command = command;
         }
 
         public MutableCommandBinding(TemplateBinding source) :
-            this(source.Input, source.Command) {
+            this(source.Input, source.HighLevelCommand) {
         }
 
         private void Notify(string propertyName) {

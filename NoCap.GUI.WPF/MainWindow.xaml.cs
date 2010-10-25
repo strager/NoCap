@@ -9,7 +9,6 @@ using NoCap.Library;
 using NoCap.Library.Util;
 using NoCap.Plugins.Processors;
 using WinputDotNet;
-using ICommand = NoCap.GUI.WPF.Commands.ICommand;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -52,7 +51,7 @@ namespace NoCap.GUI.WPF {
                 Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor()).ToList()
             );
 
-            Settings.Commands = new ObservableCollection<ICommand>(
+            Settings.Commands = new ObservableCollection<HighLevelCommand>(
                 Providers.Instance.CommandFactories.Select((factory) => factory.CreateCommand(new ProgramSettingsInfoStuff(Settings)))
             );
         }
@@ -102,7 +101,7 @@ namespace NoCap.GUI.WPF {
 
         private void CommandStateChanged(object sender, CommandStateChangedEventArgs e) {
             if (e.State == InputState.On) {
-                var command = (ICommand) e.Command;
+                var command = (HighLevelCommand) e.Command;
 
                 PerformRequestAsync(command);
             }
@@ -126,14 +125,14 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private static void PerformRequestSync(ICommand command, IMutableProgressTracker progress) {
-            command.Execute(progress);
+        private static void PerformRequestSync(HighLevelCommand highLevelCommand, IMutableProgressTracker progress) {
+            highLevelCommand.Process(null, progress);
         }
 
-        private void PerformRequestAsync(ICommand command) {
-            var func = new Action<ICommand, IMutableProgressTracker>(PerformRequestSync);
+        private void PerformRequestAsync(HighLevelCommand highLevelCommand) {
+            var func = new Action<HighLevelCommand, IMutableProgressTracker>(PerformRequestSync);
 
-            func.BeginInvoke(command, this.progressTracker, func.EndInvoke, null);
+            func.BeginInvoke(highLevelCommand, this.progressTracker, func.EndInvoke, null);
         }
     }
 }
