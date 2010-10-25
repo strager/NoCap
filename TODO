@@ -3,8 +3,6 @@
 == Testing ==
 * Processor extension methods
 * Utility processors
-  * DataRouter
-  * ProcessorChain
   * ImageWriter
 * NoCap.Web namespace
   * Really now ...  >_>
