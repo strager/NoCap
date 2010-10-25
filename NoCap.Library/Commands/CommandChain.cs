@@ -2,23 +2,23 @@
 using System.Linq;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Processors {
-    public class ProcessorChain : IProcessor {
-        private readonly IList<IProcessor> processors;
+namespace NoCap.Library.Commands {
+    public class CommandChain : ICommand {
+        private readonly IList<ICommand> processors;
 
         public string Name {
             get { return "Destination chain"; }
         }
 
-        public ProcessorChain() {
-            this.processors = new List<IProcessor>();
+        public CommandChain() {
+            this.processors = new List<ICommand>();
         }
 
-        public ProcessorChain(params IProcessor[] processors) :
-            this((IEnumerable<IProcessor>) processors) {
+        public CommandChain(params ICommand[] commands) :
+            this((IEnumerable<ICommand>) commands) {
         }
 
-        public ProcessorChain(IEnumerable<IProcessor> processors) {
+        public CommandChain(IEnumerable<ICommand> processors) {
             this.processors = processors.ToList();
         }
 
@@ -59,7 +59,7 @@ namespace NoCap.Library.Processors {
             return GetChainOutputDataTypes(input, this.processors).Unique();
         }
 
-        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<IProcessor> processors) {
+        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<ICommand> processors) {
             if (!processors.Any()) {
                 return new[] { input };
             }
@@ -78,11 +78,11 @@ namespace NoCap.Library.Processors {
             );
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return null;
         }
 
-        public void Add(IProcessor item) {
+        public void Add(ICommand item) {
             this.processors.Add(item);
         }
     }

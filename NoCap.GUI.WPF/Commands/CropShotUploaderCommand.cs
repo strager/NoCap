@@ -5,11 +5,11 @@ using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Util;
 using NoCap.Plugins.Processors;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 
 namespace NoCap.GUI.WPF.Commands {
     public class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
-        private IProcessor imageUploader;
+        private ICommand imageUploader;
 
         private string name = "Crop shot uploader";
 
@@ -25,7 +25,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public IProcessor ImageUploader {
+        public ICommand ImageUploader {
             get {
                 return this.imageUploader;
             }
@@ -44,7 +44,7 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public override IProcessorFactory GetFactory() {
+        public override ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
         }
 
@@ -54,7 +54,7 @@ namespace NoCap.GUI.WPF.Commands {
             // TODO Progress
             var screenshotData = source.Process(null, progress);
 
-            var destination = new ProcessorChain(
+            var destination = new CommandChain(
                 new CropShot(),
                 ImageUploader,
                 new Clipboard()
@@ -78,22 +78,22 @@ namespace NoCap.GUI.WPF.Commands {
         }
     }
 
-    [Export(typeof(IProcessorFactory))]
-    public class CropShotUploaderCommandFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    public class CropShotUploaderCommandFactory : ICommandFactory {
         public string Name {
             get {
                 return "Clipboard uploader";
             }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             return new CropShotUploaderCommand {
                 ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault()
             };
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
-            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) processor) {
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command) {
                 ImageUploaders = infoStuff.GetImageUploaders()
             };
         }

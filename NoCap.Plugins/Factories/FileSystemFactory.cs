@@ -3,17 +3,17 @@ using NoCap.Library;
 using NoCap.Plugins.Processors;
 
 namespace NoCap.Plugins.Factories {
-    [Export(typeof(IProcessorFactory))]
-    class FileSystemFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    class FileSystemFactory : ICommandFactory {
         public string Name {
             get { return "File system"; }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             return new FileSystem();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return null;
         }
     }

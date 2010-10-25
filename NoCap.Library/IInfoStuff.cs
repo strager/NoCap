@@ -2,6 +2,6 @@
 
 namespace NoCap.Library {
     public interface IInfoStuff {
-        ObservableCollection<IProcessor> Processors { get; }
+        ObservableCollection<ICommand> Processors { get; }
     }
 }

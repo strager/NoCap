@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using NoCap.Library;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Processors {
@@ -34,7 +34,7 @@ namespace NoCap.Plugins.Processors {
             return parameters;
         }
 
-        public override IProcessorFactory GetFactory() {
+        public override ICommandFactory GetFactory() {
             return new SlexyUploaderFactory();
         }
 

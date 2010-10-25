@@ -12,13 +12,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 
 namespace NoCap.Library.Editors {
     /// <summary>
     /// Interaction logic for ImageWriterEditor.xaml
     /// </summary>
-    public partial class ImageWriterEditor : IProcessorEditor {
+    public partial class ImageWriterEditor : ICommandEditor {
         private readonly ImageWriter processor;
         private readonly IEnumerable<ImageCodecInfo> codecs;
 

@@ -2,28 +2,28 @@
 using System.Collections.Generic;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Processors {
-    public class DataRouter : IProcessor {
-        private readonly IDictionary<TypedDataType, IProcessor> routes;
+namespace NoCap.Library.Commands {
+    public class DataRouter : ICommand {
+        private readonly IDictionary<TypedDataType, ICommand> routes;
 
         public string Name {
             get { return "Data router"; }
         }
 
         public DataRouter() {
-            this.routes = new Dictionary<TypedDataType, IProcessor>();
+            this.routes = new Dictionary<TypedDataType, ICommand>();
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
-            IProcessor processor;
+            ICommand command;
 
-            if (!this.routes.TryGetValue(data.DataType, out processor)) {
+            if (!this.routes.TryGetValue(data.DataType, out command)) {
                 return null;
             }
 
-            processor.CheckValidInputType(data);
+            command.CheckValidInputType(data);
 
-            return processor.Process(data, progress);
+            return command.Process(data, progress);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
@@ -31,20 +31,20 @@ namespace NoCap.Library.Processors {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            IProcessor processor;
+            ICommand command;
 
-            if (!this.routes.TryGetValue(input, out processor)) {
+            if (!this.routes.TryGetValue(input, out command)) {
                 return null;
             }
 
-            return processor.GetOutputDataTypes(input);
+            return command.GetOutputDataTypes(input);
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return null;
         }
 
-        public void Connect(TypedDataType key, IProcessor value) {
+        public void Connect(TypedDataType key, ICommand value) {
             if (value == null) {
                 throw new ArgumentNullException("value");
             }

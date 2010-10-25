@@ -5,7 +5,7 @@ namespace NoCap.GUI.WPF.Commands {
     /// <summary>
     /// Interaction logic for CropShotUploaderCommandEditor.xaml
     /// </summary>
-    public partial class CropShotUploaderCommandEditor : IProcessorEditor {
+    public partial class CropShotUploaderCommandEditor : ICommandEditor {
         private readonly CropShotUploaderCommand command;
 
         public CropShotUploaderCommand Command {
@@ -14,7 +14,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public IEnumerable<IProcessor> ImageUploaders {
+        public IEnumerable<ICommand> ImageUploaders {
             get;
             set;
         }

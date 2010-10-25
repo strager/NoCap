@@ -3,17 +3,17 @@ using System.Drawing.Imaging;
 using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Editors;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 using NoCap.Plugins.Processors;
 
 namespace NoCap.Plugins.Factories {
-    [Export(typeof(IProcessorFactory))]
-    class ImageBinUploaderFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    class ImageBinUploaderFactory : ICommandFactory {
         public string Name {
             get { return "ImageBin.ca uploader"; }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             // FIXME Hack
 
             var imageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
@@ -23,8 +23,8 @@ namespace NoCap.Plugins.Factories {
             );
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
-            return new ImageWriterEditor(((ImageBinUploader) processor).ImageWriter);
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new ImageWriterEditor(((ImageBinUploader) command).ImageWriter);
         }
     }
 }

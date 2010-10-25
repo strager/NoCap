@@ -5,7 +5,7 @@ namespace NoCap.GUI.WPF.Commands {
     /// <summary>
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>
-    public partial class ClipboardUploaderCommandEditor : IProcessorEditor {
+    public partial class ClipboardUploaderCommandEditor : ICommandEditor {
         private readonly ClipboardUploaderCommand command;
 
         public ClipboardUploaderCommand Command {
@@ -16,17 +16,17 @@ namespace NoCap.GUI.WPF.Commands {
 
         // TODO Bindable Linq
 
-        public IEnumerable<IProcessor> ImageUploaders {
+        public IEnumerable<ICommand> ImageUploaders {
             get;
             set;
         }
 
-        public IEnumerable<IProcessor> TextUploaders {
+        public IEnumerable<ICommand> TextUploaders {
             get;
             set;
         }
 
-        public IEnumerable<IProcessor> UrlShorteners {
+        public IEnumerable<ICommand> UrlShorteners {
             get;
             set;
         }

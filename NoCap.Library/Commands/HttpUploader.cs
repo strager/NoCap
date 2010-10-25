@@ -7,8 +7,8 @@ using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;
 
-namespace NoCap.Library.Processors {
-    public abstract class HttpUploader : IProcessor {
+namespace NoCap.Library.Commands {
+    public abstract class HttpUploader : ICommand {
         public abstract string Name { get; }
 
         public abstract TypedData Process(TypedData data, IMutableProgressTracker progress);
@@ -140,6 +140,6 @@ namespace NoCap.Library.Processors {
 
         public abstract IEnumerable<TypedDataType> GetInputDataTypes();
         public abstract IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
-        public abstract IProcessorFactory GetFactory();
+        public abstract ICommandFactory GetFactory();
     }
 }

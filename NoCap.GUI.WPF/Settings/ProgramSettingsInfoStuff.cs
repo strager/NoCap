@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
@@ -10,7 +9,7 @@ namespace NoCap.GUI.WPF.Settings {
             this.programSettings = programSettings;
         }
 
-        public ObservableCollection<IProcessor> Processors {
+        public ObservableCollection<ICommand> Processors {
             get {
                 return this.programSettings.Processors;
             }

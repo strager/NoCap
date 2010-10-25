@@ -7,6 +7,7 @@ using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using NoCap.Library.Util;
 using WinputDotNet;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -47,8 +48,8 @@ namespace NoCap.GUI.WPF {
 
             var infoStuff = new ProgramSettingsInfoStuff(Settings);
 
-            Settings.Processors = new ObservableCollection<IProcessor>(
-                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor(infoStuff))
+            Settings.Processors = new ObservableCollection<ICommand>(
+                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateCommand(infoStuff))
             );
         }
 

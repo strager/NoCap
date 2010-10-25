@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using NoCap.Library;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 using NoCap.Plugins.Factories;
 using NoCap.Web.Multipart;
 
@@ -35,7 +35,7 @@ namespace NoCap.Plugins.Processors {
             helper.File(stream, "f", originalData.Name);
         }
 
-        public override IProcessorFactory GetFactory() {
+        public override ICommandFactory GetFactory() {
             return new ImageBinUploaderFactory();
         }
 

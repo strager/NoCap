@@ -19,23 +19,23 @@ namespace NoCap.GUI.WPF.Settings {
 
         private readonly IInfoStuff infoStuff;
 
-        private IProcessor selectedProcessor;
+        private ICommand selectedCommand;
 
-        public IProcessor SelectedProcessor {
+        public ICommand SelectedCommand {
             get {
-                return this.selectedProcessor;
+                return this.selectedCommand;
             }
 
             set {
-                this.selectedProcessor = value;
+                this.selectedCommand = value;
 
                 SetProcessorEditor(value);
 
-                Notify("selectedProcessor");
+                Notify("selectedCommand");
             }
         }
 
-        private void SetProcessorEditor(IProcessor command) {
+        private void SetProcessorEditor(ICommand command) {
             this.processorEditorContainer.Content = null;
 
             if (command == null) {
@@ -48,7 +48,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            var editor = processorFactory.GetProcessorEditor(command, infoStuff);
+            var editor = processorFactory.GetCommandEditor(command, infoStuff);
 
             this.processorEditorContainer.Content = editor;
         }
@@ -67,7 +67,7 @@ namespace NoCap.GUI.WPF.Settings {
 
             Providers = Providers.Instance;
 
-            SelectedProcessor = ProgramSettings.Processors.FirstOrDefault();
+            this.SelectedCommand = ProgramSettings.Processors.FirstOrDefault();
 
             DataContext = this;
         }

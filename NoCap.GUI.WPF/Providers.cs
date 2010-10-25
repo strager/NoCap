@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using WinputDotNet;
-using INamedComponent = NoCap.Library.INamedComponent;
 
 namespace NoCap.GUI.WPF {
     public class Providers {
@@ -38,7 +36,7 @@ namespace NoCap.GUI.WPF {
         private IEnumerable<IInputProvider> inputProviders;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<IProcessorFactory> processorFactories;
+        private IEnumerable<ICommandFactory> processorFactories;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
@@ -47,7 +45,7 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public IEnumerable<IProcessorFactory> ProcessorFactories {
+        public IEnumerable<ICommandFactory> ProcessorFactories {
             get {
                 return this.processorFactories;
             }

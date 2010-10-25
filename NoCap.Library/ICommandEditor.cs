@@ -1,6 +1,6 @@
 ﻿namespace NoCap.Library {
     /// <summary>
-    /// Represents a GUI editor of an instance of <see cref="IProcessor"/>.
+    /// Represents a GUI editor of an instance of <see cref="ICommand"/>.
     /// </summary>
     /// <remarks>
     /// Typically, implementors should implement this interface while
@@ -10,6 +10,6 @@
     /// the appropriate data context (if necessary) is the responsibility of
     /// implementors.
     /// </remarks>
-    public interface IProcessorEditor {
+    public interface ICommandEditor {
     }
 }

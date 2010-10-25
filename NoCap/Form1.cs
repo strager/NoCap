@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Linq;
 using NoCap.Library;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 using NoCap.Plugins.Processors;
 using Clipboard = NoCap.Plugins.Processors.Clipboard;
 
@@ -11,46 +11,46 @@ namespace NoCap {
     public partial class Form1 : Form {
         private readonly DataRouter router;
 
-        private readonly IProcessor screenshotProcessor;
+        private readonly ICommand screenshotCommand;
 
-        private readonly IProcessor clipboardProcessor;
+        private readonly ICommand clipboardCommand;
 
         public Form1() {
             InitializeComponent();
 
-            this.screenshotProcessor = new Screenshot { SourceType = ScreenshotSourceType.EntireDesktop };
-            this.clipboardProcessor = new Clipboard();
+            this.screenshotCommand = new Screenshot { SourceType = ScreenshotSourceType.EntireDesktop };
+            this.clipboardCommand = new Clipboard();
 
             var codecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
 
             this.router = new DataRouter();
 
-            router.Connect(TypedDataType.Image, new ProcessorChain(
+            router.Connect(TypedDataType.Image, new CommandChain(
                 new CropShot(),
                 new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
-                this.clipboardProcessor
+                this.clipboardCommand
             ));
 
-            router.Connect(TypedDataType.Text, new ProcessorChain(
+            router.Connect(TypedDataType.Text, new CommandChain(
                 new SlexyUploader(),
-                this.clipboardProcessor
+                this.clipboardCommand
             ));
 
-            router.Connect(TypedDataType.Uri, new ProcessorChain(
+            router.Connect(TypedDataType.Uri, new CommandChain(
                 new IsgdShortener(),
-                this.clipboardProcessor
+                this.clipboardCommand
             ));
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
-            PerformRequest(this.screenshotProcessor);
+            PerformRequest(this.screenshotCommand);
         }
 
         private void ClipboardClicked(object sender, EventArgs e) {
-            PerformRequest(this.clipboardProcessor);
+            PerformRequest(this.clipboardCommand);
         }
 
-        private void PerformRequest(IProcessor source) {
+        private void PerformRequest(ICommand source) {
             var data = this.router.Process(source.Process(null, null), null);
 
             Log(data.ToString());

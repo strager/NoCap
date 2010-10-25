@@ -8,7 +8,7 @@ using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Processors {
-    public class Clipboard : IProcessor {
+    public class Clipboard : ICommand {
         public string Name {
             get { return "Clipboard"; }
         }
@@ -102,7 +102,7 @@ namespace NoCap.Plugins.Processors {
             return new[] { input };
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return new ClipboardFactory();
         }
     }

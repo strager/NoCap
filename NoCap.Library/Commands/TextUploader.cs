@@ -2,11 +2,11 @@
 using System.Net;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Processors {
-    public abstract class UrlShortener : HttpUploader {
+namespace NoCap.Library.Commands {
+    public abstract class TextUploader : HttpUploader {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
-                case TypedDataType.Uri:
+                case TypedDataType.Text:
                     return Upload(data, progress);
 
                 default:
@@ -15,16 +15,14 @@ namespace NoCap.Library.Processors {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            var urlText = GetResponseText(response);
-
-            return TypedData.FromUri(urlText, originalData.Name);
+            return TypedData.FromUri(response.ResponseUri, originalData.Name);
         }
 
         public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Uri };
+            return new[] { TypedDataType.Text };
         }
 
-        public override IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
+        public override System.Collections.Generic.IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.Uri };
         }
     }

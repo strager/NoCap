@@ -3,17 +3,17 @@ using NoCap.Library;
 using NoCap.Plugins.Processors;
 
 namespace NoCap.Plugins.Factories {
-    [Export(typeof(IProcessorFactory))]
-    class SlexyUploaderFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    class SlexyUploaderFactory : ICommandFactory {
         public string Name {
             get { return "Slexy.org uploader"; }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             return new SlexyUploader();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return null;
         }
     }

@@ -5,8 +5,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Processors {
-    public class ImageWriter : IProcessor {
+namespace NoCap.Library.Commands {
+    public class ImageWriter : ICommand {
         private string name;
         private string extension;
 
@@ -89,7 +89,7 @@ namespace NoCap.Library.Processors {
             return new[] { TypedDataType.RawData };
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return null;
         }
     }

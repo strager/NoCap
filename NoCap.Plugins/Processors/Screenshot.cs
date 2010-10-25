@@ -6,7 +6,7 @@ using NoCap.Plugins.Factories;
 using NoCap.Plugins.Helpers;
 
 namespace NoCap.Plugins.Processors {
-    public class Screenshot : IProcessor {
+    public class Screenshot : ICommand {
         public string Name {
             get { return "Screenshot"; }
         }
@@ -44,7 +44,7 @@ namespace NoCap.Plugins.Processors {
             return new[] { TypedDataType.Image };
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return new ScreenshotFactory();
         }
     }

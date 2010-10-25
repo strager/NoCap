@@ -8,7 +8,7 @@ using NoCap.Plugins.Factories;
 using NoCap.Plugins.Helpers;
 
 namespace NoCap.Plugins.Processors {
-    public class CropShot : IProcessor {
+    public class CropShot : ICommand {
         public string Name {
             get { return "Crop shot"; }
         }
@@ -44,7 +44,7 @@ namespace NoCap.Plugins.Processors {
             return new[] { TypedDataType.Image };
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return new CropShotFactory();
         }
     }

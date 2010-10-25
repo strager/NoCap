@@ -2,8 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using NoCap.GUI.WPF.Commands;
-using NoCap.Library;
 using WinputDotNet;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     public class ProgramSettings {
@@ -17,7 +17,7 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ObservableCollection<IProcessor> Processors {
+        public ObservableCollection<ICommand> Processors {
             get;
             set;
         }
@@ -29,7 +29,7 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
             Bindings = new ObservableCollection<TemplateBinding>();
-            Processors = new ObservableCollection<IProcessor>();
+            Processors = new ObservableCollection<ICommand>();
         }
 
         /// <summary>

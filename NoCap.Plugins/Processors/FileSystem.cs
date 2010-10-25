@@ -6,7 +6,7 @@ using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Processors {
-    public class FileSystem : IProcessor {
+    public class FileSystem : ICommand {
         public string Name {
             get { return "File system"; }
         }
@@ -56,7 +56,7 @@ namespace NoCap.Plugins.Processors {
             return new[] { TypedDataType.Uri };
         }
 
-        public IProcessorFactory GetFactory() {
+        public ICommandFactory GetFactory() {
             return new FileSystemFactory();
         }
     }

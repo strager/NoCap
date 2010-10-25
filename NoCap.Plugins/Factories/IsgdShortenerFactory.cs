@@ -3,17 +3,17 @@ using NoCap.Library;
 using NoCap.Plugins.Processors;
 
 namespace NoCap.Plugins.Factories {
-    [Export(typeof(IProcessorFactory))]
-    class IsgdShortenerFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    class IsgdShortenerFactory : ICommandFactory {
         public string Name {
             get { return "is.gd shortener"; }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             return new IsgdShortener();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return null;
         }
     }

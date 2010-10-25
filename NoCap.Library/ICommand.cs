@@ -6,13 +6,13 @@ namespace NoCap.Library {
     /// Represents a possible processor of some data.
     /// </summary>
     /// <remarks>
-    /// An <see cref="IProcessor"/> may also return some data, causing it to
+    /// An <see cref="ICommand"/> may also return some data, causing it to
     /// act like a data filter.  For example, after writing the data to a file,
-    /// the <see cref="IProcessor"/> could return a
+    /// the <see cref="ICommand"/> could return a
     /// <see cref="TypedData"/> of type <see cref="TypedDataType.Uri"/>
     /// referring to the name of the file which was written.
     /// </remarks>
-    public interface IProcessor : INamedComponent {
+    public interface ICommand : INamedComponent {
         /// <summary>
         /// Performs an operation, optionally accepting some data, and
         /// optionally returning new data.
@@ -57,13 +57,13 @@ namespace NoCap.Library {
 
         /// <summary>
         /// Gets a factory which can accept this instance as a parameter to the
-        /// <see cref="IProcessorFactory.GetProcessorEditor"/> method.
+        /// <see cref="ICommandFactory.GetCommandEditor"/> method.
         /// </summary>
         /// <remarks>
         /// The only method which is called on the value returned by this method
-        /// is <see cref="IProcessorFactory.GetProcessorEditor"/>.
+        /// is <see cref="ICommandFactory.GetCommandEditor"/>.
         /// </remarks>
         /// <returns>A factory instance which can provide an editor to this instance.</returns>
-        IProcessorFactory GetFactory();
+        ICommandFactory GetFactory();
     }
 }

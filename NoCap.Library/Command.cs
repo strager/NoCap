@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace NoCap.Library {
     /// <summary>
-    /// Provides a set of static helper methods for <see cref="IProcessor"/> instances.
+    /// Provides a set of static helper methods for <see cref="ICommand"/> instances.
     /// </summary>
-    public static class Processor {
+    public static class Command {
         /// <summary>
         /// Gets the effective data type of the data given data.
         /// </summary>
@@ -17,7 +17,7 @@ namespace NoCap.Library {
         }
 
         /// <summary>
-        /// Determines whether the given data is valid as input to the specified processor.
+        /// Determines whether the given data is valid as input to the specified command.
         /// </summary>
         /// <remarks>
         /// This method only checks that the types are legal, not that the
@@ -25,65 +25,65 @@ namespace NoCap.Library {
         /// data may be given to an image uploader, but although the data may not
         /// represent image data, it will be said to be valid  by this method.
         /// </remarks>
-        /// <param name="processor">The processor on which which the data should be tested.</param>
-        /// <param name="data">The data against which the processor is tested.</param>
+        /// <param name="command">The command on which which the data should be tested.</param>
+        /// <param name="data">The data against which the command is tested.</param>
         /// <returns>
-        /// <c>true</c> if the given data is valid as input to the specified processor; otherwise, <c>false</c>.
+        /// <c>true</c> if the given data is valid as input to the specified command; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsValidInputType(this IProcessor processor, TypedData data) {
-            return processor.IsValidInputType(GetEffectiveDataType(data));
+        public static bool IsValidInputType(this ICommand command, TypedData data) {
+            return command.IsValidInputType(GetEffectiveDataType(data));
         }
 
-        public static bool IsValidInputType(this IProcessor processor, TypedDataType type) {
-            var inputTypes = processor.GetInputDataTypes();
+        public static bool IsValidInputType(this ICommand command, TypedDataType type) {
+            var inputTypes = command.GetInputDataTypes();
 
             return inputTypes.Contains(type) || (type == TypedDataType.None && !inputTypes.Any());
         }
 
         /// <summary>
-        /// Checks whether the given data is valid as input to the specified processor.
+        /// Checks whether the given data is valid as input to the specified command.
         /// Throws an exception if the data is invalid.
         /// </summary>
-        /// <param name="processor">The processor on which which the data should be tested.</param>
-        /// <param name="data">The data against which the processor is tested.</param>
+        /// <param name="command">The command on which which the data should be tested.</param>
+        /// <param name="data">The data against which the command is tested.</param>
         /// <seealso cref="IsValidInputType"/>
         /// <exception cref="InvalidOperationException">
-        /// The given data is valid as input to the specified processor.
+        /// The given data is valid as input to the specified command.
         /// </exception>
-        public static void CheckValidInputType(this IProcessor processor, TypedData data) {
-            if (!processor.IsValidInputType(data)) {
+        public static void CheckValidInputType(this ICommand command, TypedData data) {
+            if (!command.IsValidInputType(data)) {
                 throw new InvalidOperationException("Invalid data type");
             }
         }
 
-        public static void CheckValidInputType(this IProcessor processor, TypedDataType type) {
-            if (!processor.IsValidInputType(type)) {
+        public static void CheckValidInputType(this ICommand command, TypedDataType type) {
+            if (!command.IsValidInputType(type)) {
                 throw new InvalidOperationException("Invalid data type");
             }
         }
 
         /// <summary>
         /// Determines whether the given output type is a possible output from
-        /// the specified processor if it is given the given input type.
+        /// the specified command if it is given the given input type.
         /// <!-- What a mouth-full. -->
         /// </summary>
         /// <remarks>
         /// This method only checks that the types are possible, not that the
         /// actual output will be of the expected type.
         /// </remarks>
-        /// <param name="processor">The processor on which which the data types should be tested.</param>
+        /// <param name="command">The command on which which the data types should be tested.</param>
         /// <param name="inputDataType">The type of the input data.</param>
         /// <param name="outputDataType">The expected type of the output data.</param>
         /// <returns>
         /// <c>true</c> if Determines whether the given output type is a possible output from
-        /// the specified processor if it is given the given input type; otherwise, <c>false</c>.
+        /// the specified command if it is given the given input type; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsValidInputOutputType(this IProcessor processor, TypedDataType inputDataType, TypedDataType outputDataType) {
-            if (!processor.GetInputDataTypes().Contains(inputDataType)) {
+        public static bool IsValidInputOutputType(this ICommand command, TypedDataType inputDataType, TypedDataType outputDataType) {
+            if (!command.GetInputDataTypes().Contains(inputDataType)) {
                 return false;
             }
 
-            if (!processor.GetOutputDataTypes(inputDataType).Contains(outputDataType)) {
+            if (!command.GetOutputDataTypes(inputDataType).Contains(outputDataType)) {
                 return false;
             }
 

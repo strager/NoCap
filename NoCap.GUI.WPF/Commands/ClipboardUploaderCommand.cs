@@ -2,15 +2,15 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using NoCap.Library;
-using NoCap.Library.Processors;
+using NoCap.Library.Commands;
 using NoCap.Library.Util;
 using NoCap.Plugins.Processors;
 
 namespace NoCap.GUI.WPF.Commands {
     public class ClipboardUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
-        private IProcessor textUploader;
-        private IProcessor urlShortener;
-        private IProcessor imageUploader;
+        private ICommand textUploader;
+        private ICommand urlShortener;
+        private ICommand imageUploader;
 
         private readonly Clipboard clipboardProcessor = new Clipboard();
 
@@ -28,7 +28,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public IProcessor TextUploader {
+        public ICommand TextUploader {
             get {
                 return this.textUploader;
             }
@@ -40,7 +40,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public IProcessor UrlShortener {
+        public ICommand UrlShortener {
             get {
                 return this.urlShortener;
             }
@@ -52,7 +52,7 @@ namespace NoCap.GUI.WPF.Commands {
             }
         }
 
-        public IProcessor ImageUploader {
+        public ICommand ImageUploader {
             get {
                 return this.imageUploader;
             }
@@ -73,24 +73,24 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public override IProcessorFactory GetFactory() {
+        public override ICommandFactory GetFactory() {
             return new ClipboardUploaderCommandFactory();
         }
 
         public override void Execute(IMutableProgressTracker progress) {
             var router = new DataRouter();
 
-            router.Connect(TypedDataType.Image, new ProcessorChain(
+            router.Connect(TypedDataType.Image, new CommandChain(
                 ImageUploader,
                 this.clipboardProcessor
             ));
 
-            router.Connect(TypedDataType.Text, new ProcessorChain(
+            router.Connect(TypedDataType.Text, new CommandChain(
                 TextUploader,
                 this.clipboardProcessor
             ));
 
-            router.Connect(TypedDataType.Uri, new ProcessorChain(
+            router.Connect(TypedDataType.Uri, new CommandChain(
                 UrlShortener,
                 this.clipboardProcessor
             ));
@@ -112,15 +112,15 @@ namespace NoCap.GUI.WPF.Commands {
         }
     }
 
-    [Export(typeof(IProcessorFactory))]
-    public class ClipboardUploaderCommandFactory : IProcessorFactory {
+    [Export(typeof(ICommandFactory))]
+    public class ClipboardUploaderCommandFactory : ICommandFactory {
         public string Name {
             get {
                 return "Clipboard uploader";
             }
         }
 
-        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
             return new ClipboardUploaderCommand {
                 ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault(),
                 UrlShortener = infoStuff.GetUrlShorteners().FirstOrDefault(),
@@ -128,8 +128,8 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) processor) {
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command) {
                 ImageUploaders = infoStuff.GetImageUploaders(),
                 UrlShorteners = infoStuff.GetUrlShorteners(),
                 TextUploaders = infoStuff.GetTextUploaders(),
