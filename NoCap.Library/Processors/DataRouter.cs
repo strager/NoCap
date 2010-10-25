@@ -4,23 +4,20 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Processors {
     public class DataRouter : IProcessor {
-        public IDictionary<TypedDataType, IProcessor> Routes {
-            get;
-            private set;
-        }
+        private readonly IDictionary<TypedDataType, IProcessor> routes;
 
         public string Name {
             get { return "Data router"; }
         }
 
         public DataRouter() {
-            Routes = new Dictionary<TypedDataType, IProcessor>();
+            this.routes = new Dictionary<TypedDataType, IProcessor>();
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             IProcessor processor;
 
-            if (!Routes.TryGetValue(data.DataType, out processor)) {
+            if (!this.routes.TryGetValue(data.DataType, out processor)) {
                 return null;
             }
 
@@ -30,13 +27,13 @@ namespace NoCap.Library.Processors {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return Routes.Keys;
+            return this.routes.Keys;
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             IProcessor processor;
 
-            if (!Routes.TryGetValue(input, out processor)) {
+            if (!this.routes.TryGetValue(input, out processor)) {
                 return null;
             }
 
@@ -56,7 +53,7 @@ namespace NoCap.Library.Processors {
                 throw new ArgumentException("Destination must accept type", "value");
             }
 
-            Routes.Add(key, value);
+            this.routes.Add(key, value);
         }
     }
 }

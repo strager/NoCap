@@ -4,17 +4,14 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Processors {
     public class ProcessorChain : IProcessor {
-        public IList<IProcessor> Processors {
-            get;
-            set;
-        }
+        private readonly IList<IProcessor> processors;
 
         public string Name {
             get { return "Destination chain"; }
         }
 
         public ProcessorChain() {
-            Processors = new List<IProcessor>();
+            this.processors = new List<IProcessor>();
         }
 
         public ProcessorChain(params IProcessor[] processors) :
@@ -22,17 +19,17 @@ namespace NoCap.Library.Processors {
         }
 
         public ProcessorChain(IEnumerable<IProcessor> processors) {
-            Processors = processors.ToList();
+            this.processors = processors.ToList();
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             // ToList is needed for some strange reason
-            var progressTrackers = Processors.Select((destination) => new NotifyingProgressTracker()).ToList();
+            var progressTrackers = this.processors.Select((destination) => new NotifyingProgressTracker()).ToList();
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
             aggregateProgress.BindTo(progress);
 
             using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
-                foreach (var destination in Processors) {
+                foreach (var destination in this.processors) {
                     trackerEnumerator.MoveNext();
 
                     destination.CheckValidInputType(data);
@@ -45,21 +42,21 @@ namespace NoCap.Library.Processors {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            if (!Processors.Any()) {
+            if (!this.processors.Any()) {
                 return new TypedDataType[] { };
             }
 
-            return Processors.First().GetInputDataTypes();
+            return this.processors.First().GetInputDataTypes();
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            if (!Processors.Any()) {
+            if (!this.processors.Any()) {
                 return new[] { input };
             }
 
             this.CheckValidInputType(input);
 
-            return GetChainOutputDataTypes(input, Processors).Unique();
+            return GetChainOutputDataTypes(input, this.processors).Unique();
         }
 
         private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<IProcessor> processors) {
@@ -86,7 +83,7 @@ namespace NoCap.Library.Processors {
         }
 
         public void Add(IProcessor item) {
-            Processors.Add(item);
+            this.processors.Add(item);
         }
     }
 }
