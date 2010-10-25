@@ -6,11 +6,11 @@ namespace NoCap.GUI.WPF.Commands {
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>
     public partial class ClipboardUploaderCommandEditor : IProcessorEditor {
-        private readonly ClipboardUploaderCommand highLevelCommand;
+        private readonly ClipboardUploaderCommand command;
 
-        public ClipboardUploaderCommand HighLevelCommand {
+        public ClipboardUploaderCommand Command {
             get {
-                return this.highLevelCommand;
+                return this.command;
             }
         }
 
@@ -31,10 +31,10 @@ namespace NoCap.GUI.WPF.Commands {
             set;
         }
 
-        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand highLevelCommand) {
+        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command) {
             InitializeComponent();
 
-            this.highLevelCommand = highLevelCommand;
+            this.command = command;
 
             DataContext = this;
         }

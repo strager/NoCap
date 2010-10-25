@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Interop;
@@ -7,7 +6,6 @@ using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using NoCap.Library.Util;
-using NoCap.Plugins.Processors;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
@@ -47,12 +45,10 @@ namespace NoCap.GUI.WPF {
 
             Settings = new ProgramSettings();
 
-            Settings.Processors = new ObservableCollection<IProcessor>(
-                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor(null)).ToList()
-            );
+            var infoStuff = new ProgramSettingsInfoStuff(Settings);
 
-            Settings.Commands = new ObservableCollection<HighLevelCommand>(
-                Providers.Instance.CommandFactories.Select((factory) => (HighLevelCommand) factory.CreateProcessor(new ProgramSettingsInfoStuff(Settings)))
+            Settings.Processors = new ObservableCollection<IProcessor>(
+                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor(infoStuff))
             );
         }
 

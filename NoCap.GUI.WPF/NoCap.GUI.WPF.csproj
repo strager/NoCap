@@ -68,9 +68,6 @@
     <Compile Include="Settings\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\CommandEditor.xaml.cs">
-      <DependentUpon>CommandEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings\ProcessorEditor.xaml.cs">
       <DependentUpon>ProcessorEditor.xaml</DependentUpon>
     </Compile>
@@ -109,10 +106,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\BindWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Settings\CommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

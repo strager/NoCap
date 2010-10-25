@@ -6,23 +6,23 @@ namespace NoCap.GUI.WPF.Commands {
     /// Interaction logic for CropShotUploaderCommandEditor.xaml
     /// </summary>
     public partial class CropShotUploaderCommandEditor : IProcessorEditor {
-        private readonly CropShotUploaderCommand highLevelCommand;
+        private readonly CropShotUploaderCommand command;
+
+        public CropShotUploaderCommand Command {
+            get {
+                return this.command;
+            }
+        }
 
         public IEnumerable<IProcessor> ImageUploaders {
             get;
             set;
         }
 
-        public CropShotUploaderCommand HighLevelCommand {
-            get {
-                return this.highLevelCommand;
-            }
-        }
-
-        public CropShotUploaderCommandEditor(CropShotUploaderCommand highLevelCommand) {
+        public CropShotUploaderCommandEditor(CropShotUploaderCommand command) {
             InitializeComponent();
 
-            this.highLevelCommand = highLevelCommand;
+            this.command = command;
 
             DataContext = this;
         }

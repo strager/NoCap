@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NoCap.GUI.WPF.Commands;
@@ -18,11 +17,6 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ObservableCollection<HighLevelCommand> Commands {
-            get;
-            set;
-        }
-
         public ObservableCollection<IProcessor> Processors {
             get;
             set;
@@ -35,7 +29,7 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
             Bindings = new ObservableCollection<TemplateBinding>();
-            Commands = new ObservableCollection<HighLevelCommand>();
+            Processors = new ObservableCollection<IProcessor>();
         }
 
         /// <summary>
@@ -46,49 +40,10 @@ namespace NoCap.GUI.WPF.Settings {
             // I have a feeling this is a hack.
             // It is a hack.
             // =[
-
-            return this; // Fuck it.
+            
             // XXX THIS IS WHY THE "CANCEL" BUTTON OF THE SETTINGS DIALOG SAVES XXX
-
-            var templateMappings = new Dictionary<HighLevelCommand, HighLevelCommand>(new ReferenceComparer());
-
-            var getCommand = new Func<HighLevelCommand, HighLevelCommand>((command) => {
-                if (command == null) {
-                    return null;
-                }
-
-                HighLevelCommand newCommand;
-
-                if (templateMappings.TryGetValue(command, out newCommand)) {
-                    return newCommand;
-                }
-
-                //return command.Clone();
-                return null;
-            });
-
-            var newCommands = new ObservableCollection<HighLevelCommand>();
-
-            foreach (var command in Commands) {
-                var newCommand = getCommand(command);
-
-                templateMappings[command] = newCommand;
-                newCommands.Add(newCommand);
-            }
-
-            var newBindings = new ObservableCollection<TemplateBinding>(
-                Bindings.Select((binding) => new TemplateBinding(
-                    binding.Input,
-                    getCommand(binding.HighLevelCommand)
-                ))
-            );
-
-            return new ProgramSettings {
-                Bindings = newBindings,
-                Commands = newCommands,
-                //Processors = newProcessors,
-                InputProvider = InputProvider
-            };
+            return this; // Fuck it.
+            // XXX THIS IS ALSO WHY WE CAN'T HAVE NICE THINGS XXX
         }
     }
 

@@ -17,6 +17,8 @@ namespace NoCap.GUI.WPF.Settings {
             private set;
         }
 
+        private readonly IInfoStuff infoStuff;
+
         private IProcessor selectedProcessor;
 
         public IProcessor SelectedProcessor {
@@ -46,7 +48,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            var editor = processorFactory.GetProcessorEditor(command, null);
+            var editor = processorFactory.GetProcessorEditor(command, infoStuff);
 
             this.processorEditorContainer.Content = editor;
         }
@@ -61,6 +63,8 @@ namespace NoCap.GUI.WPF.Settings {
             InitializeComponent();
             
             ProgramSettings = programSettings;
+            this.infoStuff = new ProgramSettingsInfoStuff(ProgramSettings);
+
             Providers = Providers.Instance;
 
             SelectedProcessor = ProgramSettings.Processors.FirstOrDefault();
