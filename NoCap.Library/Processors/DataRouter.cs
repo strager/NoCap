@@ -44,7 +44,7 @@ namespace NoCap.Library.Processors {
             return null;
         }
 
-        public void Route(TypedDataType key, IProcessor value) {
+        public void Connect(TypedDataType key, IProcessor value) {
             if (value == null) {
                 throw new ArgumentNullException("value");
             }

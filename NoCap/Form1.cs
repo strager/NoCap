@@ -25,18 +25,18 @@ namespace NoCap {
 
             this.router = new DataRouter();
 
-            router.Route(TypedDataType.Image, new ProcessorChain(
+            router.Connect(TypedDataType.Image, new ProcessorChain(
                 new CropShot(),
                 new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
                 this.clipboardProcessor
             ));
 
-            router.Route(TypedDataType.Text, new ProcessorChain(
+            router.Connect(TypedDataType.Text, new ProcessorChain(
                 new SlexyUploader(),
                 this.clipboardProcessor
             ));
 
-            router.Route(TypedDataType.Uri, new ProcessorChain(
+            router.Connect(TypedDataType.Uri, new ProcessorChain(
                 new IsgdShortener(),
                 this.clipboardProcessor
             ));

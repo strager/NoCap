@@ -80,17 +80,17 @@ namespace NoCap.GUI.WPF.Commands {
         public override void Execute(IMutableProgressTracker progress) {
             var router = new DataRouter();
 
-            router.Route(TypedDataType.Image, new ProcessorChain(
+            router.Connect(TypedDataType.Image, new ProcessorChain(
                 ImageUploader,
                 this.clipboardProcessor
             ));
 
-            router.Route(TypedDataType.Text, new ProcessorChain(
+            router.Connect(TypedDataType.Text, new ProcessorChain(
                 TextUploader,
                 this.clipboardProcessor
             ));
 
-            router.Route(TypedDataType.Uri, new ProcessorChain(
+            router.Connect(TypedDataType.Uri, new ProcessorChain(
                 UrlShortener,
                 this.clipboardProcessor
             ));
