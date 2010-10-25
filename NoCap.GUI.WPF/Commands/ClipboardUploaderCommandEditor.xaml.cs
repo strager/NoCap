@@ -5,7 +5,7 @@ namespace NoCap.GUI.WPF.Commands {
     /// <summary>
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>
-    public partial class ClipboardUploaderCommandEditor : ICommandEditor {
+    public partial class ClipboardUploaderCommandEditor : IProcessorEditor {
         private readonly ClipboardUploaderCommand highLevelCommand;
 
         public ClipboardUploaderCommand HighLevelCommand {

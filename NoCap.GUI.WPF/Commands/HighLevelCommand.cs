@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NoCap.Library;
 using NoCap.Library.Util;
 
@@ -16,7 +15,7 @@ namespace NoCap.GUI.WPF.Commands {
             return null;
         }
 
-        public abstract ICommandFactory GetFactory();
+        public abstract IProcessorFactory GetFactory();
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
             return new[] { TypedDataType.None };
@@ -24,10 +23,6 @@ namespace NoCap.GUI.WPF.Commands {
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             return new[] { TypedDataType.None };
-        }
-
-        IProcessorFactory IProcessor.GetFactory() {
-            throw new NotImplementedException();
         }
 
         protected abstract void Execute(IMutableProgressTracker progress);

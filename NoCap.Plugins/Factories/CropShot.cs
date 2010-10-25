@@ -9,11 +9,11 @@ namespace NoCap.Plugins.Factories {
             get { return "Crop shot"; }
         }
 
-        public IProcessor CreateProcessor() {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             return new CropShot();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
             return null;
         }
     }

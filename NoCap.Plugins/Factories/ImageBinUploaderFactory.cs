@@ -13,7 +13,7 @@ namespace NoCap.Plugins.Factories {
             get { return "ImageBin.ca uploader"; }
         }
 
-        public IProcessor CreateProcessor() {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             // FIXME Hack
 
             var imageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
@@ -23,7 +23,7 @@ namespace NoCap.Plugins.Factories {
             );
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
             return new ImageWriterEditor(((ImageBinUploader) processor).ImageWriter);
         }
     }

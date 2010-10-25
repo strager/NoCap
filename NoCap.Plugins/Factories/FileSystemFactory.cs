@@ -9,11 +9,11 @@ namespace NoCap.Plugins.Factories {
             get { return "File system"; }
         }
 
-        public IProcessor CreateProcessor() {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             return new FileSystem();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
             return null;
         }
     }

@@ -48,11 +48,11 @@ namespace NoCap.GUI.WPF {
             Settings = new ProgramSettings();
 
             Settings.Processors = new ObservableCollection<IProcessor>(
-                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor()).ToList()
+                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateProcessor(null)).ToList()
             );
 
             Settings.Commands = new ObservableCollection<HighLevelCommand>(
-                Providers.Instance.CommandFactories.Select((factory) => factory.CreateCommand(new ProgramSettingsInfoStuff(Settings)))
+                Providers.Instance.CommandFactories.Select((factory) => (HighLevelCommand) factory.CreateProcessor(new ProgramSettingsInfoStuff(Settings)))
             );
         }
 

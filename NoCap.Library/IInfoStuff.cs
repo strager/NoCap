@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using NoCap.Library;
 
-namespace NoCap.GUI.WPF.Commands {
+namespace NoCap.Library {
     public interface IInfoStuff {
         ObservableCollection<IProcessor> Processors { get; }
     }

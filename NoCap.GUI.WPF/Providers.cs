@@ -4,6 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 using WinputDotNet;
+using INamedComponent = NoCap.Library.INamedComponent;
 
 namespace NoCap.GUI.WPF {
     public class Providers {
@@ -40,7 +41,7 @@ namespace NoCap.GUI.WPF {
         private IEnumerable<IProcessorFactory> processorFactories;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<ICommandFactory> commandFactories;
+        private IEnumerable<IProcessorFactory> commandFactories;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
@@ -55,7 +56,7 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public IEnumerable<ICommandFactory> CommandFactories {
+        public IEnumerable<IProcessorFactory> CommandFactories {
             get {
                 return this.commandFactories;
             }

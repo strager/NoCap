@@ -46,7 +46,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return;
             }
 
-            var editor = processorFactory.GetProcessorEditor(command);
+            var editor = processorFactory.GetProcessorEditor(command, null);
 
             this.processorEditorContainer.Content = editor;
         }

@@ -44,7 +44,7 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public override ICommandFactory GetFactory() {
+        public override IProcessorFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
         }
 
@@ -78,22 +78,22 @@ namespace NoCap.GUI.WPF.Commands {
         }
     }
 
-    [Export(typeof(ICommandFactory))]
-    public class CropShotUploaderCommandFactory : ICommandFactory {
+    [Export(typeof(IProcessorFactory))]
+    public class CropShotUploaderCommandFactory : IProcessorFactory {
         public string Name {
             get {
                 return "Clipboard uploader";
             }
         }
 
-        public HighLevelCommand CreateCommand(IInfoStuff infoStuff) {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             return new CropShotUploaderCommand {
                 ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault()
             };
         }
 
-        public ICommandEditor GetCommandEditor(HighLevelCommand highLevelCommand, IInfoStuff infoStuff) {
-            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) highLevelCommand) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
+            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) processor) {
                 ImageUploaders = infoStuff.GetImageUploaders()
             };
         }

@@ -73,7 +73,7 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public override ICommandFactory GetFactory() {
+        public override IProcessorFactory GetFactory() {
             return new ClipboardUploaderCommandFactory();
         }
 
@@ -112,15 +112,15 @@ namespace NoCap.GUI.WPF.Commands {
         }
     }
 
-    [Export(typeof(ICommandFactory))]
-    public class ClipboardUploaderCommandFactory : ICommandFactory {
+    [Export(typeof(IProcessorFactory))]
+    public class ClipboardUploaderCommandFactory : IProcessorFactory {
         public string Name {
             get {
                 return "Clipboard uploader";
             }
         }
 
-        public HighLevelCommand CreateCommand(IInfoStuff infoStuff) {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             return new ClipboardUploaderCommand {
                 ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault(),
                 UrlShortener = infoStuff.GetUrlShorteners().FirstOrDefault(),
@@ -128,8 +128,8 @@ namespace NoCap.GUI.WPF.Commands {
             };
         }
 
-        public ICommandEditor GetCommandEditor(HighLevelCommand highLevelCommand, IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) highLevelCommand) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) processor) {
                 ImageUploaders = infoStuff.GetImageUploaders(),
                 UrlShorteners = infoStuff.GetUrlShorteners(),
                 TextUploaders = infoStuff.GetTextUploaders(),

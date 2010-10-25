@@ -9,11 +9,11 @@ namespace NoCap.Plugins.Factories {
             get { return "Slexy.org uploader"; }
         }
 
-        public IProcessor CreateProcessor() {
+        public IProcessor CreateProcessor(IInfoStuff infoStuff) {
             return new SlexyUploader();
         }
 
-        public IProcessorEditor GetProcessorEditor(IProcessor processor) {
+        public IProcessorEditor GetProcessorEditor(IProcessor processor, IInfoStuff infoStuff) {
             return null;
         }
     }

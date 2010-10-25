@@ -46,6 +46,8 @@
     <Compile Include="Editors\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IInfoStuff.cs" />
+    <Compile Include="InfoStuff.cs" />
     <Compile Include="IProcessorEditor.cs" />
     <Compile Include="IProcessorFactory.cs" />
     <Compile Include="Processor.cs" />

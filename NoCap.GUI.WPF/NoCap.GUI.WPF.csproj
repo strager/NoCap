@@ -62,9 +62,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\ICommandEditor.cs" />
-    <Compile Include="Commands\IInfoStuff.cs" />
-    <Compile Include="Commands\InfoStuff.cs" />
     <Compile Include="Settings\BindingSettingEditor.xaml.cs">
       <DependentUpon>BindingSettingEditor.xaml</DependentUpon>
     </Compile>
@@ -95,7 +92,6 @@
       <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\HighLevelCommand.cs" />
-    <Compile Include="Commands\ICommandFactory.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NoCap.Library;
 using NoCap.Library.Processors;
 
-namespace NoCap.GUI.WPF.Commands {
+namespace NoCap.Library {
     public static class InfoStuff {
         public static IEnumerable<IProcessor> GetTextUploaders(this IInfoStuff infoStuff) {
             return infoStuff.Processors.OfType<TextUploader>();
