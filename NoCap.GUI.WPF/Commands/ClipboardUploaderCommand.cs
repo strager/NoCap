@@ -77,7 +77,7 @@ namespace NoCap.GUI.WPF.Commands {
             return new ClipboardUploaderCommandFactory();
         }
 
-        protected override void Execute(IMutableProgressTracker progress) {
+        public override void Execute(IMutableProgressTracker progress) {
             var router = new DataRouter();
 
             router.Route(TypedDataType.Image, new ProcessorChain(

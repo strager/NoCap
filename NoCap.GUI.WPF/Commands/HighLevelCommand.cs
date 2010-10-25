@@ -9,7 +9,7 @@ namespace NoCap.GUI.WPF.Commands {
             set;
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        TypedData IProcessor.Process(TypedData data, IMutableProgressTracker progress) {
             Execute(progress);
 
             return null;
@@ -25,6 +25,6 @@ namespace NoCap.GUI.WPF.Commands {
             return new[] { TypedDataType.None };
         }
 
-        protected abstract void Execute(IMutableProgressTracker progress);
+        public abstract void Execute(IMutableProgressTracker progress);
     }
 }

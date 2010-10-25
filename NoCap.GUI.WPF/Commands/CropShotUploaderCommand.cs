@@ -48,7 +48,7 @@ namespace NoCap.GUI.WPF.Commands {
             return new CropShotUploaderCommandFactory();
         }
 
-        protected override void Execute(IMutableProgressTracker progress) {
+        public override void Execute(IMutableProgressTracker progress) {
             var source = new Screenshot();
 
             // TODO Progress
