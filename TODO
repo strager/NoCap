@@ -2,7 +2,7 @@
 
 == Testing ==
 * Processor extension methods
-* Utility processors
+* Utility commands
   * ImageWriter
 * NoCap.Web namespace
   * Really now ...  >_>
@@ -17,13 +17,10 @@
      a. Seconds
      b. Number of items
      c. Arbitrary units
-* Better name for IProcessor
-  1. Command
-  2. Filter
-  3. Operation
-  4. ...
-* Possibly merge IProcessor and ICommand
-  1. What's the distinction for the UI?
+* Way to distinguish "high level" commands
+  1. HighLevelCommand abstract class or interface?
+  2. What will they do?  How will that behave differently?
+  3. What's the UI difference/significance?
 * Use Stream instead of byte[] for raw data
   1. Disposable safety?
      a. What about plugins?  Sanity checks...
@@ -40,7 +37,7 @@
   2. Use compression value C (especially for JPEG)
 * Triggers
   1. Before/after some condition, do something
-* New processors
+* New commands
   1. Run executable
   2. Renamer
   3. (S)FTP
