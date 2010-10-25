@@ -9,9 +9,9 @@ namespace NoCap.GUI.WPF.Settings {
             this.programSettings = programSettings;
         }
 
-        public ObservableCollection<ICommand> Processors {
+        public ObservableCollection<ICommand> Commands {
             get {
-                return this.programSettings.Processors;
+                return this.programSettings.Commands;
             }
         }
     }

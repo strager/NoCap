@@ -48,7 +48,7 @@ namespace NoCap.GUI.WPF {
 
             var infoStuff = new ProgramSettingsInfoStuff(Settings);
 
-            Settings.Processors = new ObservableCollection<ICommand>(
+            Settings.Commands = new ObservableCollection<ICommand>(
                 Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateCommand(infoStuff))
             );
         }

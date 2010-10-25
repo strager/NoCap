@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Linq;
+using NoCap.GUI.WPF.Commands;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class ProcessorEditor : ISettingsEditor, INotifyPropertyChanged {
+    public partial class HighLevelCommandEditor : ISettingsEditor, INotifyPropertyChanged {
         public Providers Providers {
             get;
             private set;
@@ -19,9 +20,9 @@ namespace NoCap.GUI.WPF.Settings {
 
         private readonly IInfoStuff infoStuff;
 
-        private ICommand selectedCommand;
+        private HighLevelCommand selectedCommand;
 
-        public ICommand SelectedCommand {
+        public HighLevelCommand SelectedCommand {
             get {
                 return this.selectedCommand;
             }
@@ -35,8 +36,8 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        private void SetProcessorEditor(ICommand command) {
-            this.processorEditorContainer.Content = null;
+        private void SetProcessorEditor(HighLevelCommand command) {
+            this.commandEditorContainer.Content = null;
 
             if (command == null) {
                 return;
@@ -50,16 +51,16 @@ namespace NoCap.GUI.WPF.Settings {
 
             var editor = processorFactory.GetCommandEditor(command, infoStuff);
 
-            this.processorEditorContainer.Content = editor;
+            this.commandEditorContainer.Content = editor;
         }
 
         public string DisplayName {
             get {
-                return "Processors";
+                return "Commands";
             }
         }
 
-        public ProcessorEditor(ProgramSettings programSettings) {
+        public HighLevelCommandEditor(ProgramSettings programSettings) {
             InitializeComponent();
             
             ProgramSettings = programSettings;
@@ -67,7 +68,7 @@ namespace NoCap.GUI.WPF.Settings {
 
             Providers = Providers.Instance;
 
-            this.SelectedCommand = ProgramSettings.Processors.FirstOrDefault();
+            SelectedCommand = this.infoStuff.Commands.OfType<HighLevelCommand>().FirstOrDefault();
 
             DataContext = this;
         }

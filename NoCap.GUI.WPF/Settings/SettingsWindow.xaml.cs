@@ -21,7 +21,7 @@ namespace NoCap.GUI.WPF.Settings {
             var editors = new ISettingsEditor[] {
                 new ProviderSettingsEditor(programSettings),
                 new BindingSettingEditor(programSettings),
-                new ProcessorEditor(programSettings),
+                new HighLevelCommandEditor(programSettings),
             };
 
             foreach (var editor in editors) {

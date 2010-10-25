@@ -1,4 +1,4 @@
-﻿<ContentControl x:Class="NoCap.GUI.WPF.Settings.ProcessorEditor"
+﻿<ContentControl x:Class="NoCap.GUI.WPF.Settings.HighLevelCommandEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,10 +15,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ComboBox Grid.Row="0" Grid.Column="0" Name="processorList" VerticalAlignment="Bottom" Margin="6" ItemsSource="{Binding Path=ProgramSettings.Processors}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedProcessor}" />
+        <ComboBox Grid.Row="0" Grid.Column="0" Name="commandList" VerticalAlignment="Bottom" Margin="6" ItemsSource="{Binding Path=ProgramSettings.Commands}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedCommand}" />
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
         <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />
         
-        <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="processorEditorContainer" />
+        <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="commandEditorContainer" />
     </Grid>
 </ContentControl>

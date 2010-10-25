@@ -17,7 +17,7 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public ObservableCollection<ICommand> Processors {
+        public ObservableCollection<ICommand> Commands {
             get;
             set;
         }
@@ -29,7 +29,7 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
             Bindings = new ObservableCollection<TemplateBinding>();
-            Processors = new ObservableCollection<ICommand>();
+            Commands = new ObservableCollection<ICommand>();
         }
 
         /// <summary>
