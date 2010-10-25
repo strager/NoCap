@@ -25,21 +25,21 @@ namespace NoCap {
 
             this.router = new DataRouter();
 
-            router[TypedDataType.Image] = new ProcessorChain(
+            router.Route(TypedDataType.Image, new ProcessorChain(
                 new CropShot(),
                 new ImageBinUploader(new ImageWriter(codecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))),
                 this.clipboardProcessor
-            );
+            ));
 
-            router[TypedDataType.Text] = new ProcessorChain(
+            router.Route(TypedDataType.Text, new ProcessorChain(
                 new SlexyUploader(),
                 this.clipboardProcessor
-            );
+            ));
 
-            router[TypedDataType.Uri] = new ProcessorChain(
+            router.Route(TypedDataType.Uri, new ProcessorChain(
                 new IsgdShortener(),
                 this.clipboardProcessor
-            );
+            ));
         }
 
         private void ScreenshotClicked(object sender, EventArgs e) {
