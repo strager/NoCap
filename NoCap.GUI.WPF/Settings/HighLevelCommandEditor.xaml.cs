@@ -30,28 +30,8 @@ namespace NoCap.GUI.WPF.Settings {
             set {
                 this.selectedCommand = value;
 
-                SetProcessorEditor(value);
-
                 Notify("selectedCommand");
             }
-        }
-
-        private void SetProcessorEditor(HighLevelCommand command) {
-            this.commandEditorContainer.Content = null;
-
-            if (command == null) {
-                return;
-            }
-
-            var processorFactory = command.GetFactory();
-
-            if (processorFactory == null) {
-                return;
-            }
-
-            var editor = processorFactory.GetCommandEditor(command, infoStuff);
-
-            this.commandEditorContainer.Content = editor;
         }
 
         public string DisplayName {
@@ -64,7 +44,11 @@ namespace NoCap.GUI.WPF.Settings {
             InitializeComponent();
             
             ProgramSettings = programSettings;
-            this.infoStuff = new ProgramSettingsInfoStuff(ProgramSettings);
+            this.infoStuff = new ProgramSettingsInfoStuff(ProgramSettings, Providers.Instance);
+
+            // TODO Move this out of code
+            this.commandSelector.InfoStuff = this.infoStuff;
+            this.commandEditor.InfoStuff = this.infoStuff;
 
             Providers = Providers.Instance;
 

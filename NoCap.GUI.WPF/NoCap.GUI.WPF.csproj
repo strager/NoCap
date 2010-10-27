@@ -58,10 +58,20 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
+    <Compile Include="CommandEditor.xaml.cs">
+      <DependentUpon>CommandEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CommandFactorySelector.xaml.cs">
+      <DependentUpon>CommandFactorySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CommandSelector.xaml.cs">
+      <DependentUpon>CommandSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Settings\BindingSettingEditor.xaml.cs">
       <DependentUpon>BindingSettingEditor.xaml</DependentUpon>
     </Compile>
@@ -89,16 +99,23 @@
       <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\HighLevelCommand.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="SharedCommandSelector.xaml.cs">
+      <DependentUpon>SharedCommandSelector.xaml</DependentUpon>
+    </Compile>
+    <Page Include="CommandEditor.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CommandFactorySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CommandSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Settings\BindingSettingEditor.xaml">
@@ -126,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Commands\CropShotUploaderCommandEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedCommandSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

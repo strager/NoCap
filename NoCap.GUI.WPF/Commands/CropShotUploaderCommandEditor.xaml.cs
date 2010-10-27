@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Commands {
@@ -6,25 +7,39 @@ namespace NoCap.GUI.WPF.Commands {
     /// Interaction logic for CropShotUploaderCommandEditor.xaml
     /// </summary>
     public partial class CropShotUploaderCommandEditor : ICommandEditor {
-        private readonly CropShotUploaderCommand command;
-
+        public readonly static DependencyProperty CommandProperty;
+        public readonly static DependencyProperty InfoStuffProperty;
+        
         public CropShotUploaderCommand Command {
-            get {
-                return this.command;
-            }
+            get { return (CropShotUploaderCommand) GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
         }
 
-        public IEnumerable<ICommand> ImageUploaders {
-            get;
-            set;
+        public IInfoStuff InfoStuff {
+            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
+            set { SetValue(InfoStuffProperty, value); }
         }
 
-        public CropShotUploaderCommandEditor(CropShotUploaderCommand command) {
+        static CropShotUploaderCommandEditor() {
+            CommandProperty = DependencyProperty.Register(
+                "Command",
+                typeof(CropShotUploaderCommand),
+                typeof(CropShotUploaderCommandEditor)
+            );
+
+            InfoStuffProperty = DependencyProperty.Register(
+                "InfoStuff",
+                typeof(CropShotUploaderCommand),
+                typeof(IInfoStuff)
+            );
+        }
+
+        public CropShotUploaderCommandEditor(CropShotUploaderCommand command, IInfoStuff infoStuff) {
             InitializeComponent();
 
-            this.command = command;
+            this.imageUploaderSelector.InfoStuff = infoStuff;
 
-            DataContext = this;
+            Command = command;
         }
     }
 }

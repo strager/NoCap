@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Interop;
-using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Commands;
-using NoCap.Library;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library.Util;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow {
-        private readonly NotifyingProgressTracker progressTracker;
+    public class Program {
+        private readonly IMutableProgressTracker progressTracker;
 
         private ProgramSettings settings;
 
@@ -32,25 +26,17 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public MainWindow() {
-            InitializeComponent();
-
-            DataContext = this;
-
+        public Program() {
             this.progressTracker = new NotifyingProgressTracker();
-            this.progressTracker.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress") {
-                    SetProgress(this.progressTracker.Progress);
-                }
-            };
-
             Settings = new ProgramSettings();
 
-            var infoStuff = new ProgramSettingsInfoStuff(Settings);
+            var infoStuff = new ProgramSettingsInfoStuff(Settings, Providers.Instance);
 
-            Settings.Commands = new ObservableCollection<ICommand>(
-                Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateCommand(infoStuff))
-            );
+            Settings.Commands = new ObservableCollection<ICommand>(new ICommand[] {
+                //Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateCommand(infoStuff))
+                new CropShotUploaderCommand(),
+                new ClipboardUploaderCommand(),
+            });
         }
 
         private void OnSettingsChanged(ProgramSettings oldSettings, ProgramSettings newSettings) {
@@ -78,7 +64,7 @@ namespace NoCap.GUI.WPF {
                 return;
             }
 
-            var handle = new WindowInteropHelper(this).Handle;
+            var handle = new IntPtr(42);    // Hope this doesn't crash.
             
             inputProvider.CommandStateChanged += CommandStateChanged;
             inputProvider.SetBindings(newSettings.Bindings);
@@ -105,13 +91,14 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SetProgress(double progress) {
-            var setProgress = new Action(() => this.progressBar.Value = progress);
+            //var setProgress = new Action(() => this.progressBar.Value = progress);
 
-            Dispatcher.BeginInvoke(setProgress);
+            //setProgress.BeginInvoke(setProgress.EndInvoke, null);
         }
 
-        private void SettingsClicked(object sender, EventArgs e) {
+        private void ShowSettings() {
             var settingsWindow = new SettingsWindow(Settings.Clone());
+            //settingsWindow.Resources = Resources;
 
             ShutDownInput(this.settings);
 
@@ -130,6 +117,10 @@ namespace NoCap.GUI.WPF {
             var func = new Action<HighLevelCommand, IMutableProgressTracker>(PerformRequestSync);
 
             func.BeginInvoke(highLevelCommand, this.progressTracker, func.EndInvoke, null);
+        }
+
+        public void Run() {
+            ShowSettings();
         }
     }
 }
