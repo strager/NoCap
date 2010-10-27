@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
-    public class ImageWriter : ICommand {
+    public class ImageWriter : ICommand, INotifyPropertyChanged {
         private string name;
         private string extension;
+        private EncoderParameters encoderParameters;
+        private ImageCodecInfo codecInfo;
 
         public string Name {
             get {
@@ -21,6 +24,8 @@ namespace NoCap.Library.Commands {
 
             set {
                 this.name = value;
+
+                Notify("Name");
             }
         }
 
@@ -31,17 +36,41 @@ namespace NoCap.Library.Commands {
 
             set {
                 this.extension = value;
+
+                Notify("Extension");
             }
         }
 
         public EncoderParameters EncoderParameters {
-            get;
-            set;
+            get {
+                return this.encoderParameters;
+            }
+
+            set {
+                this.encoderParameters = value;
+
+                Notify("EncoderParameters");
+            }
         }
 
         public ImageCodecInfo CodecInfo {
-            get;
-            set;
+            get {
+                return this.codecInfo;
+            }
+
+            set {
+                this.codecInfo = value;
+
+                Notify("CodecInfo");
+
+                if (this.name == null) {
+                    Notify("Name");
+                }
+
+                if (this.extension == null) {
+                    Notify("Extension");
+                }
+            }
         }
 
         public ImageWriter(ImageCodecInfo codecInfo = null, EncoderParameters encoderParameters = null) {
@@ -91,6 +120,16 @@ namespace NoCap.Library.Commands {
 
         public ICommandFactory GetFactory() {
             return null;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void Notify(string propertyName) {
+            var handler = PropertyChanged;
+
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

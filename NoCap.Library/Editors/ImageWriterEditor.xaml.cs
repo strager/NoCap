@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using NoCap.Library.Commands;
 
 namespace NoCap.Library.Editors {
@@ -19,12 +8,14 @@ namespace NoCap.Library.Editors {
     /// Interaction logic for ImageWriterEditor.xaml
     /// </summary>
     public partial class ImageWriterEditor : ICommandEditor {
-        private readonly ImageWriter processor;
+        private static readonly IEnumerable<ImageCodecInfo> DefaultImageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
+
+        private readonly ImageWriter command;
         private readonly IEnumerable<ImageCodecInfo> codecs;
 
-        public ImageWriter Processor {
+        public ImageWriter Command {
             get {
-                return this.processor;
+                return this.command;
             }
         }
 
@@ -34,17 +25,17 @@ namespace NoCap.Library.Editors {
             }
         }
 
-        public ImageWriterEditor(ImageWriter processor) :
-            this(processor, ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid)) {
+        public ImageWriterEditor(ImageWriter command) :
+            this(command, DefaultImageCodecs) {
         }
 
-        public ImageWriterEditor(ImageWriter processor, IEnumerable<ImageCodecInfo> codecs) {
-            InitializeComponent();
-
-            this.processor = processor;
+        public ImageWriterEditor(ImageWriter command, IEnumerable<ImageCodecInfo> codecs) {
+            // Must be set before the InitializeCompoent call
+            // so bindings are set up against these (and not null)
+            this.command = command;
             this.codecs = codecs;
 
-            DataContext = this;
+            InitializeComponent();
         }
     }
 }
