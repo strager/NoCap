@@ -13,7 +13,8 @@ namespace NoCap.GUI.WPF {
         
         public readonly static RoutedEvent CommandChangedEvent;
         public readonly static RoutedEvent CommandFactoryChangedEvent;
-        
+        private bool generateCommandInstance = true;
+
         public ICommand Command {
             get { return (ICommand) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
@@ -95,20 +96,31 @@ namespace NoCap.GUI.WPF {
             } else {
                 // FIXME Make a more elegant way of "does this factory make this type of command"
                 // (or something)
-                factory = this.commandFactoryList.Items.OfType<ICommandFactory>().FirstOrDefault((f) => {
-                    var commandFactory = command.GetFactory();
-
-                    return commandFactory != null && f.GetType() == commandFactory.GetType();
-                });
+                factory = this.commandFactoryList.Items.OfType<ICommandFactory>()
+                    .FirstOrDefault((f) => IsCommandFromFactory(command, f));
             }
 
-            this.commandFactoryList.SelectedItem = factory;
+            this.generateCommandInstance = false;
+
+            try {
+                this.commandFactoryList.SelectedItem = factory;
+            } finally {
+                this.generateCommandInstance = true;
+            }
+        }
+
+        private static bool IsCommandFromFactory(ICommand command, ICommandFactory factory) {
+            var commandFactory = command.GetFactory();
+
+            return commandFactory != null && factory.GetType() == commandFactory.GetType();
         }
 
         private static void OnCommandFactoryChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandFactorySelector) sender;
 
-            commandSelector.UpdateCommand((ICommandFactory) e.NewValue);
+            if (commandSelector.generateCommandInstance) {
+                commandSelector.UpdateCommand((ICommandFactory) e.NewValue);
+            }
 
             var args = new RoutedPropertyChangedEventArgs<ICommandFactory>((ICommandFactory) e.OldValue, (ICommandFactory) e.NewValue) {
                 RoutedEvent = CommandFactoryChangedEvent
