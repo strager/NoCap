@@ -10,6 +10,8 @@ namespace NoCap.GUI.WPF {
         protected override void OnStartup(System.Windows.StartupEventArgs e) {
             base.OnStartup(e);
 
+            ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
+
             this.program = new Program();
             this.program.Run();
         }

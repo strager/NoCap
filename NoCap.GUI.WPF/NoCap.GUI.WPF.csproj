@@ -189,6 +189,10 @@
       <Project>{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}</Project>
       <Name>NoCap.Plugins</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\NotifyIconWpf\NotifyIconWpf.csproj">
+      <Project>{7AC63864-7638-41C4-969C-D3197EF2BED9}</Project>
+      <Name>NotifyIconWpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\WinputDotNet\WinputDotNet.Providers\WinputDotNet.Providers.csproj">
       <Project>{DDD13750-8319-406C-BC5F-E430D28258BB}</Project>
       <Name>WinputDotNet.Providers</Name>

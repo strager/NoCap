@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Commands;
 using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
@@ -11,15 +13,18 @@ using ICommand = NoCap.Library.ICommand;
 namespace NoCap.GUI.WPF {
     public class Program {
         private readonly IMutableProgressTracker progressTracker;
+        private readonly TaskbarIcon taskbarIcon;
 
         private ProgramSettings settings;
+        private ProgramSettingsInfoStuff infoStuff;
+        private SettingsWindow settingsWindow;
 
-        private ProgramSettings Settings {
+        public ProgramSettings Settings {
             get {
                 return this.settings;
             }
 
-            set {
+            private set {
                 var oldSettings = this.settings;
 
                 this.settings = value;
@@ -30,14 +35,24 @@ namespace NoCap.GUI.WPF {
 
         public Program() {
             this.progressTracker = new NotifyingProgressTracker();
+            this.taskbarIcon = new TaskbarIcon {
+                Visibility = Visibility.Collapsed,
+            };
+
+            this.taskbarIcon.TrayMouseDoubleClick += (sender, e) => ShowSettingsEditor();
+
+            LoadSettings();
+        }
+
+        private void LoadSettings() {
             Settings = new ProgramSettings();
 
-            var infoStuff = new ProgramSettingsInfoStuff(Settings, Providers.Instance);
+            this.infoStuff = new ProgramSettingsInfoStuff(Settings, Providers.Instance);
 
             Settings.Commands = new ObservableCollection<ICommand>(
                 Providers.Instance.ProcessorFactories
                     .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
-                    .Select((factory) => factory.CreateCommand(infoStuff))
+                    .Select((factory) => factory.CreateCommand(this.infoStuff))
             );
         }
 
@@ -98,17 +113,25 @@ namespace NoCap.GUI.WPF {
             //setProgress.BeginInvoke(setProgress.EndInvoke, null);
         }
 
-        private void ShowSettings() {
-            var settingsWindow = new SettingsWindow(Settings.Clone());
-            //settingsWindow.Resources = Resources;
+        private void ShowSettingsEditor() {
+            if (this.settingsWindow != null) {
+                this.settingsWindow.Show();
+            }
 
-            ShutDownInput(this.settings);
+            this.settingsWindow = new SettingsWindow(Settings.Clone());
+            this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
+            this.settingsWindow.Show();
+        }
 
-            if (settingsWindow.ShowDialog() == true) {
-                Settings = settingsWindow.ProgramSettings;
-            } else {
+        private void CheckSettingsEditorResult() {
+            if (this.settingsWindow.DialogResult == true) {
+                ShutDownInput(this.settings);
+                Settings = this.settingsWindow.ProgramSettings;
                 SetUpInput(this.settings);
             }
+
+            this.settingsWindow.Close();
+            this.settingsWindow = null;
         }
 
         private static void PerformRequestSync(ICommand highLevelCommand, IMutableProgressTracker progress) {
@@ -122,7 +145,9 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Run() {
-            ShowSettings();
+            this.taskbarIcon.Visibility = Visibility.Visible;
+
+            ShowSettingsEditor();
         }
     }
 }
