@@ -14,8 +14,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <local:CommandSelector Grid.Row="0" Grid.Column="0" x:Name="commandSelector"
-            VerticalAlignment="Bottom" Margin="6" Command="{Binding Path=SelectedCommand}" IsShared="True" />
+        <local:SharedCommandSelector Grid.Row="0" Grid.Column="0" x:Name="commandSelector"
+            VerticalAlignment="Bottom" Margin="6" Command="{Binding Path=SelectedCommand}" />
         
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
         <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />

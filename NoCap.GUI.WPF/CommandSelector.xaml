@@ -4,12 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:NoCap.GUI.WPF" mc:Ignorable="d"
-             d:DesignHeight="224" d:DesignWidth="242"
+             d:DesignHeight="82" d:DesignWidth="287"
              Name="commandSelector">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <CheckBox Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,3,0" IsChecked="{Binding ElementName=commandSelector, Path=IsShared}" Content="Shared" />
+        
         <!-- TODO Make swapping visibility/binding less painful -->
 
-        <local:SharedCommandSelector x:Name="sharedCommandList" CommandChanged="SharedCommandChanged"
+        <local:SharedCommandSelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="sharedCommandList" CommandChanged="SharedCommandChanged"
             InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff}">
             <local:SharedCommandSelector.Style>
                 <Style>
@@ -26,8 +33,8 @@
                 </Style>
             </local:SharedCommandSelector.Style>
         </local:SharedCommandSelector>
-        
-        <local:CommandFactorySelector x:Name="commandFactoryList" CommandChanged="CommandFactoryCommandChanged"
+
+        <local:CommandFactorySelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="commandFactoryList" CommandChanged="CommandFactoryCommandChanged"
             InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff}">
             <local:CommandFactorySelector.Style>
                 <Style>

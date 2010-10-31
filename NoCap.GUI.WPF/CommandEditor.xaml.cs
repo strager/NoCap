@@ -63,7 +63,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SetActiveCommand(ICommand command) {
-            var factory = command.GetFactory();
+            var factory = command == null ? null : command.GetFactory();
 
             var editor = (factory == null)
                 ? null

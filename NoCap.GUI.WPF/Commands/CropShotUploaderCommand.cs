@@ -95,5 +95,11 @@ namespace NoCap.GUI.WPF.Commands {
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command, infoStuff);
         }
+
+        public CommandFeatures CommandFeatures {
+            get {
+                return CommandFeatures.StandAlone;
+            }
+        }
     }
 }

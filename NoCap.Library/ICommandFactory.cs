@@ -1,4 +1,16 @@
-﻿namespace NoCap.Library {
+﻿using System;
+
+namespace NoCap.Library {
+    [Flags]
+    public enum CommandFeatures {
+        ImageUploader = (1 << 0),
+        FileUploader = (1 << 1),
+        UrlShortener = (1 << 2),
+        TextUploader = (1 << 3),
+
+        StandAlone = (1 << 8),
+    };
+
     /// <summary>
     /// Represents a factory which can produce instances of commands
     /// and editors of those command instances.
@@ -19,5 +31,7 @@
         /// <param name="infoStuff"></param>
         /// <returns>A new instance of an editor for <paramref name="command"/>, or <c>null</c>.</returns>
         ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff);
+
+        CommandFeatures CommandFeatures { get; }
     }
 }

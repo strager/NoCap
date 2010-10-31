@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Drawing.Imaging;
 using System.Linq;
 using NoCap.Library;
@@ -25,6 +26,12 @@ namespace NoCap.Plugins.Factories {
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return new ImageWriterEditor(((ImageBinUploader) command).ImageWriter);
+        }
+
+        public CommandFeatures CommandFeatures {
+            get {
+                return CommandFeatures.ImageUploader;
+            }
         }
     }
 }

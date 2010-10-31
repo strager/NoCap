@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Plugins.Processors;
 
@@ -15,6 +16,12 @@ namespace NoCap.Plugins.Factories {
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
             return null;
+        }
+
+        public CommandFeatures CommandFeatures {
+            get {
+                return 0;
+            }
         }
     }
 }

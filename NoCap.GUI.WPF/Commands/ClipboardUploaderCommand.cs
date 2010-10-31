@@ -135,5 +135,11 @@ namespace NoCap.GUI.WPF.Commands {
                 TextUploaders = infoStuff.GetTextUploaders(),
             };
         }
+
+        public CommandFeatures CommandFeatures {
+            get {
+                return CommandFeatures.StandAlone;
+            }
+        }
     }
 }

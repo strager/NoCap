@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using NoCap.GUI.WPF.Commands;
 using NoCap.GUI.WPF.Settings;
+using NoCap.Library;
 using NoCap.Library.Util;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
@@ -32,11 +34,11 @@ namespace NoCap.GUI.WPF {
 
             var infoStuff = new ProgramSettingsInfoStuff(Settings, Providers.Instance);
 
-            Settings.Commands = new ObservableCollection<ICommand>(new ICommand[] {
-                //Providers.Instance.ProcessorFactories.Select((factory) => factory.CreateCommand(infoStuff))
-                new CropShotUploaderCommand(),
-                new ClipboardUploaderCommand(),
-            });
+            Settings.Commands = new ObservableCollection<ICommand>(
+                Providers.Instance.ProcessorFactories
+                    .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
+                    .Select((factory) => factory.CreateCommand(infoStuff))
+            );
         }
 
         private void OnSettingsChanged(ProgramSettings oldSettings, ProgramSettings newSettings) {
