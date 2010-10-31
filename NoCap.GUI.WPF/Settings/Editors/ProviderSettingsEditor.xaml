@@ -1,0 +1,11 @@
+﻿<ContentControl x:Class="NoCap.GUI.WPF.Settings.Editors.ProviderSettingsEditor"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:pt="clr-namespace:XAMLPowerToys.Controls;assembly=XAMLPowerToys.Controls"
+      mc:Ignorable="d" d:DesignHeight="202" d:DesignWidth="206">
+    <pt:Form Padding="6">
+        <ComboBox Name="inputProviders" HorizontalAlignment="Stretch" pt:FormItem.LabelContent="_Input provider" Margin="6" ItemsSource="{Binding Path=Providers.InputProviders}" DisplayMemberPath="Name" SelectedItem="{Binding Path=ProgramSettings.InputProvider}" IsSynchronizedWithCurrentItem="True" />
+    </pt:Form>
+</ContentControl>

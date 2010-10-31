@@ -1,9 +1,0 @@
-﻿<UserControl x:Class="NoCap.GUI.WPF.SharedCommandSelector"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="30" d:DesignWidth="286"
-             Name="selector">
-    <ComboBox DisplayMemberPath="Name" Name="commandList" ItemsSource="{Binding ElementName=selector, Path=InfoStuff.Commands}" SelectedItem="{Binding ElementName=selector, Path=Command}" />
-</UserControl>

@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Commands;
-using NoCap.Plugins.Processors;
-using Clipboard = NoCap.Plugins.Processors.Clipboard;
+using NoCap.Plugins.Commands;
+using Clipboard = NoCap.Plugins.Commands.Clipboard;
 
 namespace NoCap {
     public partial class Form1 : Form {

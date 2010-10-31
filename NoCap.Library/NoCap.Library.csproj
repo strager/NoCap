@@ -43,6 +43,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\HighLevelCommand.cs" />
+    <Compile Include="Controls\CommandEditor.xaml.cs">
+      <DependentUpon>CommandEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CommandFactorySelector.xaml.cs">
+      <DependentUpon>CommandFactorySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CommandSelector.xaml.cs">
+      <DependentUpon>CommandSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SharedCommandSelector.xaml.cs">
+      <DependentUpon>SharedCommandSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Editors\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
@@ -80,6 +93,22 @@
     <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\CommandEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CommandFactorySelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CommandSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SharedCommandSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Editors\ImageWriterEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using NoCap.Library;
-using NoCap.Plugins.Processors;
+using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]

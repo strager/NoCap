@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NoCap.GUI.WPF.Commands;
+using NoCap.Library.Commands;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 

@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Drawing.Imaging;
 using System.Linq;
 using NoCap.Library;
 using NoCap.Library.Editors;
 using NoCap.Library.Commands;
-using NoCap.Plugins.Processors;
+using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]

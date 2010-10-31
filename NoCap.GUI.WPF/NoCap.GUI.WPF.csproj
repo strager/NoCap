@@ -62,90 +62,46 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CommandEditor.xaml.cs">
-      <DependentUpon>CommandEditor.xaml</DependentUpon>
+    <Compile Include="Settings\BoundCommand.cs" />
+    <Compile Include="Settings\Editors\BindingSettingsEditor.xaml.cs">
+      <DependentUpon>BindingSettingsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CommandFactorySelector.xaml.cs">
-      <DependentUpon>CommandFactorySelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CommandSelector.xaml.cs">
-      <DependentUpon>CommandSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\BindingSettingEditor.xaml.cs">
-      <DependentUpon>BindingSettingEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\BindWindow.xaml.cs">
+    <Compile Include="Settings\Editors\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\HighLevelCommandEditor.xaml.cs">
+    <Compile Include="Settings\Editors\HighLevelCommandEditor.xaml.cs">
       <DependentUpon>HighLevelCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
-    <Compile Include="Settings\ProviderSettingsEditor.xaml.cs">
+    <Compile Include="Settings\Editors\ProviderSettingsEditor.xaml.cs">
       <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Providers.cs" />
     <Compile Include="Settings\ProgramSettings.cs" />
-    <Compile Include="Settings\SettingsWindow.xaml.cs">
+    <Compile Include="Settings\Editors\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\ClipboardUploaderCommand.cs" />
-    <Compile Include="Commands\ClipboardUploaderCommandEditor.xaml.cs">
-      <DependentUpon>ClipboardUploaderCommandEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\CropShotUploaderCommand.cs" />
-    <Compile Include="Commands\CropShotUploaderCommandEditor.xaml.cs">
-      <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\HighLevelCommand.cs" />
-    <Compile Include="SharedCommandSelector.xaml.cs">
-      <DependentUpon>SharedCommandSelector.xaml</DependentUpon>
-    </Compile>
-    <Page Include="CommandEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CommandFactorySelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CommandSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Settings\BindingSettingEditor.xaml">
+    <Page Include="Settings\Editors\BindingSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\BindWindow.xaml">
+    <Page Include="Settings\Editors\BindWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\HighLevelCommandEditor.xaml">
+    <Page Include="Settings\Editors\HighLevelCommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\ProviderSettingsEditor.xaml">
+    <Page Include="Settings\Editors\ProviderSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Commands\ClipboardUploaderCommandEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Commands\CropShotUploaderCommandEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SharedCommandSelector.xaml">
+    <Page Include="Settings\Editors\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

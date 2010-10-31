@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
-using NoCap.GUI.WPF.Commands;
 using NoCap.GUI.WPF.Settings;
+using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
 using NoCap.Library.Util;
 using WinputDotNet;
@@ -55,16 +55,8 @@ namespace NoCap.GUI.WPF {
                     .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
                     .Select((factory) => factory.CreateCommand(this.infoStuff))
             );
-        }
 
-        private void OnSettingsChanged(ProgramSettings oldSettings, ProgramSettings newSettings) {
-            if (oldSettings != null) {
-                ShutDownEverything(oldSettings);
-            }
-
-            if (newSettings != null) {
-                SetUpEverything(newSettings);
-            }
+            SetUpEverything(this.settings);
         }
 
         private void SetUpEverything(ProgramSettings newSettings) {
