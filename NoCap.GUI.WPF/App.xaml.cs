@@ -23,20 +23,6 @@ namespace NoCap.GUI.WPF {
         private ProgramSettingsInfoStuff infoStuff;
         private SettingsWindow settingsWindow;
 
-        public ProgramSettings Settings {
-            get {
-                return this.settings;
-            }
-
-            private set {
-                var oldSettings = this.settings;
-
-                this.settings = value;
-
-                OnSettingsChanged(oldSettings, value);
-            }
-        }
-
         private void Load() {
             this.progressTracker = new NotifyingProgressTracker();
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
@@ -60,11 +46,11 @@ namespace NoCap.GUI.WPF {
         }
 
         private void LoadSettings() {
-            Settings = new ProgramSettings();
+            this.settings = new ProgramSettings();
 
-            this.infoStuff = new ProgramSettingsInfoStuff(Settings, Providers.Instance);
+            this.infoStuff = new ProgramSettingsInfoStuff(this.settings, Providers.Instance);
 
-            Settings.Commands = new ObservableCollection<ICommand>(
+            this.settings.Commands = new ObservableCollection<ICommand>(
                 Providers.Instance.ProcessorFactories
                     .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
                     .Select((factory) => factory.CreateCommand(this.infoStuff))
@@ -96,7 +82,7 @@ namespace NoCap.GUI.WPF {
                 return;
             }
 
-            var handle = new IntPtr(42);    // Hope this doesn't crash.
+            var handle = IntPtr.Zero;
             
             inputProvider.CommandStateChanged += CommandStateChanged;
             inputProvider.SetBindings(newSettings.Bindings);
@@ -133,20 +119,23 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            this.settingsWindow = new SettingsWindow(Settings.Clone());
+            this.settingsWindow = new SettingsWindow(this.settings.Clone());
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
-            this.settingsWindow.Show();
+
+            ShutDownInput(this.settings);
+
+            this.settingsWindow.ShowDialog();
         }
 
         private void CheckSettingsEditorResult() {
             if (this.settingsWindow.DialogResult == true) {
-                ShutDownInput(this.settings);
-                Settings = this.settingsWindow.ProgramSettings;
-                SetUpInput(this.settings);
+                this.settings = this.settingsWindow.ProgramSettings;
             }
 
             this.settingsWindow.Close();
             this.settingsWindow = null;
+
+            SetUpInput(this.settings);
         }
 
         private static void PerformRequestSync(ICommand highLevelCommand, IMutableProgressTracker progress) {
