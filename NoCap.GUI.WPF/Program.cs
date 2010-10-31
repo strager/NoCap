@@ -86,9 +86,9 @@ namespace NoCap.GUI.WPF {
 
         private void CommandStateChanged(object sender, CommandStateChangedEventArgs e) {
             if (e.State == InputState.On) {
-                var command = (HighLevelCommand) e.Command;
+                var command = (BoundCommand) e.Command;
 
-                PerformRequestAsync(command);
+                PerformRequestAsync(command.Command);
             }
         }
 
@@ -111,12 +111,12 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private static void PerformRequestSync(HighLevelCommand highLevelCommand, IMutableProgressTracker progress) {
-            highLevelCommand.Execute(progress);
+        private static void PerformRequestSync(ICommand highLevelCommand, IMutableProgressTracker progress) {
+            highLevelCommand.Process(null, progress);
         }
 
-        private void PerformRequestAsync(HighLevelCommand highLevelCommand) {
-            var func = new Action<HighLevelCommand, IMutableProgressTracker>(PerformRequestSync);
+        private void PerformRequestAsync(ICommand highLevelCommand) {
+            var func = new Action<ICommand, IMutableProgressTracker>(PerformRequestSync);
 
             func.BeginInvoke(highLevelCommand, this.progressTracker, func.EndInvoke, null);
         }

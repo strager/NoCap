@@ -3,7 +3,21 @@ using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Commands {
-    public abstract class HighLevelCommand : WinputDotNet.ICommand, ICommand {
+    public sealed class BoundCommand : WinputDotNet.ICommand {
+        private readonly ICommand command;
+
+        public ICommand Command {
+            get {
+                return this.command;
+            }
+        }
+
+        public BoundCommand(ICommand command) {
+            this.command = command;
+        }
+    }
+
+    public abstract class HighLevelCommand : ICommand {
         public abstract string Name {
             get;
             set;

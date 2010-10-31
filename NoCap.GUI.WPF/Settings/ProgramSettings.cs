@@ -85,7 +85,7 @@ namespace NoCap.GUI.WPF.Settings {
 
         WinputDotNet.ICommand ICommandBinding.Command {
             get {
-                return this.HighLevelCommand;
+                return new BoundCommand(HighLevelCommand);
             }
         }
 
