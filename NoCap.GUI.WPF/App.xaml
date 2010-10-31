@@ -1,11 +1,27 @@
 ﻿<Application x:Class="NoCap.GUI.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown"
+             Startup="Application_Startup"
+             xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification">
     <Application.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="3,6" />
             <Setter Property="Padding" Value="3" />
             <Setter Property="MinWidth" Value="70" />
         </Style>
+
+        <tb:TaskbarIcon x:Key="taskbarIcon" DoubleClickCommand="{x:Static ApplicationCommands.Properties}">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="ExitClicked" Header="E_xit" />
+                    
+                    <!--
+                        This doesn't work; see App.LoadBindings for details
+                        <MenuItem Command="Close" Header="E_xit" />
+                    -->
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Application.Resources>
 </Application>

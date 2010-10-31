@@ -58,10 +58,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="App.xaml">
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
+    </ApplicationDefinition>
     <Compile Include="CommandEditor.xaml.cs">
       <DependentUpon>CommandEditor.xaml</DependentUpon>
     </Compile>
@@ -71,7 +71,6 @@
     <Compile Include="CommandSelector.xaml.cs">
       <DependentUpon>CommandSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
     <Compile Include="Settings\BindingSettingEditor.xaml.cs">
       <DependentUpon>BindingSettingEditor.xaml</DependentUpon>
     </Compile>
