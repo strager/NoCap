@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:library="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
-             mc:Ignorable="d" d:DesignHeight="282" d:DesignWidth="357">
+             mc:Ignorable="d" d:DesignHeight="282" d:DesignWidth="357"
+             Name="editor">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -15,14 +16,16 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
+        
         <library:SharedCommandSelector Grid.Row="0" Grid.Column="0" x:Name="commandSelector"
-            VerticalAlignment="Bottom" Margin="6" Command="{Binding Path=SelectedCommand}" />
+            VerticalAlignment="Bottom" Margin="6" Command="{Binding Path=SelectedCommand}"
+            InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" />
         
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
         <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />
         
         <library:CommandEditor Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="commandEditor"
-            Command="{Binding ElementName=commandSelector, Path=Command}" />
+            Command="{Binding ElementName=commandSelector, Path=Command}"
+            InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" />
     </Grid>
 </ContentControl>

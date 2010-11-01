@@ -1,16 +1,6 @@
 ﻿using System;
 
 namespace NoCap.Library {
-    [Flags]
-    public enum CommandFeatures {
-        ImageUploader = (1 << 0),
-        FileUploader = (1 << 1),
-        UrlShortener = (1 << 2),
-        TextUploader = (1 << 3),
-
-        StandAlone = (1 << 8),
-    };
-
     /// <summary>
     /// Represents a factory which can produce instances of commands
     /// and editors of those command instances.
@@ -33,5 +23,15 @@ namespace NoCap.Library {
         ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff);
 
         CommandFeatures CommandFeatures { get; }
+    }
+
+    public static class CommandFactoryExtensions {
+        public static bool HasFeatures(this ICommandFactory factory, CommandFeatures features) {
+            if (factory == null) {
+                throw new ArgumentNullException("factory");
+            }
+
+            return factory.CommandFeatures.HasFlag(features);
+        }
     }
 }

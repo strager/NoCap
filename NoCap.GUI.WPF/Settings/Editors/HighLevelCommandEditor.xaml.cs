@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 using NoCap.Library;
 using NoCap.Library.Commands;
 
@@ -8,17 +9,24 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
     public partial class HighLevelCommandEditor : ISettingsEditor, INotifyPropertyChanged {
-        public Providers Providers {
-            get;
-            private set;
-        }
-
         public ProgramSettings ProgramSettings {
             get;
             private set;
         }
 
-        private readonly IInfoStuff infoStuff;
+        private IInfoStuff infoStuff;
+
+        public IInfoStuff InfoStuff {
+            get {
+                return this.infoStuff;
+            }
+
+            set {
+                this.infoStuff = value;
+
+                Notify("InfoStuff");
+            }
+        }
 
         private HighLevelCommand selectedCommand;
 
@@ -30,7 +38,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             set {
                 this.selectedCommand = value;
 
-                Notify("selectedCommand");
+                Notify("SelectedCommand");
             }
         }
 
@@ -44,17 +52,12 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             InitializeComponent();
             
             ProgramSettings = programSettings;
-            this.infoStuff = new ProgramSettingsInfoStuff(ProgramSettings, Providers.Instance);
+            InfoStuff = new ProgramSettingsInfoStuff(ProgramSettings, Providers.Instance);
 
             // TODO Move this out of code
-            this.commandSelector.InfoStuff = this.infoStuff;
-            this.commandEditor.InfoStuff = this.infoStuff;
+            // this.commandSelector.Filter = Command.GetHasFeaturesPredicate(CommandFeatures.StandAlone);
 
-            Providers = Providers.Instance;
-
-            SelectedCommand = this.infoStuff.Commands.OfType<HighLevelCommand>().FirstOrDefault();
-
-            DataContext = this;
+            //SelectedCommand = this.infoStuff.Commands.OfType<HighLevelCommand>().FirstOrDefault();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

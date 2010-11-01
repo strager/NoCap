@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -75,12 +76,11 @@ namespace NoCap.Library.Controls {
             InitializeComponent();
         }
 
-        public CommandEditor(IInfoStuff infoStuff) {
+        public CommandEditor(IInfoStuff infoStuff) :
+            this() {
             if (infoStuff == null) {
                 throw new ArgumentNullException("infoStuff");
             }
-
-            InitializeComponent();
 
             InfoStuff = infoStuff;
         }

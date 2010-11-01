@@ -5,5 +5,5 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="31" d:DesignWidth="301"
              Name="selector">
-    <ComboBox DisplayMemberPath="Name" Name="commandFactoryList" ItemsSource="{Binding ElementName=selector, Path=InfoStuff.CommandFactories}" SelectedItem="{Binding ElementName=selector, Path=CommandFactory}" />
+    <ComboBox DisplayMemberPath="Name" Name="commandFactoryList" SelectedItem="{Binding ElementName=selector, Path=CommandFactory}" />
 </UserControl>

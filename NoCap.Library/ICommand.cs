@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
@@ -65,5 +66,15 @@ namespace NoCap.Library {
         /// </remarks>
         /// <returns>A factory instance which can provide an editor to this instance.</returns>
         ICommandFactory GetFactory();
+    }
+
+    public static class CommandExtensions {
+        public static bool HasFeatures(this ICommand command, CommandFeatures features) {
+            if (command == null) {
+                throw new ArgumentNullException("command");
+            }
+
+            return command.GetFactory().HasFeatures(features);
+        }
     }
 }

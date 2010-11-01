@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -25,6 +28,22 @@ namespace NoCap.Library.Controls {
             remove { RemoveHandler(CommandChangedEvent, value); }
         }
 
+        private readonly CollectionViewSource viewSource;
+
+        private Predicate<ICommand> filter;
+
+        public Predicate<ICommand> Filter {
+            get {
+                return this.filter;
+            }
+
+            set {
+                this.filter = value;
+
+                // TODO
+            }
+        }
+
         static SharedCommandSelector() {
             CommandProperty = DependencyProperty.Register(
                 "Command",
@@ -36,7 +55,8 @@ namespace NoCap.Library.Controls {
             InfoStuffProperty = DependencyProperty.Register(
                 "InfoStuff",
                 typeof(IInfoStuff),
-                typeof(SharedCommandSelector)
+                typeof(SharedCommandSelector),
+                new PropertyMetadata(OnInfoStuffChanged)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -57,8 +77,38 @@ namespace NoCap.Library.Controls {
             commandSelector.RaiseEvent(args);
         }
 
+        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var commandSelector = (SharedCommandSelector) sender;
+            var infoStuff = (IInfoStuff) e.NewValue;
+
+            // FIXME Duplicated from CommandFactorySelector
+            commandSelector.Dispatcher.BeginInvoke(new Action(() => {
+                commandSelector.viewSource.Source = infoStuff.Commands;
+            }));
+        }
+
         public SharedCommandSelector() {
             InitializeComponent();
+
+            // FIXME Duplicated from CommandFactorySelector
+            this.viewSource = new CollectionViewSource();
+            this.viewSource.Filter += FilterItem;
+
+            this.commandList.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
+                Source = this.viewSource
+            });
+        }
+
+        private void FilterItem(object sender, FilterEventArgs e) {
+            // FIXME Duplicated from CommandFactorySelector
+
+            if (Filter == null) {
+                e.Accepted = true;
+
+                return;
+            }
+
+            e.Accepted = Filter((ICommand) e.Item);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Data;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
 
@@ -38,6 +39,7 @@ namespace NoCap.Plugins.Editors {
             InitializeComponent();
 
             this.imageUploaderSelector.InfoStuff = infoStuff;
+            this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
 
             Command = command;
         }

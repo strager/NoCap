@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -35,6 +36,21 @@ namespace NoCap.Library.Controls {
         public event RoutedPropertyChangedEventHandler<bool> IsSharedChangedChanged {
             add    { AddHandler(IsSharedChangedEvent, value); }
             remove { RemoveHandler(IsSharedChangedEvent, value); }
+        }
+
+        private Predicate<object> filter;
+
+        public Predicate<object> Filter {
+            get {
+                return this.filter;
+            }
+
+            set {
+                this.filter = value;
+
+                this.commandFactoryList.Filter = value;
+                this.sharedCommandList.Filter = value;
+            }
         }
 
         static CommandSelector() {

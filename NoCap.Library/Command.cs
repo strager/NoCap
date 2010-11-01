@@ -6,6 +6,24 @@ namespace NoCap.Library {
     /// Provides a set of static helper methods for <see cref="ICommand"/> instances.
     /// </summary>
     public static class Command {
+        public static Predicate<object> GetHasFeaturesPredicate(CommandFeatures features) {
+            return (obj) => {
+                var objAsCommand = obj as ICommand;
+
+                if (objAsCommand != null) {
+                    return objAsCommand.HasFeatures(features);
+                }
+
+                var objAsFactory = obj as ICommandFactory;
+
+                if (objAsFactory != null) {
+                    return objAsFactory.HasFeatures(features);
+                }
+
+                return false;
+            };
+        }
+
         /// <summary>
         /// Gets the effective data type of the data given data.
         /// </summary>

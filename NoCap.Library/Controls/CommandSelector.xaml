@@ -18,7 +18,7 @@
         <!-- TODO Make swapping visibility/binding less painful -->
 
         <library:SharedCommandSelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="sharedCommandList" CommandChanged="SharedCommandChanged"
-            InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff}">
+            InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff, Mode=OneWay}">
             <library:SharedCommandSelector.Style>
                 <Style>
                     <Style.Triggers>
@@ -36,7 +36,7 @@
         </library:SharedCommandSelector>
 
         <library:CommandFactorySelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="commandFactoryList" CommandChanged="CommandFactoryCommandChanged"
-            InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff}">
+            InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff, Mode=OneWay}">
             <library:CommandFactorySelector.Style>
                 <Style>
                     <Style.Triggers>
