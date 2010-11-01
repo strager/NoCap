@@ -7,13 +7,12 @@
         mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300"
         x:Name="editor">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <local:CommandSelector Grid.Row="0" x:Name="imageUploaderSelector" Command="{Binding ElementName=editor, Path=Command.ImageUploader, Mode=TwoWay}" VerticalAlignment="Top" />
-        <local:CommandEditor Grid.Row="1" Command="{Binding ElementName=imageUploaderSelector, Path=Command}" />
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <GroupBox Header="Image uploader">
+            <StackPanel Orientation="Vertical">
+                <local:CommandSelector Margin="0,0,0,3" x:Name="imageUploaderSelector" Command="{Binding ElementName=editor, Path=Command.ImageUploader, Mode=TwoWay}" VerticalAlignment="Top" />
+                <local:CommandEditor Margin="0,3,0,0" Command="{Binding ElementName=imageUploaderSelector, Path=Command}" />
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
 </ContentControl>
