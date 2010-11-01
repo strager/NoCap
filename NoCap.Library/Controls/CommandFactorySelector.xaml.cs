@@ -55,8 +55,9 @@ namespace NoCap.Library.Controls {
             set {
                 this.filter = value;
 
-                // TODO
-                //this.viewSourceBindingExpression.UpdateTarget();
+                if (this.viewSource.View != null) {
+                    this.viewSource.View.Refresh();
+                }
             }
         }
 

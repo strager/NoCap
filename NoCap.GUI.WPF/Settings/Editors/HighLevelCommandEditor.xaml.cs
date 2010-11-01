@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
 using NoCap.Library;
-using NoCap.Library.Commands;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -28,9 +26,9 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        private HighLevelCommand selectedCommand;
+        private ICommand selectedCommand;
 
-        public HighLevelCommand SelectedCommand {
+        public ICommand SelectedCommand {
             get {
                 return this.selectedCommand;
             }
@@ -55,9 +53,9 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             InfoStuff = new ProgramSettingsInfoStuff(ProgramSettings, Providers.Instance);
 
             // TODO Move this out of code
-            // this.commandSelector.Filter = Command.GetHasFeaturesPredicate(CommandFeatures.StandAlone);
+            this.commandSelector.Filter = Command.GetHasFeaturesPredicate(CommandFeatures.StandAlone);
 
-            //SelectedCommand = this.infoStuff.Commands.OfType<HighLevelCommand>().FirstOrDefault();
+            SelectedCommand = this.infoStuff.Commands.WithFeatures(CommandFeatures.StandAlone).FirstOrDefault();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

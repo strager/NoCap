@@ -38,9 +38,12 @@ namespace NoCap.Library.Controls {
             }
 
             set {
+                // FIXME Duplicated from CommandFactorySelector
                 this.filter = value;
 
-                // TODO
+                if (this.viewSource.View != null) {
+                    this.viewSource.View.Refresh();
+                }
             }
         }
 
