@@ -202,5 +202,11 @@ namespace NoCap.GUI.WPF {
         private void ExitClicked(object sender, RoutedEventArgs e) {
             Shutdown(0);
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e) {
+            ShutDownEverything(this.settings);
+
+            this.taskbarIcon.Dispose();
+        }
     }
 }
