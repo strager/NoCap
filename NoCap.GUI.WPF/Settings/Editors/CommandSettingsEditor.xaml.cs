@@ -6,7 +6,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class HighLevelCommandEditor : ISettingsEditor, INotifyPropertyChanged {
+    public partial class CommandSettingsEditor : ISettingsEditor, INotifyPropertyChanged {
         public ProgramSettings ProgramSettings {
             get;
             private set;
@@ -46,7 +46,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        public HighLevelCommandEditor(ProgramSettings programSettings) {
+        public CommandSettingsEditor(ProgramSettings programSettings) {
             InitializeComponent();
             
             ProgramSettings = programSettings;
