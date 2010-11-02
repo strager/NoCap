@@ -8,20 +8,11 @@
   * Really now ...  >_>
 
 == Bug fixes ==
-* Better progress tracking
-  1. Enum-based heuristics
-     a. Some heuristic function somewhere?
-     b. Extensibility?
-     c. Additional data?
-  2. Double-based estimates
-     a. Seconds
-     b. Number of items
-     c. Arbitrary units
+* Current speed and better timeremaining stuff
 * Class and namespace organization
-* Editor "alternatives" to WPF ?
 
 == Features ==
-* Configuration
+* Configuration file
 * Default bindings
   1. Binding wizard on first startup
 * Adjustable image configuration

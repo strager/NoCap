@@ -17,18 +17,20 @@ namespace NoCap.Library.Commands {
             string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
-            var requestProgress = new NotifyingProgressTracker();
-            var responseProgress = new NotifyingProgressTracker();
+            var requestProgress = new NotifyingProgressTracker(TimeEstimate.Forever);
+            var responseProgress = new NotifyingProgressTracker(TimeEstimate.AShortWhile);
 
             var aggregateProgress = new AggregateProgressTracker(requestProgress, responseProgress);
             aggregateProgress.BindTo(progress);
 
             var request = BuildRequest(originalData, requestMethod, parameters, requestProgress);
-
             var response = (HttpWebResponse) request.GetResponse();
-            responseProgress.Progress = 1;  // TODO HTTP Progress
 
-            return GetResponseData(response, originalData);
+            var ret = GetResponseData(response, originalData);
+            
+            responseProgress.Progress = 1;  // TODO HTTP download Progress
+
+            return ret;
         }
 
         private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress) {

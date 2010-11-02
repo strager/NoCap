@@ -5,5 +5,9 @@ namespace NoCap.Library.Util {
         double Progress {
             get;
         }
+
+        double EstimatedTimeRemaining {
+            get;
+        }
     }
 }

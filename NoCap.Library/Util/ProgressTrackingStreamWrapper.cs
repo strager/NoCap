@@ -42,6 +42,12 @@ namespace NoCap.Library.Util {
             }
         }
 
+        public double EstimatedTimeRemaining {
+            get {
+                return 1;   // TODO Estimate based on current speed
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void Notify(string propertyName) {

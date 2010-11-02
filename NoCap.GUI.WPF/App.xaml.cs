@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
@@ -17,7 +12,6 @@ using NoCap.Library.Util;
 using Windows7.DesktopIntegration;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace NoCap.GUI.WPF {
     /// <summary>

@@ -12,7 +12,7 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var commandMock = GetCommandMock();
+            var commandMock = GetCommandMock(MockBehavior.Loose);
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
@@ -29,7 +29,7 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var commandMock = GetCommandMock();
+            var commandMock = GetCommandMock(MockBehavior.Loose);
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
@@ -46,7 +46,7 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var commandMock = GetCommandMock();
+            var commandMock = GetCommandMock(MockBehavior.Loose);
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
 
@@ -62,11 +62,11 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var command1Mock = GetCommandMock();
+            var command1Mock = GetCommandMock(MockBehavior.Loose);
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
 
-            var command2Mock = GetCommandMock();
+            var command2Mock = GetCommandMock(MockBehavior.Loose);
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
@@ -85,11 +85,11 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var command1Mock = GetCommandMock();
+            var command1Mock = GetCommandMock(MockBehavior.Loose);
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
 
-            var command2Mock = GetCommandMock();
+            var command2Mock = GetCommandMock(MockBehavior.Loose);
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
@@ -105,11 +105,11 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var command1Mock = GetCommandMock();
+            var command1Mock = GetCommandMock(MockBehavior.Loose);
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
 
-            var command2Mock = GetCommandMock();
+            var command2Mock = GetCommandMock(MockBehavior.Loose);
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
 
@@ -127,11 +127,11 @@ namespace NoCap.Library.Tests.Commands {
             var inputTracker = GetMutableProgressTracker();
             var inputData = GetTextData();
 
-            var command1Mock = GetCommandMock();
+            var command1Mock = GetCommandMock(MockBehavior.Loose);
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
 
-            var command2Mock = GetCommandMock();
+            var command2Mock = GetCommandMock(MockBehavior.Loose);
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
 
@@ -217,8 +217,8 @@ namespace NoCap.Library.Tests.Commands {
             CollectionAssert.AreEquivalent(new[] { TypedDataType.User + 1, TypedDataType.User + 4, TypedDataType.User + 5 }, chain.GetOutputDataTypes(TypedDataType.None));
         }
 
-        private static Mock<ICommand> GetCommandMock() {
-            return new Mock<ICommand>(MockBehavior.Strict);
+        private static Mock<ICommand> GetCommandMock(MockBehavior behavior = MockBehavior.Strict) {
+            return new Mock<ICommand>(behavior);
         }
 
         private static NotifyingProgressTracker GetMutableProgressTracker() {

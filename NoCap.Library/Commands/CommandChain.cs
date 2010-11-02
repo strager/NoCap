@@ -25,7 +25,7 @@ namespace NoCap.Library.Commands {
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             // ToList is needed for some strange reason
-            var progressTrackers = this.processors.Select((destination) => new NotifyingProgressTracker()).ToList();
+            var progressTrackers = this.processors.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
             aggregateProgress.BindTo(progress);
 

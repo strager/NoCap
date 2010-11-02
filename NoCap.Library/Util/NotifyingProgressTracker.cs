@@ -3,6 +3,7 @@
 namespace NoCap.Library.Util {
     public class NotifyingProgressTracker : IMutableProgressTracker {
         private double progress;
+        private double estimatedTimeRemaining;
 
         public double Progress {
             get {
@@ -14,6 +15,26 @@ namespace NoCap.Library.Util {
 
                 Notify("Progress");
             }
+        }
+
+        public double EstimatedTimeRemaining {
+            get {
+                return this.estimatedTimeRemaining;
+            }
+
+            set {
+                this.estimatedTimeRemaining = value;
+
+                Notify("EstimatedTimeRemaining");
+            }
+        }
+
+        public NotifyingProgressTracker() :
+            this(TimeEstimate.NoTimeAtAll) {
+        }
+
+        public NotifyingProgressTracker(TimeEstimate timeEstimate) {
+            this.estimatedTimeRemaining = (int) timeEstimate;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
