@@ -19,6 +19,25 @@
   <defs
      id="defs4">
     <linearGradient
+       id="linearGradient3883">
+      <stop
+         style="stop-color:#0bdb11;stop-opacity:1;"
+         offset="0"
+         id="stop3885" />
+      <stop
+         id="stop3895"
+         offset="0.5"
+         style="stop-color:#0bdb11;stop-opacity:1;" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0.50010002"
+         id="stop3897" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="1"
+         id="stop3887" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient3808">
       <stop
          style="stop-color:#045600;stop-opacity:1;"
@@ -44,17 +63,15 @@
          offset="1"
          id="stop3969" />
     </linearGradient>
-    <radialGradient
+    <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3808"
-       id="radialGradient3814"
-       cx="555.284"
-       cy="347.55142"
-       fx="555.284"
-       fy="347.55142"
-       r="68.46804"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.7074448,7.0336354e-8,-5.0556108e-8,1.2272709,-380.28679,-95.24662)" />
+       xlink:href="#linearGradient3883"
+       id="linearGradient3893"
+       x1="31.031254"
+       y1="96.297035"
+       x2="31.031254"
+       y2="-13.328121"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -102,7 +119,7 @@
        id="text3833"
        transform="matrix(0.90265999,0,0,0.90265999,39.098264,34.798694)">
       <path
-         style="font-variant:normal;font-stretch:normal;fill:#0bdb11;fill-opacity:1;stroke:#000000;stroke-width:3.99999976;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Arial;-inkscape-font-specification:Arial Bold"
+         style="font-variant:normal;font-stretch:normal;fill:url(#linearGradient3893);fill-opacity:1;stroke:#000000;stroke-width:3.99999976000000010;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Arial;-inkscape-font-specification:Arial Bold;fill-rule:nonzero"
          d="m 28.59375,-15.0625 0,113.21875 21.25,0 0,-73.8125 45.625,73.8125 22.9375,0 0,-74.28125 -21.25,0 0,36.6875 -46.3125,-75.625 -22.25,0 z"
          transform="matrix(1.1078369,0,0,1.1078369,472.27738,301.52019)"
          id="path3838"

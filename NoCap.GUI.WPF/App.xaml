@@ -23,43 +23,5 @@
     			</ContextMenu>
     		</tb:TaskbarIcon.ContextMenu>
     	</tb:TaskbarIcon>
-        
-    	<DrawingImage x:Key="logo">
-            <!-- Generated from nocap-logo.svg using Svg2Xaml -->
-            <DrawingImage.Drawing>
-                <DrawingGroup Opacity="1">
-                    <DrawingGroup.Children>
-                        <DrawingGroup Opacity="1">
-                            <DrawingGroup.Children>
-                                <DrawingGroup Opacity="1" />
-                                <DrawingGroup Opacity="1" Transform="0.90265999,0,0,0.90265999,39.098264,34.798694">
-                                    <DrawingGroup.Children>
-                                        <GeometryDrawing Brush="#FF3BEE49">
-                                            <GeometryDrawing.Pen>
-                                                <Pen Brush="#FF000000" Thickness="3.99999976" />
-                                            </GeometryDrawing.Pen>
-                                            <GeometryDrawing.Geometry>
-                                                <PathGeometry FillRule="Nonzero" Figures="M503.95458984375,284.833404541016L528.603942871094,284.833404541016 579.91064453125,368.613586425781 579.91064453125,327.969818115234 603.4521484375,327.969818115234 603.4521484375,410.261322021484 578.041198730469,410.261322021484 527.49609375,328.489105224609 527.49609375,410.261322021484 503.95458984375,410.261322021484 503.95458984375,284.833404541016z" />
-                                            </GeometryDrawing.Geometry>
-                                        </GeometryDrawing>
-                                    </DrawingGroup.Children>
-                                </DrawingGroup>
-                                <GeometryDrawing Brush="#FFFFFFFF">
-                                    <GeometryDrawing.Pen>
-                                        <Pen Brush="#FF000000" Thickness="4" />
-                                    </GeometryDrawing.Pen>
-                                    <GeometryDrawing.Geometry>
-                                        <PathGeometry FillRule="Nonzero" Figures="M562.570190429688,291.917663574219C562.570190429688,291.917663574219 576.7275390625,291.917663574219 583.806213378906,291.917663574219 589.089233398438,291.917663574219 607.405883789063,292.364166259766 607.405883789063,313.153656005859 607.405883789063,313.267395019531 562.570190429688,313.153656005859 562.570190429688,313.153656005859L562.570190429688,291.917663574219z" />
-                                    </GeometryDrawing.Geometry>
-                                </GeometryDrawing>
-                            </DrawingGroup.Children>
-                            <DrawingGroup.Transform>
-                                <TranslateTransform X="-491.99791" Y="-289.61516" />
-                            </DrawingGroup.Transform>
-                        </DrawingGroup>
-                    </DrawingGroup.Children>
-                </DrawingGroup>
-            </DrawingImage.Drawing>
-        </DrawingImage>
     </Application.Resources>
 </Application>
