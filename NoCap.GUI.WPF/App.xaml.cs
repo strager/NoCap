@@ -3,13 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
-using NoCap.Library.Util;
-using Windows7.DesktopIntegration;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
@@ -18,37 +15,20 @@ namespace NoCap.GUI.WPF {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App {
-        private IMutableProgressTracker progressTracker;
         private TaskbarIcon taskbarIcon;
 
         private ProgramSettings settings;
         private ProgramSettingsInfoStuff infoStuff;
         private SettingsWindow settingsWindow;
-        private NoCapLogo logo;
+        private TaskTracker taskTracker;
 
         private void Load() {
-            this.progressTracker = new NotifyingProgressTracker();
-            this.progressTracker.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress") {
-                    UpdateProgress(this.progressTracker);
-                }
-            };
-
-            this.logo = new NoCapLogo();
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
 
-            UpdateIcon();
+            taskTracker = new TaskTracker(this.taskbarIcon, new NoCapLogo());
 
             LoadBindings();
             LoadSettings();
-        }
-
-        private void UpdateIcon(double progress = 1) {
-            Dispatcher.BeginInvoke(new Action(() => {
-                this.logo.Progress = progress;
-
-                this.taskbarIcon.Icon = this.logo.MakeIcon(128);
-            }));
         }
 
         private void LoadBindings() {
@@ -120,34 +100,6 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private void UpdateProgress(IProgressTracker progress) {
-            SetProgress(progress.Progress);
-        }
-
-        private void SetProgress(double progress) {
-            if (this.settingsWindow != null) {
-                SetWindowProgress(this.settingsWindow, progress);
-            }
-
-            UpdateIcon(progress);
-        }
-
-        private static void SetWindowProgress(Window window, double progress) {
-            window.Dispatcher.BeginInvoke(new Action(() => {
-                var handle = new WindowInteropHelper(window).Handle;
-
-                if (progress >= 1) {
-                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
-                } else {
-                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
-
-                    const ulong max = 9001;
-
-                    Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
-                }
-            }));
-        }
-
         private void ShowSettingsEditor() {
             if (this.settingsWindow != null) {
                 this.settingsWindow.Show();
@@ -172,35 +124,23 @@ namespace NoCap.GUI.WPF {
             SetUpInput(this.settings);
         }
 
-        private static void PerformRequestSync(ICommand highLevelCommand, IMutableProgressTracker progress) {
-            try {
-                var data = highLevelCommand.Process(null, progress);
+        private void PerformRequestAsync(ICommand command) {
+            var func = new Action<ICommand>(this.taskTracker.PerformTask);
 
-                if (data != null) {
-                    data.Dispose();
-                }
-            } catch (CommandCancelledException) {
-                // Eat it.
-            }
-        }
-
-        private void PerformRequestAsync(ICommand highLevelCommand) {
-            var func = new Action<ICommand, IMutableProgressTracker>(PerformRequestSync);
-
-            func.BeginInvoke(highLevelCommand, this.progressTracker, func.EndInvoke, null);
+            func.BeginInvoke(command, func.EndInvoke, null);
         }
 
         public void Start() {
             ShowSettingsEditor();
         }
 
+        private void ExitClicked(object sender, RoutedEventArgs e) {
+            Shutdown(0);
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e) {
             Load();
             Start();
-        }
-
-        private void ExitClicked(object sender, RoutedEventArgs e) {
-            Shutdown(0);
         }
 
         private void Application_Exit(object sender, ExitEventArgs e) {
