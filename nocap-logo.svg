@@ -10,8 +10,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="126"
-   height="117.51075"
+   width="117.51"
+   height="117.51"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.0 r9654"
@@ -65,7 +65,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="7.9999999"
      inkscape:cx="56.234447"
-     inkscape:cy="61.86379"
+     inkscape:cy="58.512891"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -94,26 +94,25 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-491.99791,-289.61441)">
+     transform="translate(-491.99791,-289.61516)">
     <a
        id="a3761" />
     <g
-       style="font-size:175.20578003000000000px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#0bdb11;fill-opacity:1;stroke:#000000;stroke-width:4.43134737000000010;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Sans Bold"
+       style="font-size:175.20578003px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#0bdb11;fill-opacity:1;stroke:#000000;stroke-width:4.43134737;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Bitstream Vera Sans;-inkscape-font-specification:Sans Bold"
        id="text3833"
        transform="matrix(0.90265999,0,0,0.90265999,39.098264,34.798694)">
       <path
-         style="font-variant:normal;font-stretch:normal;fill:#0bdb11;fill-opacity:1;stroke:#000000;stroke-width:3.99999976000000010;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Arial;-inkscape-font-specification:Arial Bold"
+         style="font-variant:normal;font-stretch:normal;fill:#0bdb11;fill-opacity:1;stroke:#000000;stroke-width:3.99999976;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Arial;-inkscape-font-specification:Arial Bold"
          d="m 28.59375,-15.0625 0,113.21875 21.25,0 0,-73.8125 45.625,73.8125 22.9375,0 0,-74.28125 -21.25,0 0,36.6875 -46.3125,-75.625 -22.25,0 z"
          transform="matrix(1.1078369,0,0,1.1078369,472.27738,301.52019)"
          id="path3838"
          inkscape:connector-curvature="0" />
     </g>
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+       d="m 562.57019,291.91766 c 0,0 14.15733,0 21.236,0 5.28302,0 23.59972,0.4465 23.59972,21.236 0,0.11372 -44.83572,0 -44.83572,0 z"
        id="rect3860"
-       width="21.236"
-       height="21.236"
-       x="562.57019"
-       y="291.91766" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csscc" />
   </g>
 </svg>
