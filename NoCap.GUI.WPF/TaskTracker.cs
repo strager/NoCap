@@ -82,9 +82,22 @@ namespace NoCap.GUI.WPF {
                 if (data != null) {
                     data.Dispose();
                 }
+
+                TaskDone();
             } catch (CommandCancelledException) {
                 // Eat it.
             }
+        }
+
+        private void TaskDone() {
+            ShowTaskDonePopup();
+        }
+
+        private void ShowTaskDonePopup() {
+            this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
+                // FIXME Doesn't seem to work...
+                this.taskbarIcon.ShowBalloonTip("Operation complete", "The requested opration has completed", BalloonIcon.Info);
+            }));
         }
     }
 }
