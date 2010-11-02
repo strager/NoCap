@@ -140,34 +140,36 @@ namespace NoCap.Plugins.Helpers {
             return m;
         }
 
-        private static Point TryApplyVisualTransform(Point point, Visual v, bool inverse, bool throwOnError, out bool success) {
-            // TODO Refactor to use common Try signature (i.e. return success; out Point)
-
-            success = true;
-
+        private static bool TryApplyVisualTransform(Point point, Visual v, bool inverse, bool throwOnError, out Point result) {
             if (v == null) {
-                return point;
+                result = point;
+
+                return true;
             }
 
             var visualTransform = GetVisualTransform(v);
 
             if (inverse) {
                 if (!throwOnError && !visualTransform.HasInverse) {
-                    success = false;
+                    result = default(Point);
 
-                    return default(Point);
+                    return false;
                 }
 
                 visualTransform.Invert();
             }
 
-            return visualTransform.Transform(point);
+            result = visualTransform.Transform(point);
+
+            return true;
         }
 
         private static Point ApplyVisualTransform(Point point, Visual v, bool inverse) {
-            bool success;
+            Point result;
 
-            return TryApplyVisualTransform(point, v, inverse, true, out success);
+            TryApplyVisualTransform(point, v, inverse, true, out result);
+
+            return result;
         }
 
         private Point GetPixelOffset() {
