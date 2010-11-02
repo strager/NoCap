@@ -61,11 +61,6 @@ namespace NoCap.Plugins.Helpers {
             KeyDown   += (sender, e) => KeyPressed(e.Key);
             LostFocus += (sender, e) => Close();
 
-            Closed += (sender, e) => {
-                // TODO
-                // (What is there to do?)
-            };
-
             MouseDown += (sender, e) => StartDragging   (e.GetPosition(this));
             MouseUp   += (sender, e) => EndDragging     (e.GetPosition(this));
             MouseMove += (sender, e) => ContinueDragging(e.GetPosition(this));
@@ -79,7 +74,6 @@ namespace NoCap.Plugins.Helpers {
         }
 
         private Point GetPixelPosition(Point diuPoint) {
-            // FIXME Am I doin' it rite?
             return new Point(
                 diuPoint.X * SourceImage.Width  / Width,
                 diuPoint.Y * SourceImage.Height / Height
@@ -162,15 +156,17 @@ namespace NoCap.Plugins.Helpers {
 
         private void StopDragging() {
             this.isDragging = false;
+
+            UpdateDragRectangle(new Point(0, 0), new Point(0, 0));
         }
 
         private void KeyPressed(Key keyCode) {
             if (keyCode.HasFlag(Key.Escape)) {
                 if (this.isDragging) {
                     StopDragging();
+                } else {
+                    Close();
                 }
-
-                Close();
             }
         }
 
