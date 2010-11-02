@@ -31,6 +31,7 @@ namespace NoCap.Plugins.Commands {
 
         protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
             helper.File((Stream) originalData.Data, "f", originalData.Name);
+            System.Threading.Thread.Sleep(3000);
         }
 
         public override ICommandFactory GetFactory() {

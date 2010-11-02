@@ -3,11 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
 using NoCap.Library.Util;
+using Windows7.DesktopIntegration;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
@@ -25,6 +27,12 @@ namespace NoCap.GUI.WPF {
 
         private void Load() {
             this.progressTracker = new NotifyingProgressTracker();
+            this.progressTracker.PropertyChanged += (sender, e) => {
+                if (e.PropertyName == "Progress") {
+                    UpdateProgress(this.progressTracker);
+                }
+            };
+
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
 
             LoadBindings();
@@ -100,10 +108,32 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        private void SetProgress(double progress) {
-            //var setProgress = new Action(() => this.progressBar.Value = progress);
+        private void UpdateProgress(IProgressTracker progress) {
+            SetProgress(progress.Progress);
+        }
 
-            //setProgress.BeginInvoke(setProgress.EndInvoke, null);
+        private void SetProgress(double progress) {
+            if (this.settingsWindow != null) {
+                SetWindowProgress(this.settingsWindow, progress);
+            }
+
+            // TODO Taskbar icon
+        }
+
+        private static void SetWindowProgress(Window window, double progress) {
+            window.Dispatcher.BeginInvoke(new Action(() => {
+                var handle = new WindowInteropHelper(window).Handle;
+
+                if (progress >= 1) {
+                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
+                } else {
+                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
+
+                    const ulong max = 9001;
+
+                    Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
+                }
+            }));
         }
 
         private void ShowSettingsEditor() {

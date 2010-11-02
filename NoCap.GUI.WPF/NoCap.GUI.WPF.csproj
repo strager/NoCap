@@ -148,6 +148,10 @@
       <Project>{7AC63864-7638-41C4-969C-D3197EF2BED9}</Project>
       <Name>NotifyIconWpf</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
+      <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
+      <Name>Windows7.DesktopIntegration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\WinputDotNet\WinputDotNet.Providers\WinputDotNet.Providers.csproj">
       <Project>{DDD13750-8319-406C-BC5F-E430D28258BB}</Project>
       <Name>WinputDotNet.Providers</Name>
