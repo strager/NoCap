@@ -30,8 +30,8 @@ namespace NoCap.Plugins.Editors {
 
             InfoStuffProperty = DependencyProperty.Register(
                 "InfoStuff",
-                typeof(CropShotUploaderCommand),
-                typeof(IInfoStuff)
+                typeof(IInfoStuff),
+                typeof(CropShotUploaderCommandEditor)
             );
         }
 

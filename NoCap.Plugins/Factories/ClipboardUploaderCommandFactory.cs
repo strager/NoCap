@@ -22,11 +22,7 @@ namespace NoCap.Plugins.Factories {
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command) {
-                ImageUploaders = infoStuff.GetImageUploaders(),
-                UrlShorteners = infoStuff.GetUrlShorteners(),
-                TextUploaders = infoStuff.GetTextUploaders(),
-            };
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command, infoStuff);
         }
 
         public CommandFeatures CommandFeatures {

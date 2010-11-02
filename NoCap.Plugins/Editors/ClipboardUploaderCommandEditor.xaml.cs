@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
 
@@ -7,37 +8,46 @@ namespace NoCap.Plugins.Editors {
     /// Interaction logic for ClipboardUploaderCommandEditor.xaml
     /// </summary>
     public partial class ClipboardUploaderCommandEditor : ICommandEditor {
-        private readonly ClipboardUploaderCommand command;
-
+        public readonly static DependencyProperty CommandProperty;
+        public readonly static DependencyProperty InfoStuffProperty;
+        
         public ClipboardUploaderCommand Command {
-            get {
-                return this.command;
-            }
+            get { return (ClipboardUploaderCommand) GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
         }
 
-        // TODO Bindable Linq
-
-        public IEnumerable<ICommand> ImageUploaders {
-            get;
-            set;
+        public IInfoStuff InfoStuff {
+            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
+            set { SetValue(InfoStuffProperty, value); }
         }
 
-        public IEnumerable<ICommand> TextUploaders {
-            get;
-            set;
+        static ClipboardUploaderCommandEditor() {
+            CommandProperty = DependencyProperty.Register(
+                "Command",
+                typeof(ClipboardUploaderCommand),
+                typeof(ClipboardUploaderCommandEditor)
+            );
+
+            InfoStuffProperty = DependencyProperty.Register(
+                "InfoStuff",
+                typeof(IInfoStuff),
+                typeof(ClipboardUploaderCommandEditor)
+            );
         }
 
-        public IEnumerable<ICommand> UrlShorteners {
-            get;
-            set;
-        }
-
-        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command) {
+        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command, IInfoStuff infoStuff) {
             InitializeComponent();
 
-            this.command = command;
+            this.imageUploaderSelector.InfoStuff = infoStuff;
+            this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
 
-            DataContext = this;
+            this.textUploaderSelector.InfoStuff = infoStuff;
+            this.textUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.TextUploader);
+
+            this.urlShortenerSelector.InfoStuff = infoStuff;
+            this.urlShortenerSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.UrlShortener);
+
+            Command = command;
         }
     }
 }
