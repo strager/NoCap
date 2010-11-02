@@ -132,6 +132,10 @@ namespace NoCap.Library.Controls {
         }
 
         private void SelectCommand(ICommand command) {
+            if (InfoStuff == null) {
+                return;
+            }
+
             bool isCommandShared = InfoStuff.Commands.Contains(command);
 
             IsShared = isCommandShared;

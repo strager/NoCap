@@ -38,16 +38,12 @@ namespace NoCap.Plugins.Editors {
         public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command, IInfoStuff infoStuff) {
             InitializeComponent();
 
-            this.imageUploaderSelector.InfoStuff = infoStuff;
             this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
-
-            this.textUploaderSelector.InfoStuff = infoStuff;
             this.textUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.TextUploader);
-
-            this.urlShortenerSelector.InfoStuff = infoStuff;
             this.urlShortenerSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.UrlShortener);
 
             Command = command;
+            InfoStuff = infoStuff;
         }
     }
 }

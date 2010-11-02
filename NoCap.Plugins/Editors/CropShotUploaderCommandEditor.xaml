@@ -10,8 +10,8 @@
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Image uploader">
             <StackPanel Orientation="Vertical">
-                <local:CommandSelector Margin="0,0,0,3" x:Name="imageUploaderSelector" Command="{Binding ElementName=editor, Path=Command.ImageUploader, Mode=TwoWay}" VerticalAlignment="Top" />
-                <local:CommandEditor Margin="0,3,0,0" Command="{Binding ElementName=imageUploaderSelector, Path=Command}" />
+                <local:CommandSelector Margin="0,0,0,3" x:Name="imageUploaderSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.ImageUploader, Mode=TwoWay}" VerticalAlignment="Top" />
+                <local:CommandEditor Margin="0,3,0,0" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=imageUploaderSelector, Path=Command}" />
             </StackPanel>
         </GroupBox>
     </StackPanel>

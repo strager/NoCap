@@ -104,7 +104,9 @@ namespace NoCap.Library.Controls {
 
             // HACK We delay because blah blah blah
             commandSelector.Dispatcher.BeginInvoke(new Action(() => {
-                commandSelector.viewSource.Source = infoStuff.CommandFactories;
+                if (infoStuff != null) {
+                    commandSelector.viewSource.Source = infoStuff.CommandFactories;
+                }
             }));
         }
 
@@ -162,6 +164,7 @@ namespace NoCap.Library.Controls {
         }
 
         private void UpdateCommand(ICommandFactory commandFactory) {
+            // TODO Allow null
             Command = commandFactory.CreateCommand(InfoStuff);
         }
 

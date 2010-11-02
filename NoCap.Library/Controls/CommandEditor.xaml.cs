@@ -38,7 +38,8 @@ namespace NoCap.Library.Controls {
             InfoStuffProperty = DependencyProperty.Register(
                 "InfoStuff",
                 typeof(IInfoStuff),
-                typeof(CommandEditor)
+                typeof(CommandEditor),
+                new PropertyMetadata(OnInfoStuffChanged)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -47,6 +48,17 @@ namespace NoCap.Library.Controls {
                 typeof(RoutedPropertyChangedEventHandler<ICommand>),
                 typeof(CommandEditor)
             );
+        }
+
+        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            // When InfoStuff changes to or from null, update the editor viewer
+            // because the editor viewer is not present when InfoStuff is null
+            if ((e.OldValue == null && e.NewValue != null) ||
+                (e.OldValue != null && e.NewValue == null)) {
+                var commandEditor = (CommandEditor) sender;
+
+                commandEditor.SetActiveCommand(commandEditor.Command);
+            }
         }
 
         private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
@@ -63,6 +75,12 @@ namespace NoCap.Library.Controls {
         }
 
         private void SetActiveCommand(ICommand command) {
+            if (InfoStuff == null) {
+                Content = null;
+
+                return;
+            }
+
             var factory = command == null ? null : command.GetFactory();
 
             var editor = (factory == null)

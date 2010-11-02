@@ -86,7 +86,9 @@ namespace NoCap.Library.Controls {
 
             // FIXME Duplicated from CommandFactorySelector
             commandSelector.Dispatcher.BeginInvoke(new Action(() => {
-                commandSelector.viewSource.Source = infoStuff.Commands;
+                if (infoStuff != null) {
+                    commandSelector.viewSource.Source = infoStuff.Commands;
+                }
             }));
         }
 
