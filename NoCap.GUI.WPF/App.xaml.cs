@@ -131,7 +131,11 @@ namespace NoCap.GUI.WPF {
         }
 
         private static void PerformRequestSync(ICommand highLevelCommand, IMutableProgressTracker progress) {
-            highLevelCommand.Process(null, progress);
+            try {
+                highLevelCommand.Process(null, progress);
+            } catch (CommandCancelledException) {
+                // Eat it.
+            }
         }
 
         private void PerformRequestAsync(ICommand highLevelCommand) {

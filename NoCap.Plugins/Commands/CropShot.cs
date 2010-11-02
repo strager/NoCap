@@ -30,6 +30,10 @@ namespace NoCap.Plugins.Commands {
             thread.Start();
             thread.Join();
 
+            if (cropShotWindow.Data == null) {
+                throw new CommandCancelledException(this);
+            }
+
             progress.Progress = 1;  // TODO Crop shot progress (?)
 
             return cropShotWindow.Data;
