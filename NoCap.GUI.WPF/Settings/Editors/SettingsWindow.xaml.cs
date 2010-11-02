@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -25,16 +27,14 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             };
 
             foreach (var editor in editors) {
-                var tab = new TabItem {
-                    Header = editor.DisplayName,
-                    Content = editor
-                };
+                var tab = new TabItem { Content = editor };
+                tab.SetBinding(HeaderedContentControl.HeaderProperty, new Binding { Source = editor, Path = new PropertyPath("DisplayName") });
 
                 this.tabControl.Items.Add(tab);
             }
         }
 
-        private void OkButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
+        private void OkButtonClicked(object sender, RoutedEventArgs e) {
             DialogResult = true;
 
             Close();
