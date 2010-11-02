@@ -7,21 +7,21 @@ namespace NoCap.Library.Tests {
     class CommandTests {
         [Test]
         public void GetEffectiveDataTypeOnNull() {
-            var type = Command.GetEffectiveDataType(null);
+            var type = ((TypedData) null).GetEffectiveDataType();
 
             Assert.AreEqual(TypedDataType.None, type);
         }
 
         [Test]
         public void GetEffectiveDataTypeOnNone() {
-            var type = Command.GetEffectiveDataType(GetNullData());
+            var type = GetNullData().GetEffectiveDataType();
 
             Assert.AreEqual(TypedDataType.None, type);
         }
 
         [Test]
         public void GetEffectiveDataTypeOnText() {
-            var type = Command.GetEffectiveDataType(GetTextData());
+            var type = GetTextData().GetEffectiveDataType();
 
             Assert.AreEqual(TypedDataType.Text, type);
         }

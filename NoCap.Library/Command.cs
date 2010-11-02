@@ -25,16 +25,6 @@ namespace NoCap.Library {
         }
 
         /// <summary>
-        /// Gets the effective data type of the data given data.
-        /// </summary>
-        /// <param name="data">The data of which to get the type.</param>
-        /// <returns>The type describing <see cref="data"/>.</returns>
-        public static TypedDataType GetEffectiveDataType(TypedData data) {
-            // TODO Move to TypedData
-            return data == null ? TypedDataType.None : data.DataType;
-        }
-
-        /// <summary>
         /// Determines whether the given data is valid as input to the specified command.
         /// </summary>
         /// <remarks>
@@ -49,7 +39,7 @@ namespace NoCap.Library {
         /// <c>true</c> if the given data is valid as input to the specified command; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsValidInputType(this ICommand command, TypedData data) {
-            return command.IsValidInputType(GetEffectiveDataType(data));
+            return command.IsValidInputType(data.GetEffectiveDataType());
         }
 
         public static bool IsValidInputType(this ICommand command, TypedDataType type) {
