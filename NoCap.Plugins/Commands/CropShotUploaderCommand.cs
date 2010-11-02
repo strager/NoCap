@@ -58,7 +58,11 @@ namespace NoCap.Plugins.Commands {
                 new Clipboard()
             );
 
-            destination.Process(screenshotData, progress);
+            var data = destination.Process(screenshotData, progress);
+
+            if (data != null) {
+                data.Dispose();
+            }
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes() {

@@ -28,13 +28,22 @@ namespace NoCap.Library.Commands {
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
             aggregateProgress.BindTo(progress);
 
+            bool shouldDisposeData = false;
+
             using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
                 foreach (var destination in this.processors) {
                     trackerEnumerator.MoveNext();
 
                     destination.CheckValidInputType(data);
 
-                    data = destination.Process(data, trackerEnumerator.Current);
+                    var newData = destination.Process(data, trackerEnumerator.Current);
+
+                    if (shouldDisposeData && data != null) {
+                        data.Dispose();
+                    }
+
+                    data = newData;
+                    shouldDisposeData = true;
                 }
             }
 

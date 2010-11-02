@@ -1,5 +1,7 @@
 */bin/
 */obj/
+/vendor/*/bin/
+/vendor/*/obj/
 *.user
 *.suo
 _*

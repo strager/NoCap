@@ -30,9 +30,7 @@ namespace NoCap.Plugins.Commands {
         }
 
         protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            var stream = new MemoryStream((byte[]) originalData.Data);
-
-            helper.File(stream, "f", originalData.Name);
+            helper.File((Stream) originalData.Data, "f", originalData.Name);
         }
 
         public override ICommandFactory GetFactory() {

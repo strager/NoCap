@@ -3,8 +3,6 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
     public abstract class ImageUploader : HttpUploader {
-        // TODO Accept *raw data* instead of an image (less coupling)
-
         public ImageWriter ImageWriter {
             get;
             set;
@@ -22,9 +20,9 @@ namespace NoCap.Library.Commands {
                     var aggregateProgress = new AggregateProgressTracker(rawImageProgress, uploadProgress);
                     aggregateProgress.BindTo(progress);
 
-                    var rawImageData = ImageWriter.Process(data, rawImageProgress);
-
-                    return Upload(rawImageData, uploadProgress);
+                    using (var rawImageData = ImageWriter.Process(data, rawImageProgress)) {
+                        return Upload(rawImageData, uploadProgress);
+                    }
 
                 default:
                     return null;

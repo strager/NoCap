@@ -25,25 +25,13 @@ namespace NoCap.Plugins.Commands {
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {
-                case TypedDataType.RawData:
+                case TypedDataType.Stream:
                     string path = Path.Combine(RootPath, data.Name);
 
                     using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {
-                        var rawData = (byte[]) data.Data;
+                        var inputStream = (Stream) data.Data;
 
-                        int originalByteCount = rawData.Length;
-                        int bytesWritten = 0;
-
-                        while (bytesWritten < originalByteCount) {
-                            const int bufferSize = 1024;
-
-                            progress.Progress = (double) bytesWritten / originalByteCount;
-
-                            file.Write(rawData, bytesWritten, bufferSize);
-                            bytesWritten += bufferSize;
-                        }
-
-                        progress.Progress = 1;
+                        CopyStream(inputStream, file, progress);
 
                         var uriBuilder = new UriBuilder {
                             Scheme = Uri.UriSchemeFile,
@@ -58,8 +46,41 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
+        private static void CopyStream(Stream inputStream, Stream outputStream, IMutableProgressTracker progress) {
+            long originalByteCount;
+            long bytesProcessed = 0;
+
+            try {
+                originalByteCount = inputStream.Length;
+            } catch (NotSupportedException) {
+                // .Length is not supported; length is undefined
+                originalByteCount = -1;
+            }
+                        
+            const int bufferSize = 1024;
+            byte[] readBuffer = new byte[bufferSize];
+
+            while (true) {
+                if (originalByteCount > 0) {
+                    progress.Progress = (double) bytesProcessed / originalByteCount;
+                }
+
+                int bytesRead = inputStream.Read(readBuffer, 0, readBuffer.Length);
+
+                outputStream.Write(readBuffer, 0, bytesRead);
+                bytesProcessed += bufferSize;
+
+                if (bytesRead < bufferSize) {
+                    // We hit end-of-file
+                    break;
+                }
+            }
+
+            progress.Progress = 1;
+        }
+
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.RawData };
+            return new[] { TypedDataType.Stream };
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {

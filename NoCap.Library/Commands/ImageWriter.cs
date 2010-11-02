@@ -94,20 +94,14 @@ namespace NoCap.Library.Commands {
                 throw new InvalidOperationException("Codec must be non-null and support bitmap encoding");
             }
 
-            byte[] rawData;
+            var stream = new MemoryStream();
+            ((Image) data.Data).Save(stream, CodecInfo, EncoderParameters);
+            stream.Position = 0;
 
-            using (var stream = new MemoryStream()) {
-                ((Image) data.Data).Save(stream, CodecInfo, EncoderParameters);
+            progress.Progress = 1;
 
-                stream.Position = 0;
-
-                rawData = new byte[stream.Length];
-                stream.Read(rawData, 0, rawData.Length);
-            }
-
-            progress.Progress = 1;  // TODO Image writing progress (?)
-
-            return TypedData.FromRawData(rawData, data.Name + "." + Extension);
+            // FIXME Is there a better function for building a filename with a given extension?
+            return TypedData.FromStream(stream, data.Name + "." + Extension);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
@@ -115,7 +109,7 @@ namespace NoCap.Library.Commands {
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { TypedDataType.RawData };
+            return new[] { TypedDataType.Stream };
         }
 
         public ICommandFactory GetFactory() {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 
 namespace NoCap.Library {
     /// <summary>
@@ -18,8 +19,8 @@ namespace NoCap.Library {
         /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Uri"/>.</summary>
         Uri = 3,
 
-        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.Byte[]"/>.</summary>
-        RawData = 4,
+        /// <summary><see cref="TypedData.Data"/> is an instance of <see cref="System.IO.Stream"/>.</summary>
+        Stream = 4,
 
         // Add new types here
 
@@ -30,7 +31,7 @@ namespace NoCap.Library {
         User = 9001
     }
 
-    public class TypedData {
+    public sealed class TypedData : IDisposable {
         /// <summary>
         /// Gets or sets the type of the data.
         /// </summary>
@@ -132,11 +133,14 @@ namespace NoCap.Library {
         /// Creates a new instance of the <see cref="TypedData"/>
         /// class representing the given raw data.
         /// </summary>
-        /// <param name="rawData">The raw data.</param>
+        /// <remarks>
+        /// <paramref name="stream"/> will be disposed when this instance is disposed.
+        /// </remarks>
+        /// <param name="stream">The stream.</param>
         /// <param name="name">The name.</param>
         /// <returns>A new TypedData instance.</returns>
-        public static TypedData FromRawData(byte[] rawData, string name) {
-            return new TypedData(TypedDataType.RawData, rawData, name);
+        public static TypedData FromStream(Stream stream, string name) {
+            return new TypedData(TypedDataType.Stream, stream, name);
         }
 
         /// <summary>
@@ -147,6 +151,14 @@ namespace NoCap.Library {
         /// </returns>
         public override string ToString() {
             return string.Format("{0} ({1}: {2})", Name, DataType, Data);
+        }
+
+        public void Dispose() {
+            var dataAsDisposable = Data as IDisposable;
+
+            if (dataAsDisposable != null) {
+                dataAsDisposable.Dispose();
+            }
         }
     }
 }

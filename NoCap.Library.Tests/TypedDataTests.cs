@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests {
@@ -50,14 +51,16 @@ namespace NoCap.Library.Tests {
         }
 
         [Test]
-        public void FromRawData() {
-            byte[] rawData = new byte[] { 1, 2, 3 };
+        public void FromStream() {
+            Stream stream = new MemoryStream();
 
-            var data = TypedData.FromRawData(rawData, "raw data");
+            var data = TypedData.FromStream(stream, "raw data");
             
-            Assert.AreEqual(TypedDataType.RawData, data.DataType);
-            Assert.AreEqual(rawData, data.Data);
+            Assert.AreEqual(TypedDataType.Stream, data.DataType);
+            Assert.AreEqual(stream, data.Data);
             Assert.AreEqual("raw data", data.Name);
         }
+
+        // TODO Test Dispose
     }
 }

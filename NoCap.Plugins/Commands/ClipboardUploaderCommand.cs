@@ -96,7 +96,11 @@ namespace NoCap.Plugins.Commands {
             // TODO Progress
             var clipboardData = this.clipboardProcessor.Process(null, progress);
 
-            router.Process(clipboardData, progress);
+            var data = router.Process(clipboardData, progress);
+
+            if (data != null) {
+                data.Dispose();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
