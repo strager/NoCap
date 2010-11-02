@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
     public class ImageWriter : ICommand, INotifyPropertyChanged {
+        public static readonly IEnumerable<ImageCodecInfo> DefaultImageCodecs =
+            new ReadOnlyCollection<ImageCodecInfo>(ImageCodecInfo.GetImageEncoders().Where(IsCodecValid).ToList());
+
         private string name;
         private string extension;
         private EncoderParameters encoderParameters;
@@ -41,24 +46,16 @@ namespace NoCap.Library.Commands {
             }
         }
 
-        public EncoderParameters EncoderParameters {
-            get {
-                return this.encoderParameters;
-            }
-
-            set {
-                this.encoderParameters = value;
-
-                Notify("EncoderParameters");
-            }
-        }
-
         public ImageCodecInfo CodecInfo {
             get {
                 return this.codecInfo;
             }
 
             set {
+                if (value == null) {
+                    throw new ArgumentNullException("value");
+                }
+
                 this.codecInfo = value;
 
                 Notify("CodecInfo");
@@ -73,8 +70,20 @@ namespace NoCap.Library.Commands {
             }
         }
 
+        public EncoderParameters EncoderParameters {
+            get {
+                return this.encoderParameters;
+            }
+
+            set {
+                this.encoderParameters = value;
+
+                Notify("EncoderParameters");
+            }
+        }
+
         public ImageWriter(ImageCodecInfo codecInfo = null, EncoderParameters encoderParameters = null) {
-            CodecInfo = codecInfo;
+            CodecInfo = codecInfo ?? DefaultImageCodecs.First();
             EncoderParameters = encoderParameters;
         }
 

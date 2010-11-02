@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing.Imaging;
-using System.Linq;
 using NoCap.Library.Commands;
 
 namespace NoCap.Library.Editors {
@@ -8,8 +7,6 @@ namespace NoCap.Library.Editors {
     /// Interaction logic for ImageWriterEditor.xaml
     /// </summary>
     public partial class ImageWriterEditor : ICommandEditor {
-        private static readonly IEnumerable<ImageCodecInfo> DefaultImageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
-
         private readonly ImageWriter command;
         private readonly IEnumerable<ImageCodecInfo> codecs;
 
@@ -26,7 +23,7 @@ namespace NoCap.Library.Editors {
         }
 
         public ImageWriterEditor(ImageWriter command) :
-            this(command, DefaultImageCodecs) {
+            this(command, ImageWriter.DefaultImageCodecs) {
         }
 
         public ImageWriterEditor(ImageWriter command, IEnumerable<ImageCodecInfo> codecs) {

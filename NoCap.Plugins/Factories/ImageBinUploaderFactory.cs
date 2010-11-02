@@ -16,11 +16,11 @@ namespace NoCap.Plugins.Factories {
         public ICommand CreateCommand(IInfoStuff infoStuff) {
             // FIXME Hack
 
-            var imageCodecs = ImageCodecInfo.GetImageEncoders().Where(ImageWriter.IsCodecValid);
+            var imageCodecs = ImageWriter.DefaultImageCodecs;
 
-            return new ImageBinUploader(
-                new ImageWriter(imageCodecs.FirstOrDefault(codec => codec.FormatDescription == "PNG"))
-            );
+            return new ImageBinUploader(new ImageWriter(
+                imageCodecs.FirstOrDefault(codec => codec.FormatDescription == "PNG") ?? imageCodecs.First()
+            ));
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

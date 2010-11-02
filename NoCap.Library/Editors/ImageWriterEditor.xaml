@@ -18,9 +18,9 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="_Codec" />
-        <ComboBox Grid.Row="0" Grid.Column="1" SelectedItem="{Binding ElementName=editor, Path=Command.CodecInfo}" DisplayMemberPath="FormatDescription" ItemsSource="{Binding ElementName=editor, Path=Codecs}" />
+        <ComboBox Grid.Row="0" Grid.Column="1" Name="codecSelector" SelectedItem="{Binding ElementName=editor, Path=Command.CodecInfo, Mode=TwoWay}" DisplayMemberPath="FormatDescription" ItemsSource="{Binding ElementName=editor, Path=Codecs}" />
 
         <Label Grid.Row="1" Grid.Column="0" Content="File _extension" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.Extension}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.Extension, Mode=TwoWay}" />
     </Grid>
 </ContentControl>
