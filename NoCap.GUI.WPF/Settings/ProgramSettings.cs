@@ -62,8 +62,6 @@ namespace NoCap.GUI.WPF.Settings {
     }
 
     public interface ISettingsEditor {
-        // TODO Make these dependancy properties?
-
         string DisplayName {
             get;
         }

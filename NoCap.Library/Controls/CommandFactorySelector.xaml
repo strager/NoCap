@@ -1,9 +1,10 @@
-﻿<UserControl x:Class="NoCap.Library.Controls.CommandFactorySelector"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="31" d:DesignWidth="301"
-             Name="selector">
+﻿<ContentControl
+    x:Class="NoCap.Library.Controls.CommandFactorySelector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="31" d:DesignWidth="301"
+    Name="selector">
     <ComboBox DisplayMemberPath="Name" Name="commandFactoryList" SelectedItem="{Binding ElementName=selector, Path=CommandFactory}" />
-</UserControl>
+</ContentControl>

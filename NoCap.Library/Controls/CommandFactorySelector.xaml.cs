@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -17,6 +16,8 @@ namespace NoCap.Library.Controls {
         public readonly static RoutedEvent CommandFactoryChangedEvent;
 
         private bool generateCommandInstance = true;
+
+        private readonly Filterer filterer = new Filterer();
 
         public ICommand Command {
             get { return (ICommand) GetValue(CommandProperty); }
@@ -43,22 +44,9 @@ namespace NoCap.Library.Controls {
             remove { RemoveHandler(CommandFactoryChangedEvent, value); }
         }
 
-        private readonly CollectionViewSource viewSource;
-
-        private Predicate<ICommandFactory> filter;
-
         public Predicate<ICommandFactory> Filter {
-            get {
-                return this.filter;
-            }
-
-            set {
-                this.filter = value;
-
-                if (this.viewSource.View != null) {
-                    this.viewSource.View.Refresh();
-                }
-            }
+            get;
+            set;
         }
 
         static CommandFactorySelector() {
@@ -102,12 +90,9 @@ namespace NoCap.Library.Controls {
             var commandSelector = (CommandFactorySelector) sender;
             var infoStuff = (IInfoStuff) e.NewValue;
 
-            // HACK We delay because blah blah blah
-            commandSelector.Dispatcher.BeginInvoke(new Action(() => {
-                if (infoStuff != null) {
-                    commandSelector.viewSource.Source = infoStuff.CommandFactories;
-                }
-            }));
+            if (infoStuff != null) {
+                commandSelector.filterer.Source = infoStuff.CommandFactories;
+            }
         }
 
         private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
@@ -171,23 +156,11 @@ namespace NoCap.Library.Controls {
         public CommandFactorySelector() {
             InitializeComponent();
 
-            this.viewSource = new CollectionViewSource();
-            this.viewSource.Filter += FilterItem;
+            this.commandFactoryList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
-            this.commandFactoryList.SetBinding(
-                ItemsControl.ItemsSourceProperty,
-                new Binding { Source = this.viewSource }
-            );
-        }
-
-        private void FilterItem(object sender, FilterEventArgs e) {
-            if (Filter == null) {
-                e.Accepted = true;
-
-                return;
-            }
-
-            e.Accepted = Filter((ICommandFactory) e.Item);
+            this.filterer.Filter = (obj) => {
+                return Filter((ICommandFactory) obj);
+            };
         }
     }
 }
