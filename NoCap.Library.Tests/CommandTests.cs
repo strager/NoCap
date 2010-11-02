@@ -6,27 +6,6 @@ namespace NoCap.Library.Tests {
     [TestFixture]
     class CommandTests {
         [Test]
-        public void GetEffectiveDataTypeOnNull() {
-            var type = ((TypedData) null).GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.None, type);
-        }
-
-        [Test]
-        public void GetEffectiveDataTypeOnNone() {
-            var type = GetNullData().GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.None, type);
-        }
-
-        [Test]
-        public void GetEffectiveDataTypeOnText() {
-            var type = GetTextData().GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.Text, type);
-        }
-
-        [Test]
         public void IsValidInputTypeTrue() {
             var mock = GetCommandMock();
             mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });

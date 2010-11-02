@@ -63,6 +63,8 @@ namespace NoCap.Library {
             private set;
         }
 
+        public static TypedData Null = new TypedData(TypedDataType.None, null, "null");
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedData"/> class.
         /// </summary>
