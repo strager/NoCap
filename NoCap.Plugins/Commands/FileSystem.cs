@@ -31,14 +31,24 @@ namespace NoCap.Plugins.Commands {
                     using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {
                         var rawData = (byte[]) data.Data;
 
-                        file.Write(rawData, 0, rawData.Length);
+                        int originalByteCount = rawData.Length;
+                        int bytesWritten = 0;
+
+                        while (bytesWritten < originalByteCount) {
+                            const int bufferSize = 1024;
+
+                            progress.Progress = (double) bytesWritten / originalByteCount;
+
+                            file.Write(rawData, bytesWritten, bufferSize);
+                            bytesWritten += bufferSize;
+                        }
+
+                        progress.Progress = 1;
 
                         var uriBuilder = new UriBuilder {
                             Scheme = Uri.UriSchemeFile,
                             Path = path
                         };
-
-                        progress.Progress = 1;  // TODO File reading progress (?)
 
                         return TypedData.FromUri(uriBuilder.Uri, "output file");
                     }
