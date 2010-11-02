@@ -25,41 +25,41 @@
     	</tb:TaskbarIcon>
         
     	<DrawingImage x:Key="logo">
-    		<!-- Generated from nocap-logo.svg using Svg2Xaml -->
-    		<DrawingImage.Drawing>
-    			<DrawingGroup Opacity="1">
-    				<DrawingGroup.Children>
-    					<DrawingGroup Opacity="1">
-    						<DrawingGroup.Children>
-    							<DrawingGroup Opacity="1">
-    								<DrawingGroup.Children>
-    									<GeometryDrawing>
-    										<GeometryDrawing.Brush>
-    											<RadialGradientBrush Center="168.25,437.87946" RadiusX="59.75" RadiusY="59.75" GradientOrigin="168.25,437.87946" ColorInterpolationMode="SRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1" Transform="1.500112,0.00857285,-0.00788,1.3788802,308.55452,-256.85591">
-    												<RadialGradientBrush.GradientStops>
-    													<GradientStop Color="sc#1, 1, 1, 0" Offset="0" />
-    													<GradientStop Color="sc#1, 0.5019608, 1, 0" Offset="0.5" />
-    													<GradientStop Color="sc#1, 0, 1, 0" Offset="1" />
-    												</RadialGradientBrush.GradientStops>
-    											</RadialGradientBrush>
-    										</GeometryDrawing.Brush>
-    										<GeometryDrawing.Pen>
-    											<Pen Brush="#FF000000" Thickness="2.5" />
-    										</GeometryDrawing.Pen>
-    										<GeometryDrawing.Geometry>
-    											<PathGeometry FillRule="EvenOdd" Figures="M566.247924804688,307.865173339844C542.661071777344,311.080261230469,540.247924804688,338.865325927734,540.247924804688,338.865325927734L566.247924804688,377.865325927734C566.247924804688,377.865325927734,566.362243652344,307.849578857422,566.247924804688,307.865173339844z M573.247924804688,295.865325927734C608.981079101563,296.062225341797 615.247924804688,325.365325927734 615.247924804688,325.365325927734 615.247924804688,325.365325927734 601.270812988281,328.446228027344 601.247924804688,328.365325927734 595.717163085938,308.853546142578 579.247924804688,307.865173339844 579.247924804688,307.865173339844 579.247924804688,307.865173339844 579.176025390625,389.372344970703 579.247924804688,389.365325927734 598.904907226563,387.448760986328 603.247924804688,364.865325927734 603.247924804688,364.865325927734L616.747924804688,367.865325927734C616.747924804688,367.865325927734 612.392150878906,400.197998046875 573.247924804688,400.865325927734 527.387512207031,401.647155761719 525.776428222656,355.539672851563 525.560424804688,351.552825927734 525.366577148438,347.974578857422 525.685424804688,340.802825927734 525.685424804688,340.802825927734L511.247924804688,320.177825927734 511.247924804688,400.365325927734 498.247924804688,400.365325927734 498.247924804688,297.865325927734 512.247924804688,297.865325927734 529.966674804688,323.396575927734C529.966674804688,323.396575927734,539.652038574219,295.680206298828,573.247924804688,295.865325927734z" />
-    										</GeometryDrawing.Geometry>
-    									</GeometryDrawing>
-    								</DrawingGroup.Children>
-    							</DrawingGroup>
-    						</DrawingGroup.Children>
-    						<DrawingGroup.Transform>
-    							<TranslateTransform X="-491.99791" Y="-289.61441" />
-    						</DrawingGroup.Transform>
-    					</DrawingGroup>
-    				</DrawingGroup.Children>
-    			</DrawingGroup>
-    		</DrawingImage.Drawing>
+            <!-- Generated from nocap-logo.svg using Svg2Xaml -->
+            <DrawingImage.Drawing>
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup.Children>
+                        <DrawingGroup Opacity="1">
+                            <DrawingGroup.Children>
+                                <DrawingGroup Opacity="1" />
+                                <DrawingGroup Opacity="1" Transform="0.90265999,0,0,0.90265999,39.098264,34.798694">
+                                    <DrawingGroup.Children>
+                                        <GeometryDrawing Brush="#FF3BEE49">
+                                            <GeometryDrawing.Pen>
+                                                <Pen Brush="#FF000000" Thickness="3.99999976" />
+                                            </GeometryDrawing.Pen>
+                                            <GeometryDrawing.Geometry>
+                                                <PathGeometry FillRule="Nonzero" Figures="M503.95458984375,284.833404541016L528.603942871094,284.833404541016 579.91064453125,368.613586425781 579.91064453125,327.969818115234 603.4521484375,327.969818115234 603.4521484375,410.261322021484 578.041198730469,410.261322021484 527.49609375,328.489105224609 527.49609375,410.261322021484 503.95458984375,410.261322021484 503.95458984375,284.833404541016z" />
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                    </DrawingGroup.Children>
+                                </DrawingGroup>
+                                <GeometryDrawing Brush="#FFFFFFFF">
+                                    <GeometryDrawing.Pen>
+                                        <Pen Brush="#FF000000" Thickness="4" />
+                                    </GeometryDrawing.Pen>
+                                    <GeometryDrawing.Geometry>
+                                        <PathGeometry FillRule="Nonzero" Figures="M562.570190429688,291.917663574219L583.806213378906,291.917663574219 583.806213378906,313.153656005859 562.570190429688,313.153656005859 562.570190429688,291.917663574219z" />
+                                    </GeometryDrawing.Geometry>
+                                </GeometryDrawing>
+                            </DrawingGroup.Children>
+                            <DrawingGroup.Transform>
+                                <TranslateTransform X="-491.99791" Y="-289.61441" />
+                            </DrawingGroup.Transform>
+                        </DrawingGroup>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
     	</DrawingImage>
     </Application.Resources>
 </Application>
