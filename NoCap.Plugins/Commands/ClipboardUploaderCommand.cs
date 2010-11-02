@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Util;
@@ -73,6 +74,12 @@ namespace NoCap.Plugins.Commands {
 
         public override ICommandFactory GetFactory() {
             return new ClipboardUploaderCommandFactory();
+        }
+
+        public override TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.Forever;
+            }
         }
 
         public override void Execute(IMutableProgressTracker progress) {

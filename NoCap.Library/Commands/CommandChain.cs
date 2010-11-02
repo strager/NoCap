@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NoCap.Library.Util;
 
@@ -89,6 +90,22 @@ namespace NoCap.Library.Commands {
 
         public ICommandFactory GetFactory() {
             return null;
+        }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                int estimateCounter = this.processors.Aggregate(0, (counter, command) => (int) command.ProcessTimeEstimate);
+
+                if (estimateCounter <= (int) TimeEstimate.NoTimeAtAll) {
+                    return TimeEstimate.NoTimeAtAll;
+                }
+
+                if (estimateCounter <= (int) TimeEstimate.AShortWhile) {
+                    return TimeEstimate.AShortWhile;
+                }
+
+                return TimeEstimate.Forever;
+            }
         }
 
         public void Add(ICommand item) {

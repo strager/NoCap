@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using NoCap.Library;
@@ -49,6 +50,12 @@ namespace NoCap.Plugins.Commands {
 
         public ICommandFactory GetFactory() {
             return new CropShotFactory();
+        }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.AShortWhile;
+            }
         }
     }
 }

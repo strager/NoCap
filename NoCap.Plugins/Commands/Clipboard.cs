@@ -105,5 +105,11 @@ namespace NoCap.Plugins.Commands {
         public ICommandFactory GetFactory() {
             return new ClipboardFactory();
         }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.NoTimeAtAll;
+            }
+        }
     }
 }

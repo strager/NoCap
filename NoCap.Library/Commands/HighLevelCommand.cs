@@ -16,6 +16,10 @@ namespace NoCap.Library.Commands {
 
         public abstract ICommandFactory GetFactory();
 
+        public abstract TimeEstimate ProcessTimeEstimate {
+            get;
+        }
+
         public IEnumerable<TypedDataType> GetInputDataTypes() {
             return new[] { TypedDataType.None };
         }

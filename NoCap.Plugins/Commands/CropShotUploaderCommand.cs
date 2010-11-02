@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using NoCap.Library;
@@ -44,6 +45,12 @@ namespace NoCap.Plugins.Commands {
 
         public override ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
+        }
+
+        public override TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.Forever;
+            }
         }
 
         public override void Execute(IMutableProgressTracker progress) {

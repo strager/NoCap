@@ -90,5 +90,11 @@ namespace NoCap.Plugins.Commands {
         public ICommandFactory GetFactory() {
             return new FileSystemFactory();
         }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.NoTimeAtAll;
+            }
+        }
     }
 }

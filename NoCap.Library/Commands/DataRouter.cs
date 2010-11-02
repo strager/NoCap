@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
@@ -42,6 +43,16 @@ namespace NoCap.Library.Commands {
 
         public ICommandFactory GetFactory() {
             return null;
+        }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                if (!this.routes.Any()) {
+                    return TimeEstimate.NoTimeAtAll;
+                }
+
+                return this.routes.Values.Max((command) => command.ProcessTimeEstimate);
+            }
         }
 
         public void Connect(TypedDataType key, ICommand value) {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NoCap.Library;
 using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
@@ -45,6 +46,12 @@ namespace NoCap.Plugins.Commands {
 
         public ICommandFactory GetFactory() {
             return new ScreenshotFactory();
+        }
+
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.NoTimeAtAll;
+            }
         }
     }
     

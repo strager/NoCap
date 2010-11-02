@@ -125,6 +125,12 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
+        public TimeEstimate ProcessTimeEstimate {
+            get {
+                return TimeEstimate.AShortWhile;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void Notify(string propertyName) {
