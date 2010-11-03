@@ -6,7 +6,7 @@ namespace NoCap.Library.Util {
             get;
         }
 
-        double EstimatedTimeRemaining {
+        ITimeEstimate EstimatedTimeRemaining {
             get;
         }
     }

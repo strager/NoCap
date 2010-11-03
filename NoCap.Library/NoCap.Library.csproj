@@ -79,6 +79,7 @@
     <Compile Include="Util\AggregateProgressTracker.cs" />
     <Compile Include="Util\IMutableProgressTracker.cs" />
     <Compile Include="Util\IProgressTracker.cs" />
+    <Compile Include="Util\ITimeEstimate.cs" />
     <Compile Include="Util\LinqHelpers.cs" />
     <Compile Include="Commands\TextUploader.cs" />
     <Compile Include="Commands\UrlShortener.cs" />

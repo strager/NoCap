@@ -18,7 +18,7 @@ namespace NoCap.Library.Commands {
 
         public abstract ICommandFactory GetFactory();
 
-        public abstract TimeEstimate ProcessTimeEstimate {
+        public abstract ITimeEstimate ProcessTimeEstimate {
             get;
         }
 

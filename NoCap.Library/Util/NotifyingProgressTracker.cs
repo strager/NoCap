@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace NoCap.Library.Util {
     public class NotifyingProgressTracker : IMutableProgressTracker {
         private double progress;
-        private double estimatedTimeRemaining;
+        private readonly ITimeEstimate estimatedTimeRemaining;
 
         public double Progress {
             get {
@@ -17,24 +18,22 @@ namespace NoCap.Library.Util {
             }
         }
 
-        public double EstimatedTimeRemaining {
+        public ITimeEstimate EstimatedTimeRemaining {
             get {
                 return this.estimatedTimeRemaining;
-            }
-
-            set {
-                this.estimatedTimeRemaining = value;
-
-                Notify("EstimatedTimeRemaining");
             }
         }
 
         public NotifyingProgressTracker() :
-            this(TimeEstimate.NoTimeAtAll) {
+            this(TimeEstimates.Indeterminant) {
         }
 
-        public NotifyingProgressTracker(TimeEstimate timeEstimate) {
-            this.estimatedTimeRemaining = (int) timeEstimate;
+        public NotifyingProgressTracker(ITimeEstimate timeEstimate) {
+            if (timeEstimate == null) {
+                throw new ArgumentNullException("timeEstimate");
+            }
+
+            this.estimatedTimeRemaining = timeEstimate;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

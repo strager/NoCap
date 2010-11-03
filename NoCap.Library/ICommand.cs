@@ -67,13 +67,7 @@ namespace NoCap.Library {
         /// <returns>A factory instance which can provide an editor to this instance.</returns>
         ICommandFactory GetFactory();
 
-        TimeEstimate ProcessTimeEstimate { get; }
-    }
-
-    public enum TimeEstimate {
-        NoTimeAtAll = 1,
-        AShortWhile = 10,
-        Forever = 90
+        ITimeEstimate ProcessTimeEstimate { get; }
     }
 
     public static class CommandExtensions {

@@ -5,45 +5,47 @@ using System.ComponentModel;
 using System.Linq;
 
 namespace NoCap.Library.Util {
-    public class AggregateProgressTracker : IProgressTracker {
-        private readonly IDictionary<IProgressTracker, double> progressTrackerWeights;
+    class AggregateProgressTrackerTimeEstimate : ITimeEstimate {
+        private readonly AggregateProgressTracker aggregateProgressTracker;
 
-        private double TotalWeight {
+        public AggregateProgressTrackerTimeEstimate(AggregateProgressTracker aggregateProgressTracker) {
+            this.aggregateProgressTracker = aggregateProgressTracker;
+        }
+
+        public double ProgressWeight {
             get {
-                return this.progressTrackerWeights.Sum((kvp) => kvp.Value);
+                return this.aggregateProgressTracker.ProgressTrackers.Sum((progressTracker) => progressTracker.EstimatedTimeRemaining.ProgressWeight);
             }
         }
+
+        public bool IsIndeterminant {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    public class AggregateProgressTracker : IProgressTracker {
+        private readonly ITimeEstimate timeEstimate;
+        private readonly IList<IProgressTracker> progressTrackers;
 
         public double Progress {
             get {
-                double totalWeight = TotalWeight;
-
-                if (totalWeight == 0) {
-                    return ProgressTrackers.Sum((progressTracker) => progressTracker.Progress);
-                }
-
-                double progress = this.progressTrackerWeights.Sum((kvp) => kvp.Key.Progress * kvp.Value / totalWeight);
-
-                return progress;
+                return this.progressTrackers.Sum(
+                    (progressTracker) => progressTracker.Progress * progressTracker.EstimatedTimeRemaining.ProgressWeight
+                ) / EstimatedTimeRemaining.ProgressWeight;
             }
         }
 
-        public double EstimatedTimeRemaining {
+        public ITimeEstimate EstimatedTimeRemaining {
             get {
-                double currentWeight = ProgressTrackers.Sum((progressTracker) => progressTracker.EstimatedTimeRemaining);
-                double totalWeight = TotalWeight;
-
-                if (totalWeight == 0) {
-                    return 0;
-                }
-
-                return currentWeight / totalWeight;
+                return this.timeEstimate;
             }
         }
 
         public ReadOnlyCollection<IProgressTracker> ProgressTrackers {
             get {
-                return new ReadOnlyCollection<IProgressTracker>(this.progressTrackerWeights.Keys.ToList());
+                return new ReadOnlyCollection<IProgressTracker>(this.progressTrackers);
             }
         }
 
@@ -58,10 +60,10 @@ namespace NoCap.Library.Util {
                 throw new ArgumentNullException("progressTrackers");
             }
 
-            this.progressTrackerWeights = new Dictionary<IProgressTracker, double>();
+            this.timeEstimate = new AggregateProgressTrackerTimeEstimate(this);
+            this.progressTrackers = progressTrackers.ToArray();
 
             foreach (var progressTracker in progressTrackers) {
-                this.progressTrackerWeights[progressTracker] = progressTracker.EstimatedTimeRemaining;
                 progressTracker.PropertyChanged += TrackedProgressChanged;
             }
         }

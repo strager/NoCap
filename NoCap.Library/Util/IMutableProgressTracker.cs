@@ -4,10 +4,5 @@
             get;
             set;
         }
-
-        new double EstimatedTimeRemaining {
-            get;
-            set;
-        }
     }
 }

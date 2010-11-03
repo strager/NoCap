@@ -1,4 +1,5 @@
-﻿using NoCap.Library.Util;
+﻿using System;
+using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Util {
@@ -27,6 +28,27 @@ namespace NoCap.Library.Tests.Util {
 
             npt.Progress = 1;
             Assert.AreEqual(2, progressChangedCallCount);
+        }
+
+        [Test]
+        public void IndeterminantTimeEstimateByDefault() {
+            var npt = new NotifyingProgressTracker();
+
+            Assert.IsTrue(npt.EstimatedTimeRemaining.IsIndeterminant);
+        }
+
+        [Test]
+        public void NullTimeEstimateThrows() {
+            Assert.Throws<ArgumentNullException>(() => new NotifyingProgressTracker(null));
+        }
+
+        [Test]
+        public void TimeEstimateFromConstructor() {
+            var timeEstimate = TimeEstimates.LongOperation;
+
+            var npt = new NotifyingProgressTracker(timeEstimate);
+
+            Assert.AreSame(timeEstimate, npt.EstimatedTimeRemaining);
         }
     }
 }

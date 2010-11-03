@@ -48,9 +48,9 @@ namespace NoCap.Plugins.Commands {
             return new CropShotUploaderCommandFactory();
         }
 
-        public override TimeEstimate ProcessTimeEstimate {
+        public override ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.Forever;
+                return TimeEstimates.LongOperation;
             }
         }
 

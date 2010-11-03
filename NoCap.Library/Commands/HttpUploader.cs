@@ -18,8 +18,8 @@ namespace NoCap.Library.Commands {
             string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
-            var requestProgress = new NotifyingProgressTracker(TimeEstimate.Forever);
-            var responseProgress = new NotifyingProgressTracker(TimeEstimate.AShortWhile);
+            var requestProgress = new NotifyingProgressTracker(TimeEstimates.LongOperation);
+            var responseProgress = new NotifyingProgressTracker(TimeEstimates.ShortOperation);
 
             var aggregateProgress = new AggregateProgressTracker(requestProgress, responseProgress);
             aggregateProgress.BindTo(progress);
@@ -145,9 +145,9 @@ namespace NoCap.Library.Commands {
         public abstract IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
         public abstract ICommandFactory GetFactory();
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.Forever;
+                return TimeEstimates.LongOperation;
             }
         }
     }

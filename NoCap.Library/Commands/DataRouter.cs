@@ -46,10 +46,10 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
                 if (!this.routes.Any()) {
-                    return TimeEstimate.NoTimeAtAll;
+                    return TimeEstimates.Instantanious;
                 }
 
                 return this.routes.Values.Max((command) => command.ProcessTimeEstimate);

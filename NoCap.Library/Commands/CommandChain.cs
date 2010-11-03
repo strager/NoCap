@@ -4,36 +4,65 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    class CommandChainTimeEstimate : ITimeEstimate {
+        private readonly CommandChain commandChain;
+
+        public CommandChainTimeEstimate(CommandChain commandChain) {
+            this.commandChain = commandChain;
+        }
+
+        public double ProgressWeight {
+            get {
+                return this.commandChain.Commands.Sum((command) => command.ProcessTimeEstimate.ProgressWeight);
+            }
+        }
+
+        public bool IsIndeterminant {
+            get {
+                return this.commandChain.Commands.Any((command) => command.ProcessTimeEstimate.IsIndeterminant);
+            }
+        }
+    }
+
     [Serializable]
     public class CommandChain : ICommand {
-        private readonly IList<ICommand> processors;
+        private readonly ITimeEstimate timeEstimate;
+        private readonly IList<ICommand> commands;
 
         public string Name {
             get { return "Destination chain"; }
         }
 
+        internal IEnumerable<ICommand> Commands {
+            get {
+                return this.commands;
+            }
+        }
+
         public CommandChain() {
-            this.processors = new List<ICommand>();
+            this.commands = new List<ICommand>();
         }
 
         public CommandChain(params ICommand[] commands) :
             this((IEnumerable<ICommand>) commands) {
         }
 
-        public CommandChain(IEnumerable<ICommand> processors) {
-            this.processors = processors.ToList();
+        public CommandChain(IEnumerable<ICommand> commands) {
+            this.commands = commands.ToList();
+
+            this.timeEstimate = new CommandChainTimeEstimate(this);
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             // ToList is needed for some strange reason
-            var progressTrackers = this.processors.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
+            var progressTrackers = this.commands.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
             aggregateProgress.BindTo(progress);
 
             bool shouldDisposeData = false;
 
             using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
-                foreach (var destination in this.processors) {
+                foreach (var destination in this.commands) {
                     trackerEnumerator.MoveNext();
 
                     destination.CheckValidInputType(data);
@@ -53,21 +82,21 @@ namespace NoCap.Library.Commands {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            if (!this.processors.Any()) {
+            if (!this.commands.Any()) {
                 return new TypedDataType[] { };
             }
 
-            return this.processors.First().GetInputDataTypes();
+            return this.commands.First().GetInputDataTypes();
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            if (!this.processors.Any()) {
+            if (!this.commands.Any()) {
                 return new[] { input };
             }
 
             this.CheckValidInputType(input);
 
-            return GetChainOutputDataTypes(input, this.processors).Unique();
+            return GetChainOutputDataTypes(input, this.commands).Unique();
         }
 
         private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<ICommand> processors) {
@@ -93,24 +122,14 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                int estimateCounter = this.processors.Aggregate(0, (counter, command) => (int) command.ProcessTimeEstimate);
-
-                if (estimateCounter <= (int) TimeEstimate.NoTimeAtAll) {
-                    return TimeEstimate.NoTimeAtAll;
-                }
-
-                if (estimateCounter <= (int) TimeEstimate.AShortWhile) {
-                    return TimeEstimate.AShortWhile;
-                }
-
-                return TimeEstimate.Forever;
+                return this.timeEstimate;
             }
         }
 
         public void Add(ICommand item) {
-            this.processors.Add(item);
+            this.commands.Add(item);
         }
     }
 }

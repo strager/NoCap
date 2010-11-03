@@ -42,9 +42,9 @@ namespace NoCap.Library.Util {
             }
         }
 
-        public double EstimatedTimeRemaining {
+        public ITimeEstimate EstimatedTimeRemaining {
             get {
-                return 1;   // TODO Estimate based on current speed
+                throw new NotImplementedException();
             }
         }
 

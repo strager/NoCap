@@ -92,9 +92,9 @@ namespace NoCap.Plugins.Commands {
             return new FileSystemFactory();
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.NoTimeAtAll;
+                return TimeEstimates.Instantanious;
             }
         }
     }

@@ -49,9 +49,9 @@ namespace NoCap.Plugins.Commands {
             return new ScreenshotFactory();
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.NoTimeAtAll;
+                return TimeEstimates.Instantanious;
             }
         }
     }

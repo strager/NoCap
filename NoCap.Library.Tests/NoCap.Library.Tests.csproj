@@ -54,6 +54,7 @@
     <Compile Include="Util\AggregateProgressTrackerTests.cs" />
     <Compile Include="Util\LinqHelpersTests.cs" />
     <Compile Include="Util\NotifyingProgressTrackerTests.cs" />
+    <Compile Include="Util\TimeEstimateTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NoCap.Library\NoCap.Library.csproj">

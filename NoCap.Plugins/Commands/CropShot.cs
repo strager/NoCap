@@ -53,9 +53,9 @@ namespace NoCap.Plugins.Commands {
             return new CropShotFactory();
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.AShortWhile;
+                return TimeEstimates.UserInteractive;
             }
         }
     }

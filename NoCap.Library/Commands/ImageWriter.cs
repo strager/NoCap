@@ -127,9 +127,9 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
-        public TimeEstimate ProcessTimeEstimate {
+        public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimate.AShortWhile;
+                return TimeEstimates.ShortOperation;
             }
         }
 
