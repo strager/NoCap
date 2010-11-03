@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    [Serializable]
     public abstract class ImageUploader : HttpUploader {
         public ImageWriter ImageWriter {
             get;

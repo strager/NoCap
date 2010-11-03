@@ -8,6 +8,7 @@ using NoCap.Plugins.Factories;
 using NoCap.Plugins.Helpers;
 
 namespace NoCap.Plugins.Commands {
+    [Serializable]
     public class CropShot : ICommand {
         public string Name {
             get { return "Crop shot"; }

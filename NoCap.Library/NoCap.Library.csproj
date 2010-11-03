@@ -87,6 +87,7 @@
     <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypedData.cs" />
+    <Compile Include="Util\SerializationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NoCap.Web\NoCap.Web.csproj">

@@ -9,6 +9,7 @@ using NoCap.Plugins.Factories;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Plugins.Commands {
+    [Serializable]
     public class ImageBinUploader : ImageUploader {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",

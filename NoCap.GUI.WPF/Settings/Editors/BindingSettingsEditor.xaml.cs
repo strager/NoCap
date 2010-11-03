@@ -7,8 +7,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using NoCap.Library.Commands;
 using WinputDotNet;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -101,10 +101,10 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     }
 
     public class MutableCommandBindingCollection : ICollection<MutableCommandBinding>, INotifyCollectionChanged {
-        private readonly ICollection<TemplateBinding> originalBindings;
-        private readonly IDictionary<MutableCommandBinding, TemplateBinding> mapping = new Dictionary<MutableCommandBinding, TemplateBinding>();
+        private readonly ICollection<StandAloneCommandBinding> originalBindings;
+        private readonly IDictionary<MutableCommandBinding, StandAloneCommandBinding> mapping = new Dictionary<MutableCommandBinding, StandAloneCommandBinding>();
 
-        public MutableCommandBindingCollection(ICollection<TemplateBinding> originalBindings) {
+        public MutableCommandBindingCollection(ICollection<StandAloneCommandBinding> originalBindings) {
             this.originalBindings = originalBindings;
 
             foreach (var binding in this.originalBindings) {
@@ -115,7 +115,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        private MutableCommandBinding GetMutableBinding(TemplateBinding binding) {
+        private MutableCommandBinding GetMutableBinding(StandAloneCommandBinding binding) {
             var mutableBinding = this.mapping.FirstOrDefault((kvp) => ReferenceEquals(kvp.Value, binding)).Key;
 
             if (mutableBinding == null) {
@@ -134,11 +134,11 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             return true;
         }
 
-        private TemplateBinding GetImmutableBinding(MutableCommandBinding binding) {
-            TemplateBinding immutableBinding;
+        private StandAloneCommandBinding GetImmutableBinding(MutableCommandBinding binding) {
+            StandAloneCommandBinding immutableBinding;
 
             if (!this.mapping.TryGetValue(binding, out immutableBinding)) {
-                immutableBinding = new TemplateBinding(binding.Input, binding.Command);
+                immutableBinding = new StandAloneCommandBinding(binding.Input, binding.Command);
             }
 
             return immutableBinding;
@@ -199,7 +199,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         }
 
         public bool Remove(MutableCommandBinding item) {
-            TemplateBinding immutableBinding;
+            StandAloneCommandBinding immutableBinding;
             bool itemRemoved = false;
 
             if (this.mapping.TryGetValue(item, out immutableBinding)) {
@@ -244,7 +244,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
     public class MutableCommandBinding : INotifyPropertyChanged {
         private IInputSequence input;
-        private HighLevelCommand command;
+        private ICommand command;
 
         public IInputSequence Input {
             get {
@@ -258,7 +258,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        public HighLevelCommand Command {
+        public ICommand Command {
             get {
                 return this.command;
             }
@@ -270,13 +270,13 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        public MutableCommandBinding(IInputSequence input, HighLevelCommand command) {
+        public MutableCommandBinding(IInputSequence input, ICommand command) {
             this.input = input;
             this.command = command;
         }
 
-        public MutableCommandBinding(TemplateBinding source) :
-            this(source.Input, source.HighLevelCommand) {
+        public MutableCommandBinding(StandAloneCommandBinding source) :
+            this(source.Input, source.Command) {
         }
 
         private void Notify(string propertyName) {

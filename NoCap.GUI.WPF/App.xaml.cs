@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -17,18 +21,29 @@ namespace NoCap.GUI.WPF {
     public partial class App {
         private TaskbarIcon taskbarIcon;
 
-        private ProgramSettings settings;
-        private ProgramSettingsInfoStuff infoStuff;
         private SettingsWindow settingsWindow;
         private TaskTracker taskTracker;
 
+        private ProgramSettingsWrapper settingsWrapper;
+
+        public ProgramSettings Settings {
+            get {
+                return this.settingsWrapper.ProgramSettings;
+            }
+
+            private set {
+                this.settingsWrapper.ProgramSettings = value;
+            }
+        }
+
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
+            this.taskTracker = new TaskTracker(this.taskbarIcon, new NoCapLogo());
 
-            taskTracker = new TaskTracker(this.taskbarIcon, new NoCapLogo());
-
-            LoadBindings();
             LoadSettings();
+            LoadBindings();
+
+            SetUpEverything(Settings);
         }
 
         private void LoadBindings() {
@@ -46,17 +61,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void LoadSettings() {
-            this.settings = new ProgramSettings();
-
-            this.infoStuff = new ProgramSettingsInfoStuff(this.settings, Providers.Instance);
-
-            this.settings.Commands = new ObservableCollection<ICommand>(
-                Providers.Instance.ProcessorFactories
-                    .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
-                    .Select((factory) => factory.CreateCommand(this.infoStuff))
-            );
-
-            SetUpEverything(this.settings);
+            this.settingsWrapper = new ProgramSettingsWrapper();
         }
 
         private void SetUpEverything(ProgramSettings newSettings) {
@@ -105,23 +110,29 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            this.settingsWindow = new SettingsWindow(this.settings.Clone());
+            this.settingsWindow = new SettingsWindow(Settings.Clone());
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
 
-            ShutDownInput(this.settings);
+            ShutDownInput(Settings);
 
             this.settingsWindow.ShowDialog();
         }
 
         private void CheckSettingsEditorResult() {
             if (this.settingsWindow.DialogResult == true) {
-                this.settings = this.settingsWindow.ProgramSettings;
+                Settings = this.settingsWindow.ProgramSettings;
+
+                SaveSettings();
             }
 
             this.settingsWindow.Close();
             this.settingsWindow = null;
 
-            SetUpInput(this.settings);
+            SetUpInput(Settings);
+        }
+
+        private void SaveSettings() {
+            this.settingsWrapper.Save();
         }
 
         private void PerformRequestAsync(ICommand command) {
@@ -144,7 +155,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void Application_Exit(object sender, ExitEventArgs e) {
-            ShutDownEverything(this.settings);
+            ShutDownEverything(Settings);
 
             this.taskbarIcon.Dispose();
         }

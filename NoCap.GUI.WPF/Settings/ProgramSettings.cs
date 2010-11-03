@@ -1,18 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NoCap.Library.Commands;
+using System.Runtime.Serialization;
+using NoCap.Library;
 using WinputDotNet;
+using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
-    public class ProgramSettings {
+    [Serializable]
+    public class ProgramSettings : ISerializable {
         public IInputProvider InputProvider {
             get;
             set;
         }
 
-        public ObservableCollection<TemplateBinding> Bindings {
+        public ObservableCollection<StandAloneCommandBinding> Bindings {
             get;
             set;
         }
@@ -22,14 +25,24 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
+        private readonly IInfoStuff infoStuff;
+
+        public IInfoStuff InfoStuff {
+            get {
+                return this.infoStuff;
+            }
+        }
+
         public ProgramSettings() :
             this(Providers.Instance) {
         }
 
         public ProgramSettings(Providers providers) {
             InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new ObservableCollection<TemplateBinding>();
+            Bindings = new ObservableCollection<StandAloneCommandBinding>();
             Commands = new ObservableCollection<ICommand>();
+
+            this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
         /// <summary>
@@ -45,57 +58,29 @@ namespace NoCap.GUI.WPF.Settings {
             return this; // Fuck it.
             // XXX THIS IS ALSO WHY WE CAN'T HAVE NICE THINGS XXX
         }
-    }
 
-    public class ReferenceComparer : IEqualityComparer<object> {
-        bool IEqualityComparer<object>.Equals(object x, object y) {
-            return ReferenceEquals(x, y);
+        public ProgramSettings(SerializationInfo info, StreamingContext context) {
+            var providers = Providers.Instance;
+
+            Bindings = info.GetValue<ObservableCollection<StandAloneCommandBinding>>("Bindings");
+            Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
+
+            var inputProviderType = info.GetValue<Type>("InputProvider type");
+
+            var inputProvider =
+                providers.InputProviders.FirstOrDefault((provider) => provider.GetType().Equals(inputProviderType))
+                ?? providers.InputProviders.FirstOrDefault();
+
+            InputProvider = inputProvider;
+
+            this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
-        public int GetHashCode(object obj) {
-            if (obj == null) {
-                return 42;
-            }
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            info.AddValue("Bindings", Bindings);
+            info.AddValue("Commands", Commands);
 
-            return obj.GetHashCode();
-        }
-    }
-
-    public interface ISettingsEditor {
-        string DisplayName {
-            get;
-        }
-
-        ProgramSettings ProgramSettings {
-            get;
-        }
-    }
-    
-    public sealed class TemplateBinding : ICommandBinding {
-        private readonly IInputSequence input;
-        private readonly HighLevelCommand highLevelCommand;
-
-        public IInputSequence Input {
-            get {
-                return this.input;
-            }
-        }
-
-        WinputDotNet.ICommand ICommandBinding.Command {
-            get {
-                return new BoundCommand(HighLevelCommand);
-            }
-        }
-
-        public HighLevelCommand HighLevelCommand {
-            get {
-                return this.highLevelCommand;
-            }
-        }
-
-        public TemplateBinding(IInputSequence input, HighLevelCommand highLevelCommand) {
-            this.input = input;
-            this.highLevelCommand = highLevelCommand;
+            info.AddValue("InputProvider type", InputProvider.GetType());
         }
     }
 }

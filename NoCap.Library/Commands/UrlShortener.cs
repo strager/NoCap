@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    [Serializable]
     public abstract class UrlShortener : HttpUploader {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress) {
             switch (data.DataType) {

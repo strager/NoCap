@@ -6,6 +6,7 @@ using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
+    [Serializable]
     public class ClipboardUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private ICommand textUploader;
         private ICommand urlShortener;
@@ -110,10 +111,16 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        [NonSerialized]
+        private PropertyChangedEventHandler propertyChanged;
 
-        private void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged {
+            add    { this.propertyChanged += value; }
+            remove { this.propertyChanged -= value; }
+        }
+
+        protected void Notify(string propertyName) {
+            var handler = this.propertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));

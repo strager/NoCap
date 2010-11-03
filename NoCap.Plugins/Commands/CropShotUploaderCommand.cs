@@ -7,6 +7,7 @@ using NoCap.Library.Commands;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
+    [Serializable]
     public class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private ICommand imageUploader;
 
@@ -76,10 +77,16 @@ namespace NoCap.Plugins.Commands {
             return null;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        [NonSerialized]
+        private PropertyChangedEventHandler propertyChanged;
 
-        public void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged {
+            add    { this.propertyChanged += value; }
+            remove { this.propertyChanged -= value; }
+        }
+
+        protected void Notify(string propertyName) {
+            var handler = this.propertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));

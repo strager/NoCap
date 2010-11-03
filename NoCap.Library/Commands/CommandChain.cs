@@ -4,6 +4,7 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    [Serializable]
     public class CommandChain : ICommand {
         private readonly IList<ICommand> processors;
 

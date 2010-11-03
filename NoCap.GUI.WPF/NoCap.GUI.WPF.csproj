@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -75,6 +76,7 @@
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\ISettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
     <Compile Include="Settings\Editors\ProviderSettingsEditor.xaml.cs">
       <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
@@ -88,6 +90,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings\ProgramSettingsWrapper.cs" />
+    <Compile Include="Settings\StandAloneCommandBinding.cs" />
     <Compile Include="TaskTracker.cs" />
     <Page Include="NoCapLogo.xaml">
       <SubType>Designer</SubType>

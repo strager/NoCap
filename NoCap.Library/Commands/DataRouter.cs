@@ -4,6 +4,7 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    [Serializable]
     public class DataRouter : ICommand {
         private readonly IDictionary<TypedDataType, ICommand> routes;
 

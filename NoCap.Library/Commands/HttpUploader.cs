@@ -8,6 +8,7 @@ using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
+    [Serializable]
     public abstract class HttpUploader : ICommand {
         public abstract string Name { get; }
 

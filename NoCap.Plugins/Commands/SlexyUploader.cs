@@ -6,6 +6,7 @@ using NoCap.Library.Commands;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
+    [Serializable]
     public class SlexyUploader : TextUploader {
         public override string Name {
             get { return "Slexy.org text uploader"; }

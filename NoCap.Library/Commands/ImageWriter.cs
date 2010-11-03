@@ -6,10 +6,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
-    public class ImageWriter : ICommand, INotifyPropertyChanged {
+    [Serializable]
+    public class ImageWriter : ICommand, INotifyPropertyChanged, ISerializable {
         public static readonly IEnumerable<ImageCodecInfo> DefaultImageCodecs =
             new ReadOnlyCollection<ImageCodecInfo>(ImageCodecInfo.GetImageEncoders().Where(IsCodecValid).ToList());
 
@@ -131,14 +133,36 @@ namespace NoCap.Library.Commands {
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        [NonSerialized]
+        private PropertyChangedEventHandler propertyChanged;
 
-        public void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged {
+            add    { this.propertyChanged += value; }
+            remove { this.propertyChanged -= value; }
+        }
+
+        protected void Notify(string propertyName) {
+            var handler = this.propertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public ImageWriter(SerializationInfo info, StreamingContext context) {
+            this.name = info.GetValue<string>("Name");
+            this.extension = info.GetValue<string>("Extension");
+
+            var codecGuid = info.GetValue<Guid>("Codec GUID");
+            this.codecInfo = DefaultImageCodecs.First((codec) => codec.FormatID.Equals(codecGuid));
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            info.AddValue("Name", this.name);
+            info.AddValue("Extension", this.extension);
+            info.AddValue("Codec GUID", this.codecInfo.FormatID);
+
+            // TODO Encoder parameters
         }
     }
 }
