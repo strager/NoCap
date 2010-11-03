@@ -45,20 +45,6 @@ namespace NoCap.GUI.WPF.Settings {
             this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
-        /// <summary>
-        /// Deep clones this instance.
-        /// </summary>
-        /// <returns>A cloned copy of this instance.</returns>
-        public ProgramSettings Clone() {
-            // I have a feeling this is a hack.
-            // It is a hack.
-            // =[
-            
-            // XXX THIS IS WHY THE "CANCEL" BUTTON OF THE SETTINGS DIALOG SAVES XXX
-            return this; // Fuck it.
-            // XXX THIS IS ALSO WHY WE CAN'T HAVE NICE THINGS XXX
-        }
-
         public ProgramSettings(SerializationInfo info, StreamingContext context) {
             var providers = Providers.Instance;
 

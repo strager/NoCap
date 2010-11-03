@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -8,8 +9,9 @@ using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
-    public class ProgramSettingsWrapper : ApplicationSettingsBase {
-        private readonly BinaryFormatter settingsSerializer = new BinaryFormatter();
+    public class ProgramSettingsManager : ApplicationSettingsBase {
+        [ThreadStatic]
+        private static readonly BinaryFormatter SettingsSerializer = new BinaryFormatter();
 
         private ProgramSettings cachedProgramSettings;
 
@@ -34,35 +36,35 @@ namespace NoCap.GUI.WPF.Settings {
                     return cachedProgramSettings;
                 }
 
-                byte[] configData = ProgramSettingsData;
-
-                if (configData == null) {
-                    return this.cachedProgramSettings = GetDefaultSettings();
-                } else {
-                    return this.cachedProgramSettings = ReadSettingsFromConfigString(configData);
-                }
+                return this.cachedProgramSettings = DeserializeSettings(ProgramSettingsData);
             }
 
             set {
-                using (var writer = new MemoryStream()) {
-                    try {
-                        this.settingsSerializer.Serialize(writer, value);
-                    } catch (SerializationException e) {
-                        // TODO Error handling
-                        throw;
-                    }
-
-                    byte[] configData = writer.GetBuffer().Take((int) writer.Length).ToArray();
-
-                    ProgramSettingsData = configData;
-                    this.cachedProgramSettings = value;
-                }
+                ProgramSettingsData = SerializeSettings(value);
+                this.cachedProgramSettings = value;
             }
         }
 
-        private ProgramSettings ReadSettingsFromConfigString(byte[] configData) {
+        public static byte[] SerializeSettings(ProgramSettings settings) {
+            using (var writer = new MemoryStream()) {
+                try {
+                    SettingsSerializer.Serialize(writer, settings);
+                } catch (SerializationException e) {
+                    // TODO Error handling
+                    throw;
+                }
+
+                return writer.GetBuffer().Take((int) writer.Length).ToArray();
+            }
+        }
+
+        public static ProgramSettings DeserializeSettings(byte[] configData) {
+            if (configData == null) {
+                return GetDefaultSettings();
+            }
+
             using (var stream = new MemoryStream(configData)) {
-                return (ProgramSettings) this.settingsSerializer.Deserialize(stream);
+                return (ProgramSettings) SettingsSerializer.Deserialize(stream);
             }
         }
 
@@ -76,6 +78,10 @@ namespace NoCap.GUI.WPF.Settings {
             );
 
             return settings;
+        }
+
+        public static ProgramSettings CloneSettings(ProgramSettings settings) {
+            return DeserializeSettings(SerializeSettings(settings));
         }
     }
 }

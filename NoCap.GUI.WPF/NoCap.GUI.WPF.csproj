@@ -90,7 +90,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Settings\ProgramSettingsWrapper.cs" />
+    <Compile Include="Settings\ProgramSettingsManager.cs" />
     <Compile Include="Settings\StandAloneCommandBinding.cs" />
     <Compile Include="TaskTracker.cs" />
     <Page Include="NoCapLogo.xaml">

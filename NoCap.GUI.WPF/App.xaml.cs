@@ -24,15 +24,15 @@ namespace NoCap.GUI.WPF {
         private SettingsWindow settingsWindow;
         private TaskTracker taskTracker;
 
-        private ProgramSettingsWrapper settingsWrapper;
+        private ProgramSettingsManager settingsManager;
 
         public ProgramSettings Settings {
             get {
-                return this.settingsWrapper.ProgramSettings;
+                return this.settingsManager.ProgramSettings;
             }
 
             private set {
-                this.settingsWrapper.ProgramSettings = value;
+                this.settingsManager.ProgramSettings = value;
             }
         }
 
@@ -61,7 +61,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void LoadSettings() {
-            this.settingsWrapper = new ProgramSettingsWrapper();
+            this.settingsManager = new ProgramSettingsManager();
         }
 
         private void SetUpEverything(ProgramSettings newSettings) {
@@ -110,7 +110,9 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            this.settingsWindow = new SettingsWindow(Settings.Clone());
+            var clonedSettings = ProgramSettingsManager.CloneSettings(Settings);
+
+            this.settingsWindow = new SettingsWindow(clonedSettings);
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
 
             ShutDownInput(Settings);
@@ -132,7 +134,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void SaveSettings() {
-            this.settingsWrapper.Save();
+            this.settingsManager.Save();
         }
 
         private void PerformRequestAsync(ICommand command) {
