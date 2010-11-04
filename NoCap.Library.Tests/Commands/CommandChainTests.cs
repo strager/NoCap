@@ -1,6 +1,7 @@
 ﻿using System;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Tests.TestHelpers;
 using NoCap.Library.Util;
 using NUnit.Framework;
 
@@ -226,6 +227,21 @@ namespace NoCap.Library.Tests.Commands {
             chain.Add(command2Mock.Object);
 
             CollectionAssert.AreEquivalent(new[] { TypedDataType.User + 1, TypedDataType.User + 4, TypedDataType.User + 5 }, chain.GetOutputDataTypes(TypedDataType.None));
+        }
+
+        [Test]
+        public void TimeEstimateWeightIsSumOfChildWeights() {
+            var command1Mock = GetCommandMock();
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(9));
+            
+            var command2Mock = GetCommandMock();
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(20));
+
+            var chain = new CommandChain();
+            chain.Add(command1Mock.Object);
+            chain.Add(command2Mock.Object);
+
+            Assert.AreEqual(29, chain.ProcessTimeEstimate.ProgressWeight);
         }
 
         private static Mock<ICommand> GetCommandMock() {

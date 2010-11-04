@@ -39,8 +39,8 @@ namespace NoCap.Library.Commands {
             }
         }
 
-        public CommandChain() {
-            this.commands = new List<ICommand>();
+        public CommandChain() :
+            this(Enumerable.Empty<ICommand>()) {
         }
 
         public CommandChain(params ICommand[] commands) :

@@ -4,22 +4,54 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
+    class DataRouterTimeEstimate : ITimeEstimate {
+        private readonly DataRouter dataRouter;
+
+        public DataRouterTimeEstimate(DataRouter dataRouter) {
+            this.dataRouter = dataRouter;
+        }
+
+        public double ProgressWeight {
+            get {
+                if (!this.dataRouter.Routes.Values.Any()) {
+                    return 0;
+                }
+
+                return this.dataRouter.Routes.Values.Max((command) => command.ProcessTimeEstimate.ProgressWeight);
+            }
+        }
+
+        public bool IsIndeterminant {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+    }
+
     [Serializable]
     public class DataRouter : ICommand {
+        private readonly ITimeEstimate timeEstimate;
         private readonly IDictionary<TypedDataType, ICommand> routes;
+
+        internal IDictionary<TypedDataType, ICommand> Routes {
+            get {
+                return this.routes;
+            }
+        }
 
         public string Name {
             get { return "Data router"; }
         }
 
         public DataRouter() {
+            this.timeEstimate = new DataRouterTimeEstimate(this);
             this.routes = new Dictionary<TypedDataType, ICommand>();
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             ICommand command;
 
-            if (!this.routes.TryGetValue(data.DataType, out command)) {
+            if (!Routes.TryGetValue(data.DataType, out command)) {
                 return null;
             }
 
@@ -29,13 +61,13 @@ namespace NoCap.Library.Commands {
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return this.routes.Keys;
+            return Routes.Keys;
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
             ICommand command;
 
-            if (!this.routes.TryGetValue(input, out command)) {
+            if (!Routes.TryGetValue(input, out command)) {
                 return null;
             }
 
@@ -48,11 +80,7 @@ namespace NoCap.Library.Commands {
 
         public ITimeEstimate ProcessTimeEstimate {
             get {
-                if (!this.routes.Any()) {
-                    return TimeEstimates.Instantanious;
-                }
-
-                return this.routes.Values.Max((command) => command.ProcessTimeEstimate);
+                return this.timeEstimate;
             }
         }
 
@@ -65,7 +93,7 @@ namespace NoCap.Library.Commands {
                 throw new ArgumentException("Destination must accept type", "value");
             }
 
-            this.routes.Add(key, value);
+            Routes.Add(key, value);
         }
     }
 }

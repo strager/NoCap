@@ -1,4 +1,5 @@
 ﻿using Moq;
+using NoCap.Library.Tests.TestHelpers;
 using NoCap.Library.Util;
 using NUnit.Framework;
 
@@ -97,10 +98,7 @@ namespace NoCap.Library.Tests.Util {
         }
 
         private static NotifyingProgressTracker GetTracker(double weight, double progress) {
-            var timeEstimateMock = new Mock<ITimeEstimate>(MockBehavior.Strict);
-            timeEstimateMock.Setup((timeEstimate) => timeEstimate.ProgressWeight).Returns(weight);
-
-            return new NotifyingProgressTracker(timeEstimateMock.Object) {
+            return new NotifyingProgressTracker(new TestTimeEstimate(weight)) {
                 Progress = progress
             };
         }

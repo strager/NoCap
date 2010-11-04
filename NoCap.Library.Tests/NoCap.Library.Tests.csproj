@@ -55,6 +55,7 @@
     <Compile Include="CommandTests.cs" />
     <Compile Include="Controls\CommandFactorySelectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHelpers\TestTimeEstimate.cs" />
     <Compile Include="TypedDataTests.cs" />
     <Compile Include="Util\AggregateProgressTrackerTests.cs" />
     <Compile Include="Util\LinqHelpersTests.cs" />

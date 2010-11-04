@@ -1,6 +1,7 @@
 ﻿using System;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Tests.TestHelpers;
 using NoCap.Library.Util;
 using NUnit.Framework;
 
@@ -107,6 +108,30 @@ namespace NoCap.Library.Tests.Commands {
 
             var actualOutput = dataRouter.Process(inputData, inputTracker);
             Assert.AreSame(expectedOutput, actualOutput);
+        }
+
+        [Test]
+        public void TimeEstimateWeightIsMaximumOfChildWeights() {
+            var command1Mock = GetCommandMock();
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(9));
+            command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
+            
+            var command2Mock = GetCommandMock();
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(20));
+            command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
+
+            var dataRouter = new DataRouter();
+            dataRouter.Connect(TypedDataType.Text, command1Mock.Object);
+            dataRouter.Connect(TypedDataType.Uri, command2Mock.Object);
+
+            Assert.AreEqual(20, dataRouter.ProcessTimeEstimate.ProgressWeight);
+        }
+
+        [Test]
+        public void NoTimeEstimateWeightIfNoRoutes() {
+            var dataRouter = new DataRouter();
+
+            Assert.AreEqual(0, dataRouter.ProcessTimeEstimate.ProgressWeight);
         }
 
         private static Mock<ICommand> GetCommandMock() {
