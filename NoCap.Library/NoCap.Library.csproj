@@ -50,6 +50,10 @@
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
     <Compile Include="Commands\Imaging\InfoStuffExtensions.cs" />
+    <Compile Include="Commands\Imaging\JpegBitmapCodec.cs" />
+    <Compile Include="Commands\Imaging\JpegBitmapCodecEditor.xaml.cs">
+      <DependentUpon>JpegBitmapCodecEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Commands\Imaging\PngBitmapCodec.cs" />
     <Compile Include="Controls\CommandEditor.xaml.cs">
       <DependentUpon>CommandEditor.xaml</DependentUpon>
@@ -103,6 +107,10 @@
     <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Commands\Imaging\JpegBitmapCodecEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\CommandEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

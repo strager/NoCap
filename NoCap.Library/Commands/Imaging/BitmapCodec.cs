@@ -75,6 +75,7 @@ namespace NoCap.Library.Commands.Imaging {
             }
         }
 
+        [NonSerialized]
         private PropertyChangedEventHandler propertyChanged;
 
         public event PropertyChangedEventHandler PropertyChanged {
