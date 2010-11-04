@@ -156,10 +156,6 @@
       <Project>{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}</Project>
       <Name>NoCap.Plugins</Name>
     </ProjectReference>
-    <ProjectReference Include="..\vendor\NotifyIconWpf\NotifyIconWpf.csproj">
-      <Project>{7AC63864-7638-41C4-969C-D3197EF2BED9}</Project>
-      <Name>NotifyIconWpf</Name>
-    </ProjectReference>
     <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
       <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
       <Name>Windows7.DesktopIntegration</Name>
@@ -171,6 +167,10 @@
     <ProjectReference Include="..\vendor\WinputDotNet\WinputDotNet\WinputDotNet.csproj">
       <Project>{58A26DE2-2BAB-4E99-8AD3-B6D8F56747AB}</Project>
       <Name>WinputDotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vendor\wpf-notifyicon\NotifyIconWpf\NotifyIconWpf.csproj">
+      <Project>{7AC63864-7638-41C4-969C-D3197EF2BED9}</Project>
+      <Name>NotifyIconWpf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

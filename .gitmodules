@@ -1,3 +1,6 @@
 [submodule "vendor/WinputDotNet"]
 	path = vendor/WinputDotNet
 	url = "f:/Projects/C#/WinputDotNet/.git"
+[submodule "vendor/wpf-notifyicon"]
+	path = vendor/wpf-notifyicon
+	url = "f:/projects/c#/wpf-notifyicon/.git/"
