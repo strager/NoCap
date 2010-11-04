@@ -60,12 +60,12 @@
       <DependentUpon>CropShotUploaderCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Factories\ClipboardFactory.cs" />
-    <Compile Include="Factories\CropShot.cs" />
+    <Compile Include="Factories\CropShotFactory.cs" />
     <Compile Include="Factories\FileSystemFactory.cs" />
     <Compile Include="Factories\ImageBinUploaderFactory.cs" />
     <Compile Include="Factories\IsgdShortenerFactory.cs" />
     <Compile Include="Factories\ScreenshotFactory.cs" />
-    <Compile Include="Factories\SlexyUploader.cs" />
+    <Compile Include="Factories\SlexyUploaderFactory.cs" />
     <Compile Include="Commands\CropShot.cs" />
     <Compile Include="Helpers\BitmapElement.cs" />
     <Compile Include="Commands\Clipboard.cs" />
