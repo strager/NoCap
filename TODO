@@ -1,23 +1,24 @@
 = NoCap TODO list =
 
+== Misc ==
+* Remove in-code TODO, HACK, XXX, and FIXME markers
+  * By fixing them, not removing the comment
+
 == Testing ==
 * Processor extension methods
-* Utility commands
-  * ImageWriter
 * NoCap.Web namespace
   * Really now ...  >_>
 
 == Bug fixes ==
-* Current speed and better timeremaining stuff
 * Class and namespace organization
+* XML config instead of binary serialization
 
 == Features ==
-* Configuration file
+* Current speed and better timeremaining stuff
 * Default bindings
   1. Binding wizard on first startup
 * Adjustable image configuration
   1. Switch to codec XYZ when conditions A and B are met
-  2. Use compression value C (especially for JPEG)
 * Triggers
   1. Before/after some condition, do something
 * New commands
@@ -26,3 +27,11 @@
   3. (S)FTP
   4. SCP
   5. More uploading services (now that an editor works!)
+* Error reporting
+  * Bad configuration
+  * Bad plugin
+    * Doesn't have [Serializable] somewhere
+  * Command exceptions
+* Full task system
+  * Concurrent tasks
+  * Pluggable reporters
