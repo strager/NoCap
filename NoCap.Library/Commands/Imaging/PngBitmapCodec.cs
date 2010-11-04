@@ -54,8 +54,6 @@ namespace NoCap.Library.Commands.Imaging {
         }
 
         protected override Stream Encode(Bitmap image, IMutableProgressTracker progress) {
-            // TODO Progress
-
             var stream = new MemoryStream();
             var encoder = ImageCodecInfo.GetImageEncoders().First((enc) => enc.FormatID.Equals(EncoderFormat.Guid));
             image.Save(stream, encoder, null);

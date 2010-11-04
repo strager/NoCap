@@ -119,7 +119,6 @@ namespace NoCap.Library.Commands {
                 }
             } catch (ArgumentException) {
                 // Bad character set given; ignore exception
-                // TODO Logging?
             }
 
             using (var reader = new StreamReader(stream, encoding)) {

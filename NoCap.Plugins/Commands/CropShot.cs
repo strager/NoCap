@@ -36,7 +36,7 @@ namespace NoCap.Plugins.Commands {
                 throw new CommandCancelledException(this);
             }
 
-            progress.Progress = 1;  // TODO Crop shot progress (?)
+            progress.Progress = 1;
 
             return cropShotWindow.Data;
         }

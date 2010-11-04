@@ -171,7 +171,6 @@ namespace NoCap.Library {
         /// <param name="data">The data of which to get the type.</param>
         /// <returns>The type describing <see cref="data"/>.</returns>
         public static TypedDataType GetEffectiveDataType(this TypedData data) {
-            // TODO Move to TypedData
             return data == null ? TypedDataType.None : data.DataType;
         }
     }
