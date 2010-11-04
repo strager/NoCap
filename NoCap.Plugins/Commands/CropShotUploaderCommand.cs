@@ -55,21 +55,15 @@ namespace NoCap.Plugins.Commands {
         }
 
         public override void Execute(IMutableProgressTracker progress) {
-            var source = new Screenshot();
-
-            // TODO Progress
-            var screenshotData = source.Process(null, progress);
-
-            var destination = new CommandChain(
+            var commandChain = new CommandChain(
+                new Screenshot(),
                 new CropShot(),
                 ImageUploader,
                 new Clipboard()
             );
 
-            var data = destination.Process(screenshotData, progress);
-
-            if (data != null) {
-                data.Dispose();
+            using (commandChain.Process(null, progress)) {
+                // Auto-dispose
             }
         }
 

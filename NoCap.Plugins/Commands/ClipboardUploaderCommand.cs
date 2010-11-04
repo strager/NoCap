@@ -101,13 +101,13 @@ namespace NoCap.Plugins.Commands {
                 this.clipboard
             ));
 
-            // TODO Progress
-            var clipboardData = this.clipboard.Process(null, progress);
+            var commandChain = new CommandChain(
+                this.clipboard,
+                router
+            );
 
-            var data = router.Process(clipboardData, progress);
-
-            if (data != null) {
-                data.Dispose();
+            using (commandChain.Process(null, progress)) {
+                // Auto-dispose
             }
         }
 

@@ -77,10 +77,8 @@ namespace NoCap.GUI.WPF {
                     }
                 };
 
-                var data = command.Process(null, progressTracker);
-
-                if (data != null) {
-                    data.Dispose();
+                using (command.Process(null, progressTracker)) {
+                    // Auto-dispose
                 }
 
                 TaskDone();
