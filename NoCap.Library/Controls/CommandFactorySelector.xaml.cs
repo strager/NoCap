@@ -159,7 +159,13 @@ namespace NoCap.Library.Controls {
             this.commandFactoryList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
             this.filterer.Filter = (obj) => {
-                return Filter((ICommandFactory) obj);
+                var filter = Filter;
+
+                if (filter == null) {
+                    return true;
+                }
+
+                return filter((ICommandFactory) obj);
             };
         }
     }

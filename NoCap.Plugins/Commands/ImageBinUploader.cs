@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using NoCap.Library;
 using NoCap.Library.Commands;
+using NoCap.Library.Commands.Imaging;
 using NoCap.Plugins.Factories;
 using NoCap.Web.Multipart;
 

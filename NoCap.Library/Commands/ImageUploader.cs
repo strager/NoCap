@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NoCap.Library.Commands.Imaging;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {

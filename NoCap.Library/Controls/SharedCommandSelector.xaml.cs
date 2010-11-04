@@ -81,8 +81,14 @@ namespace NoCap.Library.Controls {
 
             this.commandList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
-            filterer.Filter = (obj) => {
-                return Filter((ICommand) obj);
+            this.filterer.Filter = (obj) => {
+                var filter = Filter;
+
+                if (filter == null) {
+                    return true;
+                }
+
+                return filter((ICommand) obj);
             };
         }
     }

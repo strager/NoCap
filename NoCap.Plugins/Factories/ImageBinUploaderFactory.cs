@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.Composition;
-using System.Drawing.Imaging;
-using System.Linq;
 using NoCap.Library;
+using NoCap.Library.Commands.Imaging;
 using NoCap.Library.Editors;
-using NoCap.Library.Commands;
 using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
@@ -14,17 +12,11 @@ namespace NoCap.Plugins.Factories {
         }
 
         public ICommand CreateCommand(IInfoStuff infoStuff) {
-            // FIXME Hack
-
-            var imageCodecs = ImageWriter.DefaultImageCodecs;
-
-            return new ImageBinUploader(new ImageWriter(
-                imageCodecs.FirstOrDefault(codec => codec.FormatDescription == "PNG") ?? imageCodecs.First()
-            ));
+            return new ImageBinUploader(new ImageWriter { Codec = new PngBitmapCodec() });
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ImageWriterEditor(((ImageBinUploader) command).ImageWriter);
+            return new ImageWriterEditor(((ImageBinUploader) command).ImageWriter, infoStuff);
         }
 
         public CommandFeatures CommandFeatures {

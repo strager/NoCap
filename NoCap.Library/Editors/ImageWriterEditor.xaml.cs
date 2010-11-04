@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Drawing.Imaging;
-using NoCap.Library.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NoCap.Library.Commands.Imaging;
 
 namespace NoCap.Library.Editors {
     /// <summary>
@@ -8,7 +9,8 @@ namespace NoCap.Library.Editors {
     /// </summary>
     public partial class ImageWriterEditor : ICommandEditor {
         private readonly ImageWriter command;
-        private readonly IEnumerable<ImageCodecInfo> codecs;
+        private readonly IInfoStuff infoStuff;
+        private readonly HashSet<BitmapCodecFactory> codecFactories;
 
         public ImageWriter Command {
             get {
@@ -16,23 +18,32 @@ namespace NoCap.Library.Editors {
             }
         }
 
-        public IEnumerable<ImageCodecInfo> Codecs {
+        public IInfoStuff InfoStuff {
             get {
-                return this.codecs;
+                return this.infoStuff;
             }
         }
 
-        public ImageWriterEditor(ImageWriter command) :
-            this(command, ImageWriter.DefaultImageCodecs) {
+        public IEnumerable<BitmapCodecFactory> CodecFactories {
+            get {
+                return this.codecFactories;
+            }
         }
 
-        public ImageWriterEditor(ImageWriter command, IEnumerable<ImageCodecInfo> codecs) {
+        public ImageWriterEditor(ImageWriter command, IInfoStuff infoStuff) :
+            this(command, infoStuff, infoStuff.GetBitmapCodecFactories()) {
+        }
+
+        public ImageWriterEditor(ImageWriter command, IInfoStuff infoStuff, IEnumerable<BitmapCodecFactory> codecFactories) {
             // Must be set before the InitializeCompoent call
             // so bindings are set up against these (and not null)
             this.command = command;
-            this.codecs = codecs;
+            this.infoStuff = infoStuff;
+            this.codecFactories = new HashSet<BitmapCodecFactory>(codecFactories);
 
             InitializeComponent();
+
+            this.codecSelector.Filter = new Predicate<ICommandFactory>((factory) => this.codecFactories.Contains(factory));
         }
     }
 }

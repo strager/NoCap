@@ -45,9 +45,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Imaging\BitmapCodec.cs" />
     <Compile Include="CommandCancelledException.cs" />
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
+    <Compile Include="Commands\Imaging\InfoStuffExtensions.cs" />
+    <Compile Include="Commands\Imaging\PngBitmapCodec.cs" />
     <Compile Include="Controls\CommandEditor.xaml.cs">
       <DependentUpon>CommandEditor.xaml</DependentUpon>
     </Compile>
@@ -74,7 +77,7 @@
     <Compile Include="Commands\HttpUploader.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\ImageUploader.cs" />
-    <Compile Include="Commands\ImageWriter.cs" />
+    <Compile Include="Commands\Imaging\ImageWriter.cs" />
     <Compile Include="INamedComponent.cs" />
     <Compile Include="Util\AggregateProgressTracker.cs" />
     <Compile Include="Util\IMutableProgressTracker.cs" />
