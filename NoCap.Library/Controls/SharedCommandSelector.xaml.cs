@@ -29,9 +29,18 @@ namespace NoCap.Library.Controls {
             remove { RemoveHandler(CommandChangedEvent, value); }
         }
 
+        private Predicate<ICommand> filter;
+
         public Predicate<ICommand> Filter {
-            get;
-            set;
+            get {
+                return this.filter;
+            }
+
+            set {
+                this.filter = value;
+
+                this.filterer.Refresh();
+            }
         }
 
         static SharedCommandSelector() {

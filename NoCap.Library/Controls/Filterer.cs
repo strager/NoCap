@@ -13,10 +13,7 @@ namespace NoCap.Library.Controls {
             set {
                 this.source = value;
 
-                // HACK We delay because blah blah blah
-                this.viewSource.Dispatcher.BeginInvoke(new Action(() => {
-                    this.viewSource.Source = this.source;
-                }));
+                this.viewSource.Source = this.source;
             }
         }
 
@@ -45,9 +42,13 @@ namespace NoCap.Library.Controls {
             set {
                 this.filter = value;
 
-                if (this.viewSource.View != null) {
-                    this.viewSource.View.Refresh();
-                }
+                Refresh();
+            }
+        }
+
+        public void Refresh() {
+            if (this.viewSource.View != null) {
+                this.viewSource.View.Refresh();
             }
         }
 

@@ -15,9 +15,12 @@ namespace NoCap.Library.Controls {
         public readonly static RoutedEvent CommandChangedEvent;
         public readonly static RoutedEvent CommandFactoryChangedEvent;
 
-        private bool generateCommandInstance = true;
-
         private readonly Filterer filterer = new Filterer();
+
+        private bool allowPropertyChanges = true;
+        private bool allowPropertyBehaviours = true;
+
+        private PriorityItem updatePriority = PriorityItem.None;
 
         public ICommand Command {
             get { return (ICommand) GetValue(CommandProperty); }
@@ -44,9 +47,18 @@ namespace NoCap.Library.Controls {
             remove { RemoveHandler(CommandFactoryChangedEvent, value); }
         }
 
+        private Predicate<ICommandFactory> filter;
+
         public Predicate<ICommandFactory> Filter {
-            get;
-            set;
+            get {
+                return this.filter;
+            }
+
+            set {
+                this.filter = value;
+
+                this.filterer.Refresh();
+            }
         }
 
         static CommandFactorySelector() {
@@ -54,21 +66,21 @@ namespace NoCap.Library.Controls {
                 "Command",
                 typeof(ICommand),
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(OnCommandChanged)
+                new PropertyMetadata(null, OnCommandChanged, CoerceUpdates)
             );
 
             CommandFactoryProperty = DependencyProperty.Register(
                 "CommandFactory",
                 typeof(ICommandFactory),
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(OnCommandFactoryChanged)
+                new PropertyMetadata(null, OnCommandFactoryChanged, CoerceUpdates)
             );
 
             InfoStuffProperty = DependencyProperty.Register(
                 "InfoStuff",
                 typeof(IInfoStuff),
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(OnInfoStuffChanged)
+                new PropertyMetadata(null, OnInfoStuffChanged, CoerceUpdates)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -86,19 +98,70 @@ namespace NoCap.Library.Controls {
             );
         }
 
+        private static bool AreCommandFactoriesEqual(ICommandFactory a, ICommandFactory b) {
+            if (a == null && b == null) {
+                return true;
+            }
+
+            if (a == null || b == null) {
+                return false;
+            }
+
+            return a.GetType().Equals(b.GetType());
+        }
+
+        private ICommandFactory CoerceCommandFactory(ICommandFactory factory) {
+            if (InfoStuff == null || factory == null) {
+                return factory;
+            }
+
+            var displayFactories = this.commandFactoryList.ItemsSource.OfType<ICommandFactory>();
+
+            return displayFactories.FirstOrDefault((f) => ReferenceEquals(factory, f))
+                ?? displayFactories.FirstOrDefault((f) => AreCommandFactoriesEqual(factory, f))
+                ?? factory;
+        }
+
+        private static object CoerceUpdates(DependencyObject sender, object value) {
+            var commandSelector = (CommandFactorySelector) sender;
+
+            if (!commandSelector.allowPropertyChanges) {
+                return DependencyProperty.UnsetValue;
+            }
+
+            return value;
+        }
+
         private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandFactorySelector) sender;
             var infoStuff = (IInfoStuff) e.NewValue;
 
-            if (infoStuff != null) {
-                commandSelector.filterer.Source = infoStuff.CommandFactories;
+            commandSelector.allowPropertyChanges = false;
+
+            try {
+                commandSelector.filterer.Source =
+                    infoStuff == null
+                        ? Enumerable.Empty<ICommandFactory>()
+                        : infoStuff.CommandFactories;
+
+                commandSelector.commandFactoryList.SelectedIndex = -1;
+            } finally {
+                commandSelector.allowPropertyChanges = true;
+            }
+
+            if (commandSelector.updatePriority == PriorityItem.Command) {
+                commandSelector.SetCommandFactoryFromCommand(commandSelector.Command);
+            } else if (commandSelector.updatePriority == PriorityItem.CommandFactory) {
+                commandSelector.SetCommandFromFactory(commandSelector.CommandFactory);
             }
         }
 
         private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandFactorySelector) sender;
 
-            commandSelector.SelectCommand((ICommand) e.NewValue);
+            if (commandSelector.allowPropertyBehaviours) {
+                commandSelector.SetCommandFactoryFromCommand((ICommand) e.NewValue);
+            }
 
             var args = new RoutedPropertyChangedEventArgs<ICommand>((ICommand) e.OldValue, (ICommand) e.NewValue) {
                 RoutedEvent = CommandChangedEvent
@@ -107,38 +170,12 @@ namespace NoCap.Library.Controls {
             commandSelector.RaiseEvent(args);
         }
 
-        private void SelectCommand(ICommand command) {
-            ICommandFactory factory;
-
-            if (command == null) {
-                factory = null;
-            } else {
-                // FIXME Make a more elegant way of "does this factory make this type of command"
-                // (or something)
-                factory = this.commandFactoryList.Items.OfType<ICommandFactory>()
-                    .FirstOrDefault((f) => IsCommandFromFactory(command, f));
-            }
-
-            this.generateCommandInstance = false;
-
-            try {
-                this.commandFactoryList.SelectedItem = factory;
-            } finally {
-                this.generateCommandInstance = true;
-            }
-        }
-
-        private static bool IsCommandFromFactory(ICommand command, ICommandFactory factory) {
-            var commandFactory = command.GetFactory();
-
-            return commandFactory != null && factory.GetType() == commandFactory.GetType();
-        }
-
         private static void OnCommandFactoryChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandFactorySelector) sender;
 
-            if (commandSelector.generateCommandInstance) {
-                commandSelector.UpdateCommand((ICommandFactory) e.NewValue);
+            if (commandSelector.allowPropertyBehaviours) {
+                commandSelector.updatePriority = PriorityItem.CommandFactory;
+                commandSelector.SetCommandFromFactory((ICommandFactory) e.NewValue);
             }
 
             var args = new RoutedPropertyChangedEventArgs<ICommandFactory>((ICommandFactory) e.OldValue, (ICommandFactory) e.NewValue) {
@@ -148,9 +185,48 @@ namespace NoCap.Library.Controls {
             commandSelector.RaiseEvent(args);
         }
 
-        private void UpdateCommand(ICommandFactory commandFactory) {
-            // TODO Allow null
-            Command = commandFactory.CreateCommand(InfoStuff);
+        private void SetCommandFactoryFromCommand(ICommand command) {
+            this.updatePriority = PriorityItem.Command;
+
+            if (InfoStuff == null) {
+                return;
+            }
+
+            this.updatePriority = PriorityItem.None;
+
+            if (command == null) {
+                CommandFactory = null;
+
+                return;
+            }
+
+            this.allowPropertyBehaviours = false;
+
+            try {
+                CommandFactory = CoerceCommandFactory(command.GetFactory());
+            } finally {
+                this.allowPropertyBehaviours = true;
+            }
+        }
+
+        private void SetCommandFromFactory(ICommandFactory commandFactory) {
+            this.updatePriority = PriorityItem.CommandFactory;
+
+            if (commandFactory == null || InfoStuff == null) {
+                return;
+            }
+
+            if (InfoStuff.CommandFactories.Any((f) => AreCommandFactoriesEqual(f, commandFactory))) {
+                this.updatePriority = PriorityItem.None;
+
+                this.allowPropertyBehaviours = false;
+
+                try {
+                    Command = commandFactory.CreateCommand(InfoStuff);
+                } finally {
+                    this.allowPropertyBehaviours = true;
+                }
+            }
         }
 
         public CommandFactorySelector() {
@@ -167,6 +243,12 @@ namespace NoCap.Library.Controls {
 
                 return filter((ICommandFactory) obj);
             };
+        }
+
+        enum PriorityItem {
+            None,
+            Command,
+            CommandFactory
         }
     }
 }
