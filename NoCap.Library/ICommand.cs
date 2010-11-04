@@ -20,10 +20,15 @@ namespace NoCap.Library {
         /// </summary>
         /// <remarks>
         /// The <see cref="Process"/> method is synchronous.  There is currently
-        /// no interface to implement an asynchronous operation.  For processors
+        /// no interface to implement an asynchronous operation.  For commands
         /// which must return a value, implementors must block the operation
-        /// and return the value.  If a processor does not need to return data,
+        /// and return the value.  If a command does not need to return data,
         /// the operation may be asynchronous internally and must return null.
+        /// </remarks>
+        /// <remarks>
+        /// Callers of <see cref="Process"/> own the <see cref="TypedData"/> returned.
+        /// They are responsible for disposing of the data by calling
+        /// <see cref="IDisposable.Dispose"/> appropriately.
         /// </remarks>
         /// <param name="data">
         /// The data to process, if any.  Must be null or

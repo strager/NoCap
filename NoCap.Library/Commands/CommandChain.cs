@@ -99,22 +99,22 @@ namespace NoCap.Library.Commands {
             return GetChainOutputDataTypes(input, this.commands).Unique();
         }
 
-        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<ICommand> processors) {
-            if (!processors.Any()) {
+        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<ICommand> commands) {
+            if (!commands.Any()) {
                 return new[] { input };
             }
 
-            var processor = processors.First();
+            var command = commands.First();
 
-            if (!processor.IsValidInputType(input)) {
+            if (!command.IsValidInputType(input)) {
                 return Enumerable.Empty<TypedDataType>();
             }
 
-            var outputTypes = processor.GetOutputDataTypes(input);
+            var outputTypes = command.GetOutputDataTypes(input);
 
             return outputTypes.Aggregate(
                 Enumerable.Empty<TypedDataType>(),
-                (types, type) => types.Concat(GetChainOutputDataTypes(type, processors.Skip(1)))
+                (types, type) => types.Concat(GetChainOutputDataTypes(type, commands.Skip(1)))
             );
         }
 

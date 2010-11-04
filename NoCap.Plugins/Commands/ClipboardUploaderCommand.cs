@@ -12,7 +12,7 @@ namespace NoCap.Plugins.Commands {
         private ICommand urlShortener;
         private ICommand imageUploader;
 
-        private readonly Clipboard clipboardProcessor = new Clipboard();
+        private readonly Clipboard clipboard = new Clipboard();
 
         private string name = "Clipboard uploader";
 
@@ -88,21 +88,21 @@ namespace NoCap.Plugins.Commands {
 
             router.Connect(TypedDataType.Image, new CommandChain(
                 ImageUploader,
-                this.clipboardProcessor
+                this.clipboard
             ));
 
             router.Connect(TypedDataType.Text, new CommandChain(
                 TextUploader,
-                this.clipboardProcessor
+                this.clipboard
             ));
 
             router.Connect(TypedDataType.Uri, new CommandChain(
                 UrlShortener,
-                this.clipboardProcessor
+                this.clipboard
             ));
 
             // TODO Progress
-            var clipboardData = this.clipboardProcessor.Process(null, progress);
+            var clipboardData = this.clipboard.Process(null, progress);
 
             var data = router.Process(clipboardData, progress);
 

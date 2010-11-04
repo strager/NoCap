@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\DataRouterTests.cs" />
-    <Compile Include="Commands\ProcessorChainTests.cs" />
+    <Compile Include="Commands\CommandChainTests.cs" />
     <Compile Include="CommandTests.cs" />
     <Compile Include="Controls\CommandFactorySelectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

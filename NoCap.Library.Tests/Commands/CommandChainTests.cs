@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Commands {
     [TestFixture]
-    class ProcessorChainTests {
+    class CommandChainTests {
         [Test]
         public void RouteChecksTypes1() {
             var inputTracker = GetMutableProgressTracker();

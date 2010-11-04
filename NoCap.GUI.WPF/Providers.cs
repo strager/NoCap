@@ -36,7 +36,7 @@ namespace NoCap.GUI.WPF {
         private IEnumerable<IInputProvider> inputProviders;
 
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<ICommandFactory> processorFactories;
+        private IEnumerable<ICommandFactory> commandFactories;
 #pragma warning restore 649
 
         public IEnumerable<IInputProvider> InputProviders {
@@ -45,9 +45,9 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public IEnumerable<ICommandFactory> ProcessorFactories {
+        public IEnumerable<ICommandFactory> CommandFactories {
             get {
-                return this.processorFactories;
+                return this.commandFactories;
             }
         }
     }

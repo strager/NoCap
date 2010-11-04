@@ -20,7 +20,7 @@ namespace NoCap.GUI.WPF.Settings {
 
         public IEnumerable<ICommandFactory> CommandFactories {
             get {
-                return this.providers.ProcessorFactories;
+                return this.providers.CommandFactories;
             }
         }
     }
