@@ -250,5 +250,11 @@ namespace NoCap.Library.Controls {
             Command,
             CommandFactory
         }
+
+        public void AutoLoad() {
+            if (Command == null) {
+                this.commandFactoryList.SelectedIndex = 0;
+            }
+        }
     }
 }

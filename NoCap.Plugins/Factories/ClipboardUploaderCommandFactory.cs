@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using System.Linq;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
 using NoCap.Plugins.Editors;
@@ -14,11 +13,7 @@ namespace NoCap.Plugins.Factories {
         }
 
         public ICommand CreateCommand(IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommand {
-                ImageUploader = infoStuff.GetImageUploaders().FirstOrDefault(),
-                UrlShortener = infoStuff.GetUrlShorteners().FirstOrDefault(),
-                TextUploader = infoStuff.GetTextUploaders().FirstOrDefault(),
-            };
+            return new ClipboardUploaderCommand();
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

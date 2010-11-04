@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Data;
+﻿using System.Linq;
+using System.Windows;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
 
@@ -42,6 +42,8 @@ namespace NoCap.Plugins.Editors {
 
             Command = command;
             InfoStuff = infoStuff;
+
+            this.imageUploaderSelector.AutoLoad();
         }
     }
 }

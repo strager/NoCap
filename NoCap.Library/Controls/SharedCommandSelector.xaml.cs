@@ -100,5 +100,11 @@ namespace NoCap.Library.Controls {
                 return filter((ICommand) obj);
             };
         }
+
+        public void AutoLoad() {
+            if (Command == null) {
+                this.commandList.SelectedIndex = 0;
+            }
+        }
     }
 }

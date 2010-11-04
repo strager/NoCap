@@ -162,5 +162,13 @@ namespace NoCap.Library.Controls {
         private void UpdateFromFactory() {
             Command = this.commandFactoryList.Command;
         }
+
+        public void AutoLoad() {
+            if (IsShared) {
+                this.sharedCommandList.AutoLoad();
+            } else {
+                this.commandFactoryList.AutoLoad();
+            }
+        }
     }
 }

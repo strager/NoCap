@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
@@ -39,11 +40,15 @@ namespace NoCap.Plugins.Editors {
             InitializeComponent();
 
             this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
-            this.textUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.TextUploader);
-            this.urlShortenerSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.UrlShortener);
+            this.textUploaderSelector.Filter  = Library.Command.GetHasFeaturesPredicate(CommandFeatures.TextUploader );
+            this.urlShortenerSelector.Filter  = Library.Command.GetHasFeaturesPredicate(CommandFeatures.UrlShortener );
 
             Command = command;
             InfoStuff = infoStuff;
+
+            this.imageUploaderSelector.AutoLoad();
+            this.textUploaderSelector.AutoLoad();
+            this.urlShortenerSelector.AutoLoad();
         }
     }
 }
