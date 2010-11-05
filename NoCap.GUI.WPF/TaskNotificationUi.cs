@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -6,26 +7,52 @@ using NoCap.Library;
 using Windows7.DesktopIntegration;
 
 namespace NoCap.GUI.WPF {
-    class TaskTracker {
+    class TaskNotificationUi : IDisposable {
         private readonly NoCapLogo logo;
         private readonly TaskbarIcon taskbarIcon;
 
-        private readonly CommandRunner commandRunner = new CommandRunner();
+        private readonly ICollection<CommandRunner> boundCommandRunners = new List<CommandRunner>();
 
-        public TaskTracker(TaskbarIcon taskbarIcon, NoCapLogo logo) {
+        public TaskNotificationUi(TaskbarIcon taskbarIcon, NoCapLogo logo) {
             this.taskbarIcon = taskbarIcon;
             this.logo = logo;
 
             UpdateIcon(1);
-
-            this.commandRunner.ProgressUpdated += (sender, e) => UpdateWindows(e.Progress);
-            this.commandRunner.ProgressUpdated += (sender, e) => UpdateIcon(e.Progress);
-            this.commandRunner.ProgressUpdated += (sender, e) => UpdateIconToolTip(e.Progress);
-
-            this.commandRunner.TaskCompleted += (sender, e) => ShowTaskDonePopup();
         }
 
-        private static void UpdateWindows(double progress) {
+        public void BindFrom(CommandRunner commandRunner) {
+            commandRunner.TaskStarted     += BeginTask;
+            commandRunner.TaskCompleted   += EndTask;
+            commandRunner.ProgressUpdated += UpdateProgress;
+
+            this.boundCommandRunners.Add(commandRunner);
+        }
+
+        public void UnbindFrom(CommandRunner commandRunner) {
+            commandRunner.TaskStarted     -= BeginTask;
+            commandRunner.TaskCompleted   -= EndTask;
+            commandRunner.ProgressUpdated -= UpdateProgress;
+
+            this.boundCommandRunners.Remove(commandRunner);
+        }
+
+        public void BeginTask(object sender, CommandTaskEventArgs e) {
+            // Do nothing
+        }
+
+        public void EndTask(object sender, CommandTaskEventArgs e) {
+            TaskDonePopup();
+        }
+
+        public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
+            double progress = e.Progress;
+
+            UpdateWindows(progress);
+            UpdateIcon(progress);
+            UpdateIconToolTip(progress);
+        }
+
+        private void UpdateWindows(double progress) {
             Application.Current.Dispatcher.BeginInvoke(new Action(() => {
                 foreach (var window in Application.Current.Windows) {
                     SetWindowProgress((Window) window, progress);
@@ -65,14 +92,16 @@ namespace NoCap.GUI.WPF {
             }));
         }
 
-        public CommandTask PerformTask(ICommand command) {
-            return this.commandRunner.Run(command);
-        }
-
-        private void ShowTaskDonePopup() {
+        private void TaskDonePopup() {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
                 this.taskbarIcon.ShowBalloonTip("Operation complete", "The requested opration has completed", BalloonIcon.Info);
             }));
+        }
+
+        public void Dispose() {
+            foreach (var commandRunner in boundCommandRunners) {
+                UnbindFrom(commandRunner);
+            }
         }
     }
 }

@@ -92,7 +92,7 @@
     </Compile>
     <Compile Include="Settings\ProgramSettingsManager.cs" />
     <Compile Include="Settings\StandAloneCommandBinding.cs" />
-    <Compile Include="TaskTracker.cs" />
+    <Compile Include="TaskNotificationUi.cs" />
     <Page Include="NoCapLogo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

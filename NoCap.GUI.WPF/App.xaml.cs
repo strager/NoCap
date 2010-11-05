@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -12,7 +6,6 @@ using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
 using WinputDotNet;
-using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -22,7 +15,9 @@ namespace NoCap.GUI.WPF {
         private TaskbarIcon taskbarIcon;
 
         private SettingsWindow settingsWindow;
-        private TaskTracker taskTracker;
+        private TaskNotificationUi taskNotificationUi;
+
+        private CommandRunner commandRunner;
 
         private ProgramSettingsManager settingsManager;
 
@@ -38,7 +33,10 @@ namespace NoCap.GUI.WPF {
 
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
-            this.taskTracker = new TaskTracker(this.taskbarIcon, new NoCapLogo());
+            this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
+            this.commandRunner = new CommandRunner();
+
+            this.taskNotificationUi.BindFrom(this.commandRunner);
 
             LoadSettings();
             LoadBindings();
@@ -101,7 +99,7 @@ namespace NoCap.GUI.WPF {
             if (e.State == InputState.On) {
                 var command = (BoundCommand) e.Command;
 
-                this.taskTracker.PerformTask(command.Command);
+                this.commandRunner.Run(command.Command);
             }
         }
 
@@ -154,6 +152,7 @@ namespace NoCap.GUI.WPF {
             ShutDownEverything(Settings);
 
             this.taskbarIcon.Dispose();
+            this.taskNotificationUi.Dispose();
         }
     }
 }
