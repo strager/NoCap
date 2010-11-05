@@ -42,6 +42,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
@@ -51,6 +52,11 @@
   <ItemGroup>
     <Compile Include="Commands\ClipboardUploaderCommand.cs" />
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
+    <Compile Include="Commands\FtpUploader.cs" />
+    <Compile Include="Editors\FtpUploaderEditor.xaml.cs">
+      <DependentUpon>FtpUploaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\FtpUploaderFactory.cs" />
     <Compile Include="Factories\ClipboardUploaderCommandFactory.cs" />
     <Compile Include="Factories\CropShotUploaderCommandFactory.cs" />
     <Compile Include="Editors\ClipboardUploaderCommandEditor.xaml.cs">
@@ -90,6 +96,10 @@
       <Project>{48EAB6A5-2882-4DF7-9846-FD06581B33B5}</Project>
       <Name>NoCap.Web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\FTPSClient\FTPSClient.csproj">
+      <Project>{8271707D-0C08-460D-A332-6FDB8D0BB6D1}</Project>
+      <Name>FTPSClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Editors\ClipboardUploaderCommandEditor.xaml">
@@ -99,6 +109,10 @@
     <Page Include="Editors\CropShotUploaderCommandEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Editors\FtpUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Helpers\CropShotWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using NoCap.Library.Editors;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands.Imaging {
@@ -28,7 +29,7 @@ namespace NoCap.Library.Commands.Imaging {
 
         public string Extension {
             get {
-                return this.extension ?? Codec.Extension;
+                return this.extension ?? (Codec == null ? null : Codec.Extension);
             }
 
             set {
@@ -85,7 +86,7 @@ namespace NoCap.Library.Commands.Imaging {
         }
 
         public ICommandFactory GetFactory() {
-            return null;
+            return new ImageWriterFactory();
         }
 
         public ITimeEstimate ProcessTimeEstimate {
@@ -107,6 +108,28 @@ namespace NoCap.Library.Commands.Imaging {
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+
+    public class ImageWriterFactory : ICommandFactory {
+        public string Name {
+            get {
+                return "Image writer";
+            }
+        }
+
+        public ICommand CreateCommand(IInfoStuff infoStuff) {
+            return new ImageWriter();
+        }
+
+        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+            return new ImageWriterEditor((ImageWriter) command, infoStuff);
+        }
+
+        public CommandFeatures CommandFeatures {
+            get {
+                return 0;
             }
         }
     }

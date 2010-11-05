@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>

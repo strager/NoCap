@@ -49,6 +49,7 @@ namespace NoCap.Web.Multipart {
         }
 
         public override void WriteContents(Stream stream) {
+            // TODO .CopyTo
             byte[] readBuffer = new byte[1024];
             int bytesRead = InputStream.Read(readBuffer, 0, readBuffer.Length);
 
