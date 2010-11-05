@@ -18,7 +18,7 @@ namespace NoCap.Library.Tests {
             Assert.Throws<ArgumentNullException>(() => runner.Run(null));
         }
 
-        [Test]
+        [Test, MaxTime(1000)]
         public void RunFiresStartOnce() {
             var runner = new CommandRunner();
 
@@ -34,7 +34,7 @@ namespace NoCap.Library.Tests {
             Assert.AreEqual(1, fireCount);
         }
 
-        [Test]
+        [Test, MaxTime(1000)]
         public void RunFiresCompleteOnce() {
             var runner = new CommandRunner();
 
@@ -50,7 +50,7 @@ namespace NoCap.Library.Tests {
             Assert.AreEqual(1, fireCount);
         }
 
-        [Test]
+        [Test, MaxTime(1000)]
         public void RunExecutesCommand() {
             var runner = new CommandRunner();
 
@@ -63,7 +63,7 @@ namespace NoCap.Library.Tests {
             mockCommand.Verify((command) => command.Process(null, It.IsAny<IMutableProgressTracker>()), Times.Once());
         }
 
-        [Test]
+        [Test, MaxTime(1000)]
         public void RunExecutesCommandInSeparateThread() {
             var runner = new CommandRunner();
             Thread commandThread = null;
@@ -80,7 +80,7 @@ namespace NoCap.Library.Tests {
             Assert.AreNotEqual(Thread.CurrentThread, commandThread);
         }
 
-        [Test]
+        [Test, MaxTime(1000)]
         public void ProgressUpdatesFire() {
             var runner = new CommandRunner();
 
@@ -100,6 +100,72 @@ namespace NoCap.Library.Tests {
             task.WaitForCompletion();
 
             CollectionAssert.AreEqual(new[] { 0.5, 0.6, 1 }, progressUpdates);
+        }
+
+        [Test, MaxTime(1000)]
+        public void RunSetsIsRunning() {
+            var runner = new CommandRunner();
+
+            CommandTask task = null;
+            bool? isRunningInCommand = null;
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+                .Callback(() => {
+                    isRunningInCommand = task.IsRunning;
+                });
+
+            task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsNotNull(isRunningInCommand);
+            Assert.IsTrue((bool) isRunningInCommand);
+        }
+
+        [Test, MaxTime(1000)]
+        public void NotCompletedDuringRun() {
+            var runner = new CommandRunner();
+
+            CommandTask task = null;
+            bool? isCompletedInCommand = null;
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+                .Callback(() => {
+                    isCompletedInCommand = task.IsCompleted;
+                });
+
+            task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsNotNull(isCompletedInCommand);
+            Assert.IsFalse((bool) isCompletedInCommand);
+        }
+
+        [Test, MaxTime(1000)]
+        public void RunEndResetsIsRunning() {
+            var runner = new CommandRunner();
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null);
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsFalse(task.IsRunning);
+        }
+
+        [Test, MaxTime(1000)]
+        public void CompletedAfterRun() {
+            var runner = new CommandRunner();
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null);
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsTrue(task.IsCompleted);
         }
 
         private static Mock<ICommand> GetCommandMock() {
