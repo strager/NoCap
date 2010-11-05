@@ -50,6 +50,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandRunnerTests.cs" />
     <Compile Include="Commands\DataRouterTests.cs" />
     <Compile Include="Commands\CommandChainTests.cs" />
     <Compile Include="CommandTests.cs" />
