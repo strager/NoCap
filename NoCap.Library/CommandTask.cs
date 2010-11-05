@@ -41,7 +41,9 @@ namespace NoCap.Library {
                 }
             };
 
-            command.Process(null, this.progressTracker);
+            using (command.Process(null, this.progressTracker)) {
+                // Auto-dispose
+            }
 
             this.commandRunner.OnTaskCompleted(new CommandTaskEventArgs(this));
 

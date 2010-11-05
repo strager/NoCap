@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
@@ -55,7 +53,8 @@ namespace NoCap.Library.Tests {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null);
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
@@ -69,7 +68,8 @@ namespace NoCap.Library.Tests {
             Thread commandThread = null;
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
                 .Callback(() => {
                     commandThread = Thread.CurrentThread;
                 });
@@ -89,7 +89,8 @@ namespace NoCap.Library.Tests {
             runner.ProgressUpdated += (sender, e) => progressUpdates.Add(e.Progress);
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
                 .Callback((TypedData data, IMutableProgressTracker progress) => {
                     progress.Progress = 0.5;
                     progress.Progress = 0.6;
@@ -110,7 +111,8 @@ namespace NoCap.Library.Tests {
             bool? isRunningInCommand = null;
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
                 .Callback(() => {
                     isRunningInCommand = task.IsRunning;
                 });
@@ -130,7 +132,8 @@ namespace NoCap.Library.Tests {
             bool? isCompletedInCommand = null;
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null)
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
                 .Callback(() => {
                     isCompletedInCommand = task.IsCompleted;
                 });
@@ -147,7 +150,8 @@ namespace NoCap.Library.Tests {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null);
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
@@ -160,12 +164,29 @@ namespace NoCap.Library.Tests {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null))).Returns((TypedData) null);
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
             Assert.IsTrue(task.IsCompleted);
+        }
+
+        [Test, MaxTime(1000)]
+        public void RunDisposesReturnedData() {
+            var mockDisposable = new Mock<IDisposable>(MockBehavior.Strict);
+            mockDisposable.Setup((typedData) => typedData.Dispose());
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns(new TypedData(TypedDataType.User, mockDisposable.Object, "my data"));
+
+            var runner = new CommandRunner();
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            mockDisposable.Verify((typedData) => typedData.Dispose(), Times.Once());
         }
 
         private static Mock<ICommand> GetCommandMock() {
