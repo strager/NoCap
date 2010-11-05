@@ -71,7 +71,8 @@ namespace NoCap.Library.Controls {
             InfoStuffProperty = DependencyProperty.Register(
                 "InfoStuff",
                 typeof(IInfoStuff),
-                typeof(CommandSelector)
+                typeof(CommandSelector),
+                new PropertyMetadata(OnInfoStuffChanged)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -87,6 +88,12 @@ namespace NoCap.Library.Controls {
                 typeof(RoutedPropertyChangedEventHandler<bool>),
                 typeof(CommandSelector)
             );
+        }
+
+        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var commandSelector = (CommandSelector) sender;
+
+            commandSelector.SelectCommand(commandSelector.Command);
         }
 
         private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
