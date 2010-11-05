@@ -23,13 +23,13 @@ namespace NoCap.Plugins.Commands {
         private string outputPath = "";
         private string resultFormat = "http://example.com/{0}";
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
-            // TODO Progress
+        private int timeout = 20000;
 
+        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             string fileName = data.Name;
             var stream = (Stream) data.Data;
 
-            UploadData(stream, fileName);
+            UploadData(stream, fileName, progress);
 
             progress.Progress = 1;
 
@@ -39,12 +39,21 @@ namespace NoCap.Plugins.Commands {
             return TypedData.FromUri(success ? result : ResultFormat, fileName);
         }
 
-        private void UploadData(Stream stream, string fileName) {
+        private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
             using (var client = new FTPSClient()) {
-                client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, null);
+                try {
+                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, this.timeout);
+                } catch (TimeoutException e) {
+                    throw new CommandCancelledException(this, "Connection to FTP server timed out", e);
+                } catch (IOException e) {
+                    throw new CommandCancelledException(this, "Connection to FTP server failed", e);
+                }
 
-                using (var outStream = client.PutFile(GetRemotePathName(fileName))) {
-                    stream.CopyTo(outStream);
+                using (var outStream = client.PutFile(GetRemotePathName(fileName)))
+                using (var outStreamWrapper = new ProgressTrackingStreamWrapper(outStream, stream.Length)) {
+                    outStreamWrapper.BindTo(progress);
+
+                    stream.CopyTo(outStreamWrapper);
                 }
             }
         }
