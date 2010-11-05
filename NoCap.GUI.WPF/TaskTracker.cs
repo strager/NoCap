@@ -41,7 +41,7 @@ namespace NoCap.GUI.WPF {
                 this.logo.Progress = progress;
 
                 this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                    this.taskbarIcon.Icon = this.logo.MakeIcon(128);
+                    this.taskbarIcon.IconSource = this.logo.MakeIcon(128);
                 }));
             }));
         }
