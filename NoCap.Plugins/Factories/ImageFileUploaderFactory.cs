@@ -5,24 +5,24 @@ using NoCap.Plugins.Editors;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
-    public class FtpUploaderFactory : ICommandFactory {
+    public class ImageFileUploaderFactory : ICommandFactory {
         public string Name {
             get {
-                return "FTP file uploader";
+                return "Image file uploader";
             }
         }
 
         public ICommand CreateCommand(IInfoStuff infoStuff) {
-            return new FtpUploader();
+            return new ImageFileUploader();
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new FtpUploaderEditor((FtpUploader) command, infoStuff);
+            return new ImageFileUploaderEditor((ImageFileUploader) command, infoStuff);
         }
 
         public CommandFeatures CommandFeatures {
             get {
-                return CommandFeatures.FileUploader;
+                return CommandFeatures.ImageUploader;
             }
         }
     }

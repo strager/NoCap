@@ -14,7 +14,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -38,9 +37,5 @@
 
         <Label Grid.Row="5" Grid.Column="0" Content="_Result format" />
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.ResultFormat}" />
-
-        <GroupBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Header="Image format">
-            <local:CommandEditor InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.ImageWriter}" />
-        </GroupBox>
     </Grid>
 </ContentControl>

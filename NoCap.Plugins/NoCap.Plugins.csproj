@@ -53,6 +53,11 @@
     <Compile Include="Commands\ClipboardUploaderCommand.cs" />
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
+    <Compile Include="Commands\ImageFileUploader.cs" />
+    <Compile Include="Factories\ImageFileUploaderFactory.cs" />
+    <Compile Include="Editors\ImageFileUploaderEditor.xaml.cs">
+      <DependentUpon>ImageFileUploaderEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Editors\FtpUploaderEditor.xaml.cs">
       <DependentUpon>FtpUploaderEditor.xaml</DependentUpon>
     </Compile>
@@ -103,6 +108,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Editors\ClipboardUploaderCommandEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Editors\ImageFileUploaderEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

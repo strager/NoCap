@@ -2,6 +2,8 @@
 using System.Windows;
 
 namespace NoCap.Library.Controls {
+    // TODO Test this (like with CommandFactorySelector)
+
     /// <summary>
     /// Interaction logic for CommandSelector.xaml
     /// </summary>

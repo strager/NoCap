@@ -7,14 +7,13 @@ using System.Runtime.Serialization;
 using System.Security;
 using AlexPilotti.FTPS.Client;
 using NoCap.Library;
-using NoCap.Library.Commands.Imaging;
 using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
     public class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
-        private string name = "FTP uploader";
+        private string name = "FTP file uploader";
 
         private string host = "example.com";
         private int port = 21;
@@ -24,12 +23,8 @@ namespace NoCap.Plugins.Commands {
         private string outputPath = "";
         private string resultFormat = "http://example.com/{0}";
 
-        private ImageWriter imageWriter;
-
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
             // TODO Progress
-
-            data = GetStreamData(data, progress);
 
             string fileName = data.Name;
             var stream = (Stream) data.Data;
@@ -51,19 +46,6 @@ namespace NoCap.Plugins.Commands {
                 using (var outStream = client.PutFile(GetRemotePathName(fileName))) {
                     stream.CopyTo(outStream);
                 }
-            }
-        }
-
-        private TypedData GetStreamData(TypedData data, IMutableProgressTracker progress) {
-            switch (data.DataType) {
-                case TypedDataType.Stream:
-                    return data;
-
-                case TypedDataType.Image:
-                    return ImageWriter.Process(data, progress);
-
-                default:
-                    throw new NotSupportedException();
             }
         }
 
@@ -169,28 +151,8 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
-        public ImageWriter ImageWriter {
-            get {
-                return this.imageWriter;
-            }
-
-            set {
-                this.imageWriter = value;
-
-                Notify("ImageWriter");
-            }
-        }
-
         public IEnumerable<TypedDataType> GetInputDataTypes() {
-            var inputDataTypes = new List<TypedDataType> {
-                TypedDataType.Stream
-            };
-
-            if (ImageWriter != null) {
-                inputDataTypes.Add(TypedDataType.Image);
-            }
-
-            return inputDataTypes;
+            return new[] { TypedDataType.Stream };
         }
 
         public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
@@ -218,7 +180,6 @@ namespace NoCap.Plugins.Commands {
         }
 
         public FtpUploader() {
-            ImageWriter = new ImageWriter();
         }
 
         public FtpUploader(SerializationInfo info, StreamingContext context) {
@@ -231,8 +192,6 @@ namespace NoCap.Plugins.Commands {
 
             OutputPath = info.GetValue<string>("OutputPath");
             ResultFormat = info.GetValue<string>("ResultFormat");
-
-            ImageWriter = info.GetValue<ImageWriter>("ImageWriter");
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
@@ -245,8 +204,6 @@ namespace NoCap.Plugins.Commands {
 
             info.AddValue("OutputPath", OutputPath);
             info.AddValue("ResultFormat", ResultFormat);
-
-            info.AddValue("ImageWriter", ImageWriter);
         }
     }
 }

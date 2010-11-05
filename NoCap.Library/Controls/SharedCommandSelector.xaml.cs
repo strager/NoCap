@@ -80,9 +80,7 @@ namespace NoCap.Library.Controls {
             var commandSelector = (SharedCommandSelector) sender;
             var infoStuff = (IInfoStuff) e.NewValue;
 
-            if (infoStuff != null) {
-                commandSelector.filterer.Source = infoStuff.Commands;
-            }
+            commandSelector.filterer.Source = infoStuff == null ? null : infoStuff.Commands;
         }
 
         public SharedCommandSelector() {
