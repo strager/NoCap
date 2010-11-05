@@ -63,7 +63,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CommandRunner.cs" />
     <Compile Include="NoCapLogo.xaml.cs">
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
     </Compile>

@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Library;
-using NoCap.Library.Util;
 using Windows7.DesktopIntegration;
 
 namespace NoCap.GUI.WPF {
@@ -11,21 +10,19 @@ namespace NoCap.GUI.WPF {
         private readonly NoCapLogo logo;
         private readonly TaskbarIcon taskbarIcon;
 
+        private readonly CommandRunner commandRunner = new CommandRunner();
+
         public TaskTracker(TaskbarIcon taskbarIcon, NoCapLogo logo) {
             this.taskbarIcon = taskbarIcon;
             this.logo = logo;
 
             UpdateIcon(1);
-        }
 
-        private void UpdateProgress(IProgressTracker progress) {
-            SetProgress(progress.Progress);
-        }
+            this.commandRunner.ProgressUpdated += (sender, e) => UpdateWindows(e.Progress);
+            this.commandRunner.ProgressUpdated += (sender, e) => UpdateIcon(e.Progress);
+            this.commandRunner.ProgressUpdated += (sender, e) => UpdateIconToolTip(e.Progress);
 
-        private void SetProgress(double progress) {
-            UpdateWindows(progress);
-            UpdateIcon(progress);
-            UpdateIconToolTip(progress);
+            this.commandRunner.TaskCompleted += (sender, e) => ShowTaskDonePopup();
         }
 
         private static void UpdateWindows(double progress) {
@@ -68,32 +65,12 @@ namespace NoCap.GUI.WPF {
             }));
         }
 
-        public void PerformTask(ICommand command) {
-            try {
-                var progressTracker = new NotifyingProgressTracker();
-                progressTracker.PropertyChanged += (sender, e) => {
-                    if (e.PropertyName == "Progress") {
-                        UpdateProgress(progressTracker);
-                    }
-                };
-
-                using (command.Process(null, progressTracker)) {
-                    // Auto-dispose
-                }
-
-                TaskDone();
-            } catch (CommandCancelledException) {
-                // Eat it.
-            }
-        }
-
-        private void TaskDone() {
-            ShowTaskDonePopup();
+        public CommandTask PerformTask(ICommand command) {
+            return this.commandRunner.Run(command);
         }
 
         private void ShowTaskDonePopup() {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                // FIXME Doesn't seem to work...
                 this.taskbarIcon.ShowBalloonTip("Operation complete", "The requested opration has completed", BalloonIcon.Info);
             }));
         }

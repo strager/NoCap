@@ -101,7 +101,7 @@ namespace NoCap.GUI.WPF {
             if (e.State == InputState.On) {
                 var command = (BoundCommand) e.Command;
 
-                PerformRequestAsync(command.Command);
+                this.taskTracker.PerformTask(command.Command);
             }
         }
 
@@ -135,12 +135,6 @@ namespace NoCap.GUI.WPF {
 
         private void SaveSettings() {
             this.settingsManager.Save();
-        }
-
-        private void PerformRequestAsync(ICommand command) {
-            var func = new Action<ICommand>(this.taskTracker.PerformTask);
-
-            func.BeginInvoke(command, func.EndInvoke, null);
         }
 
         public void Start() {
