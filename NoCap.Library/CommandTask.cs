@@ -26,11 +26,11 @@ namespace NoCap.Library {
 
                 this.isCompleted = false;
 
-                this.commandRunner.OnTaskStarted(new CommandTaskEventArgs(this));
-
                 this.thread = new Thread(RunThread);
                 this.thread.Start();
             }
+
+            this.commandRunner.OnTaskStarted(new CommandTaskEventArgs(this));
         }
 
         private void RunThread() {
@@ -60,13 +60,17 @@ namespace NoCap.Library {
 
         public bool IsRunning {
             get {
-                return this.thread != null && this.thread.IsAlive;
+                lock (this.syncRoot) {
+                    return this.thread != null && this.thread.IsAlive;
+                }
             }
         }
 
         public bool IsCompleted {
             get {
-                return this.isCompleted;
+                lock (this.syncRoot) {
+                    return this.isCompleted;
+                }
             }
         }
 

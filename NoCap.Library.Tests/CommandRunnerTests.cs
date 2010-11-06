@@ -16,7 +16,7 @@ namespace NoCap.Library.Tests {
             Assert.Throws<ArgumentNullException>(() => runner.Run(null));
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunFiresStartOnce() {
             var runner = new CommandRunner();
 
@@ -32,7 +32,7 @@ namespace NoCap.Library.Tests {
             Assert.AreEqual(1, fireCount);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunFiresCompleteOnce() {
             var runner = new CommandRunner();
 
@@ -48,7 +48,7 @@ namespace NoCap.Library.Tests {
             Assert.AreEqual(1, fireCount);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunExecutesCommand() {
             var runner = new CommandRunner();
 
@@ -62,7 +62,7 @@ namespace NoCap.Library.Tests {
             mockCommand.Verify((command) => command.Process(null, It.IsAny<IMutableProgressTracker>()), Times.Once());
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunExecutesCommandInSeparateThread() {
             var runner = new CommandRunner();
             Thread commandThread = null;
@@ -80,7 +80,7 @@ namespace NoCap.Library.Tests {
             Assert.AreNotEqual(Thread.CurrentThread, commandThread);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void ProgressUpdatesFire() {
             var runner = new CommandRunner();
 
@@ -103,7 +103,7 @@ namespace NoCap.Library.Tests {
             CollectionAssert.AreEqual(new[] { 0.5, 0.6, 1 }, progressUpdates);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunSetsIsRunning() {
             var runner = new CommandRunner();
 
@@ -124,7 +124,7 @@ namespace NoCap.Library.Tests {
             Assert.IsTrue((bool) isRunningInCommand);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void NotCompletedDuringRun() {
             var runner = new CommandRunner();
 
@@ -145,7 +145,7 @@ namespace NoCap.Library.Tests {
             Assert.IsFalse((bool) isCompletedInCommand);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunEndResetsIsRunning() {
             var runner = new CommandRunner();
 
@@ -159,7 +159,7 @@ namespace NoCap.Library.Tests {
             Assert.IsFalse(task.IsRunning);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void CompletedAfterRun() {
             var runner = new CommandRunner();
 
@@ -173,7 +173,7 @@ namespace NoCap.Library.Tests {
             Assert.IsTrue(task.IsCompleted);
         }
 
-        [Test, MaxTime(1000)]
+        [Test]
         public void RunDisposesReturnedData() {
             var mockDisposable = new Mock<IDisposable>(MockBehavior.Strict);
             mockDisposable.Setup((typedData) => typedData.Dispose());
