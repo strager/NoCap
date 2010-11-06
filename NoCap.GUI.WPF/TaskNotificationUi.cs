@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Library;
@@ -59,7 +60,7 @@ namespace NoCap.GUI.WPF {
                 return;
             }
 
-            // Do nothing
+            ShowTaskPopup(e.Task);
         }
 
         public void EndTask(object sender, CommandTaskEventArgs e) {
@@ -67,7 +68,7 @@ namespace NoCap.GUI.WPF {
                 return;
             }
 
-            TaskDonePopup();
+            // Do nothing
         }
 
         public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
@@ -122,9 +123,24 @@ namespace NoCap.GUI.WPF {
             }));
         }
 
-        private void TaskDonePopup() {
+        private void ShowTaskPopup(CommandTask task) {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                this.taskbarIcon.ShowBalloonTip("Operation complete", "The requested opration has completed", BalloonIcon.Info);
+                var taskPopup = new TaskPopup {
+                    DataContext = task
+                };
+
+                task.Completed += (sender, e) => taskPopup.QueueClose();
+                task.Cancelled += (sender, e) => taskPopup.QueueClose();
+
+                if (task.IsCompleted) {
+                    taskPopup.QueueClose();
+                }
+
+                if (task.IsCancelled) {
+                    taskPopup.QueueClose();
+                }
+
+                this.taskbarIcon.ShowCustomBalloon(taskPopup, PopupAnimation.Fade, null);
             }));
         }
 
