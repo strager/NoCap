@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace NoCap.Library {
+    [Serializable]
     public class CommandCancelledException : Exception {
         private readonly ICommand command;
 
@@ -34,6 +36,10 @@ namespace NoCap.Library {
         public CommandCancelledException(ICommand command, string message, Exception inner) :
             base(message, inner) {
             this.command = command;
+        }
+
+        protected CommandCancelledException(SerializationInfo info, StreamingContext context) :
+            base(info, context) {
         }
     }
 }
