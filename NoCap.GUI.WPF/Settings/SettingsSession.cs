@@ -10,6 +10,12 @@ namespace NoCap.GUI.WPF.Settings {
         private bool isSetUp = false;
         private bool isDisposed = false;
 
+        public ProgramSettings Settings {
+            get {
+                return this.settings;
+            }
+        }
+
         public SettingsSession(CommandRunner commandRunner, ProgramSettings settings) {
             this.commandRunner = commandRunner;
             this.settings = settings;

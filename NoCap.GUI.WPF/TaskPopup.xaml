@@ -11,7 +11,11 @@
             <GradientStop Color="#FFF5FCFF" Offset="1" />
         </LinearGradientBrush>
     </UserControl.Background>
-    
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Close" Executed="Close" />
+    </UserControl.CommandBindings>
+
     <UserControl.Resources>
         <local:CountdownTimerStringFormatConverter x:Key="CancelButtonFormatter" StoppedStringFormat="Cancel" RunningStringFormat="{}Cancel ({0})" />
     </UserControl.Resources>

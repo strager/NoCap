@@ -12,15 +12,10 @@
             <Setter Property="MinWidth" Value="70" />
         </Style>
 
-    	<tb:TaskbarIcon x:Key="taskbarIcon" DoubleClickCommand="{x:Static ApplicationCommands.Properties}">
+    	<tb:TaskbarIcon x:Key="taskbarIcon" DoubleClickCommand="Properties">
     		<tb:TaskbarIcon.ContextMenu>
     			<ContextMenu>
-    				<MenuItem Click="ExitClicked" Header="E_xit" />
-                    
-    				<!--
-                        This doesn't work; see App.LoadBindings for details
-                        <MenuItem Command="Close" Header="E_xit" />
-                    -->
+                    <MenuItem Command="Close" Header="E_xit" />
     			</ContextMenu>
     		</tb:TaskbarIcon.ContextMenu>
     	</tb:TaskbarIcon>

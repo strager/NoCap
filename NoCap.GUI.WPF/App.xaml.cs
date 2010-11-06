@@ -20,49 +20,44 @@ namespace NoCap.GUI.WPF {
 
         private ProgramSettingsManager settingsManager;
 
-        public ProgramSettings Settings {
-            get {
-                return this.settingsManager.ProgramSettings;
-            }
+        private void SaveSettings(ProgramSettings value) {
+            // TODO Move to manager and inline
+            this.settingsManager.ProgramSettings = value;
 
-            private set {
-                this.settingsManager.ProgramSettings = value;
-            }
+            this.settingsManager.Save();
         }
 
-        private SettingsSession settingsSession;
+        public ProgramSettings LoadSettings() {
+            // TODO Move to manager and inline
+            return this.settingsManager.ProgramSettings;
+        }
+
+        private SettingsSession activeSettingsSession;
 
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
             this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
             this.commandRunner = new CommandRunner();
+            this.settingsManager = new ProgramSettingsManager();
 
-            this.settingsSession = new SettingsSession(this.commandRunner, Settings);
+            this.activeSettingsSession = new SettingsSession(this.commandRunner, LoadSettings());
 
             this.taskNotificationUi.BindFrom(this.commandRunner);
 
-            LoadSettings();
+            
             LoadBindings();
 
-            this.settingsSession.SetUp();
+            this.activeSettingsSession.SetUp();
         }
 
         private void LoadBindings() {
-            // FIXME Make close binding work!
-            // This binding doesn't work (if uncommented and if matching XAML uncommented).
-            // The menu item shows as disabled.
-            //
-            // var closeBinding = new System.Windows.Input.CommandBinding(ApplicationCommands.Close);
-            // closeBinding.Executed += (sender, e) => Shutdown(0);
-            // this.taskbarIcon.CommandBindings.Add(closeBinding);
-
-            var settingsBinding = new System.Windows.Input.CommandBinding(ApplicationCommands.Properties);
-            settingsBinding.Executed += (sender, e) => ShowSettingsEditor();
-            this.taskbarIcon.CommandBindings.Add(settingsBinding);
-        }
-
-        private void LoadSettings() {
-            this.settingsManager = new ProgramSettingsManager();
+            this.taskbarIcon.CommandBindings.Add(new CommandBinding(ApplicationCommands.Close,
+                (sender, e) => Shutdown(0)
+            ));
+            
+            this.taskbarIcon.CommandBindings.Add(new CommandBinding(ApplicationCommands.Properties,
+                (sender, e) => ShowSettingsEditor()
+            ));
         }
 
         private void ShowSettingsEditor() {
@@ -70,31 +65,30 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            var clonedSettings = ProgramSettingsManager.CloneSettings(Settings);
+            var clonedSettings = ProgramSettingsManager.CloneSettings(this.activeSettingsSession.Settings);
 
             this.settingsWindow = new SettingsWindow(clonedSettings);
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
 
-            this.settingsSession.ShutDown();
+            this.activeSettingsSession.ShutDown();
 
             this.settingsWindow.ShowDialog();
         }
 
         private void CheckSettingsEditorResult() {
-            if (this.settingsWindow.DialogResult == true) {
-                Settings = this.settingsWindow.ProgramSettings;
+            // FIXME messy...
 
-                SaveSettings();
+            if (this.settingsWindow.DialogResult == true) {
+                SaveSettings(this.settingsWindow.ProgramSettings);
+
+                this.activeSettingsSession.Dispose();
+                this.activeSettingsSession = new SettingsSession(this.commandRunner, this.settingsWindow.ProgramSettings);
             }
 
             this.settingsWindow.Close();
             this.settingsWindow = null;
 
-            this.settingsSession.SetUp();
-        }
-
-        private void SaveSettings() {
-            this.settingsManager.Save();
+            this.activeSettingsSession.SetUp();
         }
 
         public void Start() {
@@ -115,7 +109,7 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Dispose() {
-            this.settingsSession.Dispose();
+            this.activeSettingsSession.Dispose();
             this.taskNotificationUi.Dispose();
             this.taskbarIcon.Dispose();
         }

@@ -15,10 +15,6 @@ namespace NoCap.GUI.WPF {
         public TaskPopup() {
             InitializeComponent();
 
-            var closeBinding = new CommandBinding(ApplicationCommands.Close);
-            closeBinding.Executed += (sender, e) => Close();
-            CommandBindings.Add(closeBinding);
-
             // I admit that the binding of the countdown timer is kinda hacky.
             // Okay, pretty hacky.
             // Forgive me and fix it.
@@ -68,6 +64,10 @@ namespace NoCap.GUI.WPF {
 
         private void Close() {
             Visibility = Visibility.Collapsed;
+        }
+
+        private void Close(object sender, ExecutedRoutedEventArgs e) {
+            Close();
         }
     }
 
