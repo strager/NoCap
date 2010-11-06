@@ -108,41 +108,20 @@ namespace NoCap.Library.Tests {
             var runner = new CommandRunner();
 
             CommandTask task = null;
-            bool? isRunningInCommand = null;
+            TaskState? taskStateInCommand = null;
 
             var mockCommand = GetCommandMock();
             mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
                 .Returns((TypedData) null)
                 .Callback(() => {
-                    isRunningInCommand = task.IsRunning;
+                    taskStateInCommand = task.State;
                 });
 
             task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.IsNotNull(isRunningInCommand);
-            Assert.IsTrue((bool) isRunningInCommand);
-        }
-
-        [Test]
-        public void NotCompletedDuringRun() {
-            var runner = new CommandRunner();
-
-            CommandTask task = null;
-            bool? isCompletedInCommand = null;
-
-            var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
-                .Returns((TypedData) null)
-                .Callback(() => {
-                    isCompletedInCommand = task.IsCompleted;
-                });
-
-            task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
-
-            Assert.IsNotNull(isCompletedInCommand);
-            Assert.IsFalse((bool) isCompletedInCommand);
+            Assert.IsNotNull(taskStateInCommand);
+            Assert.AreEqual(TaskState.Running, (TaskState) taskStateInCommand);
         }
 
         [Test]
@@ -156,7 +135,7 @@ namespace NoCap.Library.Tests {
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.IsFalse(task.IsRunning);
+            Assert.AreNotEqual(TaskState.Running, task.State);
         }
 
         [Test]
@@ -170,7 +149,7 @@ namespace NoCap.Library.Tests {
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.IsTrue(task.IsCompleted);
+            Assert.AreEqual(TaskState.Completed, task.State);
         }
 
         [Test]
@@ -190,7 +169,7 @@ namespace NoCap.Library.Tests {
         }
 
         [Test]
-        public void CancellationSetsIsCancelled() {
+        public void CancellationSetsCancelled() {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
@@ -203,24 +182,7 @@ namespace NoCap.Library.Tests {
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.IsTrue(task.IsCancelled);
-        }
-
-        [Test]
-        public void CancellationSetsIsCompleted() {
-            var runner = new CommandRunner();
-
-            var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
-                .Returns((TypedData) null)
-                .Callback(() => {
-                    throw new CommandCancelledException();
-                });
-
-            var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
-
-            Assert.IsTrue(task.IsCompleted);
+            Assert.AreEqual(TaskState.Cancelled, task.State);
         }
 
         [Test]

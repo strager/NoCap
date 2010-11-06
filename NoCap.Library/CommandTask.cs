@@ -48,7 +48,7 @@ namespace NoCap.Library {
 
         internal void Run() {
             lock (this.syncRoot) {
-                switch (TaskState) {
+                switch (State) {
                     case TaskState.Started:
                         throw new InvalidOperationException("Task already started");
 
@@ -63,7 +63,7 @@ namespace NoCap.Library {
                         break;
                 }
 
-                TaskState = TaskState.Started;
+                State = TaskState.Started;
 
                 this.thread = new Thread(RunThread);
                 this.thread.Start();
@@ -77,7 +77,7 @@ namespace NoCap.Library {
                 }
             };
 
-            TaskState = TaskState.Running;
+            State = TaskState.Running;
             OnStarted();
 
             try {
@@ -85,13 +85,13 @@ namespace NoCap.Library {
                     // Auto-dispose
                 }
             } catch (CommandCancelledException e) {
-                TaskState = TaskState.Cancelled;
+                State = TaskState.Cancelled;
                 OnCancelled(e);
 
                 return;
             }
 
-            TaskState = TaskState.Completed;
+            State = TaskState.Completed;
             OnCompleted();
         }
 
@@ -147,27 +147,15 @@ namespace NoCap.Library {
             }
         }
 
+        public string Name {
+            get {
+                return this.command.Name;
+            }
+        }
+
         public ICommand Command {
             get {
                 return this.command;
-            }
-        }
-
-        public bool IsRunning {
-            get {
-                return TaskState == TaskState.Running;
-            }
-        }
-
-        public bool IsCompleted {
-            get {
-                return TaskState == TaskState.Completed || TaskState == TaskState.Cancelled;
-            }
-        }
-
-        public bool IsCancelled {
-            get {
-                return TaskState == TaskState.Cancelled;
             }
         }
 
@@ -183,20 +171,14 @@ namespace NoCap.Library {
             }
         }
 
-        public string Name {
-            get {
-                return this.command.Name;
-            }
-        }
-
-        private TaskState TaskState {
+        public TaskState State {
             get {
                 lock (this.syncRoot) {
                     return this.taskState;
                 }
             }
 
-            set {
+            private set {
                 lock (this.syncRoot) {
                     this.taskState = value;
                 }
@@ -205,7 +187,7 @@ namespace NoCap.Library {
 
         public IProgressTracker ProgressTracker {
             get {
-                if (TaskState == TaskState.NotStarted) {
+                if (State == TaskState.NotStarted) {
                     throw new InvalidOperationException("Task not started");
                 }
 
@@ -214,15 +196,19 @@ namespace NoCap.Library {
         }
 
         public void WaitForCompletion() {
-            if (IsCompleted) {
-                return;
-            }
+            switch (State) {
+                case TaskState.Cancelled:
+                case TaskState.Completed:
+                    return;
 
-            if (TaskState == TaskState.NotStarted) {
-                throw new InvalidOperationException("Task not started");
-            }
+                case TaskState.NotStarted:
+                    throw new InvalidOperationException("Task not started");
 
-            this.thread.Join();
+                default:
+                    this.thread.Join();
+
+                    break;
+            }
         }
     }
 }
