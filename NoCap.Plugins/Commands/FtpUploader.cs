@@ -36,7 +36,7 @@ namespace NoCap.Plugins.Commands {
             string result;
             bool success = TryGetResultString(fileName, out result);
 
-            return TypedData.FromUri(success ? result : ResultFormat, fileName);
+            return TypedData.FromUri(new Uri(success && !string.IsNullOrWhiteSpace(result) ? result : data.Name, UriKind.Absolute), fileName);
         }
 
         private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
