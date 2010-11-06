@@ -4,15 +4,13 @@ using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
-using NoCap.Library;
 using NoCap.Library.Tasks;
-using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App {
+    public sealed partial class App : IDisposable {
         private TaskbarIcon taskbarIcon;
 
         private SettingsWindow settingsWindow;
@@ -32,17 +30,21 @@ namespace NoCap.GUI.WPF {
             }
         }
 
+        private SettingsSession settingsSession;
+
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
             this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
             this.commandRunner = new CommandRunner();
+
+            this.settingsSession = new SettingsSession(this.commandRunner, Settings);
 
             this.taskNotificationUi.BindFrom(this.commandRunner);
 
             LoadSettings();
             LoadBindings();
 
-            SetUpEverything(Settings);
+            this.settingsSession.SetUp();
         }
 
         private void LoadBindings() {
@@ -63,47 +65,6 @@ namespace NoCap.GUI.WPF {
             this.settingsManager = new ProgramSettingsManager();
         }
 
-        private void SetUpEverything(ProgramSettings newSettings) {
-            SetUpInput(newSettings);
-        }
-
-        private void ShutDownEverything(ProgramSettings oldSettings) {
-            ShutDownInput(oldSettings);
-        }
-
-        private void SetUpInput(ProgramSettings newSettings) {
-            var inputProvider = newSettings.InputProvider;
-
-            if (inputProvider == null) {
-                return;
-            }
-
-            var handle = IntPtr.Zero;
-            
-            inputProvider.CommandStateChanged += CommandStateChanged;
-            inputProvider.SetBindings(newSettings.Bindings);
-            inputProvider.Attach(handle);
-        }
-
-        private void ShutDownInput(ProgramSettings oldSettings) {
-            var inputProvider = oldSettings.InputProvider;
-
-            if (inputProvider == null) {
-                return;
-            }
-
-            inputProvider.Detach();
-            inputProvider.CommandStateChanged -= CommandStateChanged;
-        }
-
-        private void CommandStateChanged(object sender, CommandStateChangedEventArgs e) {
-            if (e.State == InputState.On) {
-                var command = (BoundCommand) e.Command;
-
-                this.commandRunner.Run(command.Command);
-            }
-        }
-
         private void ShowSettingsEditor() {
             if (this.settingsWindow != null) {
                 this.settingsWindow.Show();
@@ -114,7 +75,7 @@ namespace NoCap.GUI.WPF {
             this.settingsWindow = new SettingsWindow(clonedSettings);
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
 
-            ShutDownInput(Settings);
+            this.settingsSession.ShutDown();
 
             this.settingsWindow.ShowDialog();
         }
@@ -129,7 +90,7 @@ namespace NoCap.GUI.WPF {
             this.settingsWindow.Close();
             this.settingsWindow = null;
 
-            SetUpInput(Settings);
+            this.settingsSession.SetUp();
         }
 
         private void SaveSettings() {
@@ -144,16 +105,19 @@ namespace NoCap.GUI.WPF {
             Shutdown(0);
         }
 
-        private void Application_Startup(object sender, StartupEventArgs e) {
+        private void StartUpApplication(object sender, StartupEventArgs e) {
             Load();
             Start();
         }
 
-        private void Application_Exit(object sender, ExitEventArgs e) {
-            ShutDownEverything(Settings);
+        private void ExitApplication(object sender, ExitEventArgs e) {
+            Dispose();
+        }
 
-            this.taskbarIcon.Dispose();
+        public void Dispose() {
+            this.settingsSession.Dispose();
             this.taskNotificationUi.Dispose();
+            this.taskbarIcon.Dispose();
         }
     }
 }
