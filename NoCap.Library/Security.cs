@@ -16,7 +16,11 @@ namespace NoCap.Library {
             }
         }
 
-        public static byte[] EncryptString(SecureString input, DataProtectionScope protectionScope = DataProtectionScope.CurrentUser) {
+        public static byte[] EncryptString(SecureString input) {
+            return EncryptString(input, DataProtectionScope.CurrentUser);
+        }
+
+        public static byte[] EncryptString(SecureString input, DataProtectionScope protectionScope) {
             return ProtectedData.Protect(
                 Encoding.Unicode.GetBytes(ToInsecureString(input)),
                 Entropy,
@@ -24,7 +28,11 @@ namespace NoCap.Library {
             );
         }
 
-        public static SecureString DecryptString(byte[] encryptedData, DataProtectionScope protectionScope = DataProtectionScope.CurrentUser) {
+        public static SecureString DecryptString(byte[] encryptedData) {
+            return DecryptString(encryptedData, DataProtectionScope.CurrentUser);
+        }
+
+        public static SecureString DecryptString(byte[] encryptedData, DataProtectionScope protectionScope) {
             try {
                 byte[] decryptedData = ProtectedData.Unprotect(
                     encryptedData,
