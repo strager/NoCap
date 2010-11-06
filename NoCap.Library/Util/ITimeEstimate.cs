@@ -27,7 +27,7 @@
     }
 
     public static class TimeEstimates {
-        public static ITimeEstimate Instantanious   = new SimpleTimeEstimate(0);
+        public static ITimeEstimate Instantaneous   = new SimpleTimeEstimate(0);
         public static ITimeEstimate UserInteractive = new SimpleTimeEstimate(10, true);
         public static ITimeEstimate ShortOperation  = new SimpleTimeEstimate(30);
         public static ITimeEstimate LongOperation   = new SimpleTimeEstimate(90);

@@ -94,7 +94,7 @@ namespace NoCap.Plugins.Commands {
 
         public ITimeEstimate ProcessTimeEstimate {
             get {
-                return TimeEstimates.Instantanious;
+                return TimeEstimates.Instantaneous;
             }
         }
     }

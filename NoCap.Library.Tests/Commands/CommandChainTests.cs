@@ -16,7 +16,7 @@ namespace NoCap.Library.Tests.Commands {
             var commandMock = GetCommandMock();
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
-            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(commandMock.Object);
@@ -34,7 +34,7 @@ namespace NoCap.Library.Tests.Commands {
             var commandMock = GetCommandMock();
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
-            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(commandMock.Object);
@@ -52,7 +52,7 @@ namespace NoCap.Library.Tests.Commands {
             var commandMock = GetCommandMock();
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
-            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(commandMock.Object);
@@ -69,12 +69,12 @@ namespace NoCap.Library.Tests.Commands {
             var command1Mock = GetCommandMock();
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
-            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var command2Mock = GetCommandMock();
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
-            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(command1Mock.Object);
@@ -94,12 +94,12 @@ namespace NoCap.Library.Tests.Commands {
             var command1Mock = GetCommandMock();
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
-            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var command2Mock = GetCommandMock();
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
-            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(command1Mock.Object);
@@ -116,12 +116,12 @@ namespace NoCap.Library.Tests.Commands {
             var command1Mock = GetCommandMock();
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
-            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var command2Mock = GetCommandMock();
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns((TypedData) null);
-            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(command1Mock.Object);
@@ -140,12 +140,12 @@ namespace NoCap.Library.Tests.Commands {
             var command1Mock = GetCommandMock();
             command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command1Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(inputData);
-            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var command2Mock = GetCommandMock();
             command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>())).Returns(expectedOutput);
-            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantanious);
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
             var chain = new CommandChain();
             chain.Add(command1Mock.Object);
