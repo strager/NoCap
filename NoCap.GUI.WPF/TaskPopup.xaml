@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=Name}" VerticalAlignment="Center" />
-        <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="20" />
+        <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="20" Value="{Binding ProgressTracker.Progress, Mode=OneWay}" Minimum="0" Maximum="1" />
         <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Name="closeButton" Command="Close" Content="Close" />
 
         <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="#00000000" BorderBrush="#00000000">

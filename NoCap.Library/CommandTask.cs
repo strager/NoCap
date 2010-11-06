@@ -3,16 +3,27 @@ using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
+    public enum TaskState {
+        NotStarted,
+        Started,
+        Running,
+        Completed,
+        Cancelled,
+    }
+
     public sealed class CommandTask {
         private readonly object syncRoot = new object();
 
         private readonly ICommand command;
         private readonly CommandRunner commandRunner;
-        private IMutableProgressTracker progressTracker;
+
+        private readonly IMutableProgressTracker progressTracker;
+        private readonly IProgressTracker publicProgressTracker;
+
         private Thread thread;
 
-        private bool isCompleted;
-        private CommandCancelledException cancellation;
+        private CommandCancelledException cancelReason;
+        private TaskState taskState = TaskState.NotStarted;
 
         public event EventHandler<CommandTaskEventArgs> Started;
         public event EventHandler<CommandTaskEventArgs> Completed;
@@ -30,39 +41,57 @@ namespace NoCap.Library {
 
             this.command = command;
             this.commandRunner = commandRunner;
+
+            this.progressTracker = new NotifyingProgressTracker();
+            this.publicProgressTracker = new ReadOnlyProgressTracker(this.progressTracker);
         }
 
         internal void Run() {
             lock (this.syncRoot) {
-                if (IsRunning) {
-                    throw new InvalidOperationException("Task already running");
+                switch (TaskState) {
+                    case TaskState.Started:
+                        throw new InvalidOperationException("Task already started");
+
+                    case TaskState.Running:
+                        throw new InvalidOperationException("Task already running");
+
+                    default:
+                        throw new InvalidOperationException("Task already finished running");
+
+                    case TaskState.NotStarted:
+                        // Do nothing
+                        break;
                 }
 
-                this.isCompleted = false;
+                TaskState = TaskState.Started;
 
                 this.thread = new Thread(RunThread);
                 this.thread.Start();
             }
-
-            OnStarted();
         }
 
         private void RunThread() {
-            this.progressTracker = new NotifyingProgressTracker();
             this.progressTracker.PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "Progress") {
                     OnProgressUpdated();
                 }
             };
 
+            TaskState = TaskState.Running;
+            OnStarted();
+
             try {
                 using (command.Process(null, this.progressTracker)) {
                     // Auto-dispose
                 }
             } catch (CommandCancelledException e) {
+                TaskState = TaskState.Cancelled;
                 OnCancelled(e);
+
+                return;
             }
 
+            TaskState = TaskState.Completed;
             OnCompleted();
         }
 
@@ -90,13 +119,12 @@ namespace NoCap.Library {
             }
         }
 
-        private void OnCancelled(CommandCancelledException cancelReason) {
+        private void OnCancelled(CommandCancelledException cancelException) {
             lock (this.syncRoot) {
-                this.cancellation = cancelReason;
-                this.isCompleted = true;
+                this.cancelReason = cancelException;
             }
 
-            var eventArgs = new CommandTaskCancellationEventArgs(this, cancelReason);
+            var eventArgs = new CommandTaskCancellationEventArgs(this, cancelException);
 
             this.commandRunner.OnTaskCancelled(eventArgs);
 
@@ -108,10 +136,6 @@ namespace NoCap.Library {
         }
 
         private void OnCompleted() {
-            lock (this.syncRoot) {
-                this.isCompleted = true;
-            }
-
             var eventArgs = new CommandTaskEventArgs(this);
 
             this.commandRunner.OnTaskCompleted(eventArgs);
@@ -131,36 +155,30 @@ namespace NoCap.Library {
 
         public bool IsRunning {
             get {
-                lock (this.syncRoot) {
-                    return this.thread != null && this.thread.IsAlive;
-                }
+                return TaskState == TaskState.Running;
             }
         }
 
         public bool IsCompleted {
             get {
-                lock (this.syncRoot) {
-                    return this.isCompleted;
-                }
+                return TaskState == TaskState.Completed || TaskState == TaskState.Cancelled;
             }
         }
 
         public bool IsCancelled {
             get {
-                lock (this.syncRoot) {
-                    return this.cancellation != null;
-                }
+                return TaskState == TaskState.Cancelled;
             }
         }
 
         public CommandCancelledException CancelReason {
             get {
                 lock (this.syncRoot) {
-                    if (this.cancellation == null) {
+                    if (this.cancelReason == null) {
                         throw new InvalidOperationException("Task was not cancelled");
                     }
 
-                    return this.cancellation;
+                    return this.cancelReason;
                 }
             }
         }
@@ -171,13 +189,37 @@ namespace NoCap.Library {
             }
         }
 
+        private TaskState TaskState {
+            get {
+                lock (this.syncRoot) {
+                    return this.taskState;
+                }
+            }
+
+            set {
+                lock (this.syncRoot) {
+                    this.taskState = value;
+                }
+            }
+        }
+
+        public IProgressTracker ProgressTracker {
+            get {
+                if (TaskState == TaskState.NotStarted) {
+                    throw new InvalidOperationException("Task not started");
+                }
+
+                return this.publicProgressTracker;
+            }
+        }
+
         public void WaitForCompletion() {
             if (IsCompleted) {
                 return;
             }
 
-            if (!IsRunning) {
-                throw new InvalidOperationException("Task not running");
+            if (TaskState == TaskState.NotStarted) {
+                throw new InvalidOperationException("Task not started");
             }
 
             this.thread.Join();
