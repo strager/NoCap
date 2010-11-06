@@ -191,7 +191,7 @@ namespace NoCap.Plugins.Commands {
         public FtpUploader() {
         }
 
-        public FtpUploader(SerializationInfo info, StreamingContext context) {
+        private FtpUploader(SerializationInfo info, StreamingContext context) {
             Name = info.GetValue<string>("Name");
 
             Host = info.GetValue<string>("Host");

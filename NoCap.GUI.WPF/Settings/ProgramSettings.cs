@@ -45,7 +45,7 @@ namespace NoCap.GUI.WPF.Settings {
             this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
-        public ProgramSettings(SerializationInfo info, StreamingContext context) {
+        private ProgramSettings(SerializationInfo info, StreamingContext context) {
             var providers = Providers.Instance;
 
             Bindings = info.GetValue<ObservableCollection<StandAloneCommandBinding>>("Bindings");
