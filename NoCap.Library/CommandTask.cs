@@ -15,6 +15,14 @@ namespace NoCap.Library {
         private CommandCancelledException cancellation;
 
         internal CommandTask(ICommand command, CommandRunner commandRunner) {
+            if (command == null) {
+                throw new ArgumentNullException("command");
+            }
+
+            if (commandRunner == null) {
+                throw new ArgumentNullException("commandRunner");
+            }
+
             this.command = command;
             this.commandRunner = commandRunner;
         }
@@ -109,6 +117,18 @@ namespace NoCap.Library {
 
                     return this.cancellation;
                 }
+            }
+        }
+
+        public string Name {
+            get {
+                return this.command.Name;
+            }
+        }
+
+        public CommandRunner CommandRunner {
+            get {
+                return this.commandRunner;
             }
         }
 
