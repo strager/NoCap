@@ -33,7 +33,7 @@ namespace NoCap.Plugins.Commands {
             thread.Join();
 
             if (cropShotWindow.Data == null) {
-                throw new CommandCancelledException(this);
+                throw new CommandCanceledException(this);
             }
 
             progress.Progress = 1;

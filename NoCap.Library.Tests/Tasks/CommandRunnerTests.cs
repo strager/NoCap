@@ -177,20 +177,20 @@ namespace NoCap.Library.Tests.Tasks {
             mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
                 .Returns((TypedData) null)
                 .Callback(() => {
-                    throw new CommandCancelledException();
+                    throw new CommandCanceledException();
                 });
 
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.AreEqual(TaskState.Cancelled, task.State);
+            Assert.AreEqual(TaskState.Canceled, task.State);
         }
 
         [Test]
         public void CancellationSetsCancelReason() {
             var runner = new CommandRunner();
 
-            var cancelException = new CommandCancelledException();
+            var cancelException = new CommandCanceledException();
 
             var mockCommand = GetCommandMock();
             mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
@@ -209,12 +209,12 @@ namespace NoCap.Library.Tests.Tasks {
         public void CancellationFiresComplete() {
             var runner = new CommandRunner();
 
-            var cancelException = new CommandCancelledException();
-            CommandCancelledException firedReason = null;
+            var cancelException = new CommandCanceledException();
+            CommandCanceledException firedReason = null;
 
             int fireCount = 0;
 
-            runner.TaskCancelled += (sender, e) => {
+            runner.TaskCanceled += (sender, e) => {
                 ++fireCount;
 
                 firedReason = e.CancelReason;

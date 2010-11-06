@@ -131,9 +131,9 @@ namespace NoCap.GUI.WPF {
                 };
 
                 task.Completed += (sender, e) => taskPopup.QueueClose();
-                task.Cancelled += (sender, e) => taskPopup.QueueClose();
+                task.Canceled += (sender, e) => taskPopup.QueueClose();
 
-                if (task.State == TaskState.Completed || task.State == TaskState.Cancelled) {
+                if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
                     taskPopup.QueueClose();
                 }
 

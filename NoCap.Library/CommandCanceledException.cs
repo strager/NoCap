@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace NoCap.Library {
     [Serializable]
-    public class CommandCancelledException : Exception {
+    public class CommandCanceledException : Exception {
         private readonly ICommand command;
 
         public ICommand Command {
@@ -12,33 +12,33 @@ namespace NoCap.Library {
             }
         }
 
-        public CommandCancelledException() :
+        public CommandCanceledException() :
             this((ICommand) null) {
         }
 
-        public CommandCancelledException(ICommand command) {
+        public CommandCanceledException(ICommand command) {
             this.command = command;
         }
 
-        public CommandCancelledException(string message) :
+        public CommandCanceledException(string message) :
             this(null, message) {
         }
 
-        public CommandCancelledException(ICommand command, string message) :
+        public CommandCanceledException(ICommand command, string message) :
             base(message) {
             this.command = command;
         }
 
-        public CommandCancelledException(string message, Exception inner) :
+        public CommandCanceledException(string message, Exception inner) :
             this(null, message, inner) {
         }
 
-        public CommandCancelledException(ICommand command, string message, Exception inner) :
+        public CommandCanceledException(ICommand command, string message, Exception inner) :
             base(message, inner) {
             this.command = command;
         }
 
-        protected CommandCancelledException(SerializationInfo info, StreamingContext context) :
+        protected CommandCanceledException(SerializationInfo info, StreamingContext context) :
             base(info, context) {
         }
     }

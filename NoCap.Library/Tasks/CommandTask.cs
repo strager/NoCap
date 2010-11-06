@@ -14,12 +14,12 @@ namespace NoCap.Library.Tasks {
 
         private Thread thread;
 
-        private CommandCancelledException cancelReason;
+        private CommandCanceledException cancelReason;
         private TaskState taskState = TaskState.NotStarted;
 
         public event EventHandler<CommandTaskEventArgs> Started;
         public event EventHandler<CommandTaskEventArgs> Completed;
-        public event EventHandler<CommandTaskCancellationEventArgs> Cancelled;
+        public event EventHandler<CommandTaskCancellationEventArgs> Canceled;
         public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
         public CommandTask(ICommand command, CommandRunner commandRunner) {
@@ -76,9 +76,9 @@ namespace NoCap.Library.Tasks {
                 using (command.Process(null, this.progressTracker)) {
                     // Auto-dispose
                 }
-            } catch (CommandCancelledException e) {
-                State = TaskState.Cancelled;
-                OnCancelled(e);
+            } catch (CommandCanceledException e) {
+                State = TaskState.Canceled;
+                OnCanceled(e);
 
                 return;
             }
@@ -111,16 +111,16 @@ namespace NoCap.Library.Tasks {
             }
         }
 
-        private void OnCancelled(CommandCancelledException cancelException) {
+        private void OnCanceled(CommandCanceledException cancelException) {
             lock (this.syncRoot) {
                 this.cancelReason = cancelException;
             }
 
             var eventArgs = new CommandTaskCancellationEventArgs(this, cancelException);
 
-            this.commandRunner.OnTaskCancelled(eventArgs);
+            this.commandRunner.OnTaskCanceled(eventArgs);
 
-            var handler = Cancelled;
+            var handler = Canceled;
 
             if (handler != null) {
                 handler(this, eventArgs);
@@ -151,7 +151,7 @@ namespace NoCap.Library.Tasks {
             }
         }
 
-        public CommandCancelledException CancelReason {
+        public CommandCanceledException CancelReason {
             get {
                 lock (this.syncRoot) {
                     if (this.cancelReason == null) {
@@ -189,7 +189,7 @@ namespace NoCap.Library.Tasks {
 
         public void WaitForCompletion() {
             switch (State) {
-                case TaskState.Cancelled:
+                case TaskState.Canceled:
                 case TaskState.Completed:
                     return;
 

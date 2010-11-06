@@ -44,9 +44,9 @@ namespace NoCap.Plugins.Commands {
                 try {
                     client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, this.timeout);
                 } catch (TimeoutException e) {
-                    throw new CommandCancelledException(this, "Connection to FTP server timed out", e);
+                    throw new CommandCanceledException(this, "Connection to FTP server timed out", e);
                 } catch (IOException e) {
-                    throw new CommandCancelledException(this, "Connection to FTP server failed", e);
+                    throw new CommandCanceledException(this, "Connection to FTP server failed", e);
                 }
 
                 using (var outStream = client.PutFile(GetRemotePathName(fileName)))

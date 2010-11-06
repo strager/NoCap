@@ -15,7 +15,7 @@ namespace NoCap.Library.Tasks {
 
         public event EventHandler<CommandTaskEventArgs> TaskStarted;
         public event EventHandler<CommandTaskEventArgs> TaskCompleted;
-        public event EventHandler<CommandTaskCancellationEventArgs> TaskCancelled;
+        public event EventHandler<CommandTaskCancellationEventArgs> TaskCanceled;
         public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
         internal protected virtual void OnTaskStarted(CommandTaskEventArgs e) {
@@ -34,8 +34,8 @@ namespace NoCap.Library.Tasks {
             }
         }
 
-        internal protected virtual void OnTaskCancelled(CommandTaskCancellationEventArgs e) {
-            var handler = TaskCancelled;
+        internal protected virtual void OnTaskCanceled(CommandTaskCancellationEventArgs e) {
+            var handler = TaskCanceled;
 
             if (handler != null) {
                 handler(this, e);

@@ -7,13 +7,13 @@ namespace NoCap.Library.Tasks {
         Started,
         Running,
         Completed,
-        Cancelled,
+        Canceled,
     }
 
     public interface ICommandTask {
         event EventHandler<CommandTaskEventArgs> Started;
         event EventHandler<CommandTaskEventArgs> Completed;
-        event EventHandler<CommandTaskCancellationEventArgs> Cancelled;
+        event EventHandler<CommandTaskCancellationEventArgs> Canceled;
         event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
         string Name {
@@ -24,7 +24,7 @@ namespace NoCap.Library.Tasks {
             get;
         }
 
-        CommandCancelledException CancelReason {
+        CommandCanceledException CancelReason {
             get;
         }
 
@@ -40,14 +40,14 @@ namespace NoCap.Library.Tasks {
     }
 
     public class CommandTaskCancellationEventArgs : CommandTaskEventArgs {
-        private readonly CommandCancelledException cancelReason;
+        private readonly CommandCanceledException cancelReason;
 
-        public CommandTaskCancellationEventArgs(ICommandTask task, CommandCancelledException cancelReason) :
+        public CommandTaskCancellationEventArgs(ICommandTask task, CommandCanceledException cancelReason) :
             base(task) {
             this.cancelReason = cancelReason;
         }
 
-        public CommandCancelledException CancelReason {
+        public CommandCanceledException CancelReason {
             get {
                 return this.cancelReason;
             }

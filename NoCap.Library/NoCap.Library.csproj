@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
-    <Compile Include="CommandCancelledException.cs" />
+    <Compile Include="CommandCanceledException.cs" />
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
     <Compile Include="Imaging\InfoStuffExtensions.cs" />
