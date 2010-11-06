@@ -50,19 +50,6 @@ namespace NoCap.Library.Imaging {
             return types;
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            switch (input) {
-                case TypedDataType.Image:
-                    return new[] { TypedDataType.Stream };
-
-                case TypedDataType.Stream:
-                    return new[] { TypedDataType.Image };
-
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
         ICommandFactory ICommand.GetFactory() {
             return GetFactory();
         }

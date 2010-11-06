@@ -67,10 +67,6 @@ namespace NoCap.Plugins.Commands {
             return GetCommand().GetInputDataTypes();
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return GetCommand().GetOutputDataTypes(input);
-        }
-
         public ICommandFactory GetFactory() {
             return new ImageFileUploaderFactory();
         }

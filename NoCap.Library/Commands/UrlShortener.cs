@@ -25,9 +25,5 @@ namespace NoCap.Library.Commands {
         public override IEnumerable<TypedDataType> GetInputDataTypes() {
             return new[] { TypedDataType.Uri };
         }
-
-        public override IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { TypedDataType.Uri };
-        }
     }
 }

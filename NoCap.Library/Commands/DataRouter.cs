@@ -64,16 +64,6 @@ namespace NoCap.Library.Commands {
             return Routes.Keys;
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            ICommand command;
-
-            if (!Routes.TryGetValue(input, out command)) {
-                return null;
-            }
-
-            return command.GetOutputDataTypes(input);
-        }
-
         public ICommandFactory GetFactory() {
             return null;
         }

@@ -164,10 +164,6 @@ namespace NoCap.Plugins.Commands {
             return new[] { TypedDataType.Stream };
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { TypedDataType.Uri };
-        }
-
         public ICommandFactory GetFactory() {
             return new FtpUploaderFactory();
         }

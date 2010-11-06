@@ -178,58 +178,6 @@ namespace NoCap.Library.Tests.Commands {
         }
 
         [Test]
-        public void GetOutputDataTypes0() {
-            var chain = new CommandChain();
-
-            CollectionAssert.AreEquivalent(new[] { TypedDataType.None }, chain.GetOutputDataTypes(TypedDataType.None));
-            CollectionAssert.AreEquivalent(new[] { TypedDataType.Text }, chain.GetOutputDataTypes(TypedDataType.Text));
-        }
-
-        [Test]
-        public void GetOutputDataTypes1() {
-            var commandMock = GetCommandMock();
-            commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text, TypedDataType.Uri });
-            commandMock.Setup((command) => command.GetOutputDataTypes(TypedDataType.Text)).Returns(new[] { TypedDataType.Image, TypedDataType.Uri });
-            commandMock.Setup((command) => command.GetOutputDataTypes(TypedDataType.Uri)).Returns(new[] { TypedDataType.Text, TypedDataType.Uri });
-
-            var chain = new CommandChain();
-            chain.Add(commandMock.Object);
-
-            CollectionAssert.AreEquivalent(new[] { TypedDataType.Image, TypedDataType.Uri }, chain.GetOutputDataTypes(TypedDataType.Text));
-            CollectionAssert.AreEquivalent(new[] { TypedDataType.Text, TypedDataType.Uri }, chain.GetOutputDataTypes(TypedDataType.Uri));
-        }
-
-        [Test]
-        public void GetOutputDataTypesBadInputThrows1() {
-            var commandMock = GetCommandMock();
-            commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
-            commandMock.Setup((command) => command.GetOutputDataTypes(TypedDataType.Text)).Returns(new[] { TypedDataType.Image, TypedDataType.Uri });
-
-            var chain = new CommandChain();
-            chain.Add(commandMock.Object);
-
-            Assert.Throws<InvalidOperationException>(() => chain.GetOutputDataTypes(TypedDataType.Uri));
-        }
-
-        [Test]
-        public void GetOutputDataTypes2() {
-            var command1Mock = GetCommandMock();
-            command1Mock.Setup((command) => command.GetInputDataTypes()).Returns(new TypedDataType[] { });
-            command1Mock.Setup((command) => command.GetOutputDataTypes(TypedDataType.None)).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 2, TypedDataType.User + 3 });
-
-            var command2Mock = GetCommandMock();
-            command2Mock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 3 });
-            command2Mock.Setup((command) => command.GetOutputDataTypes(TypedDataType.User + 1)).Returns(new[] { TypedDataType.User + 1, TypedDataType.User + 4 });
-            command2Mock.Setup((command) => command.GetOutputDataTypes(TypedDataType.User + 3)).Returns(new[] { TypedDataType.User + 5 });
-
-            var chain = new CommandChain();
-            chain.Add(command1Mock.Object);
-            chain.Add(command2Mock.Object);
-
-            CollectionAssert.AreEquivalent(new[] { TypedDataType.User + 1, TypedDataType.User + 4, TypedDataType.User + 5 }, chain.GetOutputDataTypes(TypedDataType.None));
-        }
-
-        [Test]
         public void TimeEstimateWeightIsSumOfChildWeights() {
             var command1Mock = GetCommandMock();
             command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(9));

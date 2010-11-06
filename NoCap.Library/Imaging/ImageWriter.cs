@@ -81,10 +81,6 @@ namespace NoCap.Library.Imaging {
             return Codec.GetInputDataTypes();
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return Codec.GetOutputDataTypes(input);
-        }
-
         public ICommandFactory GetFactory() {
             return new ImageWriterFactory();
         }

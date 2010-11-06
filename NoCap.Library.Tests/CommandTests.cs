@@ -115,8 +115,6 @@ namespace NoCap.Library.Tests {
             mock.Verify((command) => command.GetInputDataTypes(), Times.AtLeastOnce());
         }
 
-        // TODO Test IsValidInputOutputType
-
         private static Mock<ICommand> GetCommandMock() {
             return new Mock<ICommand>(MockBehavior.Strict);
         }

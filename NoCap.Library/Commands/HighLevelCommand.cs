@@ -26,10 +26,6 @@ namespace NoCap.Library.Commands {
             return new[] { TypedDataType.None };
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { TypedDataType.None };
-        }
-
         public abstract void Execute(IMutableProgressTracker progress);
     }
 }

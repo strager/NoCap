@@ -89,35 +89,6 @@ namespace NoCap.Library.Commands {
             return this.commands.First().GetInputDataTypes();
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            if (!this.commands.Any()) {
-                return new[] { input };
-            }
-
-            this.CheckValidInputType(input);
-
-            return GetChainOutputDataTypes(input, this.commands).Unique();
-        }
-
-        private static IEnumerable<TypedDataType> GetChainOutputDataTypes(TypedDataType input, IEnumerable<ICommand> commands) {
-            if (!commands.Any()) {
-                return new[] { input };
-            }
-
-            var command = commands.First();
-
-            if (!command.IsValidInputType(input)) {
-                return Enumerable.Empty<TypedDataType>();
-            }
-
-            var outputTypes = command.GetOutputDataTypes(input);
-
-            return outputTypes.Aggregate(
-                Enumerable.Empty<TypedDataType>(),
-                (types, type) => types.Concat(GetChainOutputDataTypes(type, commands.Skip(1)))
-            );
-        }
-
         public ICommandFactory GetFactory() {
             return null;
         }

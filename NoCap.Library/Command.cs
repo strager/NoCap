@@ -29,9 +29,9 @@ namespace NoCap.Library {
         /// </summary>
         /// <remarks>
         /// This method only checks that the types are legal, not that the
-        /// actual data is legal.  For example, any <see cref="TypedDataType.RawData"/>
-        /// data may be given to an image uploader, but although the data may not
-        /// represent image data, it will be said to be valid  by this method.
+        /// actual data is legal.  For example, any <see cref="TypedDataType.Stream"/>
+        /// data may be given to an image converter, but although the data may not
+        /// represent image data, it will be said to be valid by this method.
         /// </remarks>
         /// <param name="command">The command on which which the data should be tested.</param>
         /// <param name="data">The data against which the command is tested.</param>
@@ -68,34 +68,6 @@ namespace NoCap.Library {
             if (!command.IsValidInputType(type)) {
                 throw new InvalidOperationException("Invalid data type");
             }
-        }
-
-        /// <summary>
-        /// Determines whether the given output type is a possible output from
-        /// the specified command if it is given the given input type.
-        /// <!-- What a mouth-full. -->
-        /// </summary>
-        /// <remarks>
-        /// This method only checks that the types are possible, not that the
-        /// actual output will be of the expected type.
-        /// </remarks>
-        /// <param name="command">The command on which which the data types should be tested.</param>
-        /// <param name="inputDataType">The type of the input data.</param>
-        /// <param name="outputDataType">The expected type of the output data.</param>
-        /// <returns>
-        /// <c>true</c> if Determines whether the given output type is a possible output from
-        /// the specified command if it is given the given input type; otherwise, <c>false</c>.
-        /// </returns>
-        public static bool IsValidInputOutputType(this ICommand command, TypedDataType inputDataType, TypedDataType outputDataType) {
-            if (!command.GetInputDataTypes().Contains(inputDataType)) {
-                return false;
-            }
-
-            if (!command.GetOutputDataTypes(inputDataType).Contains(outputDataType)) {
-                return false;
-            }
-
-            return true;
         }
     }
 }

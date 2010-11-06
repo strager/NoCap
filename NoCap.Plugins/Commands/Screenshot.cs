@@ -41,10 +41,6 @@ namespace NoCap.Plugins.Commands {
             return new[] { TypedDataType.None };
         }
 
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            return new[] { TypedDataType.Image };
-        }
-
         public ICommandFactory GetFactory() {
             return new ScreenshotFactory();
         }

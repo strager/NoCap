@@ -36,7 +36,7 @@ namespace NoCap.Library {
         /// </param>
         /// <param name="progress">The progress tracker to be updated while the data is processed.</param>
         /// <returns>
-        /// Typed data with a type in <see cref="GetOutputDataTypes"/>, or
+        /// Typed data representing the result of the operation, or
         /// null if no data could be returned.
         /// </returns>
         TypedData Process(TypedData data, IMutableProgressTracker progress);
@@ -50,16 +50,6 @@ namespace NoCap.Library {
         /// <see cref="TypedDataType.None" /> must be specified.
         /// </returns>
         IEnumerable<TypedDataType> GetInputDataTypes();
-
-        /// <summary>
-        /// Gets the possible output data types which can be given from
-        /// <see cref="Process"/> given the appropriate input data type.
-        /// </summary>
-        /// <param name="input">The data type which would be passed into <see cref="Process"/>.</param>
-        /// <returns>
-        /// A list of data types which can be legally returned by <see cref="Process"/>.
-        /// </returns>
-        IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
 
         /// <summary>
         /// Gets a factory which can accept this instance as a parameter to the

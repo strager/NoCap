@@ -141,7 +141,6 @@ namespace NoCap.Library.Commands {
         }
 
         public abstract IEnumerable<TypedDataType> GetInputDataTypes();
-        public abstract IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input);
         public abstract ICommandFactory GetFactory();
 
         public ITimeEstimate ProcessTimeEstimate {

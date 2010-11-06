@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using NoCap.Library;
 using NoCap.Library.Util;
@@ -65,10 +64,6 @@ namespace NoCap.Plugins.Commands {
             using (commandChain.Process(null, progress)) {
                 // Auto-dispose
             }
-        }
-
-        public IEnumerable<TypedDataType> GetOutputDataTypes() {
-            return null;
         }
 
         [NonSerialized]
