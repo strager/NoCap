@@ -14,13 +14,13 @@ namespace NoCap.Library.Tests.Util {
         }
 
         [Test]
-        public void BuildInsIndeterminant() {
-            Assert.IsFalse(TimeEstimates.Instantanious.IsIndeterminant);
-            Assert.IsFalse(TimeEstimates.ShortOperation.IsIndeterminant);
-            Assert.IsFalse(TimeEstimates.LongOperation.IsIndeterminant);
+        public void BuildInsIndeterminate() {
+            Assert.IsFalse(TimeEstimates.Instantanious.IsIndeterminate);
+            Assert.IsFalse(TimeEstimates.ShortOperation.IsIndeterminate);
+            Assert.IsFalse(TimeEstimates.LongOperation.IsIndeterminate);
 
-            Assert.IsTrue(TimeEstimates.UserInteractive.IsIndeterminant);
-            Assert.IsTrue(TimeEstimates.Indeterminant.IsIndeterminant);
+            Assert.IsTrue(TimeEstimates.UserInteractive.IsIndeterminate);
+            Assert.IsTrue(TimeEstimates.Indeterminate.IsIndeterminate);
         }
     }
 }

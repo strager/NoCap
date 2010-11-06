@@ -18,7 +18,7 @@ namespace NoCap.Library.Util {
             }
         }
 
-        public bool IsIndeterminant {
+        public bool IsIndeterminate {
             get {
                 throw new NotImplementedException();
             }

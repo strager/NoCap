@@ -1,12 +1,12 @@
 ﻿namespace NoCap.Library.Util {
     public interface ITimeEstimate {
         double ProgressWeight { get; }
-        bool IsIndeterminant { get; }
+        bool IsIndeterminate { get; }
     }
 
     class SimpleTimeEstimate : ITimeEstimate {
         private readonly double progressWeight;
-        private readonly bool isIndeterminant;
+        private readonly bool isIndeterminate;
 
         public double ProgressWeight {
             get {
@@ -14,15 +14,15 @@
             }
         }
 
-        public bool IsIndeterminant {
+        public bool IsIndeterminate {
             get {
-                return this.isIndeterminant;
+                return this.isIndeterminate;
             }
         }
 
-        public SimpleTimeEstimate(double progressWeight, bool isIndeterminant = false) {
+        public SimpleTimeEstimate(double progressWeight, bool isIndeterminate = false) {
             this.progressWeight = progressWeight;
-            this.isIndeterminant = isIndeterminant;
+            this.isIndeterminate = isIndeterminate;
         }
     }
 
@@ -32,6 +32,6 @@
         public static ITimeEstimate ShortOperation  = new SimpleTimeEstimate(30);
         public static ITimeEstimate LongOperation   = new SimpleTimeEstimate(90);
 
-        public static ITimeEstimate Indeterminant = new SimpleTimeEstimate(0, true);
+        public static ITimeEstimate Indeterminate = new SimpleTimeEstimate(0, true);
     }
 }

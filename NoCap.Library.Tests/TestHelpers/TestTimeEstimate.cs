@@ -7,7 +7,7 @@ namespace NoCap.Library.Tests.TestHelpers {
             set;
         }
 
-        public bool IsIndeterminant {
+        public bool IsIndeterminate {
             get;
             set;
         }
@@ -15,9 +15,9 @@ namespace NoCap.Library.Tests.TestHelpers {
         public TestTimeEstimate() {
         }
 
-        public TestTimeEstimate(double progressWeight, bool isIndeterminant = false) {
+        public TestTimeEstimate(double progressWeight, bool isIndeterminate = false) {
             ProgressWeight = progressWeight;
-            IsIndeterminant = isIndeterminant;
+            this.IsIndeterminate = isIndeterminate;
         }
     }
 }

@@ -17,9 +17,9 @@ namespace NoCap.Library.Commands {
             }
         }
 
-        public bool IsIndeterminant {
+        public bool IsIndeterminate {
             get {
-                return this.commandChain.Commands.Any((command) => command.ProcessTimeEstimate.IsIndeterminant);
+                return this.commandChain.Commands.Any((command) => command.ProcessTimeEstimate.IsIndeterminate);
             }
         }
     }

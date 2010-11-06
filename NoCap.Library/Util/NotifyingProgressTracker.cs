@@ -25,7 +25,7 @@ namespace NoCap.Library.Util {
         }
 
         public NotifyingProgressTracker() :
-            this(TimeEstimates.Indeterminant) {
+            this(TimeEstimates.Indeterminate) {
         }
 
         public NotifyingProgressTracker(ITimeEstimate timeEstimate) {

@@ -31,10 +31,10 @@ namespace NoCap.Library.Tests.Util {
         }
 
         [Test]
-        public void IndeterminantTimeEstimateByDefault() {
+        public void IndeterminateTimeEstimateByDefault() {
             var npt = new NotifyingProgressTracker();
 
-            Assert.IsTrue(npt.EstimatedTimeRemaining.IsIndeterminant);
+            Assert.IsTrue(npt.EstimatedTimeRemaining.IsIndeterminate);
         }
 
         [Test]
