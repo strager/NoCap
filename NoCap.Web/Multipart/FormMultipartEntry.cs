@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -32,10 +33,18 @@ namespace NoCap.Web.Multipart {
             }
         }
 
-        public FormMultipartEntry(string name, string value, Encoding valueEncoding = null) {
+        public FormMultipartEntry(string name, string value) :
+            this(name, value, Encoding.ASCII) {
+        }
+
+        public FormMultipartEntry(string name, string value, Encoding valueEncoding) {
+            if (valueEncoding == null) {
+                throw new ArgumentNullException("valueEncoding");
+            }
+
             Name = name;
             Value = value;
-            ValueEncoding = valueEncoding ?? Encoding.ASCII;
+            ValueEncoding = valueEncoding;
         }
 
         public override void WriteContents(Stream stream) {

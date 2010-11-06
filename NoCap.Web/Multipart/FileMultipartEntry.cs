@@ -42,7 +42,11 @@ namespace NoCap.Web.Multipart {
             }
         }
 
-        public FileMultipartEntry(Stream inputStream, string name, string contentType = null) {
+        public FileMultipartEntry(Stream inputStream, string name) :
+            this(inputStream, name, null) {
+        }
+
+        public FileMultipartEntry(Stream inputStream, string name, string contentType) {
             Name = name;
             InputStream = inputStream;
             ContentType = contentType;
