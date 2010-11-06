@@ -12,6 +12,7 @@ namespace NoCap.Library {
         private Thread thread;
 
         private bool isCompleted;
+        private CommandCancelledException cancellation;
 
         internal CommandTask(ICommand command, CommandRunner commandRunner) {
             this.command = command;
@@ -41,15 +42,30 @@ namespace NoCap.Library {
                 }
             };
 
-            using (command.Process(null, this.progressTracker)) {
-                // Auto-dispose
+            try {
+                using (command.Process(null, this.progressTracker)) {
+                    // Auto-dispose
+                }
+            } catch (CommandCancelledException e) {
+                Cancelled(e);
             }
 
-            this.commandRunner.OnTaskCompleted(new CommandTaskEventArgs(this));
+            Completed();
+        }
 
+        private void Cancelled(CommandCancelledException exception) {
+            lock (this.syncRoot) {
+                this.cancellation = exception;
+                this.isCompleted = true;
+            }
+        }
+
+        private void Completed() {
             lock (this.syncRoot) {
                 this.isCompleted = true;
             }
+
+            this.commandRunner.OnTaskCompleted(new CommandTaskEventArgs(this));
         }
 
         public ICommand Command {
@@ -70,6 +86,26 @@ namespace NoCap.Library {
             get {
                 lock (this.syncRoot) {
                     return this.isCompleted;
+                }
+            }
+        }
+
+        public bool IsCancelled {
+            get {
+                lock (this.syncRoot) {
+                    return this.cancellation != null;
+                }
+            }
+        }
+
+        public CommandCancelledException CancelReason {
+            get {
+                lock (this.syncRoot) {
+                    if (this.cancellation == null) {
+                        throw new InvalidOperationException("Task was not cancelled");
+                    }
+
+                    return this.cancellation;
                 }
             }
         }

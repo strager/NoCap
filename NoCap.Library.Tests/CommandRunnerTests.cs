@@ -189,6 +189,59 @@ namespace NoCap.Library.Tests {
             mockDisposable.Verify((typedData) => typedData.Dispose(), Times.Once());
         }
 
+        [Test]
+        public void CancellationSetsIsCancelled() {
+            var runner = new CommandRunner();
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
+                .Callback(() => {
+                    throw new CommandCancelledException();
+                });
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsTrue(task.IsCancelled);
+        }
+
+        [Test]
+        public void CancellationSetsIsCompleted() {
+            var runner = new CommandRunner();
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
+                .Callback(() => {
+                    throw new CommandCancelledException();
+                });
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.IsTrue(task.IsCompleted);
+        }
+
+        [Test]
+        public void CancellationSetsCancelReason() {
+            var runner = new CommandRunner();
+
+            var cancelException = new CommandCancelledException();
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
+                .Callback(() => {
+                    throw cancelException;
+                });
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.AreSame(cancelException, task.CancelReason);
+        }
+
         private static Mock<ICommand> GetCommandMock() {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
