@@ -8,7 +8,7 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
     [Serializable]
-    public class JpegBitmapCodec : BitmapCodec {
+    public sealed class JpegBitmapCodec : BitmapCodec {
         private static readonly ImageFormat EncoderFormat = ImageFormat.Jpeg;
 
         private string name;

@@ -9,7 +9,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class Clipboard : ICommand {
+    public sealed class Clipboard : ICommand {
         public string Name {
             get { return "Clipboard"; }
         }

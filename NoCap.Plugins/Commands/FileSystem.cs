@@ -7,7 +7,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class FileSystem : ICommand {
+    public sealed class FileSystem : ICommand {
         public string Name {
             get { return "File system"; }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
-    class DataRouterTimeEstimate : ITimeEstimate {
+    sealed class DataRouterTimeEstimate : ITimeEstimate {
         private readonly DataRouter dataRouter;
 
         public DataRouterTimeEstimate(DataRouter dataRouter) {
@@ -29,7 +29,7 @@ namespace NoCap.Library.Commands {
     }
 
     [Serializable]
-    public class DataRouter : ICommand {
+    public sealed class DataRouter : ICommand {
         private readonly ITimeEstimate timeEstimate;
         private readonly IDictionary<TypedDataType, ICommand> routes;
 

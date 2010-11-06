@@ -12,7 +12,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
+    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
         private string name = "FTP file uploader";
 
         private string host = "example.com";

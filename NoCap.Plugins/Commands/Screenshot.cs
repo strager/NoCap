@@ -7,7 +7,7 @@ using NoCap.Plugins.Helpers;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class Screenshot : ICommand {
+    public sealed class Screenshot : ICommand {
         public string Name {
             get { return "Screenshot"; }
         }

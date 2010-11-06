@@ -9,7 +9,7 @@ using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]
-    public class ProgramSettings : ISerializable {
+    public sealed class ProgramSettings : ISerializable {
         public IInputProvider InputProvider {
             get;
             set;

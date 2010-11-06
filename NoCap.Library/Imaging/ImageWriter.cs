@@ -6,7 +6,7 @@ using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
     [Serializable]
-    public class ImageWriter : ICommand, INotifyPropertyChanged {
+    public sealed class ImageWriter : ICommand, INotifyPropertyChanged {
         private string name;
         private string extension;
         private BitmapCodec codec;

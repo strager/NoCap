@@ -7,7 +7,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class ClipboardUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
+    public sealed class ClipboardUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private ICommand textUploader;
         private ICommand urlShortener;
         private ICommand imageUploader;

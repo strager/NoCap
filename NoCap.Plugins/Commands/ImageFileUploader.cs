@@ -9,7 +9,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class ImageFileUploader : ICommand, INotifyPropertyChanged {
+    public sealed class ImageFileUploader : ICommand, INotifyPropertyChanged {
         private string name = "Image file uploader";
 
         private ImageWriter imageWriter;

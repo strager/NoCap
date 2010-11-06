@@ -8,7 +8,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
+    public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private ICommand imageUploader;
 
         private string name = "Crop shot uploader";

@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
-    internal class ProgramSettingsInfoStuff : IInfoStuff {
+    internal sealed class ProgramSettingsInfoStuff : IInfoStuff {
         private readonly ProgramSettings programSettings;
         private readonly Providers providers;
 

@@ -6,7 +6,7 @@ using NoCap.Plugins.Factories;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public class IsgdShortener : UrlShortener {
+    public sealed class IsgdShortener : UrlShortener {
         public override string Name {
             get { return "is.gd URL shortener"; }
         }

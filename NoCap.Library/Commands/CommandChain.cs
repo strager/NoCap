@@ -4,7 +4,7 @@ using System.Linq;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
-    class CommandChainTimeEstimate : ITimeEstimate {
+    sealed class CommandChainTimeEstimate : ITimeEstimate {
         private readonly CommandChain commandChain;
 
         public CommandChainTimeEstimate(CommandChain commandChain) {
@@ -25,7 +25,7 @@ namespace NoCap.Library.Commands {
     }
 
     [Serializable]
-    public class CommandChain : ICommand {
+    public sealed class CommandChain : ICommand {
         private readonly ITimeEstimate timeEstimate;
         private readonly IList<ICommand> commands;
 
