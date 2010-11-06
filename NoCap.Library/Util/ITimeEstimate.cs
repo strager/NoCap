@@ -27,11 +27,11 @@
     }
 
     public static class TimeEstimates {
-        public static ITimeEstimate Instantaneous   = new SimpleTimeEstimate(0);
-        public static ITimeEstimate UserInteractive = new SimpleTimeEstimate(10, true);
-        public static ITimeEstimate ShortOperation  = new SimpleTimeEstimate(30);
-        public static ITimeEstimate LongOperation   = new SimpleTimeEstimate(90);
+        public static readonly ITimeEstimate Instantaneous   = new SimpleTimeEstimate(0);
+        public static readonly ITimeEstimate UserInteractive = new SimpleTimeEstimate(10, true);
+        public static readonly ITimeEstimate ShortOperation  = new SimpleTimeEstimate(30);
+        public static readonly ITimeEstimate LongOperation   = new SimpleTimeEstimate(90);
 
-        public static ITimeEstimate Indeterminate = new SimpleTimeEstimate(0, true);
+        public static readonly ITimeEstimate Indeterminate = new SimpleTimeEstimate(0, true);
     }
 }
