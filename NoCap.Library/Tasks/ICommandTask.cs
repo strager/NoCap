@@ -1,7 +1,7 @@
 ﻿using System;
 using NoCap.Library.Util;
 
-namespace NoCap.Library {
+namespace NoCap.Library.Tasks {
     public enum TaskState {
         NotStarted,
         Started,

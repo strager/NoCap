@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Commands.Imaging {
+namespace NoCap.Library.Imaging {
     [Serializable]
     public abstract class BitmapCodec : ICommand, INotifyPropertyChanged {
         public abstract string Name { get; set; }

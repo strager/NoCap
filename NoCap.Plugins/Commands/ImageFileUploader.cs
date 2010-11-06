@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using NoCap.Library;
 using NoCap.Library.Commands;
-using NoCap.Library.Commands.Imaging;
+using NoCap.Library.Imaging;
 using NoCap.Library.Util;
 using NoCap.Plugins.Factories;
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 using NUnit.Framework;
 
-namespace NoCap.Library.Tests {
+namespace NoCap.Library.Tests.Tasks {
     [TestFixture]
     class CommandRunnerTests {
         [Test]

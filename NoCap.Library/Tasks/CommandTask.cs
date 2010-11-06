@@ -2,7 +2,7 @@
 using System.Threading;
 using NoCap.Library.Util;
 
-namespace NoCap.Library {
+namespace NoCap.Library.Tasks {
     sealed class CommandTask : ICommandTask {
         private readonly object syncRoot = new object();
 

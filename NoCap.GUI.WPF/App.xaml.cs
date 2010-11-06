@@ -5,6 +5,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
+using NoCap.Library.Tasks;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF {

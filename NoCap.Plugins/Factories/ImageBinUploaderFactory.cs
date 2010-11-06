@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using NoCap.Library;
-using NoCap.Library.Commands.Imaging;
 using NoCap.Library.Editors;
+using NoCap.Library.Imaging;
 using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {

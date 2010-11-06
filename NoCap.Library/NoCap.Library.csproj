@@ -46,18 +46,18 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandRunner.cs" />
-    <Compile Include="Commands\Imaging\BitmapCodec.cs" />
+    <Compile Include="Tasks\CommandRunner.cs" />
+    <Compile Include="Imaging\BitmapCodec.cs" />
     <Compile Include="CommandCancelledException.cs" />
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
-    <Compile Include="Commands\Imaging\InfoStuffExtensions.cs" />
-    <Compile Include="Commands\Imaging\JpegBitmapCodec.cs" />
-    <Compile Include="Commands\Imaging\JpegBitmapCodecEditor.xaml.cs">
+    <Compile Include="Imaging\InfoStuffExtensions.cs" />
+    <Compile Include="Imaging\JpegBitmapCodec.cs" />
+    <Compile Include="Imaging\JpegBitmapCodecEditor.xaml.cs">
       <DependentUpon>JpegBitmapCodecEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Imaging\PngBitmapCodec.cs" />
-    <Compile Include="CommandTask.cs" />
+    <Compile Include="Imaging\PngBitmapCodec.cs" />
+    <Compile Include="Tasks\CommandTask.cs" />
     <Compile Include="Controls\CommandEditor.xaml.cs">
       <DependentUpon>CommandEditor.xaml</DependentUpon>
     </Compile>
@@ -74,7 +74,7 @@
     <Compile Include="Editors\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ICommandTask.cs" />
+    <Compile Include="Tasks\ICommandTask.cs" />
     <Compile Include="IInfoStuff.cs" />
     <Compile Include="InfoStuff.cs" />
     <Compile Include="ICommandEditor.cs" />
@@ -85,7 +85,7 @@
     <Compile Include="Commands\HttpUploader.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\ImageUploader.cs" />
-    <Compile Include="Commands\Imaging\ImageWriter.cs" />
+    <Compile Include="Imaging\ImageWriter.cs" />
     <Compile Include="INamedComponent.cs" />
     <Compile Include="Security.cs" />
     <Compile Include="Util\AggregateProgressTracker.cs" />
@@ -114,7 +114,7 @@
     <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Commands\Imaging\JpegBitmapCodecEditor.xaml">
+    <Page Include="Imaging\JpegBitmapCodecEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

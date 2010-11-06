@@ -1,4 +1,4 @@
-﻿namespace NoCap.Library.Commands.Imaging {
+﻿namespace NoCap.Library.Imaging {
     /// <summary>
     /// Interaction logic for JpegBitmapCodecEditor.xaml
     /// </summary>

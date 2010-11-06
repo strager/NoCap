@@ -4,7 +4,7 @@ using System.ComponentModel;
 using NoCap.Library.Editors;
 using NoCap.Library.Util;
 
-namespace NoCap.Library.Commands.Imaging {
+namespace NoCap.Library.Imaging {
     [Serializable]
     public class ImageWriter : ICommand, INotifyPropertyChanged {
         private string name;

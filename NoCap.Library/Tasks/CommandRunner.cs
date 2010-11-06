@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NoCap.Library {
+namespace NoCap.Library.Tasks {
     public class CommandRunner {
         public ICommandTask Run(ICommand command) {
             if (command == null) {

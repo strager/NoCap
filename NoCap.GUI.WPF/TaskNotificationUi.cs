@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Library;
+using NoCap.Library.Tasks;
 using Windows7.DesktopIntegration;
 
 namespace NoCap.GUI.WPF {

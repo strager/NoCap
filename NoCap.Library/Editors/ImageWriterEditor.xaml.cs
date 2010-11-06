@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NoCap.Library.Commands.Imaging;
+using NoCap.Library.Imaging;
 
 namespace NoCap.Library.Editors {
     /// <summary>
