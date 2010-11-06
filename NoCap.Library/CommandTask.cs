@@ -3,7 +3,7 @@ using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
-    public class CommandTask {
+    public sealed class CommandTask {
         private readonly object syncRoot = new object();
 
         private readonly ICommand command;
@@ -13,6 +13,11 @@ namespace NoCap.Library {
 
         private bool isCompleted;
         private CommandCancelledException cancellation;
+
+        public event EventHandler<CommandTaskEventArgs> Started;
+        public event EventHandler<CommandTaskEventArgs> Completed;
+        public event EventHandler<CommandTaskCancellationEventArgs> Cancelled;
+        public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
         internal CommandTask(ICommand command, CommandRunner commandRunner) {
             if (command == null) {
@@ -39,14 +44,14 @@ namespace NoCap.Library {
                 this.thread.Start();
             }
 
-            this.commandRunner.OnTaskStarted(new CommandTaskEventArgs(this));
+            OnStarted();
         }
 
         private void RunThread() {
             this.progressTracker = new NotifyingProgressTracker();
             this.progressTracker.PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "Progress") {
-                    this.commandRunner.OnProgressUpdated(new CommandTaskProgressEventArgs(this, this.progressTracker.Progress));
+                    OnProgressUpdated();
                 }
             };
 
@@ -55,27 +60,67 @@ namespace NoCap.Library {
                     // Auto-dispose
                 }
             } catch (CommandCancelledException e) {
-                Cancelled(e);
+                OnCancelled(e);
             }
 
-            Completed();
+            OnCompleted();
         }
 
-        private void Cancelled(CommandCancelledException cancelReason) {
+        private void OnStarted() {
+            var eventArgs = new CommandTaskEventArgs(this);
+
+            this.commandRunner.OnTaskStarted(eventArgs);
+
+            var handler = Started;
+
+            if (handler != null) {
+                handler(this, eventArgs);
+            }
+        }
+
+        private void OnProgressUpdated() {
+            var eventArgs = new CommandTaskProgressEventArgs(this, this.progressTracker.Progress);
+
+            this.commandRunner.OnProgressUpdated(eventArgs);
+
+            var handler = ProgressUpdated;
+
+            if (handler != null) {
+                handler(this, eventArgs);
+            }
+        }
+
+        private void OnCancelled(CommandCancelledException cancelReason) {
             lock (this.syncRoot) {
                 this.cancellation = cancelReason;
                 this.isCompleted = true;
             }
 
-            this.commandRunner.OnTaskCancelled(new CommandTaskCancellationEventArgs(this, cancelReason));
+            var eventArgs = new CommandTaskCancellationEventArgs(this, cancelReason);
+
+            this.commandRunner.OnTaskCancelled(eventArgs);
+
+            var handler = Cancelled;
+
+            if (handler != null) {
+                handler(this, eventArgs);
+            }
         }
 
-        private void Completed() {
+        private void OnCompleted() {
             lock (this.syncRoot) {
                 this.isCompleted = true;
             }
 
-            this.commandRunner.OnTaskCompleted(new CommandTaskEventArgs(this));
+            var eventArgs = new CommandTaskEventArgs(this);
+
+            this.commandRunner.OnTaskCompleted(eventArgs);
+
+            var handler = Completed;
+
+            if (handler != null) {
+                handler(this, eventArgs);
+            }
         }
 
         public ICommand Command {
@@ -123,12 +168,6 @@ namespace NoCap.Library {
         public string Name {
             get {
                 return this.command.Name;
-            }
-        }
-
-        public CommandRunner CommandRunner {
-            get {
-                return this.commandRunner;
             }
         }
 
