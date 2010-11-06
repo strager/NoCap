@@ -21,6 +21,10 @@ namespace NoCap.Library {
         }
 
         public static byte[] EncryptString(SecureString input, DataProtectionScope protectionScope) {
+            if (input == null) {
+                throw new ArgumentNullException("input");
+            }
+
             return ProtectedData.Protect(
                 Encoding.Unicode.GetBytes(ToInsecureString(input)),
                 Entropy,
@@ -33,20 +37,30 @@ namespace NoCap.Library {
         }
 
         public static SecureString DecryptString(byte[] encryptedData, DataProtectionScope protectionScope) {
+            if (encryptedData == null) {
+                throw new ArgumentNullException("encryptedData");
+            }
+
+            byte[] decryptedData;
+
             try {
-                byte[] decryptedData = ProtectedData.Unprotect(
+                decryptedData = ProtectedData.Unprotect(
                     encryptedData,
                     Entropy,
                     protectionScope
                 );
-
-                return ToSecureString(Encoding.Unicode.GetString(decryptedData));
-            } catch {
-                return new SecureString();
+            } catch (CryptographicException) {
+                return null;
             }
+
+            return ToSecureString(Encoding.Unicode.GetString(decryptedData));
         }
 
         public static SecureString ToSecureString(string input) {
+            if (input == null) {
+                throw new ArgumentNullException("input");
+            }
+
             var secureString = new SecureString();
 
             foreach (char c in input) {
@@ -59,6 +73,10 @@ namespace NoCap.Library {
         }
 
         public static string ToInsecureString(SecureString input) {
+            if (input == null) {
+                throw new ArgumentNullException("input");
+            }
+
             IntPtr stringHandle = Marshal.SecureStringToBSTR(input);
 
             try {

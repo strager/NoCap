@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace NoCap.Library.Tests {
     [TestFixture]
@@ -28,6 +29,35 @@ namespace NoCap.Library.Tests {
             string output = Security.ToInsecureString(Security.ToSecureString(input));
 
             Assert.AreEqual(input, output);
+        }
+
+        [Test]
+        public void BadDecryptionReturnsNull() {
+            byte[] badData = { 0 };
+
+            var output = Security.DecryptString(badData);
+
+            Assert.IsNull(output);
+        }
+
+        [Test]
+        public void ToSecureStringNullArgThrows() {
+            Assert.Throws<ArgumentNullException>(() => Security.ToSecureString(null));
+        }
+
+        [Test]
+        public void ToInsecureStringNullArgThrows() {
+            Assert.Throws<ArgumentNullException>(() => Security.ToInsecureString(null));
+        }
+
+        [Test]
+        public void EncryptStringNullArgThrows() {
+            Assert.Throws<ArgumentNullException>(() => Security.EncryptString(null));
+        }
+
+        [Test]
+        public void DecryptStringNullArgThrows() {
+            Assert.Throws<ArgumentNullException>(() => Security.DecryptString(null));
         }
     }
 }
