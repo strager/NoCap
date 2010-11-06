@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NoCap.Library {
     public class CommandRunner {
@@ -18,6 +15,7 @@ namespace NoCap.Library {
 
         public event EventHandler<CommandTaskEventArgs> TaskStarted;
         public event EventHandler<CommandTaskEventArgs> TaskCompleted;
+        public event EventHandler<CommandTaskCancellationEventArgs> TaskCancelled;
         public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
         internal protected virtual void OnTaskStarted(CommandTaskEventArgs e) {
@@ -36,6 +34,14 @@ namespace NoCap.Library {
             }
         }
 
+        internal protected virtual void OnTaskCancelled(CommandTaskCancellationEventArgs e) {
+            var handler = TaskCancelled;
+
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
         internal protected virtual void OnProgressUpdated(CommandTaskProgressEventArgs e) {
             var handler = ProgressUpdated;
 
@@ -45,19 +51,27 @@ namespace NoCap.Library {
         }
     }
 
-    public class CommandTaskProgressEventArgs : EventArgs {
-        private readonly CommandTask task;
-        private readonly double progress;
+    public class CommandTaskCancellationEventArgs : CommandTaskEventArgs {
+        private readonly CommandCancelledException cancelReason;
 
-        public CommandTaskProgressEventArgs(CommandTask task, double progress) {
-            this.task = task;
-            this.progress = progress;
+        public CommandTaskCancellationEventArgs(CommandTask task, CommandCancelledException cancelReason) :
+            base(task) {
+            this.cancelReason = cancelReason;
         }
 
-        public CommandTask Task {
+        public CommandCancelledException CancelReason {
             get {
-                return this.task;
+                return this.cancelReason;
             }
+        }
+    }
+
+    public class CommandTaskProgressEventArgs : CommandTaskEventArgs {
+        private readonly double progress;
+
+        public CommandTaskProgressEventArgs(CommandTask task, double progress) :
+            base(task) {
+            this.progress = progress;
         }
 
         public double Progress {

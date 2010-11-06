@@ -53,11 +53,13 @@ namespace NoCap.Library {
             Completed();
         }
 
-        private void Cancelled(CommandCancelledException exception) {
+        private void Cancelled(CommandCancelledException cancelReason) {
             lock (this.syncRoot) {
-                this.cancellation = exception;
+                this.cancellation = cancelReason;
                 this.isCompleted = true;
             }
+
+            this.commandRunner.OnTaskCancelled(new CommandTaskCancellationEventArgs(this, cancelReason));
         }
 
         private void Completed() {

@@ -241,6 +241,34 @@ namespace NoCap.Library.Tests {
 
             Assert.AreSame(cancelException, task.CancelReason);
         }
+        [Test]
+        public void CancellationFiresComplete() {
+            var runner = new CommandRunner();
+
+            var cancelException = new CommandCancelledException();
+            CommandCancelledException firedReason = null;
+
+            int fireCount = 0;
+
+            runner.TaskCancelled += (sender, e) => {
+                ++fireCount;
+
+                firedReason = e.CancelReason;
+            };
+
+            var mockCommand = GetCommandMock();
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+                .Returns((TypedData) null)
+                .Callback(() => {
+                    throw cancelException;
+                });
+
+            var task = runner.Run(mockCommand.Object);
+            task.WaitForCompletion();
+
+            Assert.AreEqual(1, fireCount);
+            Assert.AreSame(cancelException, firedReason);
+        }
 
         private static Mock<ICommand> GetCommandMock() {
             return new Mock<ICommand>(MockBehavior.Strict);
