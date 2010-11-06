@@ -24,9 +24,8 @@
 * New commands
   1. Run executable
   2. Renamer
-  3. (S)FTP
-  4. SCP
-  5. More uploading services (now that an editor works!)
+  3. SCP
+  4. More uploading services
 * Error reporting
   * Bad configuration
   * Bad plugin
