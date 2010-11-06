@@ -107,7 +107,7 @@ namespace NoCap.Library.Tests {
         public void RunSetsIsRunning() {
             var runner = new CommandRunner();
 
-            CommandTask task = null;
+            ICommandTask task = null;
             TaskState? taskStateInCommand = null;
 
             var mockCommand = GetCommandMock();

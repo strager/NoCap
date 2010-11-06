@@ -2,7 +2,7 @@
 
 namespace NoCap.Library {
     public class CommandRunner {
-        public CommandTask Run(ICommand command) {
+        public ICommandTask Run(ICommand command) {
             if (command == null) {
                 throw new ArgumentNullException("command");
             }
@@ -47,50 +47,6 @@ namespace NoCap.Library {
 
             if (handler != null) {
                 handler(this, e);
-            }
-        }
-    }
-
-    public class CommandTaskCancellationEventArgs : CommandTaskEventArgs {
-        private readonly CommandCancelledException cancelReason;
-
-        public CommandTaskCancellationEventArgs(CommandTask task, CommandCancelledException cancelReason) :
-            base(task) {
-            this.cancelReason = cancelReason;
-        }
-
-        public CommandCancelledException CancelReason {
-            get {
-                return this.cancelReason;
-            }
-        }
-    }
-
-    public class CommandTaskProgressEventArgs : CommandTaskEventArgs {
-        private readonly double progress;
-
-        public CommandTaskProgressEventArgs(CommandTask task, double progress) :
-            base(task) {
-            this.progress = progress;
-        }
-
-        public double Progress {
-            get {
-                return this.progress;
-            }
-        }
-    }
-
-    public class CommandTaskEventArgs : EventArgs {
-        private readonly CommandTask task;
-
-        public CommandTaskEventArgs(CommandTask task) {
-            this.task = task;
-        }
-
-        public CommandTask Task {
-            get {
-                return this.task;
             }
         }
     }

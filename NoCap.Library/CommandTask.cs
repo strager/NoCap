@@ -3,15 +3,7 @@ using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
-    public enum TaskState {
-        NotStarted,
-        Started,
-        Running,
-        Completed,
-        Cancelled,
-    }
-
-    public sealed class CommandTask {
+    sealed class CommandTask : ICommandTask {
         private readonly object syncRoot = new object();
 
         private readonly ICommand command;
@@ -30,7 +22,7 @@ namespace NoCap.Library {
         public event EventHandler<CommandTaskCancellationEventArgs> Cancelled;
         public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
-        internal CommandTask(ICommand command, CommandRunner commandRunner) {
+        public CommandTask(ICommand command, CommandRunner commandRunner) {
             if (command == null) {
                 throw new ArgumentNullException("command");
             }
@@ -46,7 +38,7 @@ namespace NoCap.Library {
             this.publicProgressTracker = new ReadOnlyProgressTracker(this.progressTracker);
         }
 
-        internal void Run() {
+        public void Run() {
             lock (this.syncRoot) {
                 switch (State) {
                     case TaskState.Started:

@@ -74,6 +74,7 @@
     <Compile Include="Editors\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ICommandTask.cs" />
     <Compile Include="IInfoStuff.cs" />
     <Compile Include="InfoStuff.cs" />
     <Compile Include="ICommandEditor.cs" />

@@ -123,7 +123,7 @@ namespace NoCap.GUI.WPF {
             }));
         }
 
-        private void ShowTaskPopup(CommandTask task) {
+        private void ShowTaskPopup(ICommandTask task) {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
                 var taskPopup = new TaskPopup {
                     DataContext = task
