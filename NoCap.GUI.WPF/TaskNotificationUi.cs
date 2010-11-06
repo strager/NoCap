@@ -13,6 +13,8 @@ namespace NoCap.GUI.WPF {
 
         private readonly ICollection<CommandRunner> boundCommandRunners = new List<CommandRunner>();
 
+        private bool isDisposed;
+
         public TaskNotificationUi(TaskbarIcon taskbarIcon, NoCapLogo logo) {
             this.taskbarIcon = taskbarIcon;
             this.logo = logo;
@@ -21,30 +23,58 @@ namespace NoCap.GUI.WPF {
         }
 
         public void BindFrom(CommandRunner commandRunner) {
+            BindFrom(commandRunner, true);
+        }
+
+        private void BindFrom(CommandRunner commandRunner, bool track) {
+            EnsureNotDisposed();
+
             commandRunner.TaskStarted     += BeginTask;
             commandRunner.TaskCompleted   += EndTask;
             commandRunner.ProgressUpdated += UpdateProgress;
 
-            this.boundCommandRunners.Add(commandRunner);
+            if (track) {
+                this.boundCommandRunners.Add(commandRunner);
+            }
         }
 
         public void UnbindFrom(CommandRunner commandRunner) {
+            UnbindFrom(commandRunner, true);
+        }
+
+        private void UnbindFrom(CommandRunner commandRunner, bool untrack) {
+            EnsureNotDisposed();
+
             commandRunner.TaskStarted     -= BeginTask;
             commandRunner.TaskCompleted   -= EndTask;
             commandRunner.ProgressUpdated -= UpdateProgress;
 
-            this.boundCommandRunners.Remove(commandRunner);
+            if (untrack) {
+                this.boundCommandRunners.Remove(commandRunner);
+            }
         }
 
         public void BeginTask(object sender, CommandTaskEventArgs e) {
+            if (this.isDisposed) {
+                return;
+            }
+
             // Do nothing
         }
 
         public void EndTask(object sender, CommandTaskEventArgs e) {
+            if (this.isDisposed) {
+                return;
+            }
+
             TaskDonePopup();
         }
 
         public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
+            if (this.isDisposed) {
+                return;
+            }
+
             double progress = e.Progress;
 
             UpdateWindows(progress);
@@ -99,8 +129,17 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Dispose() {
-            foreach (var commandRunner in boundCommandRunners) {
-                UnbindFrom(commandRunner);
+            foreach (var commandRunner in this.boundCommandRunners) {
+                UnbindFrom(commandRunner, false);
+            }
+
+            this.boundCommandRunners.Clear();
+            this.isDisposed = true;
+        }
+
+        private void EnsureNotDisposed() {
+            if (this.isDisposed) {
+                throw new ObjectDisposedException("TaskNotificationUi");
             }
         }
     }
