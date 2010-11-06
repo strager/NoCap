@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using NoCap.Library.Util;
 
 namespace NoCap.Library {
     [Serializable]
@@ -40,6 +41,13 @@ namespace NoCap.Library {
 
         protected CommandCanceledException(SerializationInfo info, StreamingContext context) :
             base(info, context) {
+            this.command = info.GetValue<ICommand>("Command");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context) {
+            base.GetObjectData(info, context);
+
+            info.AddValue("Command", command);
         }
     }
 }
