@@ -64,9 +64,19 @@ namespace NoCap.Plugins.Helpers {
             KeyDown   += (sender, e) => KeyPressed(e.Key);
             LostFocus += (sender, e) => Close();
 
-            MouseDown += (sender, e) => StartDragging   (e.GetPosition(this));
-            MouseUp   += (sender, e) => EndDragging     (e.GetPosition(this));
-            MouseMove += (sender, e) => MoveCrosshair(e.GetPosition(this));
+            MouseDown += (sender, e) => {
+                if (e.ChangedButton == MouseButton.Left) {
+                    MousePressed(e.GetPosition(this));
+                }
+            };
+
+            MouseUp += (sender, e) => {
+                if (e.ChangedButton == MouseButton.Left) {
+                    MouseReleased(e.GetPosition(this));
+                }
+            };
+
+            MouseMove += (sender, e) => MouseMoved(e.GetPosition(this));
 
             this.canvas.DataContext = this.crosshair;
 
@@ -87,12 +97,12 @@ namespace NoCap.Plugins.Helpers {
             );
         }
 
-        private void StartDragging(Point diuLocation) {
+        private void MousePressed(Point diuLocation) {
             this.isDragging = true;
             this.dragStart = diuLocation;
         }
 
-        private void MoveCrosshair(Point diuLocation) {
+        private void MouseMoved(Point diuLocation) {
             this.crosshair.X = diuLocation.X;
             this.crosshair.Y = diuLocation.Y;
 
@@ -107,7 +117,7 @@ namespace NoCap.Plugins.Helpers {
             UpdateDragRectangle(this.dragStart, diuLocation);
         }
 
-        private void EndDragging(Point diuLocation) {
+        private void MouseReleased(Point diuLocation) {
             if (!this.isDragging) {
                 return;
             }
@@ -155,7 +165,7 @@ namespace NoCap.Plugins.Helpers {
         }
 
         private Image GetSelectedImage(Rectangle pixelRegion) {
-            if (pixelRegion.IsEmpty) {
+            if (pixelRegion.Width < 1 || pixelRegion.Height < 1) {
                 return null;
             }
 
