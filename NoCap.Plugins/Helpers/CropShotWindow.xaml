@@ -8,23 +8,30 @@
         d:DesignHeight="300" d:DesignWidth="300"
         SizeToContent="WidthAndHeight" Title="Crop Shot" Name="cropShotWindow">
     <Window.Resources>
-        <Style TargetType="Line" x:Key="CrosshairGuideStyle">
+        <Style x:Key="CrosshairGuideStyle" TargetType="Line">
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="Stroke" Value="Gray" />
+        </Style>
+        <Style x:Key="CrosshairStyle" TargetType="Ellipse">
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Stroke" Value="Gray" />
+        </Style>
+        <Style x:Key="CropRectangleStyle" TargetType="Rectangle">
+            <Setter Property="Stroke" Value="White" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Fill" Value="#80FFFFFF" />
         </Style>
     </Window.Resources>
     
     <Canvas Name="canvas">
         <helpers:BitmapElement x:Name="imageViewer" Canvas.Left="0" Canvas.Top="0" />
-        <Rectangle Name="cropRectangle" Canvas.Left="0" Canvas.Top="0" Height="100" Width="100" Visibility="Hidden" StrokeThickness="1">
-            <Rectangle.Stroke>
-                <SolidColorBrush>White</SolidColorBrush>
-            </Rectangle.Stroke>
-        </Rectangle>
+        <Rectangle Style="{StaticResource CropRectangleStyle}" Name="cropRectangle" Visibility="Hidden" />
 
         <Line Style="{StaticResource CrosshairGuideStyle}" X1="0" X2="{Binding Left}" Y1="{Binding Y}" Y2="{Binding Y}" />
         <Line Style="{StaticResource CrosshairGuideStyle}" X1="{Binding Width, ElementName=cropShotWindow}" X2="{Binding Right}" Y1="{Binding Y}" Y2="{Binding Y}" />
         <Line Style="{StaticResource CrosshairGuideStyle}" X1="{Binding X}" X2="{Binding X}" Y1="0" Y2="{Binding Top}" />
         <Line Style="{StaticResource CrosshairGuideStyle}" X1="{Binding X}" X2="{Binding X}" Y1="{Binding Height, ElementName=cropShotWindow}" Y2="{Binding Bottom}" />
+
+        <Ellipse Style="{StaticResource CrosshairStyle}" Canvas.Left="{Binding Left}" Canvas.Top="{Binding Top}" Width="{Binding Size.Width}" Height="{Binding Size.Height}" />
     </Canvas>
 </Window>

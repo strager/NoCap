@@ -6,6 +6,7 @@ using System.Windows.Input;
 using NoCap.Library;
 using Image = System.Drawing.Image;
 using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace NoCap.Plugins.Helpers {
     /// <summary>
@@ -68,6 +69,8 @@ namespace NoCap.Plugins.Helpers {
             MouseMove += (sender, e) => MoveCrosshair(e.GetPosition(this));
 
             this.canvas.DataContext = this.crosshair;
+
+            this.crosshair.Size = new Size(32, 32);
         }
 
         private void SetFullscreen() {
