@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using System.Linq;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
 using NoCap.Plugins.Editors;
@@ -13,8 +12,13 @@ namespace NoCap.Plugins.Factories {
             }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
+        public ICommand CreateCommand() {
             return new CropShotUploaderCommand();
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            var uploader = (CropShotUploaderCommand) command;
+            uploader.ImageUploader = infoStuff.GetDefaultCommand(CommandFeatures.ImageUploader);
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

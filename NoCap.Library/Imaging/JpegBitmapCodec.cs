@@ -95,7 +95,7 @@ namespace NoCap.Library.Imaging {
             }
         }
 
-        public override BitmapCodec CreateCommand(IInfoStuff infoStuff) {
+        public override BitmapCodec CreateCommand() {
             return new JpegBitmapCodec();
         }
 

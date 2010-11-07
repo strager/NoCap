@@ -9,8 +9,12 @@ namespace NoCap.Plugins.Factories {
             get { return "Slexy.org uploader"; }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
+        public ICommand CreateCommand() {
             return new SlexyUploader();
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // Do nothing.
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

@@ -11,8 +11,12 @@ namespace NoCap.Plugins.Factories {
             get { return "ImageBin.ca uploader"; }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
-            return new ImageBinUploader(new ImageWriter { Codec = new PngBitmapCodec() });
+        public ICommand CreateCommand() {
+            return new ImageBinUploader(new ImageWriter(new PngBitmapCodec()));
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // Do nothing.
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

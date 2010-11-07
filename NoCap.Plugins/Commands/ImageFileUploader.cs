@@ -52,7 +52,7 @@ namespace NoCap.Plugins.Commands {
         }
 
         public ImageFileUploader() {
-            this.imageWriter = new ImageWriter();
+            this.imageWriter = new ImageWriter(new PngBitmapCodec());
         }
 
         private ICommand GetCommand() {

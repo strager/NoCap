@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
@@ -69,13 +70,27 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         private static ProgramSettings GetDefaultSettings() {
+            // TODO Clean this up
+
             var settings = new ProgramSettings();
 
-            settings.Commands = new ObservableCollection<ICommand>(
-                settings.InfoStuff.CommandFactories
-                    .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone))
-                    .Select((factory) => factory.CreateCommand(settings.InfoStuff))
-            );
+            var commandFactories = settings.InfoStuff.CommandFactories
+                    .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
+
+            var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
+
+            // We use two passes because command population often requires the
+            // presence of other commands (which may not have been constructed yet).
+            // We thus construct all commands, then populate them.
+            foreach (var commandFactory in commandFactories) {
+                commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
+            }
+
+            settings.Commands = new ObservableCollection<ICommand>(commandFactoriesToCommands.Values);
+
+            foreach (var pair in commandFactoriesToCommands) {
+                pair.Key.PopulateCommand(pair.Value, settings.InfoStuff);
+            }
 
             return settings;
         }

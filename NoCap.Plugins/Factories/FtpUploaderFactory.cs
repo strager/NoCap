@@ -12,8 +12,12 @@ namespace NoCap.Plugins.Factories {
             }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
+        public ICommand CreateCommand() {
             return new FtpUploader();
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // Do nothing.
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

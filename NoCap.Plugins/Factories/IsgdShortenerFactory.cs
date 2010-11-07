@@ -9,8 +9,12 @@ namespace NoCap.Plugins.Factories {
             get { return "is.gd shortener"; }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
+        public ICommand CreateCommand() {
             return new IsgdShortener();
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // Do nothing.
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

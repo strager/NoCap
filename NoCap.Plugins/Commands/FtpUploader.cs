@@ -193,7 +193,9 @@ namespace NoCap.Plugins.Commands {
             Host = info.GetValue<string>("Host");
             Port = info.GetValue<int>("Port");
             UserName = info.GetValue<string>("UserName");
-            Password = Security.DecryptString(info.GetValue<byte[]>("Password encrypted"));
+
+            var encryptedPassword = info.GetValue<byte[]>("Password encrypted");
+            Password = encryptedPassword == null ? null : Security.DecryptString(encryptedPassword);
 
             OutputPath = info.GetValue<string>("OutputPath");
             ResultFormat = info.GetValue<string>("ResultFormat");
@@ -205,7 +207,7 @@ namespace NoCap.Plugins.Commands {
             info.AddValue("Host", Host);
             info.AddValue("Port", Port);
             info.AddValue("UserName", UserName);
-            info.AddValue("Password encrypted", Security.EncryptString(Password));
+            info.AddValue("Password encrypted", Password == null ? null : Security.EncryptString(Password));
 
             info.AddValue("OutputPath", OutputPath);
             info.AddValue("ResultFormat", ResultFormat);

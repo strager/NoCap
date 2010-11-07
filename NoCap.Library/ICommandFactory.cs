@@ -9,9 +9,10 @@ namespace NoCap.Library {
         /// <summary>
         /// Creates a new command instance.
         /// </summary>
-        /// <param name="infoStuff"></param>
         /// <returns>A new command instance.</returns>
-        ICommand CreateCommand(IInfoStuff infoStuff);
+        ICommand CreateCommand();
+
+        void PopulateCommand(ICommand command, IInfoStuff infoStuff);
 
         /// <summary>
         /// Gets an editor which can be used to edit the given command
@@ -32,6 +33,17 @@ namespace NoCap.Library {
             }
 
             return factory.CommandFeatures.HasFlag(features);
+        }
+
+        public static ICommand CreateCommand(this ICommandFactory factory, IInfoStuff infoStuff) {
+            if (factory == null) {
+                throw new ArgumentNullException("factory");
+            }
+
+            var command = factory.CreateCommand();
+            factory.PopulateCommand(command, infoStuff);
+
+            return command;
         }
     }
 }

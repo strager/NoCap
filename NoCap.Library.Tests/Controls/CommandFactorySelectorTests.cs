@@ -134,10 +134,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SelectCommandFactorySetsCommand() {
             ICommand command = null;
 
-            var mockCommandFactory = new Mock<ICommandFactory>(MockBehavior.Strict);
-            mockCommandFactory.Setup((factory) => factory.CreateCommand(It.IsAny<IInfoStuff>())).Returns(() => command);
-
-            var commandFactory = mockCommandFactory.Object;
+            var commandFactory = GetCommandFactory(() => command);
 
             command = GetCommand(commandFactory);
 
@@ -159,7 +156,7 @@ namespace NoCap.Library.Tests.Controls {
             var commandFactory2 = GetCommandFactory("2");
             var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
-            var command = commandFactory2.CreateCommand(infoStuff);
+            var command = commandFactory2.CreateCommand();
 
             var cfs = new CommandFactorySelector {
                 InfoStuff = infoStuff,
@@ -180,7 +177,7 @@ namespace NoCap.Library.Tests.Controls {
             var commandFactory2 = GetCommandFactory("2");
             var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
-            var command = commandFactory2.CreateCommand(infoStuff);
+            var command = commandFactory2.CreateCommand();
 
             var cfs = new CommandFactorySelector {
                 Command = command,
@@ -223,15 +220,16 @@ namespace NoCap.Library.Tests.Controls {
 
         private static ICommandFactory GetCommandFactory(string name = "My factory") {
             ICommandFactory factory = null;
-            factory = GetCommandFactory(() => GetCommand(factory));
+            factory = GetCommandFactory(() => GetCommand(factory), name);
 
             return factory;
         }
 
         private static ICommandFactory GetCommandFactory(Func<ICommand> commandGenerator, string name = "My factory") {
             var mockCommandFactory = new Mock<ICommandFactory>(MockBehavior.Strict);
-            mockCommandFactory.Setup((factory) => factory.CreateCommand(It.IsAny<IInfoStuff>())).Returns(commandGenerator);
+            mockCommandFactory.Setup((factory) => factory.CreateCommand()).Returns(commandGenerator);
             mockCommandFactory.Setup((factory) => factory.Name).Returns(name);
+            mockCommandFactory.Setup((factory) => factory.PopulateCommand(It.IsAny<ICommand>(), It.IsAny<IInfoStuff>()));
 
             return mockCommandFactory.Object;
         }

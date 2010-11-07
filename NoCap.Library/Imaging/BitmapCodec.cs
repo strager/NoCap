@@ -84,11 +84,15 @@ namespace NoCap.Library.Imaging {
             get;
         }
 
-        ICommand ICommandFactory.CreateCommand(IInfoStuff infoStuff) {
-            return CreateCommand(infoStuff);
+        ICommand ICommandFactory.CreateCommand() {
+            return CreateCommand();
         }
 
-        public abstract BitmapCodec CreateCommand(IInfoStuff infoStuff);
+        public virtual void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // Do nothing.
+        }
+
+        public abstract BitmapCodec CreateCommand();
 
         public abstract ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff);
 

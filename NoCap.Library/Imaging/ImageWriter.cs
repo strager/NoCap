@@ -91,6 +91,14 @@ namespace NoCap.Library.Imaging {
             }
         }
 
+        public ImageWriter(BitmapCodec codec) {
+            if (codec == null) {
+                throw new ArgumentNullException("codec");
+            }
+
+            Codec = codec;
+        }
+
         [NonSerialized]
         private PropertyChangedEventHandler propertyChanged;
 
@@ -115,8 +123,12 @@ namespace NoCap.Library.Imaging {
             }
         }
 
-        public ICommand CreateCommand(IInfoStuff infoStuff) {
-            return new ImageWriter();
+        public ICommand CreateCommand() {
+            return new ImageWriter(new PngBitmapCodec());
+        }
+
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+            // TODO Cleaner usage
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
