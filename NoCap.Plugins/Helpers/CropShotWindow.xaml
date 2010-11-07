@@ -6,7 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         d:DesignHeight="300" d:DesignWidth="300"
-        SizeToContent="WidthAndHeight" Title="Crop Shot" Name="cropShotWindow">
+        SizeToContent="WidthAndHeight" Title="Crop Shot" Name="cropShotWindow" Focusable="True">
     <Window.Resources>
         <Style x:Key="CrosshairGuideStyle" TargetType="Line">
             <Setter Property="StrokeThickness" Value="1" />

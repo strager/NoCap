@@ -47,7 +47,6 @@ namespace NoCap.Plugins.Helpers {
         }
 
         private Point dragStart;
-
         private bool isDragging;
 
         private readonly Crosshair crosshair = new Crosshair();
@@ -56,13 +55,12 @@ namespace NoCap.Plugins.Helpers {
             InitializeComponent();
 
             Topmost = true;
-            ShowInTaskbar = false;
 
             SourceInitialized += (sender, e) => SetFullscreen();
 
-            Loaded    += (sender, e) => { PutOnTop(); Resize(); };
-            KeyDown   += (sender, e) => KeyPressed(e.Key);
-            LostFocus += (sender, e) => Close();
+            Loaded      += (sender, e) => { PutOnTop(); Resize(); };
+            KeyDown     += (sender, e) => KeyPressed(e.Key);
+            Deactivated += (sender, e) => Close();
 
             MouseDown += (sender, e) => {
                 if (e.ChangedButton == MouseButton.Left) {
@@ -106,15 +104,9 @@ namespace NoCap.Plugins.Helpers {
             this.crosshair.X = diuLocation.X;
             this.crosshair.Y = diuLocation.Y;
 
-            ContinueDragging(diuLocation);
-        }
-
-        private void ContinueDragging(Point diuLocation) {
-            if (!this.isDragging) {
-                return;
+            if (this.isDragging) {
+                UpdateDragRectangle(this.dragStart, diuLocation);
             }
-
-            UpdateDragRectangle(this.dragStart, diuLocation);
         }
 
         private void MouseReleased(Point diuLocation) {
@@ -195,7 +187,7 @@ namespace NoCap.Plugins.Helpers {
         }
 
         private void PutOnTop() {
-            Focus();
+            Activate();
         }
     }
 }
