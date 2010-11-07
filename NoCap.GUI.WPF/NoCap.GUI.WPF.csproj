@@ -68,7 +68,7 @@
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\InputBindingsPlugin.cs" />
-    <Compile Include="Settings\BoundCommand.cs" />
+    <Compile Include="Plugins\BoundCommand.cs" />
     <Compile Include="Plugins\InputBindingsEditor.xaml.cs">
       <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
     </Compile>
@@ -80,9 +80,6 @@
     </Compile>
     <Compile Include="Settings\PluginSettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
-    <Compile Include="Settings\Editors\ProviderSettingsEditor.xaml.cs">
-      <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Providers.cs" />
     <Compile Include="Settings\ProgramSettings.cs" />
     <Compile Include="Settings\Editors\SettingsWindow.xaml.cs">
@@ -92,8 +89,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Settings\ProgramSettingsManager.cs" />
-    <Compile Include="Settings\StandAloneCommandBinding.cs" />
+    <Compile Include="Settings\ConfigurationManager.cs" />
+    <Compile Include="Plugins\CommandBinding.cs" />
     <Compile Include="TaskNotificationUi.cs" />
     <Compile Include="TaskPopup.xaml.cs">
       <DependentUpon>TaskPopup.xaml</DependentUpon>
@@ -111,10 +108,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\Editors\CommandSettingsEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Settings\Editors\ProviderSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,7 +10,7 @@ using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
-    public class ProgramSettingsManager : ApplicationSettingsBase {
+    public class ConfigurationManager : ApplicationSettingsBase {
         [ThreadStatic]
         private static readonly BinaryFormatter SettingsSerializer = new BinaryFormatter();
 

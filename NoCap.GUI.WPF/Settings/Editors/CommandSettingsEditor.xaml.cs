@@ -7,11 +7,6 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
     public partial class CommandSettingsEditor : INotifyPropertyChanged {
-        public ProgramSettings ProgramSettings {
-            get;
-            private set;
-        }
-
         private IInfoStuff infoStuff;
 
         public IInfoStuff InfoStuff {
@@ -46,11 +41,10 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        public CommandSettingsEditor(ProgramSettings programSettings) {
+        public CommandSettingsEditor(IInfoStuff infoStuff) {
             InitializeComponent();
-            
-            ProgramSettings = programSettings;
-            InfoStuff = new ProgramSettingsInfoStuff(ProgramSettings, Providers.Instance);
+
+            InfoStuff = infoStuff;
 
             // TODO Move this out of code
             this.commandSelector.Filter = Command.GetHasFeaturesPredicate(CommandFeatures.StandAlone);

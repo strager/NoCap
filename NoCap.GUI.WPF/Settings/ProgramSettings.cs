@@ -45,7 +45,7 @@ namespace NoCap.GUI.WPF.Settings {
             this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
-        protected ProgramSettings(SerializationInfo info, StreamingContext context) {
+        private ProgramSettings(SerializationInfo info, StreamingContext context) {
             Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
             Plugins = info.GetValue<IEnumerable<IPlugin>>("Plugins");
 

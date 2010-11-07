@@ -6,27 +6,29 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow {
-        private readonly ProgramSettings programSettings;
+        private readonly ProgramSettings settings;
 
-        public ProgramSettings ProgramSettings {
+        public ProgramSettings Settings {
             get {
-                return this.programSettings;
+                return this.settings;
             }
         }
 
-        public SettingsWindow(ProgramSettings programSettings) {
+        public SettingsWindow(ProgramSettings settings) {
+            this.settings = settings;
+
             InitializeComponent();
-            
-            this.programSettings = programSettings;
+
+            var infoStuff = settings.InfoStuff;
 
             this.tabControl.Items.Add(new TabItem {
-                Content = new CommandSettingsEditor(programSettings),
+                Content = new CommandSettingsEditor(infoStuff),
                 Header = "Commands"
             });
 
-            foreach (var plugin in programSettings.Plugins) {
+            foreach (var plugin in settings.Plugins) {
                 this.tabControl.Items.Add(new TabItem {
-                    Content = plugin.GetEditor(programSettings.InfoStuff),
+                    Content = plugin.GetEditor(infoStuff),
                     Header = plugin.Name
                 });
             }

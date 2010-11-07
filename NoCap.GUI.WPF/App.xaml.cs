@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
-using NoCap.GUI.WPF.Plugins;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library.Tasks;
@@ -19,25 +18,25 @@ namespace NoCap.GUI.WPF {
 
         private CommandRunner commandRunner;
 
-        private ProgramSettingsManager settingsManager;
+        private ConfigurationManager configurationManager;
 
         private void SaveSettings(ProgramSettings value) {
             // TODO Move to manager and inline
-            this.settingsManager.ProgramSettings = value;
+            this.configurationManager.ProgramSettings = value;
 
-            this.settingsManager.Save();
+            this.configurationManager.Save();
         }
 
         public ProgramSettings LoadSettings() {
             // TODO Move to manager and inline
-            return this.settingsManager.ProgramSettings;
+            return this.configurationManager.ProgramSettings;
         }
 
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
             this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
             this.commandRunner = new CommandRunner();
-            this.settingsManager = new ProgramSettingsManager();
+            this.configurationManager = new ConfigurationManager();
 
             this.taskNotificationUi.BindFrom(this.commandRunner);
 
@@ -61,7 +60,7 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            var clonedSettings = ProgramSettingsManager.CloneSettings(LoadSettings());
+            var clonedSettings = ConfigurationManager.CloneSettings(LoadSettings());
 
             this.settingsWindow = new SettingsWindow(clonedSettings);
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
@@ -77,7 +76,7 @@ namespace NoCap.GUI.WPF {
             if (this.settingsWindow.DialogResult == true) {
                 DisposePlugins();
 
-                SaveSettings(this.settingsWindow.ProgramSettings);
+                SaveSettings(this.settingsWindow.Settings);
             }
 
             this.settingsWindow.Close();

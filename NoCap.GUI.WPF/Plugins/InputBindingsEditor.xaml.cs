@@ -108,10 +108,10 @@ namespace NoCap.GUI.WPF.Plugins {
     }
 
     public class MutableCommandBindingCollection : ICollection<MutableCommandBinding>, INotifyCollectionChanged {
-        private readonly ICollection<StandAloneCommandBinding> originalBindings;
-        private readonly IDictionary<MutableCommandBinding, StandAloneCommandBinding> mapping = new Dictionary<MutableCommandBinding, StandAloneCommandBinding>();
+        private readonly ICollection<CommandBinding> originalBindings;
+        private readonly IDictionary<MutableCommandBinding, CommandBinding> mapping = new Dictionary<MutableCommandBinding, CommandBinding>();
 
-        public MutableCommandBindingCollection(ICollection<StandAloneCommandBinding> originalBindings) {
+        public MutableCommandBindingCollection(ICollection<CommandBinding> originalBindings) {
             this.originalBindings = originalBindings;
 
             foreach (var binding in this.originalBindings) {
@@ -122,7 +122,7 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        private MutableCommandBinding GetMutableBinding(StandAloneCommandBinding binding) {
+        private MutableCommandBinding GetMutableBinding(CommandBinding binding) {
             var mutableBinding = this.mapping.FirstOrDefault((kvp) => ReferenceEquals(kvp.Value, binding)).Key;
 
             if (mutableBinding == null) {
@@ -141,11 +141,11 @@ namespace NoCap.GUI.WPF.Plugins {
             return true;
         }
 
-        private StandAloneCommandBinding GetImmutableBinding(MutableCommandBinding binding) {
-            StandAloneCommandBinding immutableBinding;
+        private CommandBinding GetImmutableBinding(MutableCommandBinding binding) {
+            CommandBinding immutableBinding;
 
             if (!this.mapping.TryGetValue(binding, out immutableBinding)) {
-                immutableBinding = new StandAloneCommandBinding(binding.Input, binding.Command);
+                immutableBinding = new CommandBinding(binding.Input, binding.Command);
             }
 
             return immutableBinding;
@@ -206,7 +206,7 @@ namespace NoCap.GUI.WPF.Plugins {
         }
 
         public bool Remove(MutableCommandBinding item) {
-            StandAloneCommandBinding immutableBinding;
+            CommandBinding immutableBinding;
             bool itemRemoved = false;
 
             if (this.mapping.TryGetValue(item, out immutableBinding)) {
@@ -282,7 +282,7 @@ namespace NoCap.GUI.WPF.Plugins {
             this.command = command;
         }
 
-        public MutableCommandBinding(StandAloneCommandBinding source) :
+        public MutableCommandBinding(CommandBinding source) :
             this(source.Input, source.Command) {
         }
 

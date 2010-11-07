@@ -2,9 +2,9 @@
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
-namespace NoCap.GUI.WPF.Settings {
+namespace NoCap.GUI.WPF.Plugins {
     [Serializable]
-    public sealed class StandAloneCommandBinding : ICommandBinding {
+    public sealed class CommandBinding : ICommandBinding {
         private readonly IInputSequence input;
         private readonly ICommand command;
 
@@ -26,7 +26,7 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public StandAloneCommandBinding(IInputSequence input, ICommand command) {
+        public CommandBinding(IInputSequence input, ICommand command) {
             this.input = input;
             this.command = command;
         }

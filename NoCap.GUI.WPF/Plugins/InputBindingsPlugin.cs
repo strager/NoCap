@@ -24,7 +24,7 @@ namespace NoCap.GUI.WPF.Plugins {
         private IEnumerable<IInputProvider> inputProviders;
 #pragma warning restore 649
 
-        [Import(AllowRecomposition = false), NonSerialized] // TODO Serialize
+        [Import(AllowRecomposition = false)]
         private IInputProvider inputProvider;
 
         public string Name {
@@ -46,7 +46,7 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        public ICollection<StandAloneCommandBinding> Bindings {
+        public ICollection<CommandBinding> Bindings {
             get;
             set;
         }
@@ -62,7 +62,7 @@ namespace NoCap.GUI.WPF.Plugins {
         }
         
         public InputBindingsPlugin() {
-            Bindings = new List<StandAloneCommandBinding>();
+            Bindings = new List<CommandBinding>();
         }
 
         public void Populate(CompositionContainer compositionContainer) {
@@ -145,10 +145,11 @@ namespace NoCap.GUI.WPF.Plugins {
         }
 
         protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
+            // TODO Use instance in inputProviders collection
             var inputProviderType = info.GetValue<Type>("InputProvider type");
             this.inputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
 
-            Bindings = info.GetValue<ICollection<StandAloneCommandBinding>>("Bindings");
+            Bindings = info.GetValue<ICollection<CommandBinding>>("Bindings");
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {

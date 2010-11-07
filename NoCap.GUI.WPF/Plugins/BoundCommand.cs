@@ -1,6 +1,6 @@
 ﻿using NoCap.Library;
 
-namespace NoCap.GUI.WPF.Settings {
+namespace NoCap.GUI.WPF.Plugins {
     public sealed class BoundCommand : WinputDotNet.ICommand {
         private readonly ICommand command;
 
