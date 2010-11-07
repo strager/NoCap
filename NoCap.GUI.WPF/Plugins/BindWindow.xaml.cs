@@ -2,7 +2,7 @@
 using System.Windows.Interop;
 using WinputDotNet;
 
-namespace NoCap.GUI.WPF.Settings.Editors {
+namespace NoCap.GUI.WPF.Plugins {
     /// <summary>
     /// Interaction logic for BindWindow.xaml
     /// </summary>

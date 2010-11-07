@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using Hardcodet.Wpf.TaskbarNotification;
+using NoCap.GUI.WPF.Plugins;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library.Tasks;
@@ -32,22 +33,17 @@ namespace NoCap.GUI.WPF {
             return this.settingsManager.ProgramSettings;
         }
 
-        private SettingsSession activeSettingsSession;
-
         private void Load() {
             this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
             this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
             this.commandRunner = new CommandRunner();
             this.settingsManager = new ProgramSettingsManager();
 
-            this.activeSettingsSession = new SettingsSession(this.commandRunner, LoadSettings());
-
             this.taskNotificationUi.BindFrom(this.commandRunner);
 
-            
             LoadBindings();
 
-            this.activeSettingsSession.SetUp();
+            SetUpPlugins();
         }
 
         private void LoadBindings() {
@@ -65,12 +61,12 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Show();
             }
 
-            var clonedSettings = ProgramSettingsManager.CloneSettings(this.activeSettingsSession.Settings);
+            var clonedSettings = ProgramSettingsManager.CloneSettings(LoadSettings());
 
             this.settingsWindow = new SettingsWindow(clonedSettings);
             this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
 
-            this.activeSettingsSession.ShutDown();
+            ShutDownPlugins();
 
             this.settingsWindow.ShowDialog();
         }
@@ -79,16 +75,35 @@ namespace NoCap.GUI.WPF {
             // FIXME messy...
 
             if (this.settingsWindow.DialogResult == true) {
-                SaveSettings(this.settingsWindow.ProgramSettings);
+                DisposePlugins();
 
-                this.activeSettingsSession.Dispose();
-                this.activeSettingsSession = new SettingsSession(this.commandRunner, this.settingsWindow.ProgramSettings);
+                SaveSettings(this.settingsWindow.ProgramSettings);
             }
 
             this.settingsWindow.Close();
             this.settingsWindow = null;
 
-            this.activeSettingsSession.SetUp();
+            SetUpPlugins();
+        }
+
+        private void SetUpPlugins() {
+            foreach (var plugin in LoadSettings().Plugins) {
+                plugin.Populate(Providers.CompositionContainer);
+                plugin.CommandRunner = this.commandRunner;
+                plugin.SetUp();
+            }
+        }
+
+        private void ShutDownPlugins() {
+            foreach (var plugin in LoadSettings().Plugins) {
+                plugin.ShutDown();
+            }
+        }
+
+        private void DisposePlugins() {
+            foreach (var plugin in LoadSettings().Plugins) {
+                plugin.Dispose();
+            }
         }
 
         public void Start() {
@@ -109,9 +124,10 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Dispose() {
-            this.activeSettingsSession.Dispose();
             this.taskNotificationUi.Dispose();
             this.taskbarIcon.Dispose();
+
+            DisposePlugins();
         }
     }
 }

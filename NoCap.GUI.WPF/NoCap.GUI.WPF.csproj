@@ -67,18 +67,18 @@
     <Compile Include="NoCapLogo.xaml.cs">
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\SettingsSession.cs" />
+    <Compile Include="Plugins\InputBindingsPlugin.cs" />
     <Compile Include="Settings\BoundCommand.cs" />
-    <Compile Include="Settings\Editors\BindingSettingsEditor.xaml.cs">
-      <DependentUpon>BindingSettingsEditor.xaml</DependentUpon>
+    <Compile Include="Plugins\InputBindingsEditor.xaml.cs">
+      <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\Editors\BindWindow.xaml.cs">
+    <Compile Include="Plugins\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings\ISettingsEditor.cs" />
+    <Compile Include="Settings\PluginSettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
     <Compile Include="Settings\Editors\ProviderSettingsEditor.xaml.cs">
       <DependentUpon>ProviderSettingsEditor.xaml</DependentUpon>
@@ -102,11 +102,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\Editors\BindingSettingsEditor.xaml">
+    <Page Include="Plugins\InputBindingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings\Editors\BindWindow.xaml">
+    <Page Include="Plugins\BindWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,14 +1,14 @@
-﻿<ContentControl x:Class="NoCap.GUI.WPF.Settings.Editors.BindingSettingsEditor"
+﻿<ContentControl x:Class="NoCap.GUI.WPF.Plugins.InputBindingsEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Name="self"
-        d:DesignHeight="300" d:DesignWidth="300" xmlns:my="clr-namespace:NoCap.GUI.WPF.Settings" xmlns:Editors="clr-namespace:NoCap.GUI.WPF.Settings.Editors">
-    
+        d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:Plugins="clr-namespace:NoCap.GUI.WPF.Plugins">
     <ContentControl.Resources>
-        <Editors:NullableBooleanConverter x:Key="NullableBooleanConverter" />
+        <Plugins:NullableBooleanConverter x:Key="NullableBooleanConverter" />
     </ContentControl.Resources>
     
     <Grid>
@@ -34,10 +34,10 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     
-                    <GridViewColumn Header="Command" Width="150">
+                    <GridViewColumn Header="Command" Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedItem="{Binding Path=Command, Mode=TwoWay}" ItemsSource="{Binding ElementName=self, Path=ProgramSettings.Commands}" DisplayMemberPath="Name" />
+                                <ComboBox Grid.Column="2" HorizontalAlignment="Stretch" SelectedItem="{Binding Path=Command, Mode=TwoWay}" ItemsSource="{Binding ElementName=self, Path=InfoStuff.Commands}" DisplayMemberPath="Name" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

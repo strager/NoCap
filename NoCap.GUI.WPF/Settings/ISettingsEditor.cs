@@ -3,9 +3,5 @@
         string DisplayName {
             get;
         }
-
-        ProgramSettings ProgramSettings {
-            get;
-        }
     }
 }

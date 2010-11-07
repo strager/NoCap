@@ -2,7 +2,7 @@
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class ProviderSettingsEditor : ISettingsEditor {
+    public partial class ProviderSettingsEditor {
         public Providers Providers {
             get;
             private set;

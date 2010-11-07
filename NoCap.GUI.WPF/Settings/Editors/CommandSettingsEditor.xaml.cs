@@ -6,7 +6,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class CommandSettingsEditor : ISettingsEditor, INotifyPropertyChanged {
+    public partial class CommandSettingsEditor : INotifyPropertyChanged {
         public ProgramSettings ProgramSettings {
             get;
             private set;

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -20,17 +19,16 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             
             this.programSettings = programSettings;
 
-            var editors = new ISettingsEditor[] {
-                new ProviderSettingsEditor(programSettings),
-                new BindingSettingsEditor(programSettings),
-                new CommandSettingsEditor(programSettings),
-            };
+            this.tabControl.Items.Add(new TabItem {
+                Content = new CommandSettingsEditor(programSettings),
+                Header = "Commands"
+            });
 
-            foreach (var editor in editors) {
-                var tab = new TabItem { Content = editor };
-                tab.SetBinding(HeaderedContentControl.HeaderProperty, new Binding { Source = editor, Path = new PropertyPath("DisplayName") });
-
-                this.tabControl.Items.Add(tab);
+            foreach (var plugin in programSettings.Plugins) {
+                this.tabControl.Items.Add(new TabItem {
+                    Content = plugin.GetEditor(programSettings.InfoStuff),
+                    Header = plugin.Name
+                });
             }
         }
 

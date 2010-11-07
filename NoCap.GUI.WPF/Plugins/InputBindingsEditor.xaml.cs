@@ -7,24 +7,18 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using NoCap.GUI.WPF.Settings;
+using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
-namespace NoCap.GUI.WPF.Settings.Editors {
+namespace NoCap.GUI.WPF.Plugins {
     /// <summary>
-    /// Interaction logic for BindingSettingsEditor.xaml
+    /// Interaction logic for InputBindingsEditor.xaml
     /// </summary>
-    public partial class BindingSettingsEditor : ISettingsEditor {
-        public string DisplayName {
-            get {
-                return "Bindings";
-            }
-        }
-
-        public ProgramSettings ProgramSettings {
-            get;
-            private set;
-        }
+    public partial class InputBindingsEditor {
+        private readonly InputBindingsPlugin plugin;
+        private readonly IInfoStuff infoStuff;
 
         private MutableCommandBinding SelectedBinding {
             get {
@@ -37,12 +31,25 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             set;
         }
 
-        public BindingSettingsEditor(ProgramSettings settings) {
+        public InputBindingsPlugin Plugin {
+            get {
+                return this.plugin;
+            }
+        }
+
+        public IInfoStuff InfoStuff {
+            get {
+                return this.infoStuff;
+            }
+        }
+
+        public InputBindingsEditor(InputBindingsPlugin plugin, IInfoStuff infoStuff) {
+            this.plugin = plugin;
+            this.infoStuff = infoStuff;
+
             InitializeComponent();
 
-            ProgramSettings = settings;
-
-            Bindings = new MutableCommandBindingCollection(ProgramSettings.Bindings);
+            Bindings = new MutableCommandBindingCollection(plugin.Bindings);
 
             DataContext = this;
         }
@@ -86,7 +93,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence) {
-            var window = new BindWindow(ProgramSettings.InputProvider);
+            var window = new BindWindow(this.Plugin.InputProvider);
 
             if (window.ShowDialog() == true) {
                 inputSequence = window.InputSequence;

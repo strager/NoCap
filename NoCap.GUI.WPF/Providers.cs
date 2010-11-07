@@ -2,28 +2,21 @@
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using NoCap.Library;
-using WinputDotNet;
 
 namespace NoCap.GUI.WPF {
     public class Providers {
-        private readonly CompositionContainer compositionContainer;
-
-        private Providers() :
-            this(new CompositionContainer(
-                new AggregateCatalog(
-                    new DirectoryCatalog("."),
-                    new AssemblyCatalog(typeof(Providers).Assembly)
-                )
-            )) {
-        }
+        public static readonly CompositionContainer CompositionContainer = new CompositionContainer(
+            new AggregateCatalog(
+                new DirectoryCatalog("."),
+                new AssemblyCatalog(typeof(Providers).Assembly)
+            )
+        );
 
         private Providers(CompositionContainer compositionContainer) {
-            this.compositionContainer = compositionContainer;
-
-            this.compositionContainer.ComposeParts(this);
+            compositionContainer.ComposeParts(this);
         }
 
-        private static readonly Providers PrivateInstance = new Providers();
+        private static readonly Providers PrivateInstance = new Providers(CompositionContainer);
 
         public static Providers Instance {
             get {
@@ -33,17 +26,8 @@ namespace NoCap.GUI.WPF {
 
 #pragma warning disable 649 // Field is never assigned
         [ImportMany(AllowRecomposition = true)]
-        private IEnumerable<IInputProvider> inputProviders;
-
-        [ImportMany(AllowRecomposition = true)]
         private IEnumerable<ICommandFactory> commandFactories;
 #pragma warning restore 649
-
-        public IEnumerable<IInputProvider> InputProviders {
-            get {
-                return inputProviders;
-            }
-        }
 
         public IEnumerable<ICommandFactory> CommandFactories {
             get {

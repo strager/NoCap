@@ -1,30 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.Serialization;
+using NoCap.GUI.WPF.Plugins;
 using NoCap.Library;
-using WinputDotNet;
 using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]
     public sealed class ProgramSettings : ISerializable {
-        public IInputProvider InputProvider {
-            get;
-            set;
-        }
-
-        public ObservableCollection<StandAloneCommandBinding> Bindings {
-            get;
-            set;
-        }
-
         public ObservableCollection<ICommand> Commands {
             get;
             set;
         }
 
+        public IEnumerable<IPlugin> Plugins {
+            get;
+            private set;
+        }
+
+        [NonSerialized]
         private readonly IInfoStuff infoStuff;
 
         public IInfoStuff InfoStuff {
@@ -38,35 +34,27 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public ProgramSettings(Providers providers) {
-            InputProvider = providers.InputProviders.FirstOrDefault();
-            Bindings = new ObservableCollection<StandAloneCommandBinding>();
+            Plugins = new[] { new InputBindingsPlugin() };
+
+            foreach (var plugin in Plugins) {
+                plugin.Populate(Providers.CompositionContainer);
+            }
+
             Commands = new ObservableCollection<ICommand>();
 
             this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
-        private ProgramSettings(SerializationInfo info, StreamingContext context) {
-            var providers = Providers.Instance;
-
-            Bindings = info.GetValue<ObservableCollection<StandAloneCommandBinding>>("Bindings");
+        protected ProgramSettings(SerializationInfo info, StreamingContext context) {
             Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
+            Plugins = info.GetValue<IEnumerable<IPlugin>>("Plugins");
 
-            var inputProviderType = info.GetValue<Type>("InputProvider type");
-
-            var inputProvider =
-                providers.InputProviders.FirstOrDefault((provider) => provider.GetType().Equals(inputProviderType))
-                ?? providers.InputProviders.FirstOrDefault();
-
-            InputProvider = inputProvider;
-
-            this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
+            this.infoStuff = new ProgramSettingsInfoStuff(this, Providers.Instance);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("Bindings", Bindings);
             info.AddValue("Commands", Commands);
-
-            info.AddValue("InputProvider type", InputProvider.GetType());
+            info.AddValue("Plugins", Plugins);
         }
     }
 }
