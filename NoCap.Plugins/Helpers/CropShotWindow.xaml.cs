@@ -49,6 +49,8 @@ namespace NoCap.Plugins.Helpers {
 
         private bool isDragging;
 
+        private readonly Crosshair crosshair = new Crosshair();
+
         public CropShotWindow() {
             InitializeComponent();
 
@@ -63,7 +65,9 @@ namespace NoCap.Plugins.Helpers {
 
             MouseDown += (sender, e) => StartDragging   (e.GetPosition(this));
             MouseUp   += (sender, e) => EndDragging     (e.GetPosition(this));
-            MouseMove += (sender, e) => ContinueDragging(e.GetPosition(this));
+            MouseMove += (sender, e) => MoveCrosshair(e.GetPosition(this));
+
+            this.canvas.DataContext = this.crosshair;
         }
 
         private void SetFullscreen() {
@@ -83,6 +87,13 @@ namespace NoCap.Plugins.Helpers {
         private void StartDragging(Point diuLocation) {
             this.isDragging = true;
             this.dragStart = diuLocation;
+        }
+
+        private void MoveCrosshair(Point diuLocation) {
+            this.crosshair.X = diuLocation.X;
+            this.crosshair.Y = diuLocation.Y;
+
+            ContinueDragging(diuLocation);
         }
 
         private void ContinueDragging(Point diuLocation) {

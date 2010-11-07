@@ -89,6 +89,7 @@
       <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\FileSystem.cs" />
+    <Compile Include="Helpers\Crosshair.cs" />
     <Compile Include="Helpers\ImageExtensions.cs" />
     <Compile Include="Commands\ImageBinUploader.cs" />
     <Compile Include="Commands\IsgdShortener.cs" />
