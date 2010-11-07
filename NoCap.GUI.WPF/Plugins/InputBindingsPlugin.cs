@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.Serialization;
 using System.Windows;
-using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 using NoCap.Library.Tasks;
 using NoCap.Library.Util;

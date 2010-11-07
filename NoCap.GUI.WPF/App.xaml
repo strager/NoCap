@@ -3,21 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              ShutdownMode="OnExplicitShutdown"
              Startup="StartUpApplication"
-             Exit="ExitApplication"
-             xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification">
+             Exit="ExitApplication">
     <Application.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="3,6" />
             <Setter Property="Padding" Value="3" />
             <Setter Property="MinWidth" Value="70" />
         </Style>
-
-    	<tb:TaskbarIcon x:Key="taskbarIcon" DoubleClickCommand="Properties">
-    		<tb:TaskbarIcon.ContextMenu>
-    			<ContextMenu>
-                    <MenuItem Command="Close" Header="E_xit" />
-    			</ContextMenu>
-    		</tb:TaskbarIcon.ContextMenu>
-    	</tb:TaskbarIcon>
     </Application.Resources>
 </Application>

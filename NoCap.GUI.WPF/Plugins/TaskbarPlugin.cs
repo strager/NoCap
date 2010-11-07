@@ -1,81 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
+using NoCap.Library;
 using NoCap.Library.Tasks;
 using Windows7.DesktopIntegration;
 
-namespace NoCap.GUI.WPF {
-    class TaskNotificationUi : IDisposable {
+namespace NoCap.GUI.WPF.Plugins {
+    class TaskbarPlugin : IPlugin {
         private readonly NoCapLogo logo;
         private readonly TaskbarIcon taskbarIcon;
 
-        private readonly ICollection<CommandRunner> boundCommandRunners = new List<CommandRunner>();
+        public TaskbarPlugin(App app) {
+            var taskbarMenu = new ContextMenu();
+            taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
 
-        private bool isDisposed;
+            this.taskbarIcon = new TaskbarIcon {
+                Visibility = Visibility.Visible,
+                DoubleClickCommand = ApplicationCommands.Properties,
+                ContextMenu = taskbarMenu
+            };
 
-        public TaskNotificationUi(TaskbarIcon taskbarIcon, NoCapLogo logo) {
-            this.taskbarIcon = taskbarIcon;
-            this.logo = logo;
+            this.logo = new NoCapLogo();
+            
+            AddBindings(app);
 
             UpdateIcon(1);
         }
 
-        public void BindFrom(CommandRunner commandRunner) {
-            BindFrom(commandRunner, true);
-        }
-
-        private void BindFrom(CommandRunner commandRunner, bool track) {
-            EnsureNotDisposed();
-
-            commandRunner.TaskStarted     += BeginTask;
-            commandRunner.TaskCompleted   += EndTask;
-            commandRunner.ProgressUpdated += UpdateProgress;
-
-            if (track) {
-                this.boundCommandRunners.Add(commandRunner);
-            }
-        }
-
-        public void UnbindFrom(CommandRunner commandRunner) {
-            UnbindFrom(commandRunner, true);
-        }
-
-        private void UnbindFrom(CommandRunner commandRunner, bool untrack) {
-            EnsureNotDisposed();
-
-            commandRunner.TaskStarted     -= BeginTask;
-            commandRunner.TaskCompleted   -= EndTask;
-            commandRunner.ProgressUpdated -= UpdateProgress;
-
-            if (untrack) {
-                this.boundCommandRunners.Remove(commandRunner);
-            }
+        private void AddBindings(App app) {
+            this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Close,
+                (sender, e) => app.Shutdown(0)
+            ));
+            
+            this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Properties,
+                (sender, e) => app.ShowSettingsEditor()
+            ));
         }
 
         public void BeginTask(object sender, CommandTaskEventArgs e) {
-            if (this.isDisposed) {
-                return;
-            }
-
             ShowTaskPopup(e.Task);
         }
 
         public void EndTask(object sender, CommandTaskEventArgs e) {
-            if (this.isDisposed) {
-                return;
-            }
-
             // Do nothing
         }
 
         public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
-            if (this.isDisposed) {
-                return;
-            }
-
             double progress = e.Progress;
 
             UpdateWindows(progress);
@@ -140,19 +115,52 @@ namespace NoCap.GUI.WPF {
             }));
         }
 
-        public void Dispose() {
-            foreach (var commandRunner in this.boundCommandRunners) {
-                UnbindFrom(commandRunner, false);
+        public string Name {
+            get {
+                return "Taskbar";
             }
-
-            this.boundCommandRunners.Clear();
-            this.isDisposed = true;
         }
 
-        private void EnsureNotDisposed() {
-            if (this.isDisposed) {
-                throw new ObjectDisposedException("TaskNotificationUi");
+        private CommandRunner commandRunner;
+
+        public CommandRunner CommandRunner {
+            get {
+                return this.commandRunner;
             }
+
+            set {
+                if (this.commandRunner != null) {
+                    this.commandRunner.TaskStarted     -= BeginTask;
+                    this.commandRunner.TaskCompleted   -= EndTask;
+                    this.commandRunner.ProgressUpdated -= UpdateProgress;
+                }
+
+                this.commandRunner = value;
+
+                if (this.commandRunner != null) {
+                    this.commandRunner.TaskStarted     += BeginTask;
+                    this.commandRunner.TaskCompleted   += EndTask;
+                    this.commandRunner.ProgressUpdated += UpdateProgress;
+                }
+            }
+        }
+
+        public void Populate(CompositionContainer compositionContainer) {
+            // Do nothing.
+        }
+
+        public UIElement GetEditor(IInfoStuff infoStuff) {
+            return null;
+        }
+
+        public void SetUp() {
+        }
+
+        public void ShutDown() {
+        }
+
+        public void Dispose() {
+            this.taskbarIcon.Dispose();
         }
     }
 }

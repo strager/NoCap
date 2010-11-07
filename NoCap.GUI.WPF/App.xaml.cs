@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
-using Hardcodet.Wpf.TaskbarNotification;
+using NoCap.GUI.WPF.Plugins;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library.Tasks;
@@ -11,10 +10,8 @@ namespace NoCap.GUI.WPF {
     /// Interaction logic for App.xaml
     /// </summary>
     public sealed partial class App : IDisposable {
-        private TaskbarIcon taskbarIcon;
-
         private SettingsWindow settingsWindow;
-        private TaskNotificationUi taskNotificationUi;
+        private TaskbarPlugin taskbarPlugin;
 
         private CommandRunner commandRunner;
 
@@ -33,12 +30,11 @@ namespace NoCap.GUI.WPF {
         }
 
         private void Load() {
-            this.taskbarIcon = (TaskbarIcon) Resources["taskbarIcon"];
-            this.taskNotificationUi = new TaskNotificationUi(this.taskbarIcon, new NoCapLogo());
+            this.taskbarPlugin = new TaskbarPlugin(this);
             this.commandRunner = new CommandRunner();
             this.configurationManager = new ConfigurationManager();
 
-            this.taskNotificationUi.BindFrom(this.commandRunner);
+            this.taskbarPlugin.CommandRunner = this.commandRunner;
 
             LoadBindings();
 
@@ -46,16 +42,9 @@ namespace NoCap.GUI.WPF {
         }
 
         private void LoadBindings() {
-            this.taskbarIcon.CommandBindings.Add(new CommandBinding(ApplicationCommands.Close,
-                (sender, e) => Shutdown(0)
-            ));
-            
-            this.taskbarIcon.CommandBindings.Add(new CommandBinding(ApplicationCommands.Properties,
-                (sender, e) => ShowSettingsEditor()
-            ));
         }
 
-        private void ShowSettingsEditor() {
+        internal void ShowSettingsEditor() {
             if (this.settingsWindow != null) {
                 this.settingsWindow.Show();
             }
@@ -123,8 +112,7 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Dispose() {
-            this.taskNotificationUi.Dispose();
-            this.taskbarIcon.Dispose();
+            this.taskbarPlugin.Dispose();
 
             DisposePlugins();
         }
