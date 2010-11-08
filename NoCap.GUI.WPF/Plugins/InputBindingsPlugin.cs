@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.Serialization;
@@ -45,7 +46,7 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        public ICollection<CommandBinding> Bindings {
+        public ObservableCollection<CommandBinding> Bindings {
             get;
             set;
         }
@@ -59,10 +60,6 @@ namespace NoCap.GUI.WPF.Plugins {
                 this.inputProvider = value;
             }
         }
-        
-        public InputBindingsPlugin() {
-            Bindings = new List<CommandBinding>();
-        }
 
         public void Populate(CompositionContainer compositionContainer) {
             compositionContainer.ComposeParts(this);
@@ -72,7 +69,11 @@ namespace NoCap.GUI.WPF.Plugins {
             return new InputBindingsEditor(this, infoStuff);
         }
 
-        public void SetUp() {
+        public void Init() {
+            SetUp();
+        }
+
+        internal void SetUp() {
             EnsureNotDisposed();
 
             if (this.isSetUp) {
@@ -84,7 +85,7 @@ namespace NoCap.GUI.WPF.Plugins {
             this.isSetUp = true;
         }
 
-        public void ShutDown() {
+        internal void ShutDown() {
             EnsureNotDisposed();
 
             if (!this.isSetUp) {
@@ -143,12 +144,24 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
+        public InputBindingsPlugin() {
+            Bindings = new ObservableCollection<CommandBinding>();
+
+            Bindings.CollectionChanged += (sender, e) => UpdateBindings();
+        }
+
         protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
             // TODO Use instance in inputProviders collection
             var inputProviderType = info.GetValue<Type>("InputProvider type");
             this.inputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
 
-            Bindings = info.GetValue<ICollection<CommandBinding>>("Bindings");
+            Bindings = info.GetValue<ObservableCollection<CommandBinding>>("Bindings");
+
+            Bindings.CollectionChanged += (sender, e) => UpdateBindings();
+        }
+
+        private void UpdateBindings() {
+            this.inputProvider.SetBindings(Bindings);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {

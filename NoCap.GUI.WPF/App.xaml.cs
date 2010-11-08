@@ -36,55 +36,30 @@ namespace NoCap.GUI.WPF {
 
             this.taskbarPlugin.CommandRunner = this.commandRunner;
 
-            LoadBindings();
-
             SetUpPlugins();
         }
 
-        private void LoadBindings() {
-        }
-
-        internal void ShowSettingsEditor() {
+        internal void ShowSettings() {
             if (this.settingsWindow != null) {
-                this.settingsWindow.Show();
+                this.settingsWindow.Activate();
             }
 
-            var clonedSettings = ConfigurationManager.CloneSettings(LoadSettings());
-
-            this.settingsWindow = new SettingsWindow(clonedSettings);
-            this.settingsWindow.Closed += (sender, e) => CheckSettingsEditorResult();
-
-            ShutDownPlugins();
-
-            this.settingsWindow.ShowDialog();
+            this.settingsWindow = new SettingsWindow(LoadSettings());
+            this.settingsWindow.Closed += (sender, e) => SettingsClosed();
+            this.settingsWindow.Show();
         }
 
-        private void CheckSettingsEditorResult() {
-            // FIXME messy...
-
-            if (this.settingsWindow.DialogResult == true) {
-                DisposePlugins();
-
-                SaveSettings(this.settingsWindow.Settings);
-            }
-
-            this.settingsWindow.Close();
+        private void SettingsClosed() {
             this.settingsWindow = null;
 
-            SetUpPlugins();
+            SaveSettings(LoadSettings());
         }
 
         private void SetUpPlugins() {
             foreach (var plugin in LoadSettings().Plugins) {
                 plugin.Populate(Providers.CompositionContainer);
                 plugin.CommandRunner = this.commandRunner;
-                plugin.SetUp();
-            }
-        }
-
-        private void ShutDownPlugins() {
-            foreach (var plugin in LoadSettings().Plugins) {
-                plugin.ShutDown();
+                plugin.Init();
             }
         }
 
@@ -95,7 +70,7 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Start() {
-            ShowSettingsEditor();
+            ShowSettings();
         }
 
         private void ExitClicked(object sender, RoutedEventArgs e) {

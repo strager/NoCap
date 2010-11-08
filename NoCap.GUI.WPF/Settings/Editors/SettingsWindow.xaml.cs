@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -32,12 +31,6 @@ namespace NoCap.GUI.WPF.Settings.Editors {
                     Header = plugin.Name
                 });
             }
-        }
-
-        private void OkButtonClicked(object sender, RoutedEventArgs e) {
-            DialogResult = true;
-
-            Close();
         }
     }
 }

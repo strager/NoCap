@@ -11,7 +11,6 @@ namespace NoCap.Library {
 
         UIElement GetEditor(IInfoStuff infoStuff);
 
-        void SetUp();
-        void ShutDown();
+        void Init();
     }
 }

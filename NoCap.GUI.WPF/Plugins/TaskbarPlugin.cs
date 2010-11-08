@@ -38,7 +38,7 @@ namespace NoCap.GUI.WPF.Plugins {
             ));
             
             this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Properties,
-                (sender, e) => app.ShowSettingsEditor()
+                (sender, e) => app.ShowSettings()
             ));
         }
 
@@ -153,7 +153,7 @@ namespace NoCap.GUI.WPF.Plugins {
             return null;
         }
 
-        public void SetUp() {
+        public void Init() {
         }
 
         public void ShutDown() {

@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
@@ -93,17 +92,16 @@ namespace NoCap.GUI.WPF.Plugins {
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence) {
-            var window = new BindWindow(this.Plugin.InputProvider);
+            Plugin.ShutDown();
 
-            if (window.ShowDialog() == true) {
-                inputSequence = window.InputSequence;
+            var window = new BindWindow(Plugin.InputProvider);
+            bool success = window.ShowDialog() == true;
 
-                return true;
-            } else {
-                inputSequence = null;
+            inputSequence = success ? window.InputSequence : null;
 
-                return false;
-            }
+            Plugin.SetUp();
+
+            return success;
         }
     }
 

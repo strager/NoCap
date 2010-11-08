@@ -12,9 +12,8 @@
             <!-- Contents inserted by code dynamically -->
         </TabControl>
         
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK" IsDefault="True" Click="OkButtonClicked" />
-            <Button Content="Cancel" IsCancel="True" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <!-- TODO <CheckBox>_Advanced</CheckBox> -->
         </StackPanel>
     </Grid>
 </Window>
