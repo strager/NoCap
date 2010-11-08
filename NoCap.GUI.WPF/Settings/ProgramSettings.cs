@@ -34,7 +34,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public ProgramSettings(Providers providers) {
-            Plugins = new[] { new InputBindingsPlugin() };
+            Plugins = new IPlugin[] { new InputBindingsPlugin(), new TaskbarPlugin() };
 
             foreach (var plugin in Plugins) {
                 plugin.Populate(Providers.CompositionContainer);

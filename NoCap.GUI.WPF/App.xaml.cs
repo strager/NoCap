@@ -22,11 +22,8 @@ namespace NoCap.GUI.WPF {
         private void Load() {
             this.configurationManager = new ConfigurationManager();
             this.settings = this.configurationManager.LoadSettings();
-            
-            this.taskbarPlugin = new TaskbarPlugin(this);
-            this.commandRunner = new CommandRunner();
 
-            this.taskbarPlugin.CommandRunner = this.commandRunner;
+            this.commandRunner = new CommandRunner();
 
             SetUpPlugins();
         }

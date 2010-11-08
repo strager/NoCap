@@ -15,7 +15,7 @@ namespace NoCap.GUI.WPF.Plugins {
         private readonly NoCapLogo logo;
         private readonly TaskbarIcon taskbarIcon;
 
-        public TaskbarPlugin(App app) {
+        public TaskbarPlugin() {
             var taskbarMenu = new ContextMenu();
             taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
 
@@ -27,12 +27,14 @@ namespace NoCap.GUI.WPF.Plugins {
 
             this.logo = new NoCapLogo();
             
-            AddBindings(app);
+            AddBindings();
 
             UpdateIcon(1);
         }
 
-        private void AddBindings(App app) {
+        private void AddBindings() {
+            var app = (App) Application.Current;
+
             this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Close,
                 (sender, e) => app.Shutdown(0)
             ));
