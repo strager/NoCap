@@ -9,7 +9,7 @@ using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]
-    public sealed class ProgramSettings : ISerializable {
+    public sealed class ProgramSettings : ISerializable, IDisposable {
         public ObservableCollection<ICommand> Commands {
             get;
             set;
@@ -55,6 +55,12 @@ namespace NoCap.GUI.WPF.Settings {
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
             info.AddValue("Commands", Commands);
             info.AddValue("Plugins", Plugins);
+        }
+
+        public void Dispose() {
+            foreach (var plugin in Plugins) {
+                plugin.Dispose();
+            }
         }
     }
 }

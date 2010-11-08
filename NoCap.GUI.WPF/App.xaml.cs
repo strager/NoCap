@@ -17,22 +17,14 @@ namespace NoCap.GUI.WPF {
 
         private ConfigurationManager configurationManager;
 
-        private void SaveSettings(ProgramSettings value) {
-            // TODO Move to manager and inline
-            this.configurationManager.ProgramSettings = value;
-
-            this.configurationManager.Save();
-        }
-
-        public ProgramSettings LoadSettings() {
-            // TODO Move to manager and inline
-            return this.configurationManager.ProgramSettings;
-        }
+        private ProgramSettings settings;
 
         private void Load() {
+            this.configurationManager = new ConfigurationManager();
+            this.settings = this.configurationManager.LoadSettings();
+            
             this.taskbarPlugin = new TaskbarPlugin(this);
             this.commandRunner = new CommandRunner();
-            this.configurationManager = new ConfigurationManager();
 
             this.taskbarPlugin.CommandRunner = this.commandRunner;
 
@@ -44,7 +36,7 @@ namespace NoCap.GUI.WPF {
                 this.settingsWindow.Activate();
             }
 
-            this.settingsWindow = new SettingsWindow(LoadSettings());
+            this.settingsWindow = new SettingsWindow(this.settings);
             this.settingsWindow.Closed += (sender, e) => SettingsClosed();
             this.settingsWindow.Show();
         }
@@ -52,20 +44,14 @@ namespace NoCap.GUI.WPF {
         private void SettingsClosed() {
             this.settingsWindow = null;
 
-            SaveSettings(LoadSettings());
+            this.configurationManager.SaveSettings(this.settings);
         }
 
         private void SetUpPlugins() {
-            foreach (var plugin in LoadSettings().Plugins) {
+            foreach (var plugin in this.settings.Plugins) {
                 plugin.Populate(Providers.CompositionContainer);
                 plugin.CommandRunner = this.commandRunner;
                 plugin.Init();
-            }
-        }
-
-        private void DisposePlugins() {
-            foreach (var plugin in LoadSettings().Plugins) {
-                plugin.Dispose();
             }
         }
 
@@ -88,8 +74,7 @@ namespace NoCap.GUI.WPF {
 
         public void Dispose() {
             this.taskbarPlugin.Dispose();
-
-            DisposePlugins();
+            this.settings.Dispose();
         }
     }
 }

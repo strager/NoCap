@@ -11,10 +11,8 @@ using NoCap.Library;
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
     public class ConfigurationManager : ApplicationSettingsBase {
-        [ThreadStatic]
-        private static readonly BinaryFormatter SettingsSerializer = new BinaryFormatter();
-
-        private ProgramSettings cachedProgramSettings;
+        private static readonly StreamingContext StreamingContext =
+            new StreamingContext(StreamingContextStates.File | StreamingContextStates.Persistence);
 
         [UserScopedSetting]
         [DefaultSettingValue(null)]
@@ -29,27 +27,28 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public ProgramSettings ProgramSettings {
-            get {
-                // TODO More aware caching (e.g. detects changes outside this class)
+        public void SaveSettings(ProgramSettings value) {
+            ProgramSettingsData = SerializeSettings(value);
 
-                if (cachedProgramSettings != null) {
-                    return cachedProgramSettings;
-                }
+            Save();
+        }
 
-                return this.cachedProgramSettings = DeserializeSettings(ProgramSettingsData);
-            }
-
-            set {
-                ProgramSettingsData = SerializeSettings(value);
-                this.cachedProgramSettings = value;
-            }
+        public ProgramSettings LoadSettings() {
+            return DeserializeSettings(ProgramSettingsData);
         }
 
         public static byte[] SerializeSettings(ProgramSettings settings) {
+            var serializer = new BinaryFormatter {
+                Context = StreamingContext
+            };
+
+            return Serialize(settings, serializer);
+        }
+
+        private static byte[] Serialize(object obj, IFormatter formatter) {
             using (var writer = new MemoryStream()) {
                 try {
-                    SettingsSerializer.Serialize(writer, settings);
+                    formatter.Serialize(writer, obj);
                 } catch (SerializationException e) {
                     // TODO Error handling
                     throw;
@@ -60,12 +59,20 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public static ProgramSettings DeserializeSettings(byte[] configData) {
-            if (configData == null) {
+            var deserializer = new BinaryFormatter {
+                Context = StreamingContext
+            };
+
+            return (ProgramSettings) Deserialize(configData, deserializer);
+        }
+
+        private static object Deserialize(byte[] data, IFormatter formatter) {
+            if (data == null) {
                 return GetDefaultSettings();
             }
 
-            using (var stream = new MemoryStream(configData)) {
-                return (ProgramSettings) SettingsSerializer.Deserialize(stream);
+            using (var stream = new MemoryStream(data)) {
+                return formatter.Deserialize(stream);
             }
         }
 
@@ -96,7 +103,11 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public static ProgramSettings CloneSettings(ProgramSettings settings) {
-            return DeserializeSettings(SerializeSettings(settings));
+            var cloner = new BinaryFormatter {
+                Context = new StreamingContext(StreamingContextStates.Clone)
+            };
+
+            return (ProgramSettings) Deserialize(Serialize(settings, cloner), cloner);
         }
     }
 }
