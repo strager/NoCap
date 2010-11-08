@@ -51,6 +51,14 @@ namespace NoCap.Plugins.Helpers {
 
         private readonly Crosshair crosshair = new Crosshair();
 
+        private bool isClosingOrClosed = false;
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
+            base.OnClosing(e);
+
+            this.isClosingOrClosed = true;
+        }
+
         public CropShotWindow() {
             InitializeComponent();
 
@@ -60,7 +68,7 @@ namespace NoCap.Plugins.Helpers {
 
             Loaded      += (sender, e) => { PutOnTop(); Resize(); };
             KeyDown     += (sender, e) => KeyPressed(e.Key);
-            Deactivated += (sender, e) => Close();
+            Deactivated += (sender, e) => { if (!this.isClosingOrClosed) { Close(); } };
 
             MouseDown += (sender, e) => {
                 if (e.ChangedButton == MouseButton.Left) {
