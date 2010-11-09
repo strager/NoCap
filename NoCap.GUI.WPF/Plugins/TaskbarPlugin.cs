@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -11,25 +13,24 @@ using NoCap.Library.Tasks;
 using Windows7.DesktopIntegration;
 
 namespace NoCap.GUI.WPF.Plugins {
-    class TaskbarPlugin : IPlugin {
-        private readonly NoCapLogo logo;
-        private readonly TaskbarIcon taskbarIcon;
+    [Export(typeof(IPlugin)), Serializable]
+    class TaskbarPlugin : IPlugin, ISerializable {
+        [NonSerialized]
+        private NoCapLogo logo;
+
+        [NonSerialized]
+        private TaskbarIcon taskbarIcon;
 
         public TaskbarPlugin() {
-            var taskbarMenu = new ContextMenu();
-            taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
+        }
 
-            this.taskbarIcon = new TaskbarIcon {
-                Visibility = Visibility.Visible,
-                DoubleClickCommand = ApplicationCommands.Properties,
-                ContextMenu = taskbarMenu
-            };
+        public TaskbarPlugin(SerializationInfo info, StreamingContext context) :
+            this() {
+            // Do nothing; use ctor.
+        }
 
-            this.logo = new NoCapLogo();
-            
-            AddBindings();
-
-            UpdateIcon(1);
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            // Do nothing.
         }
 
         private void AddBindings() {
@@ -156,6 +157,20 @@ namespace NoCap.GUI.WPF.Plugins {
         }
 
         public void Init() {
+            var taskbarMenu = new ContextMenu();
+            taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
+
+            this.taskbarIcon = new TaskbarIcon {
+                Visibility = Visibility.Visible,
+                DoubleClickCommand = ApplicationCommands.Properties,
+                ContextMenu = taskbarMenu
+            };
+
+            this.logo = new NoCapLogo();
+            
+            AddBindings();
+
+            UpdateIcon(1);
         }
 
         public void ShutDown() {

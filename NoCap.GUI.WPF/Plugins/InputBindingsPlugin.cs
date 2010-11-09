@@ -11,7 +11,7 @@ using NoCap.Library.Util;
 using WinputDotNet;
 
 namespace NoCap.GUI.WPF.Plugins {
-    [Serializable]
+    [Export(typeof(IPlugin)), Serializable]
     public class InputBindingsPlugin : IPlugin, ISerializable {
         [NonSerialized]
         private bool isSetUp = false;

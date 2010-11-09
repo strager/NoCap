@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
-using NoCap.GUI.WPF.Plugins;
 using NoCap.Library;
 using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
@@ -15,41 +13,29 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
-        public IEnumerable<IPlugin> Plugins {
-            get;
-            private set;
-        }
+        private readonly PluginCollection plugins;
 
-        [NonSerialized]
-        private readonly IInfoStuff infoStuff;
+        public PluginCollection Plugins {
+            get {
+                return this.plugins;
+            }
+        }
 
         public IInfoStuff InfoStuff {
             get {
-                return this.infoStuff;
+                return new ProgramSettingsInfoStuff(this, Providers.Instance);
             }
         }
 
-        public ProgramSettings() :
-            this(Providers.Instance) {
-        }
-
-        public ProgramSettings(Providers providers) {
-            Plugins = new IPlugin[] { new InputBindingsPlugin(), new TaskbarPlugin() };
-
-            foreach (var plugin in Plugins) {
-                plugin.Populate(Providers.CompositionContainer);
-            }
+        public ProgramSettings() {
+            this.plugins = new PluginCollection();
 
             Commands = new ObservableCollection<ICommand>();
-
-            this.infoStuff = new ProgramSettingsInfoStuff(this, providers);
         }
 
         private ProgramSettings(SerializationInfo info, StreamingContext context) {
             Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
-            Plugins = info.GetValue<IEnumerable<IPlugin>>("Plugins");
-
-            this.infoStuff = new ProgramSettingsInfoStuff(this, Providers.Instance);
+            this.plugins = info.GetValue<PluginCollection>("Plugins");
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
@@ -58,9 +44,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public void Dispose() {
-            foreach (var plugin in Plugins) {
-                plugin.Dispose();
-            }
+            this.plugins.Dispose();
         }
     }
 }

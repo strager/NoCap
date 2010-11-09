@@ -34,7 +34,13 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public ProgramSettings LoadSettings() {
-            return DeserializeSettings(ProgramSettingsData);
+            byte[] data = ProgramSettingsData;
+
+            if (data == null) {
+                return GetDefaultSettings();
+            }
+
+            return DeserializeSettings(data);
         }
 
         public static byte[] SerializeSettings(ProgramSettings settings) {
@@ -67,10 +73,6 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         private static object Deserialize(byte[] data, IFormatter formatter) {
-            if (data == null) {
-                return GetDefaultSettings();
-            }
-
             using (var stream = new MemoryStream(data)) {
                 return formatter.Deserialize(stream);
             }
@@ -102,12 +104,12 @@ namespace NoCap.GUI.WPF.Settings {
             return settings;
         }
 
-        public static ProgramSettings CloneSettings(ProgramSettings settings) {
+        public static T Clone<T>(T obj) {
             var cloner = new BinaryFormatter {
                 Context = new StreamingContext(StreamingContextStates.Clone)
             };
 
-            return (ProgramSettings) Deserialize(Serialize(settings, cloner), cloner);
+            return (T) Deserialize(Serialize(obj, cloner), cloner);
         }
     }
 }

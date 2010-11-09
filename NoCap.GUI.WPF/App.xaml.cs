@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
-using NoCap.GUI.WPF.Plugins;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library.Tasks;
@@ -11,12 +11,9 @@ namespace NoCap.GUI.WPF {
     /// </summary>
     public sealed partial class App : IDisposable {
         private SettingsWindow settingsWindow;
-        private TaskbarPlugin taskbarPlugin;
-
         private CommandRunner commandRunner;
 
         private ConfigurationManager configurationManager;
-
         private ProgramSettings settings;
 
         private void Load() {
@@ -24,8 +21,8 @@ namespace NoCap.GUI.WPF {
             this.settings = this.configurationManager.LoadSettings();
 
             this.commandRunner = new CommandRunner();
-
-            SetUpPlugins();
+            this.settings.Plugins.CommandRunner = this.commandRunner;
+            this.settings.Plugins.Populate(Providers.CompositionContainer);
         }
 
         internal void ShowSettings() {
@@ -44,20 +41,8 @@ namespace NoCap.GUI.WPF {
             this.configurationManager.SaveSettings(this.settings);
         }
 
-        private void SetUpPlugins() {
-            foreach (var plugin in this.settings.Plugins) {
-                plugin.Populate(Providers.CompositionContainer);
-                plugin.CommandRunner = this.commandRunner;
-                plugin.Init();
-            }
-        }
-
         public void Start() {
             ShowSettings();
-        }
-
-        private void ExitClicked(object sender, RoutedEventArgs e) {
-            Shutdown(0);
         }
 
         private void StartUpApplication(object sender, StartupEventArgs e) {
@@ -70,7 +55,6 @@ namespace NoCap.GUI.WPF {
         }
 
         public void Dispose() {
-            this.taskbarPlugin.Dispose();
             this.settings.Dispose();
         }
     }

@@ -78,6 +78,7 @@
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\PluginCollection.cs" />
     <Compile Include="Settings\PluginSettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
     <Compile Include="Providers.cs" />
