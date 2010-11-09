@@ -10,7 +10,7 @@ using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
-    public class ConfigurationManager : ApplicationSettingsBase {
+    class ConfigurationManager : ApplicationSettingsBase {
         private static readonly StreamingContext StreamingContext =
             new StreamingContext(StreamingContextStates.File | StreamingContextStates.Persistence);
 

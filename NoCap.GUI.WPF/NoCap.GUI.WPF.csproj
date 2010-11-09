@@ -75,13 +75,13 @@
     <Compile Include="Plugins\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionManager.cs" />
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\PluginCollection.cs" />
     <Compile Include="Settings\PluginSettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
-    <Compile Include="Providers.cs" />
     <Compile Include="Settings\ProgramSettings.cs" />
     <Compile Include="Settings\Editors\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

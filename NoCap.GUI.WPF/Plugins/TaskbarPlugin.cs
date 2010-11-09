@@ -24,12 +24,11 @@ namespace NoCap.GUI.WPF.Plugins {
         public TaskbarPlugin() {
         }
 
-        public TaskbarPlugin(SerializationInfo info, StreamingContext context) :
-            this() {
-            // Do nothing; use ctor.
+        public TaskbarPlugin(SerializationInfo info, StreamingContext context) {
+            // Do nothing.
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
             // Do nothing.
         }
 
@@ -124,39 +123,11 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        private CommandRunner commandRunner;
-
-        public CommandRunner CommandRunner {
-            get {
-                return this.commandRunner;
-            }
-
-            set {
-                if (this.commandRunner != null) {
-                    this.commandRunner.TaskStarted     -= BeginTask;
-                    this.commandRunner.TaskCompleted   -= EndTask;
-                    this.commandRunner.ProgressUpdated -= UpdateProgress;
-                }
-
-                this.commandRunner = value;
-
-                if (this.commandRunner != null) {
-                    this.commandRunner.TaskStarted     += BeginTask;
-                    this.commandRunner.TaskCompleted   += EndTask;
-                    this.commandRunner.ProgressUpdated += UpdateProgress;
-                }
-            }
-        }
-
-        public void Populate(CompositionContainer compositionContainer) {
-            // Do nothing.
-        }
-
         public UIElement GetEditor(IInfoStuff infoStuff) {
             return null;
         }
 
-        public void Init() {
+        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
             var taskbarMenu = new ContextMenu();
             taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
 
@@ -168,12 +139,13 @@ namespace NoCap.GUI.WPF.Plugins {
 
             this.logo = new NoCapLogo();
             
+            commandRunner.TaskStarted     += BeginTask;
+            commandRunner.TaskCompleted   += EndTask;
+            commandRunner.ProgressUpdated += UpdateProgress;
+
             AddBindings();
 
             UpdateIcon(1);
-        }
-
-        public void ShutDown() {
         }
 
         public void Dispose() {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
@@ -11,7 +10,6 @@ namespace NoCap.GUI.WPF {
     /// </summary>
     public sealed partial class App : IDisposable {
         private SettingsWindow settingsWindow;
-        private CommandRunner commandRunner;
 
         private ConfigurationManager configurationManager;
         private ProgramSettings settings;
@@ -20,9 +18,11 @@ namespace NoCap.GUI.WPF {
             this.configurationManager = new ConfigurationManager();
             this.settings = this.configurationManager.LoadSettings();
 
-            this.commandRunner = new CommandRunner();
-            this.settings.Plugins.CommandRunner = this.commandRunner;
-            this.settings.Plugins.Populate(Providers.CompositionContainer);
+            var commandRunner = new CommandRunner();
+            var extensionManager = new ExtensionManager();
+
+            this.settings.ExtensionManager = extensionManager;
+            this.settings.Plugins.Init(commandRunner, extensionManager.CompositionContainer);
         }
 
         internal void ShowSettings() {

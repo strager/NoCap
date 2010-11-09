@@ -7,7 +7,7 @@ using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]
-    public sealed class ProgramSettings : ISerializable, IDisposable {
+    sealed class ProgramSettings : ISerializable, IDisposable {
         public ObservableCollection<ICommand> Commands {
             get;
             set;
@@ -21,9 +21,14 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
+        public ExtensionManager ExtensionManager {
+            get;
+            set;
+        }
+
         public IInfoStuff InfoStuff {
             get {
-                return new ProgramSettingsInfoStuff(this, Providers.Instance);
+                return new ProgramSettingsInfoStuff(this, ExtensionManager);
             }
         }
 

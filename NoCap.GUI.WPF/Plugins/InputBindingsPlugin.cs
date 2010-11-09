@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 using NoCap.Library;
@@ -19,13 +20,8 @@ namespace NoCap.GUI.WPF.Plugins {
         [NonSerialized]
         private bool isDisposed = false;
 
-#pragma warning disable 649 // Field is never assigned
-        [ImportMany(AllowRecomposition = true), NonSerialized]
+        [NonSerialized]
         private IEnumerable<IInputProvider> inputProviders;
-#pragma warning restore 649
-
-        [Import(AllowRecomposition = false)]
-        private IInputProvider inputProvider;
 
         public string Name {
             get {
@@ -36,41 +32,33 @@ namespace NoCap.GUI.WPF.Plugins {
         [NonSerialized]
         private CommandRunner commandRunner;
 
-        CommandRunner IPlugin.CommandRunner {
-            get {
-                return this.commandRunner;
-            }
-
-            set {
-                this.commandRunner = value;
-            }
-        }
-
         public ObservableCollection<CommandBinding> Bindings {
             get;
             set;
         }
 
         public IInputProvider InputProvider {
-            get {
-                return this.inputProvider;
-            }
-
-            set {
-                this.inputProvider = value;
-            }
-        }
-
-        public void Populate(CompositionContainer compositionContainer) {
-            compositionContainer.ComposeParts(this);
+            get;
+            set;
         }
 
         public UIElement GetEditor(IInfoStuff infoStuff) {
             return new InputBindingsEditor(this, infoStuff);
         }
 
-        public void Init() {
+        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
+            this.commandRunner = commandRunner;
+
+            Recompose(compositionContainer);
+            compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);
+
+            InputProvider = this.inputProviders.FirstOrDefault();
+
             SetUp();
+        }
+
+        private void Recompose(CompositionContainer compositionContainer) {
+            this.inputProviders = compositionContainer.GetExportedValues<IInputProvider>();
         }
 
         internal void SetUp() {
@@ -150,22 +138,22 @@ namespace NoCap.GUI.WPF.Plugins {
             Bindings.CollectionChanged += (sender, e) => UpdateBindings();
         }
 
+        private void UpdateBindings() {
+            InputProvider.SetBindings(Bindings);
+        }
+
         protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
             // TODO Use instance in inputProviders collection
             var inputProviderType = info.GetValue<Type>("InputProvider type");
-            this.inputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
+            InputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
 
             Bindings = info.GetValue<ObservableCollection<CommandBinding>>("Bindings");
 
             Bindings.CollectionChanged += (sender, e) => UpdateBindings();
         }
 
-        private void UpdateBindings() {
-            this.inputProvider.SetBindings(Bindings);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("InputProvider type", InputProvider.GetType());
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
+            info.AddValue("InputProvider type", InputProvider == null ? null : InputProvider.GetType());
             info.AddValue("Bindings", Bindings);
         }
     }

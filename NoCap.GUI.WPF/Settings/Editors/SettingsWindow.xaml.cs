@@ -5,17 +5,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow {
-        private readonly ProgramSettings settings;
-
-        public ProgramSettings Settings {
-            get {
-                return this.settings;
-            }
-        }
-
-        public SettingsWindow(ProgramSettings settings) {
-            this.settings = settings;
-
+        internal SettingsWindow(ProgramSettings settings) {
             InitializeComponent();
 
             var infoStuff = settings.InfoStuff;

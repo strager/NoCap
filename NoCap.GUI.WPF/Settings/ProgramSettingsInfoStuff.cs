@@ -1,15 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition.Hosting;
+using NoCap.GUI.WPF.Plugins;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     internal sealed class ProgramSettingsInfoStuff : IInfoStuff {
         private readonly ProgramSettings programSettings;
-        private readonly Providers providers;
+        private readonly ExtensionManager extensionManager;
 
-        public ProgramSettingsInfoStuff(ProgramSettings programSettings, Providers providers) {
+        private IEnumerable<ICommandFactory> commandFactories;
+
+        public ProgramSettingsInfoStuff(ProgramSettings programSettings, ExtensionManager extensionManager) {
             this.programSettings = programSettings;
-            this.providers = providers;
+            this.extensionManager = extensionManager;
+
+            Recompose();
+
+            this.extensionManager.CompositionContainer.ExportsChanged += Recompose;
+        }
+
+        private void Recompose(object sender, ExportsChangeEventArgs e) {
+            Recompose();
+        }
+
+        private void Recompose() {
+            this.commandFactories = this.extensionManager.CompositionContainer.GetExportedValues<ICommandFactory>();
         }
 
         public ObservableCollection<ICommand> Commands {
@@ -20,7 +37,7 @@ namespace NoCap.GUI.WPF.Settings {
 
         public IEnumerable<ICommandFactory> CommandFactories {
             get {
-                return this.providers.CommandFactories;
+                return this.commandFactories;
             }
         }
     }

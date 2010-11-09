@@ -11,7 +11,7 @@ using NoCap.Library.Util;
 namespace NoCap.GUI.WPF.Settings {
     // TODO Observable
     [Serializable]
-    public sealed class PluginCollection : ICollection<IPlugin>, IDisposable, ISerializable, IDeserializationCallback {
+    public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable, ISerializable, IDeserializationCallback {
         private readonly IList<IPlugin> plugins = new List<IPlugin>();
 
         [NonSerialized]
@@ -20,29 +20,34 @@ namespace NoCap.GUI.WPF.Settings {
         [NonSerialized]
         private CommandRunner commandRunner;
 
-        public CommandRunner CommandRunner {
-            get {
-                return this.commandRunner;
+        [NonSerialized]
+        private CompositionContainer compositionContainer;
+
+        [NonSerialized]
+        private bool isInitialized;
+
+        public void Init(CommandRunner commandRunner, CompositionContainer compositionContainer) {
+            if (this.isInitialized) {
+                throw new InvalidOperationException("Already initialized");
             }
 
-            set {
-                this.commandRunner = value;
+            this.isInitialized = true;
 
-                foreach (var plugin in this.plugins) {
-                    plugin.CommandRunner = value;
-                }
+            this.commandRunner = commandRunner;
+            this.compositionContainer = compositionContainer;
+
+            Recompose(compositionContainer);
+
+            foreach (var plugin in this.plugins) {
+                plugin.Initialize(commandRunner, compositionContainer);
             }
         }
 
-        public void Populate(CompositionContainer compositionContainer) {
+        private void Recompose(CompositionContainer compositionContainer) {
             var composedPlugins = compositionContainer.GetExportedValues<IPlugin>();
             var newPlugins = composedPlugins.Except(this.plugins, new TypeComparer<IPlugin>());
 
             AddRange(newPlugins);
-
-            foreach (var plugin in this.plugins) {
-                plugin.Populate(compositionContainer);
-            }
         }
 
         public PluginCollection() {
@@ -76,8 +81,9 @@ namespace NoCap.GUI.WPF.Settings {
 
             this.plugins.Add(plugin);
 
-            plugin.CommandRunner = this.commandRunner;
-            plugin.Init();
+            if (this.isInitialized) {
+                plugin.Initialize(this.commandRunner, this.compositionContainer);
+            }
         }
 
         private void AddRange(IEnumerable<IPlugin> plugins) {
@@ -87,44 +93,6 @@ namespace NoCap.GUI.WPF.Settings {
 
             foreach (var plugin in plugins) {
                 Add(plugin);
-            }
-        }
-
-        public void Clear() {
-            foreach (var plugin in this.plugins) {
-                plugin.Dispose();
-            }
-
-            this.plugins.Clear();
-        }
-
-        public bool Contains(IPlugin plugin) {
-            return this.plugins.Contains(plugin);
-        }
-
-        void ICollection<IPlugin>.CopyTo(IPlugin[] array, int arrayIndex) {
-            this.plugins.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(IPlugin plugin) {
-            bool success = this.plugins.Remove(plugin);
-
-            if (success) {
-                plugin.Dispose();
-            }
-
-            return success;
-        }
-
-        public int Count {
-            get {
-                return this.plugins.Count;
-            }
-        }
-
-        bool ICollection<IPlugin>.IsReadOnly {
-            get {
-                return false;
             }
         }
 
