@@ -46,9 +46,6 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
             InfoStuff = infoStuff;
 
-            // TODO Move this out of code
-            this.commandSelector.Filter = Command.GetHasFeaturesPredicate(CommandFeatures.StandAlone);
-
             SelectedCommand = this.infoStuff.Commands.WithFeatures(CommandFeatures.StandAlone).FirstOrDefault();
         }
 

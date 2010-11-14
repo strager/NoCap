@@ -13,7 +13,7 @@
         
         <GroupBox Header="File uploader">
             <StackPanel Orientation="Vertical">
-                <local:CommandFactorySelector Margin="0,0,0,3" Name="fileUploaderSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.FileUploader, Mode=TwoWay}" />
+                <local:CommandFactorySelector Margin="0,0,0,3" Name="fileUploaderSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.FileUploader, Mode=TwoWay}" Filter="FileUploader" />
                 <local:CommandEditor Margin="0,3,0,0" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=fileUploaderSelector, Path=Command}" />
             </StackPanel>
         </GroupBox>

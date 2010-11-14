@@ -39,8 +39,6 @@ namespace NoCap.Plugins.Editors {
 
             Command = command;
             InfoStuff = infoStuff;
-
-            this.fileUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.FileUploader);
         }
     }
 }
