@@ -13,6 +13,11 @@ namespace NoCap.GUI.WPF.Settings {
             set;
         }
 
+        public FeaturedCommandCollection DefaultCommands {
+            get;
+            set;
+        }
+
         private readonly PluginCollection plugins;
 
         public PluginCollection Plugins {
@@ -36,11 +41,23 @@ namespace NoCap.GUI.WPF.Settings {
             this.plugins = new PluginCollection();
 
             Commands = new ObservableCollection<ICommand>();
+
+            DefaultCommands = new FeaturedCommandCollection();
+            DefaultCommands[CommandFeatures.FileUploader] = null;
+            DefaultCommands[CommandFeatures.TextUploader] = null;
+            DefaultCommands[CommandFeatures.UrlShortener] = null;
+            DefaultCommands[CommandFeatures.ImageUploader] = null;
         }
 
         private ProgramSettings(SerializationInfo info, StreamingContext context) {
             Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
             this.plugins = info.GetValue<PluginCollection>("Plugins");
+
+            DefaultCommands = new FeaturedCommandCollection();
+            DefaultCommands[CommandFeatures.FileUploader] = null;
+            DefaultCommands[CommandFeatures.TextUploader] = null;
+            DefaultCommands[CommandFeatures.UrlShortener] = null;
+            DefaultCommands[CommandFeatures.ImageUploader] = null;
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context) {
@@ -50,6 +67,26 @@ namespace NoCap.GUI.WPF.Settings {
 
         public void Dispose() {
             this.plugins.Dispose();
+        }
+    }
+
+    public class FeaturedCommand {
+        private readonly CommandFeatures features;
+
+        public CommandFeatures Features {
+            get {
+                return this.features;
+            }
+        }
+
+        public ICommand Command {
+            get;
+            set;
+        }
+
+        public FeaturedCommand(CommandFeatures features, ICommand command) {
+            this.features = features;
+            Command = command;
         }
     }
 }

@@ -11,6 +11,11 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             var infoStuff = settings.InfoStuff;
 
             this.tabControl.Items.Add(new TabItem {
+                Content = new DefaultCommandsEditor(infoStuff, settings.DefaultCommands),
+                Header = "Defaults"
+            });
+
+            this.tabControl.Items.Add(new TabItem {
                 Content = new CommandSettingsEditor(infoStuff),
                 Header = "Commands"
             });

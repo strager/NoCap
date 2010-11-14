@@ -79,6 +79,10 @@
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings\Editors\DefaultCommandsEditor.xaml.cs">
+      <DependentUpon>DefaultCommandsEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\FeaturedCommandCollection.cs" />
     <Compile Include="Settings\PluginCollection.cs" />
     <Compile Include="Settings\PluginSettingsEditor.cs" />
     <Compile Include="Settings\ProgramSettingsInfoStuff.cs" />
@@ -109,6 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\Editors\CommandSettingsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\Editors\DefaultCommandsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

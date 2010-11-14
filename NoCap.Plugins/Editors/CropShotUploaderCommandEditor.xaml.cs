@@ -38,8 +38,6 @@ namespace NoCap.Plugins.Editors {
         public CropShotUploaderCommandEditor(CropShotUploaderCommand command, IInfoStuff infoStuff) {
             InitializeComponent();
 
-            this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
-
             Command = command;
             InfoStuff = infoStuff;
 

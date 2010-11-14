@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,6 +50,7 @@ namespace NoCap.Library.Controls {
 
         private Predicate<ICommandFactory> filter;
 
+        [TypeConverter(typeof(FeatureFilterConverter))]
         public Predicate<ICommandFactory> Filter {
             get {
                 return this.filter;

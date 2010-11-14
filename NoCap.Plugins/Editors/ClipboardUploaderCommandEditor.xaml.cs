@@ -39,10 +39,6 @@ namespace NoCap.Plugins.Editors {
         public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command, IInfoStuff infoStuff) {
             InitializeComponent();
 
-            this.imageUploaderSelector.Filter = Library.Command.GetHasFeaturesPredicate(CommandFeatures.ImageUploader);
-            this.textUploaderSelector.Filter  = Library.Command.GetHasFeaturesPredicate(CommandFeatures.TextUploader );
-            this.urlShortenerSelector.Filter  = Library.Command.GetHasFeaturesPredicate(CommandFeatures.UrlShortener );
-
             Command = command;
             InfoStuff = infoStuff;
 
