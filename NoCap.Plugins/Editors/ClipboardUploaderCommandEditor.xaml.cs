@@ -42,9 +42,9 @@ namespace NoCap.Plugins.Editors {
             Command = command;
             InfoStuff = infoStuff;
 
-            this.imageUploaderSelector.AutoLoad();
-            this.textUploaderSelector.AutoLoad();
-            this.urlShortenerSelector.AutoLoad();
+            this.imageUploaderEditor.AutoLoad();
+            this.textUploaderEditor.AutoLoad();
+            this.urlShortenerEditor.AutoLoad();
         }
     }
 }

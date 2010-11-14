@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
+    <Compile Include="Controls\FramedCommandEditor.xaml.cs">
+      <DependentUpon>FramedCommandEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IPlugin.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
@@ -74,12 +77,9 @@
     <Compile Include="Controls\CommandFactorySelector.xaml.cs">
       <DependentUpon>CommandFactorySelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Filterer.cs" />
     <Compile Include="Controls\CommandSelector.xaml.cs">
       <DependentUpon>CommandSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Filterer.cs" />
-    <Compile Include="Controls\SharedCommandSelector.xaml.cs">
-      <DependentUpon>SharedCommandSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Editors\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
@@ -123,6 +123,10 @@
     <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\FramedCommandEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Imaging\JpegBitmapCodecEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -136,10 +140,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\CommandSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\SharedCommandSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -41,7 +41,7 @@ namespace NoCap.Plugins.Editors {
             Command = command;
             InfoStuff = infoStuff;
 
-            this.imageUploaderSelector.AutoLoad();
+            this.imageUploaderEditor.AutoLoad();
         }
     }
 }

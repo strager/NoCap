@@ -9,26 +9,23 @@
         x:Name="editor">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <GroupBox Header="Image uploader">
-                <StackPanel Orientation="Vertical">
-                    <local:CommandSelector Margin="0,0,0,3" x:Name="imageUploaderSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.ImageUploader, Mode=TwoWay}" Filter="ImageUploader" />
-                    <local:CommandEditor Margin="0,3,0,0" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=imageUploaderSelector, Path=Command}" />
-                </StackPanel>
-            </GroupBox>
+            <local:FramedCommandEditor Header="Image uploader"
+                InfoStuff="{Binding InfoStuff, ElementName=editor}"
+                Command="{Binding Command.ImageUploader, ElementName=editor, Mode=TwoWay}"
+                Filter="ImageUploader"
+                Name="imageUploaderEditor" />
 
-            <GroupBox Header="Text uploader">
-                <StackPanel Orientation="Vertical">
-                    <local:CommandSelector Margin="0,0,0,3" x:Name="textUploaderSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.TextUploader, Mode=TwoWay}" Filter="TextUploader" />
-                    <local:CommandEditor Margin="0,3,0,0" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=textUploaderSelector, Path=Command}" />
-                </StackPanel>
-            </GroupBox>
+            <local:FramedCommandEditor Header="Text uploader"
+                InfoStuff="{Binding InfoStuff, ElementName=editor}"
+                Command="{Binding Command.TextUploader, ElementName=editor, Mode=TwoWay}"
+                Filter="TextUploader"
+                Name="textUploaderEditor" />
 
-            <GroupBox Header="URL shortener">
-                <StackPanel Orientation="Vertical">
-                    <local:CommandSelector Margin="0,0,0,3" x:Name="urlShortenerSelector" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=editor, Path=Command.UrlShortener, Mode=TwoWay}" Filter="UrlShortener" />
-                    <local:CommandEditor Margin="0,3,0,0" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" Command="{Binding ElementName=urlShortenerSelector, Path=Command}" />
-                </StackPanel>
-            </GroupBox>
+            <local:FramedCommandEditor Header="URL shortener"
+                InfoStuff="{Binding InfoStuff, ElementName=editor}"
+                Command="{Binding Command.UrlShortener, ElementName=editor, Mode=TwoWay}"
+                Filter="UrlShortener"
+                Name="urlShortenerEditor" />
         </StackPanel>
     </Grid>
 </ContentControl>
