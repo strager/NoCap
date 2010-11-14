@@ -12,6 +12,7 @@ namespace NoCap.Library.Controls {
         public readonly static DependencyProperty CommandProperty;
         public readonly static DependencyProperty CommandFactoryProperty;
         public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty FilterProperty;
         
         public readonly static RoutedEvent CommandChangedEvent;
         public readonly static RoutedEvent CommandFactoryChangedEvent;
@@ -37,6 +38,12 @@ namespace NoCap.Library.Controls {
             get { return (IInfoStuff) GetValue(InfoStuffProperty); }
             set { SetValue(InfoStuffProperty, value);  }
         }
+        
+        [TypeConverter(typeof(FeatureFilterConverter))]
+        public Predicate<ICommandFactory> Filter {
+            get { return (Predicate<ICommandFactory>) GetValue(FilterProperty); }
+            set { SetValue(FilterProperty, value);  }
+        }
 
         public event RoutedPropertyChangedEventHandler<ICommand> CommandChanged {
             add    { AddHandler(CommandChangedEvent, value); }
@@ -46,21 +53,6 @@ namespace NoCap.Library.Controls {
         public event RoutedPropertyChangedEventHandler<ICommandFactory> CommandFactoryChanged {
             add    { AddHandler(CommandFactoryChangedEvent, value); }
             remove { RemoveHandler(CommandFactoryChangedEvent, value); }
-        }
-
-        private Predicate<ICommandFactory> filter;
-
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<ICommandFactory> Filter {
-            get {
-                return this.filter;
-            }
-
-            set {
-                this.filter = value;
-
-                this.filterer.Refresh();
-            }
         }
 
         static CommandFactorySelector() {
@@ -85,6 +77,13 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(null, OnInfoStuffChanged, CoerceUpdates)
             );
 
+            FilterProperty = DependencyProperty.Register(
+                "Filter",
+                typeof(Predicate<ICommandFactory>),
+                typeof(CommandFactorySelector),
+                new PropertyMetadata(null, OnFilterChanged)
+            );
+
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
                 "CommandChanged",
                 RoutingStrategy.Bubble,
@@ -98,6 +97,12 @@ namespace NoCap.Library.Controls {
                 typeof(RoutedPropertyChangedEventHandler<ICommand>),
                 typeof(CommandFactorySelector)
             );
+        }
+
+        private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var commandFactory = (CommandFactorySelector) sender;
+
+            commandFactory.filterer.Refresh();
         }
 
         private static bool AreCommandFactoriesEqual(ICommandFactory a, ICommandFactory b) {

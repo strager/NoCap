@@ -10,6 +10,7 @@ namespace NoCap.Library.Controls {
     public partial class SharedCommandSelector {
         public readonly static DependencyProperty CommandProperty;
         public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty FilterProperty;
         
         public readonly static RoutedEvent CommandChangedEvent;
         
@@ -24,25 +25,16 @@ namespace NoCap.Library.Controls {
             get { return (IInfoStuff) GetValue(InfoStuffProperty); }
             set { SetValue(InfoStuffProperty, value);  }
         }
+        
+        [TypeConverter(typeof(FeatureFilterConverter))]
+        public Predicate<ICommand> Filter {
+            get { return (Predicate<ICommand>) GetValue(FilterProperty); }
+            set { SetValue(FilterProperty, value);  }
+        }
 
         public event RoutedPropertyChangedEventHandler<ICommand> CommandChanged {
             add    { AddHandler(CommandChangedEvent, value); }
             remove { RemoveHandler(CommandChangedEvent, value); }
-        }
-
-        private Predicate<ICommand> filter;
-
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<ICommand> Filter {
-            get {
-                return this.filter;
-            }
-
-            set {
-                this.filter = value;
-
-                this.filterer.Refresh();
-            }
         }
 
         static SharedCommandSelector() {
@@ -60,12 +52,25 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(OnInfoStuffChanged)
             );
 
+            FilterProperty = DependencyProperty.Register(
+                "Filter",
+                typeof(Predicate<ICommand>),
+                typeof(SharedCommandSelector),
+                new PropertyMetadata(null, OnFilterChanged)
+            );
+
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
                 "CommandChanged",
                 RoutingStrategy.Bubble,
                 typeof(RoutedPropertyChangedEventHandler<ICommand>),
                 typeof(SharedCommandSelector)
             );
+        }
+
+        private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var commandSelector = (SharedCommandSelector) sender;
+
+            commandSelector.filterer.Refresh();
         }
 
         private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {

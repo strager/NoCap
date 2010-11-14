@@ -12,6 +12,7 @@ namespace NoCap.Library.Controls {
         public readonly static DependencyProperty CommandProperty;
         public readonly static DependencyProperty IsSharedProperty;
         public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty FilterProperty;
 
         public readonly static RoutedEvent CommandChangedEvent;
         public readonly static RoutedEvent IsSharedChangedEvent;
@@ -30,6 +31,12 @@ namespace NoCap.Library.Controls {
             get { return (IInfoStuff) GetValue(InfoStuffProperty); }
             set { SetValue(InfoStuffProperty, value);  }
         }
+        
+        [TypeConverter(typeof(FeatureFilterConverter))]
+        public Predicate<object> Filter {
+            get { return (Predicate<object>) GetValue(FilterProperty); }
+            set { SetValue(FilterProperty, value);  }
+        }
 
         public event RoutedPropertyChangedEventHandler<ICommand> CommandChanged {
             add    { AddHandler(CommandChangedEvent, value); }
@@ -39,22 +46,6 @@ namespace NoCap.Library.Controls {
         public event RoutedPropertyChangedEventHandler<bool> IsSharedChangedChanged {
             add    { AddHandler(IsSharedChangedEvent, value); }
             remove { RemoveHandler(IsSharedChangedEvent, value); }
-        }
-
-        private Predicate<object> filter;
-
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<object> Filter {
-            get {
-                return this.filter;
-            }
-
-            set {
-                this.filter = value;
-
-                this.commandFactoryList.Filter = value;
-                this.sharedCommandList.Filter = value;
-            }
         }
 
         static CommandSelector() {
@@ -79,6 +70,13 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(OnInfoStuffChanged)
             );
 
+            FilterProperty = DependencyProperty.Register(
+                "Filter",
+                typeof(Predicate<object>),
+                typeof(CommandSelector),
+                new PropertyMetadata(null, OnFilterChanged)
+            );
+
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
                 "CommandChanged",
                 RoutingStrategy.Bubble,
@@ -92,6 +90,14 @@ namespace NoCap.Library.Controls {
                 typeof(RoutedPropertyChangedEventHandler<bool>),
                 typeof(CommandSelector)
             );
+        }
+
+        private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var selector = (CommandSelector) sender;
+            var filter = (Predicate<object>) e.NewValue;
+
+            selector.commandFactoryList.Filter = filter;
+            selector.sharedCommandList.Filter = filter;
         }
 
         private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {

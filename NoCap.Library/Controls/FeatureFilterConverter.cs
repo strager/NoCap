@@ -1,13 +1,25 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
-    public class FeatureFilterConverter : TypeConverter {
-        public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value) {
-            string commandFeatureString = (string) value;
-            var commandFeatures = (CommandFeatures) Enum.Parse(typeof(CommandFeatures), commandFeatureString);
+    public class FeatureFilterConverter : TypeConverter, IValueConverter {
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
+            return Convert(value);
+        }
 
-            return new Predicate<object>((obj) => {
+        private static Predicate<object> Convert(object value) {
+            var commandFeatures = value is CommandFeatures
+                ? (CommandFeatures) value
+                : (CommandFeatures) Enum.Parse(typeof(CommandFeatures), (string) value);
+
+            return GetFeatureFilterPredicate(commandFeatures);
+        }
+
+        private static Predicate<object> GetFeatureFilterPredicate(CommandFeatures commandFeatures) {
+            return (obj) => {
                 var objAsCommand = obj as ICommand;
 
                 if (objAsCommand != null) {
@@ -21,15 +33,23 @@ namespace NoCap.Library.Controls {
                 }
 
                 return false;
-            });
+            };
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
-            if (sourceType == typeof(string)) {
+            if (sourceType == typeof(string) || sourceType == typeof(CommandFeatures)) {
                 return true;
             }
 
             return base.CanConvertFrom(context, sourceType);
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return Convert(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            return DependencyProperty.UnsetValue;
         }
     }
 }

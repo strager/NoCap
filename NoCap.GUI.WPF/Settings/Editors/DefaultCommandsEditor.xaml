@@ -7,13 +7,18 @@
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     Name="editor">
+
+    <ContentControl.Resources>
+        <Controls:FeatureFilterConverter x:Key="FeatureFilterConverter" />
+    </ContentControl.Resources>
+    
     <ListView Name="defaultsList" ItemsSource="{Binding DefaultCommands, ElementName=editor, Mode=TwoWay}">
         <ListView.View>
             <GridView>
                 <GridViewColumn Width="100">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Features}" />
+                            <TextBlock Text="{Binding Features}" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
@@ -21,7 +26,9 @@
                 <GridViewColumn Width="100">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <Controls:CommandFactorySelector HorizontalAlignment="Stretch" InfoStuff="{Binding InfoStuff, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}" />
+                            <Controls:CommandFactorySelector HorizontalAlignment="Stretch"
+                                InfoStuff="{Binding InfoStuff, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
+                                Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
