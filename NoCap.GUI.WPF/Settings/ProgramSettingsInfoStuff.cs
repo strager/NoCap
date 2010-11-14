@@ -29,16 +29,30 @@ namespace NoCap.GUI.WPF.Settings {
             this.commandFactories = this.extensionManager.CompositionContainer.GetExportedValues<ICommandFactory>();
         }
 
+        public IEnumerable<ICommandFactory> CommandFactories {
+            get {
+                return this.commandFactories;
+            }
+        }
+
         public ObservableCollection<ICommand> Commands {
             get {
                 return this.programSettings.Commands;
             }
         }
 
-        public IEnumerable<ICommandFactory> CommandFactories {
-            get {
-                return this.commandFactories;
+        public ICommand GetDefaultCommand(CommandFeatures features) {
+            var command = this.programSettings.DefaultCommands.Get(features);
+
+            if (command == null) {
+                return null;
             }
+
+            return command.Proxy;
+        }
+
+        public bool IsDefaultCommand(ICommand command) {
+            return this.programSettings.DefaultCommands.Contains(command);
         }
     }
 }

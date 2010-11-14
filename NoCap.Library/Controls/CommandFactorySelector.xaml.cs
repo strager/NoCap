@@ -39,9 +39,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(InfoStuffProperty, value);  }
         }
         
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<ICommandFactory> Filter {
-            get { return (Predicate<ICommandFactory>) GetValue(FilterProperty); }
+        [TypeConverter(typeof(CommandFeatureFilterConverter))]
+        public object Filter {
+            get { return GetValue(FilterProperty); }
             set { SetValue(FilterProperty, value);  }
         }
 
@@ -79,7 +79,7 @@ namespace NoCap.Library.Controls {
 
             FilterProperty = DependencyProperty.Register(
                 "Filter",
-                typeof(Predicate<ICommandFactory>),
+                typeof(object),
                 typeof(CommandFactorySelector),
                 new PropertyMetadata(null, OnFilterChanged)
             );
@@ -242,13 +242,9 @@ namespace NoCap.Library.Controls {
             this.commandFactoryList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
             this.filterer.Filter = (obj) => {
-                var filter = Filter;
+                var filterPredicate = CommandFeatureFilterConverter.GetPredicate(Filter);
 
-                if (filter == null) {
-                    return true;
-                }
-
-                return filter((ICommandFactory) obj);
+                return filterPredicate((ICommandFactory) obj);
             };
         }
 

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
-    public class FeaturedCommandCollection : ICollection<FeaturedCommand> {
+    public class FeaturedCommandCollection : IEnumerable<FeaturedCommand> {
         private readonly IDictionary<CommandFeatures, FeaturedCommand> commands = new Dictionary<CommandFeatures, FeaturedCommand>();
 
         public IEnumerator<FeaturedCommand> GetEnumerator() {
@@ -35,29 +36,12 @@ namespace NoCap.GUI.WPF.Settings {
             this.commands.Clear();
         }
 
-        public bool Contains(FeaturedCommand item) {
-            throw new NotSupportedException();
-            return this.commands.ContainsKey(item.Features);
+        public FeaturedCommand Get(CommandFeatures features) {
+            return this.commands[features];
         }
 
-        void ICollection<FeaturedCommand>.CopyTo(FeaturedCommand[] array, int arrayIndex) {
-            this.commands.Values.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(FeaturedCommand item) {
-            return this.commands.Remove(item.Features);
-        }
-
-        public int Count {
-            get {
-                return this.commands.Count;
-            }
-        }
-
-        bool ICollection<FeaturedCommand>.IsReadOnly {
-            get {
-                return false;
-            }
+        public bool Contains(ICommand command) {
+            return this.Any((featuredCommand) => featuredCommand.Command == command || featuredCommand.Proxy == command);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ namespace NoCap.Library.Controls {
     /// </summary>
     public partial class SharedCommandSelector {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty CommandsSourceProperty;
         public readonly static DependencyProperty FilterProperty;
         
         public readonly static RoutedEvent CommandChangedEvent;
@@ -21,14 +22,14 @@ namespace NoCap.Library.Controls {
             set { SetValue(CommandProperty, value); }
         }
 
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value);  }
+        public object CommandsSource {
+            get { return GetValue(CommandsSourceProperty); }
+            set { SetValue(CommandsSourceProperty, value);  }
         }
         
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<ICommand> Filter {
-            get { return (Predicate<ICommand>) GetValue(FilterProperty); }
+        [TypeConverter(typeof(CommandFeatureFilterConverter))]
+        public object Filter {
+            get { return GetValue(FilterProperty); }
             set { SetValue(FilterProperty, value);  }
         }
 
@@ -45,16 +46,16 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(OnCommandChanged)
             );
 
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
+            CommandsSourceProperty = DependencyProperty.Register(
+                "CommandsSource",
+                typeof(object),
                 typeof(SharedCommandSelector),
-                new PropertyMetadata(OnInfoStuffChanged)
+                new PropertyMetadata(OnCommandsSourceChanged)
             );
 
             FilterProperty = DependencyProperty.Register(
                 "Filter",
-                typeof(Predicate<ICommand>),
+                typeof(object),
                 typeof(SharedCommandSelector),
                 new PropertyMetadata(null, OnFilterChanged)
             );
@@ -65,6 +66,12 @@ namespace NoCap.Library.Controls {
                 typeof(RoutedPropertyChangedEventHandler<ICommand>),
                 typeof(SharedCommandSelector)
             );
+        }
+
+        private static void OnCommandsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            var commandSelector = (SharedCommandSelector) sender;
+
+            commandSelector.filterer.Source = e.NewValue;
         }
 
         private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
@@ -83,26 +90,15 @@ namespace NoCap.Library.Controls {
             commandSelector.RaiseEvent(args);
         }
 
-        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
-            var commandSelector = (SharedCommandSelector) sender;
-            var infoStuff = (IInfoStuff) e.NewValue;
-
-            commandSelector.filterer.Source = infoStuff == null ? null : infoStuff.Commands;
-        }
-
         public SharedCommandSelector() {
             InitializeComponent();
 
             this.commandList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
             this.filterer.Filter = (obj) => {
-                var filter = Filter;
+                var filterPredicate = CommandFeatureFilterConverter.GetPredicate(Filter);
 
-                if (filter == null) {
-                    return true;
-                }
-
-                return filter((ICommand) obj);
+                return filterPredicate((ICommand) obj);
             };
         }
 

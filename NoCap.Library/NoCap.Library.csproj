@@ -39,6 +39,7 @@
     <AssemblyOriginatorKeyFile>PrivateKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -52,7 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\FeatureFilterConverter.cs" />
+    <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
@@ -84,7 +85,6 @@
     </Compile>
     <Compile Include="Tasks\ICommandTask.cs" />
     <Compile Include="IInfoStuff.cs" />
-    <Compile Include="InfoStuff.cs" />
     <Compile Include="ICommandEditor.cs" />
     <Compile Include="ICommandFactory.cs" />
     <Compile Include="Command.cs" />

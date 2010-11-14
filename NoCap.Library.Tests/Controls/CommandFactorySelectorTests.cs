@@ -238,7 +238,6 @@ namespace NoCap.Library.Tests.Controls {
             var commandsCollection = new ObservableCollection<ICommand>(commands);
 
             var mockInfoStuff = new Mock<IInfoStuff>(MockBehavior.Strict);
-            mockInfoStuff.Setup((infoStuff) => infoStuff.Commands).Returns(commandsCollection);
             mockInfoStuff.Setup((infoStuff) => infoStuff.CommandFactories).Returns(commandFactories);
 
             return mockInfoStuff.Object;

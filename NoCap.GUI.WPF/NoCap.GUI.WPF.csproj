@@ -76,6 +76,8 @@
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExtensionManager.cs" />
+    <Compile Include="Settings\CommandFactoryProxy.cs" />
+    <Compile Include="Settings\CommandProxy.cs" />
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>

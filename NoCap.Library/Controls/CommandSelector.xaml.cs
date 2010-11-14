@@ -10,7 +10,7 @@ namespace NoCap.Library.Controls {
     /// </summary>
     public partial class CommandSelector {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty IsSharedProperty;
+        public readonly static DependencyProperty IsDefaultProperty;
         public readonly static DependencyProperty InfoStuffProperty;
         public readonly static DependencyProperty FilterProperty;
 
@@ -22,9 +22,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(CommandProperty, value); }
         }
 
-        public bool IsShared {
-            get { return (bool) GetValue(IsSharedProperty); }
-            set { SetValue(IsSharedProperty, value); }
+        public bool IsDefault {
+            get { return (bool) GetValue(IsDefaultProperty); }
+            set { SetValue(IsDefaultProperty, value); }
         }
 
         public IInfoStuff InfoStuff {
@@ -32,9 +32,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(InfoStuffProperty, value);  }
         }
         
-        [TypeConverter(typeof(FeatureFilterConverter))]
-        public Predicate<object> Filter {
-            get { return (Predicate<object>) GetValue(FilterProperty); }
+        [TypeConverter(typeof(CommandFeatureConverter))]
+        public CommandFeatures Filter {
+            get { return (CommandFeatures) GetValue(FilterProperty); }
             set { SetValue(FilterProperty, value);  }
         }
 
@@ -56,11 +56,11 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(OnCommandChanged)
             );
 
-            IsSharedProperty = DependencyProperty.Register(
-                "IsShared",
+            IsDefaultProperty = DependencyProperty.Register(
+                "IsDefault",
                 typeof(bool),
                 typeof(CommandSelector),
-                new PropertyMetadata(false, OnIsSharedChanged)
+                new PropertyMetadata(false, OnIsDefaultChanged)
             );
 
             InfoStuffProperty = DependencyProperty.Register(
@@ -72,9 +72,9 @@ namespace NoCap.Library.Controls {
 
             FilterProperty = DependencyProperty.Register(
                 "Filter",
-                typeof(Predicate<object>),
+                typeof(CommandFeatures),
                 typeof(CommandSelector),
-                new PropertyMetadata(null, OnFilterChanged)
+                new PropertyMetadata((CommandFeatures) 0, OnFilterChanged)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -94,10 +94,9 @@ namespace NoCap.Library.Controls {
 
         private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var selector = (CommandSelector) sender;
-            var filter = (Predicate<object>) e.NewValue;
+            var filter = (CommandFeatures) e.NewValue;
 
-            selector.commandFactoryList.Filter = filter;
-            selector.sharedCommandList.Filter = filter;
+            selector.commandFactoryList.Filter = CommandFeatureFilterConverter.GetPredicate(filter);
         }
 
         private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
@@ -120,18 +119,18 @@ namespace NoCap.Library.Controls {
             commandSelector.RaiseEvent(args);
         }
 
-        private static void OnIsSharedChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+        private static void OnIsDefaultChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandSelector) sender;
 
-            bool newIsShared = (bool) e.NewValue;
+            bool newIsDefault = (bool) e.NewValue;
 
-            if (newIsShared) {
-                commandSelector.UpdateFromShared();
+            if (newIsDefault) {
+                commandSelector.UpdateFromDefault();
             } else {
                 commandSelector.UpdateFromFactory();
             }
 
-            var args = new RoutedPropertyChangedEventArgs<bool>((bool) e.OldValue, newIsShared) {
+            var args = new RoutedPropertyChangedEventArgs<bool>((bool) e.OldValue, newIsDefault) {
                 RoutedEvent = IsSharedChangedEvent
             };
 
@@ -153,27 +152,21 @@ namespace NoCap.Library.Controls {
                 return;
             }
 
-            bool isCommandShared = InfoStuff.Commands.Contains(command);
+            bool isDefault = InfoStuff.IsDefaultCommand(command);
 
-            IsShared = isCommandShared;
+            IsDefault = isDefault;
 
-            if (isCommandShared) {
-                this.sharedCommandList.Command = command;
-            } else {
+            if (!isDefault) {
                 this.commandFactoryList.Command = command;
             }
-        }
-
-        private void SharedCommandChanged(object sender, RoutedPropertyChangedEventArgs<ICommand> e) {
-            UpdateFromShared();
         }
 
         private void CommandFactoryCommandChanged(object sender, RoutedPropertyChangedEventArgs<ICommand> e) {
             UpdateFromFactory();
         }
 
-        private void UpdateFromShared() {
-            Command = this.sharedCommandList.Command;
+        private void UpdateFromDefault() {
+            Command = InfoStuff.GetDefaultCommand(Filter);
         }
 
         private void UpdateFromFactory() {
@@ -181,9 +174,7 @@ namespace NoCap.Library.Controls {
         }
 
         public void AutoLoad() {
-            if (IsShared) {
-                this.sharedCommandList.AutoLoad();
-            } else {
+            if (!IsDefault) {
                 this.commandFactoryList.AutoLoad();
             }
         }

@@ -72,6 +72,8 @@ namespace NoCap.GUI.WPF.Settings {
 
     public class FeaturedCommand {
         private readonly CommandFeatures features;
+        private ICommand command;
+        private readonly CommandProxy proxy = new CommandProxy();
 
         public CommandFeatures Features {
             get {
@@ -80,12 +82,26 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public ICommand Command {
-            get;
-            set;
+            get {
+                return this.command;
+            }
+
+            set {
+                this.command = value;
+
+                proxy.InnerCommand = value;
+            }
+        }
+
+        public CommandProxy Proxy {
+            get {
+                return this.proxy;
+            }
         }
 
         public FeaturedCommand(CommandFeatures features, ICommand command) {
             this.features = features;
+
             Command = command;
         }
     }

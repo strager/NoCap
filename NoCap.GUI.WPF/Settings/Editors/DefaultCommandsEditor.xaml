@@ -9,7 +9,7 @@
     Name="editor">
 
     <ContentControl.Resources>
-        <Controls:FeatureFilterConverter x:Key="FeatureFilterConverter" />
+        <Controls:CommandFeatureFilterConverter x:Key="FeatureFilterConverter" />
     </ContentControl.Resources>
     
     <ListView Name="defaultsList" ItemsSource="{Binding DefaultCommands, ElementName=editor, Mode=TwoWay}">

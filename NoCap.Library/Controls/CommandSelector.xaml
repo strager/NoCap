@@ -13,38 +13,20 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <CheckBox Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,3,0" IsChecked="{Binding ElementName=commandSelector, Path=IsShared}" Content="Shared" />
+        <CheckBox Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,3,0" IsChecked="{Binding ElementName=commandSelector, Path=IsDefault}" Content="Default" />
         
         <!-- TODO Make swapping visibility/binding less painful -->
-
-        <library:SharedCommandSelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="sharedCommandList" CommandChanged="SharedCommandChanged"
-            InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff, Mode=OneWay}">
-            <library:SharedCommandSelector.Style>
-                <Style>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsShared}" Value="True">
-                            <Setter Property="library:CommandFactorySelector.Visibility" Value="Visible" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsShared}" Value="False">
-                            <Setter Property="library:CommandFactorySelector.Visibility" Value="Collapsed" />
-                        </DataTrigger>
-
-                    </Style.Triggers>
-                </Style>
-            </library:SharedCommandSelector.Style>
-        </library:SharedCommandSelector>
 
         <library:CommandFactorySelector Grid.Column="1" VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="commandFactoryList" CommandChanged="CommandFactoryCommandChanged"
             InfoStuff="{Binding ElementName=commandSelector, Path=InfoStuff, Mode=OneWay}">
             <library:CommandFactorySelector.Style>
                 <Style>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsShared}" Value="True">
+                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsDefault}" Value="True">
                             <Setter Property="library:CommandFactorySelector.Visibility" Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsShared}" Value="False">
+                        <DataTrigger Binding="{Binding ElementName=commandSelector, Path=IsDefault}" Value="False">
                             <Setter Property="library:CommandFactorySelector.Visibility" Value="Visible" />
                         </DataTrigger>
 
