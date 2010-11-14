@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -255,7 +255,19 @@ namespace NoCap.Library.Controls {
         }
 
         public void AutoLoad() {
-            if (Command == null) {
+            if (Command != null) {
+                return;
+            }
+
+            CommandFeatures features;
+
+            if (CommandFeatureConverter.TryGetCommandFeatures(Filter, out features)) {
+                var factories = (IEnumerable<ICommandFactory>) this.filterer.Source;
+
+                if (factories != null) {
+                    CommandFactory = Library.InfoStuff.GetPreferredCommandFactory(factories, features);
+                }
+            } else {
                 this.commandFactoryList.SelectedIndex = 0;
             }
         }

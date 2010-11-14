@@ -76,7 +76,6 @@
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExtensionManager.cs" />
-    <Compile Include="Settings\CommandFactoryProxy.cs" />
     <Compile Include="Settings\CommandProxy.cs" />
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
@@ -99,6 +98,7 @@
     <Compile Include="Settings\ConfigurationManager.cs" />
     <Compile Include="Plugins\CommandBinding.cs" />
     <Compile Include="Plugins\TaskbarPlugin.cs" />
+    <Compile Include="Settings\TypeComparer.cs" />
     <Compile Include="TaskPopup.xaml.cs">
       <DependentUpon>TaskPopup.xaml</DependentUpon>
     </Compile>

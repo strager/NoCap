@@ -4,6 +4,7 @@ using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
+    [PreferredCommandFactory(CommandFeatures.UrlShortener)]
     class IsgdShortenerFactory : ICommandFactory {
         public string Name {
             get { return "is.gd shortener"; }

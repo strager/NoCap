@@ -26,12 +26,10 @@ namespace NoCap.GUI.WPF.Settings {
         [NonSerialized]
         private bool isInitialized;
 
-        public void Init(CommandRunner commandRunner, CompositionContainer compositionContainer) {
+        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
             if (this.isInitialized) {
                 throw new InvalidOperationException("Already initialized");
             }
-
-            this.isInitialized = true;
 
             this.commandRunner = commandRunner;
             this.compositionContainer = compositionContainer;
@@ -41,6 +39,8 @@ namespace NoCap.GUI.WPF.Settings {
             foreach (var plugin in this.plugins) {
                 plugin.Initialize(commandRunner, compositionContainer);
             }
+
+            this.isInitialized = true;
         }
 
         private void Recompose(CompositionContainer compositionContainer) {
@@ -100,25 +100,6 @@ namespace NoCap.GUI.WPF.Settings {
             foreach (var plugin in this.plugins) {
                 plugin.Dispose();
             }
-        }
-    }
-
-    public class TypeComparer<T> : EqualityComparer<T>
-        where T : class {
-        public override bool Equals(T x, T y) {
-            if (x == null && y == null) {
-                return true;
-            }
-
-            if (x == null || y == null) {
-                return false;
-            }
-
-            return x.GetType().Equals(y.GetType());
-        }
-
-        public override int GetHashCode(T obj) {
-            return 0;
         }
     }
 }

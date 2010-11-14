@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
     <Compile Include="CommandCanceledException.cs" />

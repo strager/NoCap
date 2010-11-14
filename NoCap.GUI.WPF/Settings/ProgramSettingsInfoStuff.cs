@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
-using NoCap.GUI.WPF.Plugins;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {

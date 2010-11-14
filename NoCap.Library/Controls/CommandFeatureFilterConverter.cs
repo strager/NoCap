@@ -1,17 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     public class CommandFeatureConverter : TypeConverter, IValueConverter {
         public static CommandFeatures GetCommandFeatures(object value) {
-            return value is CommandFeatures
-                ? (CommandFeatures) value
-                : (CommandFeatures) Enum.Parse(typeof(CommandFeatures), (string) value);
+            if (value is CommandFeatures) {
+                return (CommandFeatures) value;
+            } else {
+                return (CommandFeatures) Enum.Parse(typeof(CommandFeatures), (string) value);
+            }
+        }
+
+        public static bool TryGetCommandFeatures(object value, out CommandFeatures commandFeatures) {
+            if (value is CommandFeatures) {
+                commandFeatures = (CommandFeatures) value;
+
+                return true;
+            }
+
+            string valueString = value as string;
+
+            if (valueString != null) {
+                return Enum.TryParse(valueString, true, out commandFeatures);
+            }
+
+            commandFeatures = 0;
+
+            return false;
         }
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {

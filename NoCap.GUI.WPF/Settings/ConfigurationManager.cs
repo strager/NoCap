@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
@@ -33,14 +32,17 @@ namespace NoCap.GUI.WPF.Settings {
             Save();
         }
 
-        public ProgramSettings LoadSettings() {
+        public ProgramSettings LoadSettings(ExtensionManager extensionManager) {
             byte[] data = ProgramSettingsData;
 
             if (data == null) {
-                return GetDefaultSettings();
+                return GetDefaultSettings(extensionManager);
             }
 
-            return DeserializeSettings(data);
+            var settings = DeserializeSettings(data);
+            settings.ExtensionManager = extensionManager;
+
+            return settings;
         }
 
         public static byte[] SerializeSettings(ProgramSettings settings) {
@@ -78,10 +80,12 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        private static ProgramSettings GetDefaultSettings() {
+        private static ProgramSettings GetDefaultSettings(ExtensionManager extensionManager) {
             // TODO Clean this up
 
-            var settings = new ProgramSettings();
+            var settings = new ProgramSettings {
+                ExtensionManager = extensionManager
+            };
 
             var commandFactories = settings.InfoStuff.CommandFactories
                     .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));

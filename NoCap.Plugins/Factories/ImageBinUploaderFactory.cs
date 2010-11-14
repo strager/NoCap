@@ -6,6 +6,7 @@ using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
+    [PreferredCommandFactory(CommandFeatures.ImageUploader)]
     class ImageBinUploaderFactory : ICommandFactory {
         public string Name {
             get { return "ImageBin.ca uploader"; }

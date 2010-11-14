@@ -16,13 +16,11 @@ namespace NoCap.GUI.WPF {
 
         private void Load() {
             this.configurationManager = new ConfigurationManager();
-            this.settings = this.configurationManager.LoadSettings();
+            this.settings = this.configurationManager.LoadSettings(new ExtensionManager());
 
             var commandRunner = new CommandRunner();
-            var extensionManager = new ExtensionManager();
 
-            this.settings.ExtensionManager = extensionManager;
-            this.settings.Plugins.Init(commandRunner, extensionManager.CompositionContainer);
+            this.settings.Plugins.Initialize(commandRunner, new ExtensionManager().CompositionContainer);
         }
 
         internal void ShowSettings() {

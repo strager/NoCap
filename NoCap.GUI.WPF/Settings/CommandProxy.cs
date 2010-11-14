@@ -31,7 +31,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public ICommandFactory GetFactory() {
-            return new CommandFactoryProxy(this);
+            return null;
         }
 
         public ITimeEstimate ProcessTimeEstimate {

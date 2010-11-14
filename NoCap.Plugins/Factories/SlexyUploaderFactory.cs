@@ -4,6 +4,7 @@ using NoCap.Plugins.Commands;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
+    [PreferredCommandFactory(CommandFeatures.TextUploader)]
     class SlexyUploaderFactory : ICommandFactory {
         public string Name {
             get { return "Slexy.org uploader"; }
