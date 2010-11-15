@@ -6,40 +6,39 @@
         mc:Ignorable="d"
         x:Name="self"
         d:DesignHeight="300" d:DesignWidth="300"
-        xmlns:Plugins="clr-namespace:NoCap.GUI.WPF.Plugins" xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library">
-    <ContentControl.Resources>
-        <Plugins:NullableBooleanConverter x:Key="NullableBooleanConverter" />
-    </ContentControl.Resources>
-    
+        xmlns:Plugins="clr-namespace:NoCap.GUI.WPF.Plugins"
+        xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
+        xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListView Name="bindingsList" ItemsSource="{Binding Path=Bindings, Mode=TwoWay}" Grid.Row="0">
+        <ListView Name="bindingsList" ItemsSource="{Binding Bindings, Mode=TwoWay}" Grid.Row="0">
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
-                    <EventSetter Event="MouseDoubleClick" Handler="ChangeBindingClicked" />
+                    <Setter Property="acb:CommandBehavior.Event" Value="MouseDoubleClick" />
+                    <Setter Property="acb:CommandBehavior.Command" Value="{x:Static ApplicationCommands.Open}" />
                 </Style>
             </ListView.Resources>
             
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Bind" Width="100">
+                    <GridViewColumn Header="Bind" Width="NaN">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Input.HumanString}" />
+                                <TextBlock Text="{Binding Input.HumanString}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     
-                    <GridViewColumn Header="Command" Width="200">
+                    <GridViewColumn Header="Command" Width="NaN">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Controls:CommandSelector HorizontalAlignment="Stretch"
-                                    Command="{Binding Path=Command, Mode=TwoWay}"
-                                    CommandsSource="{Binding ElementName=self, Path=InfoStuff.Commands}" />
+                                    Command="{Binding Command, Mode=TwoWay}"
+                                    CommandsSource="{Binding InfoStuff.Commands, ElementName=self}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -55,12 +54,12 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
-                <Button Content="_Add..." Click="AddBindingClicked" />
+                <Button Content="_Add..." Command="New" />
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Left">
-                <Button Content="_Change..." Click="ChangeBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
-                <Button Content="_Delete" Click="DeleteBindingClicked" IsEnabled="{Binding ElementName=bindingsList, Path=SelectedItem, Converter={StaticResource NullableBooleanConverter}}" />
+                <Button Content="_Rebind..." Command="Open" />
+                <Button Content="_Delete" Command="Delete" />
             </StackPanel>
         </Grid>
     </Grid>

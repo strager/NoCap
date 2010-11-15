@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
@@ -51,9 +52,28 @@ namespace NoCap.GUI.WPF.Plugins {
             Bindings = new MutableCommandBindingCollection(plugin.Bindings);
 
             DataContext = this;
+
+            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.New, AddBinding, CanAddBinding));
+            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Open, EditBinding, CanEditBinding));
+            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Delete, DeleteBinding, CanDeleteBinding));
         }
 
-        private void AddBindingClicked(object sender, RoutedEventArgs e) {
+        private void CanAddBinding(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
+        private void CanEditBinding(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = (SelectedBinding != null);
+            e.Handled = true;
+        }
+
+        private void CanDeleteBinding(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = (SelectedBinding != null);
+            e.Handled = true;
+        }
+
+        private void AddBinding(object sender, RoutedEventArgs e) {
             IInputSequence inputSequence;
 
             if (!TryGetInputSequence(out inputSequence)) {
@@ -65,19 +85,19 @@ namespace NoCap.GUI.WPF.Plugins {
             Bindings.Add(binding);
         }
 
-        private void DeleteBindingClicked(object sender, RoutedEventArgs e) {
+        private void EditBinding(object sender, RoutedEventArgs e) {
+            if (SelectedBinding != null) {
+                EditBinding(SelectedBinding);
+            }
+        }
+
+        private void DeleteBinding(object sender, RoutedEventArgs e) {
             if (SelectedBinding != null) {
                 Bindings.Remove(SelectedBinding);
             }
         }
 
-        private void ChangeBindingClicked(object sender, RoutedEventArgs e) {
-            if (SelectedBinding != null) {
-                ChangeBinding(SelectedBinding);
-            }
-        }
-
-        private void ChangeBinding(MutableCommandBinding binding) {
+        private void EditBinding(MutableCommandBinding binding) {
             if (binding == null) {
                 throw new ArgumentNullException("binding");
             }

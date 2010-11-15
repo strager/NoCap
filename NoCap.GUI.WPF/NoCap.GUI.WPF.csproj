@@ -169,6 +169,10 @@
       <Project>{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}</Project>
       <Name>NoCap.Plugins</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\AttachedCommandBehavior\AttachedCommandBehavior.csproj">
+      <Project>{BA852758-6682-4878-906A-917A1E75DE16}</Project>
+      <Name>AttachedCommandBehavior</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
       <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
       <Name>Windows7.DesktopIntegration</Name>
