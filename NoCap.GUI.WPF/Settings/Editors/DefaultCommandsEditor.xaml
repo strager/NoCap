@@ -10,29 +10,38 @@
 
     <ContentControl.Resources>
         <Controls:CommandFeatureFilterConverter x:Key="FeatureFilterConverter" />
+        <Grid x:Key="Grid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
+            </Grid.ColumnDefinitions>
+        </Grid>
     </ContentControl.Resources>
-    
-    <ListView Name="defaultsList" ItemsSource="{Binding DefaultCommands, ElementName=editor, Mode=TwoWay}">
-        <ListView.View>
-            <GridView>
-                <GridViewColumn Width="100">
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Features}" />
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
 
-                <GridViewColumn Width="100">
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate>
-                            <Controls:CommandFactorySelector HorizontalAlignment="Stretch"
-                                InfoStuff="{Binding InfoStuff, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
-                                Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-            </GridView>
-        </ListView.View>
-    </ListView>
+    <ItemsControl ItemsSource="{Binding DefaultCommands, ElementName=editor, Mode=TwoWay}" Grid.IsSharedSizeScope="True">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+                                    <ColumnDefinition Width="{Binding ColumnDefinitions[1].Width, Source={StaticResource Grid}}" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <Label Grid.Column="0" Content="{Binding Features}" />
+                    <Controls:CommandFactorySelector Grid.Column="1" HorizontalAlignment="Stretch"
+                        InfoStuff="{Binding InfoStuff, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
+                        Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
+                    <Button Grid.Column="2">Edit</Button>
+                </ItemsControl>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </ContentControl>

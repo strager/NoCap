@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Settings {
+    [Serializable]
     public class CommandProxy : ICommand {
         public ICommand InnerCommand {
             get;
