@@ -77,6 +77,10 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
+        public bool IsValid() {
+            return ImageWriter.IsValidAndNotNull() && FileUploader.IsValidAndNotNull();
+        }
+
         [NonSerialized]
         private PropertyChangedEventHandler propertyChanged;
 

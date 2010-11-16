@@ -54,5 +54,9 @@ namespace NoCap.Plugins.Commands {
                 return TimeEstimates.UserInteractive;
             }
         }
+
+        public bool IsValid() {
+            return true;
+        }
     }
 }

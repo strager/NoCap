@@ -112,5 +112,9 @@ namespace NoCap.Plugins.Commands {
                 return TimeEstimates.Instantaneous;
             }
         }
+
+        public bool IsValid() {
+            return true;
+        }
     }
 }

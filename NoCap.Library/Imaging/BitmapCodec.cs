@@ -62,6 +62,10 @@ namespace NoCap.Library.Imaging {
             }
         }
 
+        public virtual bool IsValid() {
+            return true;
+        }
+
         [NonSerialized]
         private PropertyChangedEventHandler propertyChanged;
 

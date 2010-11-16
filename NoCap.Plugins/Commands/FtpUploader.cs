@@ -174,6 +174,10 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
+        public bool IsValid() {
+            return true;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void Notify(string propertyName) {

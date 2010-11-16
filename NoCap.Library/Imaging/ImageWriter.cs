@@ -91,6 +91,10 @@ namespace NoCap.Library.Imaging {
             }
         }
 
+        public bool IsValid() {
+            return this.codec.IsValidAndNotNull();
+        }
+
         public ImageWriter(BitmapCodec codec) {
             if (codec == null) {
                 throw new ArgumentNullException("codec");

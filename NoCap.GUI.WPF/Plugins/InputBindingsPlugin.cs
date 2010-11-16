@@ -110,7 +110,7 @@ namespace NoCap.GUI.WPF.Plugins {
             if (e.State == InputState.On) {
                 var command = (BoundCommand) e.Command;
 
-                if (this.commandRunner != null) {
+                if (this.commandRunner != null && command.Command.IsValidAndNotNull()) {
                     this.commandRunner.Run(command.Command);
                 }
             }

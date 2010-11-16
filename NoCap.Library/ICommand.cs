@@ -63,6 +63,8 @@ namespace NoCap.Library {
         ICommandFactory GetFactory();
 
         ITimeEstimate ProcessTimeEstimate { get; }
+
+        bool IsValid();
     }
 
     public static class CommandExtensions {
@@ -72,6 +74,10 @@ namespace NoCap.Library {
             }
 
             return command.GetFactory().HasFeatures(features);
+        }
+
+        public static bool IsValidAndNotNull(this ICommand command) {
+            return command != null && command.IsValid();
         }
     }
 }

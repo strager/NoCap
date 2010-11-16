@@ -99,6 +99,10 @@ namespace NoCap.Library.Commands {
             }
         }
 
+        public bool IsValid() {
+            return this.commands.All((command) => command.IsValidAndNotNull());
+        }
+
         public void Add(ICommand item) {
             this.commands.Add(item);
         }

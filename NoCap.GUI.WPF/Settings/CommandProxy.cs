@@ -41,5 +41,9 @@ namespace NoCap.GUI.WPF.Settings {
                 return InnerCommand.ProcessTimeEstimate;
             }
         }
+
+        public bool IsValid() {
+            return InnerCommand.IsValidAndNotNull();
+        }
     }
 }

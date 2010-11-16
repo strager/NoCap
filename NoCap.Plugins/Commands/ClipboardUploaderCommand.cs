@@ -64,15 +64,6 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
-        public HighLevelCommand Clone() {
-            return new ClipboardUploaderCommand {
-                Name = Name,
-                ImageUploader = ImageUploader,
-                TextUploader = TextUploader,
-                UrlShortener = UrlShortener,
-            };
-        }
-
         public override ICommandFactory GetFactory() {
             return new ClipboardUploaderCommandFactory();
         }
@@ -81,6 +72,12 @@ namespace NoCap.Plugins.Commands {
             get {
                 return TimeEstimates.LongOperation;
             }
+        }
+
+        public override bool IsValid() {
+            return ImageUploader.IsValidAndNotNull()
+                && TextUploader.IsValidAndNotNull()
+                && UrlShortener.IsValidAndNotNull();
         }
 
         public override void Execute(IMutableProgressTracker progress) {

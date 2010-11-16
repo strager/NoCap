@@ -14,6 +14,7 @@
 * XML config instead of binary serialization
 
 == Features ==
+* Advanced checkbox for settings
 * Current speed and better timeremaining stuff
 * Adjustable image configuration
   * Switch to codec XYZ when conditions A and B are met

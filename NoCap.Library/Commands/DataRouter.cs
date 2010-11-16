@@ -74,6 +74,10 @@ namespace NoCap.Library.Commands {
             }
         }
 
+        public bool IsValid() {
+            return this.routes.Values.All((command) => command.IsValidAndNotNull());
+        }
+
         public void Connect(TypedDataType key, ICommand value) {
             if (value == null) {
                 throw new ArgumentNullException("value");

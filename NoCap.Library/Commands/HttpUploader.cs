@@ -148,5 +148,9 @@ namespace NoCap.Library.Commands {
                 return TimeEstimates.LongOperation;
             }
         }
+
+        public virtual bool IsValid() {
+            return true;
+        }
     }
 }

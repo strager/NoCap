@@ -22,6 +22,8 @@ namespace NoCap.Library.Commands {
             get;
         }
 
+        public abstract bool IsValid();
+
         public IEnumerable<TypedDataType> GetInputDataTypes() {
             return new[] { TypedDataType.None };
         }

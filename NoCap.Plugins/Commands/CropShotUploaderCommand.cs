@@ -36,13 +36,6 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
-        public HighLevelCommand Clone() {
-            return new CropShotUploaderCommand {
-                Name = Name,
-                ImageUploader = ImageUploader,
-            };
-        }
-
         public override ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
         }
@@ -51,6 +44,10 @@ namespace NoCap.Plugins.Commands {
             get {
                 return TimeEstimates.LongOperation;
             }
+        }
+
+        public override bool IsValid() {
+            return ImageUploader.IsValidAndNotNull();
         }
 
         public override void Execute(IMutableProgressTracker progress) {
