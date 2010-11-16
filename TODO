@@ -15,17 +15,15 @@
 
 == Features ==
 * Current speed and better timeremaining stuff
-* Default bindings
-  1. Binding wizard on first startup
 * Adjustable image configuration
-  1. Switch to codec XYZ when conditions A and B are met
+  * Switch to codec XYZ when conditions A and B are met
 * Triggers
-  1. Before/after some condition, do something
+  * Before/after some condition, do something
 * New commands
-  1. Run executable
-  2. Renamer
-  3. SCP
-  4. More uploading services
+  * Run executable
+  * Renamer
+  * SCP
+  * More uploading services
 * Error reporting
   * Bad configuration
   * Bad plugin
@@ -33,4 +31,3 @@
   * Command exceptions
 * Full task system
   * Concurrent tasks
-  * Pluggable reporters
