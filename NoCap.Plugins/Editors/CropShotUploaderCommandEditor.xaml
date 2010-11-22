@@ -9,7 +9,6 @@
         x:Name="editor">
     <StackPanel Orientation="Vertical">
         <local:FramedCommandEditor Header="Image uploader"
-            InfoStuff="{Binding InfoStuff, ElementName=editor}"
             Command="{Binding Command.ImageUploader, ElementName=editor, Mode=TwoWay}"
             Filter="ImageUploader"
             Name="imageUploaderEditor" />

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -60,9 +61,7 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(true, OnIsDefaultChanged)
             );
 
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
+            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
                 typeof(FramedCommandEditor),
                 new PropertyMetadata(OnInfoStuffChanged)
             );
@@ -127,14 +126,10 @@ namespace NoCap.Library.Controls {
             }
         }
 
-        public FramedCommandEditor() :
-            this(null) {
-        }
-
-        public FramedCommandEditor(IInfoStuff infoStuff) {
+        public FramedCommandEditor() {
             InitializeComponent();
 
-            InfoStuff = infoStuff;
+            SetResourceReference(InfoStuffProperty, "InfoStuff");
         }
 
         private void SelectCommand(ICommand command) {
@@ -142,7 +137,7 @@ namespace NoCap.Library.Controls {
                 return;
             }
 
-            bool isDefault = InfoStuff.IsDefaultCommand(command);
+            bool isDefault = command != null && InfoStuff.IsDefaultCommand(command);
 
             IsDefault = isDefault;
 
@@ -156,6 +151,7 @@ namespace NoCap.Library.Controls {
         }
 
         private void UpdateFromFactory() {
+            this.commandFactorySelector.AutoLoad();
             Command = this.commandFactorySelector.Command;
         }
 

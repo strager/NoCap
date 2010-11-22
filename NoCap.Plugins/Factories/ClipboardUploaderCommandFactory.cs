@@ -18,13 +18,13 @@ namespace NoCap.Plugins.Factories {
 
         public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
             var uploader = (ClipboardUploaderCommand) command;
-            uploader.ImageUploader = infoStuff.GetPreferredCommand(CommandFeatures.ImageUploader);
-            uploader.UrlShortener = infoStuff.GetPreferredCommand(CommandFeatures.UrlShortener);
-            uploader.TextUploader = infoStuff.GetPreferredCommand(CommandFeatures.TextUploader);
+            uploader.ImageUploader = infoStuff.GetDefaultCommand(CommandFeatures.ImageUploader);
+            uploader.UrlShortener = infoStuff.GetDefaultCommand(CommandFeatures.UrlShortener);
+            uploader.TextUploader = infoStuff.GetDefaultCommand(CommandFeatures.TextUploader);
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command, infoStuff);
+            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command);
         }
 
         public CommandFeatures CommandFeatures {

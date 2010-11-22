@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace NoCap.Library {
     public interface IInfoStuff {
@@ -7,6 +8,19 @@ namespace NoCap.Library {
 
         ICommand GetDefaultCommand(CommandFeatures features);
         bool IsDefaultCommand(ICommand command);
+    }
+
+    public class InfoStuffWpf : DependencyObject {
+        public static readonly DependencyProperty InfoStuffProperty;
+
+        static InfoStuffWpf() {
+            InfoStuffProperty = DependencyProperty.Register(
+                "InfoStuff",
+                typeof(IInfoStuff),
+                typeof(InfoStuffWpf),
+                new PropertyMetadata(null)
+            );
+        }
     }
 
     public static class InfoStuff {

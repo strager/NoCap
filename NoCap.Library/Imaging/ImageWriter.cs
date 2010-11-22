@@ -132,7 +132,7 @@ namespace NoCap.Library.Imaging {
         }
 
         public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
-            // TODO Cleaner usage
+            // Do nothing.
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {

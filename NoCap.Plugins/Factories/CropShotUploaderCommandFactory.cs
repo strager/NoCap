@@ -18,11 +18,11 @@ namespace NoCap.Plugins.Factories {
 
         public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
             var uploader = (CropShotUploaderCommand) command;
-            uploader.ImageUploader = infoStuff.GetPreferredCommand(CommandFeatures.ImageUploader);
+            uploader.ImageUploader = infoStuff.GetDefaultCommand(CommandFeatures.ImageUploader);
         }
 
         public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command, infoStuff);
+            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command);
         }
 
         public CommandFeatures CommandFeatures {

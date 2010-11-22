@@ -10,19 +10,16 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <local:FramedCommandEditor Header="Image uploader"
-                InfoStuff="{Binding InfoStuff, ElementName=editor}"
                 Command="{Binding Command.ImageUploader, ElementName=editor, Mode=TwoWay}"
                 Filter="ImageUploader"
                 Name="imageUploaderEditor" />
 
             <local:FramedCommandEditor Header="Text uploader"
-                InfoStuff="{Binding InfoStuff, ElementName=editor}"
                 Command="{Binding Command.TextUploader, ElementName=editor, Mode=TwoWay}"
                 Filter="TextUploader"
                 Name="textUploaderEditor" />
 
             <local:FramedCommandEditor Header="URL shortener"
-                InfoStuff="{Binding InfoStuff, ElementName=editor}"
                 Command="{Binding Command.UrlShortener, ElementName=editor, Mode=TwoWay}"
                 Filter="UrlShortener"
                 Name="urlShortenerEditor" />

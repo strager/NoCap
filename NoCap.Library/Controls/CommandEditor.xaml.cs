@@ -34,9 +34,7 @@ namespace NoCap.Library.Controls {
                 new FrameworkPropertyMetadata(OnCommandChanged)
             );
             
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
+            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
                 typeof(CommandEditor),
                 new PropertyMetadata(OnInfoStuffChanged)
             );
@@ -91,15 +89,8 @@ namespace NoCap.Library.Controls {
 
         public CommandEditor() {
             InitializeComponent();
-        }
 
-        public CommandEditor(IInfoStuff infoStuff) :
-            this() {
-            if (infoStuff == null) {
-                throw new ArgumentNullException("infoStuff");
-            }
-
-            InfoStuff = infoStuff;
+            SetResourceReference(InfoStuffProperty, "InfoStuff");
         }
     }
 }

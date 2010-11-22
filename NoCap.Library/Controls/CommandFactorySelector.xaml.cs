@@ -70,11 +70,9 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(null, OnCommandFactoryChanged, CoerceUpdates)
             );
 
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
+            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(null, OnInfoStuffChanged, CoerceUpdates)
+                new PropertyMetadata(OnInfoStuffChanged)
             );
 
             FilterProperty = DependencyProperty.Register(
@@ -238,6 +236,8 @@ namespace NoCap.Library.Controls {
 
         public CommandFactorySelector() {
             InitializeComponent();
+
+            SetResourceReference(InfoStuffProperty, "InfoStuff");
 
             this.commandFactoryList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 

@@ -9,16 +9,10 @@ namespace NoCap.Plugins.Editors {
     /// </summary>
     public partial class CropShotUploaderCommandEditor : ICommandEditor {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
         
         public CropShotUploaderCommand Command {
             get { return (CropShotUploaderCommand) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
-        }
-
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value); }
         }
 
         static CropShotUploaderCommandEditor() {
@@ -27,19 +21,12 @@ namespace NoCap.Plugins.Editors {
                 typeof(CropShotUploaderCommand),
                 typeof(CropShotUploaderCommandEditor)
             );
-
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
-                typeof(CropShotUploaderCommandEditor)
-            );
         }
 
-        public CropShotUploaderCommandEditor(CropShotUploaderCommand command, IInfoStuff infoStuff) {
+        public CropShotUploaderCommandEditor(CropShotUploaderCommand command) {
             InitializeComponent();
 
             Command = command;
-            InfoStuff = infoStuff;
 
             this.imageUploaderEditor.AutoLoad();
         }

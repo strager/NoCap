@@ -10,16 +10,10 @@ namespace NoCap.Plugins.Editors {
     /// </summary>
     public partial class ClipboardUploaderCommandEditor : ICommandEditor {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
         
         public ClipboardUploaderCommand Command {
             get { return (ClipboardUploaderCommand) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
-        }
-
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value); }
         }
 
         static ClipboardUploaderCommandEditor() {
@@ -28,19 +22,12 @@ namespace NoCap.Plugins.Editors {
                 typeof(ClipboardUploaderCommand),
                 typeof(ClipboardUploaderCommandEditor)
             );
-
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
-                typeof(ClipboardUploaderCommandEditor)
-            );
         }
 
-        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command, IInfoStuff infoStuff) {
+        public ClipboardUploaderCommandEditor(ClipboardUploaderCommand command) {
             InitializeComponent();
 
             Command = command;
-            InfoStuff = infoStuff;
 
             this.imageUploaderEditor.AutoLoad();
             this.textUploaderEditor.AutoLoad();

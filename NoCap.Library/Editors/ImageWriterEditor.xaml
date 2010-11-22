@@ -18,8 +18,8 @@
 
         <GroupBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Header="_Codec">
             <StackPanel Orientation="Vertical">
-                <Controls:CommandFactorySelector Grid.Row="0" Grid.Column="1" x:Name="codecSelector" Command="{Binding ElementName=editor, Path=Command.Codec, Mode=TwoWay}" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" />
-                <Controls:CommandEditor Command="{Binding ElementName=editor, Path=Command.Codec}" InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" />
+                <Controls:CommandFactorySelector Grid.Row="0" Grid.Column="1" x:Name="codecSelector" Command="{Binding ElementName=editor, Path=Command.Codec, Mode=TwoWay}" />
+                <Controls:CommandEditor Command="{Binding ElementName=editor, Path=Command.Codec}" />
             </StackPanel>
         </GroupBox>
 

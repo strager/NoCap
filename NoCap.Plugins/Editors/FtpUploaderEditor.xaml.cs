@@ -8,16 +8,10 @@ namespace NoCap.Plugins.Editors {
     /// </summary>
     public partial class FtpUploaderEditor : ICommandEditor {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
         
         public FtpUploader Command {
             get { return (FtpUploader) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
-        }
-
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value); }
         }
 
         static FtpUploaderEditor() {
@@ -26,19 +20,12 @@ namespace NoCap.Plugins.Editors {
                 typeof(FtpUploader),
                 typeof(FtpUploaderEditor)
             );
-
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
-                typeof(FtpUploaderEditor)
-            );
         }
 
-        public FtpUploaderEditor(FtpUploader command, IInfoStuff infoStuff) {
+        public FtpUploaderEditor(FtpUploader command) {
             InitializeComponent();
 
             Command = command;
-            InfoStuff = infoStuff;
         }
 
         private void UpdatePassword(object sender, RoutedEventArgs e) {

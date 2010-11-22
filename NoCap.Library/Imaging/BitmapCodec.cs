@@ -92,7 +92,7 @@ namespace NoCap.Library.Imaging {
             return CreateCommand();
         }
 
-        public virtual void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
             // Do nothing.
         }
 

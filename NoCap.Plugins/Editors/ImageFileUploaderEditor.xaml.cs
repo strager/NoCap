@@ -8,16 +8,10 @@ namespace NoCap.Plugins.Editors {
     /// </summary>
     public partial class ImageFileUploaderEditor : ICommandEditor {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
         
         public ImageFileUploader Command {
             get { return (ImageFileUploader) GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
-        }
-
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value); }
         }
 
         static ImageFileUploaderEditor() {
@@ -26,19 +20,12 @@ namespace NoCap.Plugins.Editors {
                 typeof(ImageFileUploader),
                 typeof(ImageFileUploaderEditor)
             );
-
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
-                typeof(ImageFileUploaderEditor)
-            );
         }
 
-        public ImageFileUploaderEditor(ImageFileUploader command, IInfoStuff infoStuff) {
+        public ImageFileUploaderEditor(ImageFileUploader command) {
             InitializeComponent();
 
             Command = command;
-            InfoStuff = infoStuff;
         }
     }
 }
