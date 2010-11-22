@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
@@ -7,33 +8,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
     public partial class CommandSettingsEditor : INotifyPropertyChanged {
-        private IInfoStuff infoStuff;
-
-        public IInfoStuff InfoStuff {
-            get {
-                return this.infoStuff;
-            }
-
-            set {
-                this.infoStuff = value;
-
-                Notify("InfoStuff");
-            }
-        }
-
-        private ICommand selectedCommand;
-
-        public ICommand SelectedCommand {
-            get {
-                return this.selectedCommand;
-            }
-
-            set {
-                this.selectedCommand = value;
-
-                Notify("SelectedCommand");
-            }
-        }
+        public static readonly DependencyProperty InfoStuffProperty;
 
         public string DisplayName {
             get {
@@ -41,10 +16,14 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             }
         }
 
-        public CommandSettingsEditor(IInfoStuff infoStuff) {
+        static CommandSettingsEditor() {
+            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(typeof(CommandSettingsEditor));
+        }
+
+        public CommandSettingsEditor() {
             InitializeComponent();
 
-            InfoStuff = infoStuff;
+            SetResourceReference(InfoStuffProperty, "InfoStuff");
 
             this.commandSelector.AutoLoad();
         }

@@ -135,11 +135,11 @@ namespace NoCap.Library.Controls {
         }
 
         private void SelectCommand(ICommand command) {
-            if (InfoStuff == null) {
+            if (InfoStuff == null || command == null) {
                 return;
             }
 
-            bool isDefault = command != null && InfoStuff.IsDefaultCommand(command);
+            bool isDefault = InfoStuff.IsDefaultCommand(command);
 
             IsDefault = isDefault;
 

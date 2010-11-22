@@ -18,15 +18,14 @@
         </Grid.RowDefinitions>
         
         <library:CommandSelector Grid.Row="0" Grid.Column="0" x:Name="commandSelector"
-            VerticalAlignment="Bottom" Margin="6" Command="{Binding Path=SelectedCommand}"
-            CommandsSource="{Binding ElementName=editor, Path=InfoStuff.Commands}"
+            VerticalAlignment="Bottom" Margin="6"
+            CommandsSource="{Binding InfoStuff.Commands, ElementName=editor}"
             Filter="StandAlone" />
         
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
         <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />
         
         <library:CommandEditor Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="commandEditor"
-            Command="{Binding ElementName=commandSelector, Path=Command}"
-            InfoStuff="{Binding ElementName=editor, Path=InfoStuff}" />
+            Command="{Binding Command, ElementName=commandSelector}" />
     </Grid>
 </ContentControl>

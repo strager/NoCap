@@ -41,7 +41,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public bool Contains(ICommand command) {
-            return this.Any((featuredCommand) => featuredCommand.Command == command || featuredCommand.Proxy == command);
+            return this.Any((featuredCommand) => featuredCommand.Proxy == command);
         }
     }
 }
