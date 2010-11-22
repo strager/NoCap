@@ -56,11 +56,11 @@ namespace NoCap.Library.Controls {
         }
 
         static CommandFactorySelector() {
-            CommandProperty = DependencyProperty.Register(
-                "Command",
-                typeof(ICommand),
+            CommandProperty = CommandSelector.CommandProperty.AddOwner(
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(null, OnCommandChanged, CoerceUpdates)
+                new FrameworkPropertyMetadata(null, OnCommandChanged, CoerceUpdates) {
+                    BindsTwoWayByDefault = true
+                }
             );
 
             CommandFactoryProperty = DependencyProperty.Register(

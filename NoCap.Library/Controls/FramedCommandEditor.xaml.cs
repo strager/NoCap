@@ -51,7 +51,9 @@ namespace NoCap.Library.Controls {
                 "Command",
                 typeof(ICommand),
                 typeof(FramedCommandEditor),
-                new PropertyMetadata(OnCommandChanged)
+                new FrameworkPropertyMetadata(OnCommandChanged) {
+                    BindsTwoWayByDefault = true
+                }
             );
 
             IsDefaultProperty = DependencyProperty.Register(

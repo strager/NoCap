@@ -82,8 +82,15 @@ namespace NoCap.Library.Controls {
 
             var editor = (factory == null)
                 ? null
-                : factory.GetCommandEditor(command, InfoStuff);
+                : factory.GetCommandEditor(this.InfoStuff);
 
+            var editorFrameworkElement = editor as FrameworkElement;
+
+            if (editorFrameworkElement != null) {
+                editorFrameworkElement.DataContext = command;
+            }
+
+            // Must be after setting the data context
             Content = editor;
         }
 

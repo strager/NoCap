@@ -8,27 +8,8 @@ namespace NoCap.Plugins.Editors {
     /// Interaction logic for CropShotUploaderCommandEditor.xaml
     /// </summary>
     public partial class CropShotUploaderCommandEditor : ICommandEditor {
-        public readonly static DependencyProperty CommandProperty;
-        
-        public CropShotUploaderCommand Command {
-            get { return (CropShotUploaderCommand) GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        static CropShotUploaderCommandEditor() {
-            CommandProperty = DependencyProperty.Register(
-                "Command",
-                typeof(CropShotUploaderCommand),
-                typeof(CropShotUploaderCommandEditor)
-            );
-        }
-
-        public CropShotUploaderCommandEditor(CropShotUploaderCommand command) {
+        public CropShotUploaderCommandEditor() {
             InitializeComponent();
-
-            Command = command;
-
-            this.imageUploaderEditor.AutoLoad();
         }
     }
 }

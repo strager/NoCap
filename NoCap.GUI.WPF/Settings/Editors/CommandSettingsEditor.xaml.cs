@@ -46,7 +46,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
             InfoStuff = infoStuff;
 
-            //SelectedCommand = this.infoStuff.Commands.WithFeatures(CommandFeatures.StandAlone).FirstOrDefault();
+            this.commandSelector.AutoLoad();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

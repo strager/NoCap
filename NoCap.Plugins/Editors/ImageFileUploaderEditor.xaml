@@ -8,12 +8,12 @@
     Name="editor">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Image format">
-            <local:CommandEditor Command="{Binding ElementName=editor, Path=Command.ImageWriter}" />
+            <local:CommandEditor Command="{Binding ImageWriter}" />
         </GroupBox>
         
         <local:FramedCommandEditor Header="File uploader"
             Name="fileUploaderSelector"
-            Command="{Binding Command.FileUploader, ElementName=editor, Mode=TwoWay}"
+            Command="{Binding FileUploader}"
             Filter="FileUploader" />
     </StackPanel>
 </ContentControl>

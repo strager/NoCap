@@ -98,7 +98,7 @@ namespace NoCap.Library.Imaging {
 
         public abstract BitmapCodec CreateCommand();
 
-        public abstract ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff);
+        public abstract ICommandEditor GetCommandEditor(IInfoStuff infoStuff);
 
         public virtual CommandFeatures CommandFeatures {
             get {

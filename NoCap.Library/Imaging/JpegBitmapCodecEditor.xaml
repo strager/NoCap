@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
         
         <Label Grid.Row="0" Grid.Column="0" Content="_Quality" />
-        <Slider Grid.Row="0" Grid.Column="1" Value="{Binding ElementName=editor, Path=Codec.Quality}" Minimum="0" Maximum="100" LargeChange="10" SmallChange="1" TickFrequency="10" Interval="10" />
-        <Label Grid.Row="0" Grid.Column="2" Content="{Binding ElementName=editor, Path=Codec.Quality}" />
+        <Slider Grid.Row="0" Grid.Column="1" Value="{Binding Quality}" Minimum="0" Maximum="100" LargeChange="10" SmallChange="1" TickFrequency="10" Interval="10" />
+        <Label Grid.Row="0" Grid.Column="2" Content="{Binding Quality}" />
     </Grid>
 </ContentControl>

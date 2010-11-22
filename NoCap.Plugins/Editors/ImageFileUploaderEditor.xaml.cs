@@ -7,25 +7,8 @@ namespace NoCap.Plugins.Editors {
     /// Interaction logic for ImageFileUploaderEditor.xaml
     /// </summary>
     public partial class ImageFileUploaderEditor : ICommandEditor {
-        public readonly static DependencyProperty CommandProperty;
-        
-        public ImageFileUploader Command {
-            get { return (ImageFileUploader) GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        static ImageFileUploaderEditor() {
-            CommandProperty = DependencyProperty.Register(
-                "Command",
-                typeof(ImageFileUploader),
-                typeof(ImageFileUploaderEditor)
-            );
-        }
-
-        public ImageFileUploaderEditor(ImageFileUploader command) {
+        public ImageFileUploaderEditor() {
             InitializeComponent();
-
-            Command = command;
         }
     }
 }

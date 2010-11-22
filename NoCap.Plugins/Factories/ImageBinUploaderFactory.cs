@@ -3,6 +3,7 @@ using NoCap.Library;
 using NoCap.Library.Editors;
 using NoCap.Library.Imaging;
 using NoCap.Plugins.Commands;
+using NoCap.Plugins.Editors;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
@@ -20,8 +21,8 @@ namespace NoCap.Plugins.Factories {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ImageWriterEditor(((ImageBinUploader) command).ImageWriter, infoStuff);
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+            return new ImageBinUploaderEditor();
         }
 
         public CommandFeatures CommandFeatures {

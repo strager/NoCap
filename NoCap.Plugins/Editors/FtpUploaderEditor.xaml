@@ -5,8 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d" 
-    d:DesignHeight="271" d:DesignWidth="284"
-    Name="editor">
+    d:DesignHeight="271" d:DesignWidth="284">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,21 +21,21 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="_Host" />
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.Host}" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Host}" />
 
         <Label Grid.Row="1" Grid.Column="0" Content="_Port" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.Port}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Port}" />
 
         <Label Grid.Row="2" Grid.Column="0" Content="User _name" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.UserName}" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding UserName}" />
 
         <Label Grid.Row="3" Grid.Column="0" Content="_Password" />
         <PasswordBox Grid.Row="3" Grid.Column="1" PasswordChanged="UpdatePassword" Name="passwordField" />
 
         <Label Grid.Row="4" Grid.Column="0" Content="Remote _directory" />
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.OutputPath}" />
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding OutputPath}" />
 
         <Label Grid.Row="5" Grid.Column="0" Content="_Result format" />
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ElementName=editor, Path=Command.ResultFormat}" />
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ResultFormat}" />
     </Grid>
 </ContentControl>

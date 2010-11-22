@@ -59,6 +59,9 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
+    <Compile Include="Editors\ImageBinUploaderEditor.xaml.cs">
+      <DependentUpon>ImageBinUploaderEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Factories\ImageFileUploaderFactory.cs" />
     <Compile Include="Editors\ImageFileUploaderEditor.xaml.cs">
       <DependentUpon>ImageFileUploaderEditor.xaml</DependentUpon>
@@ -116,6 +119,10 @@
     <Page Include="Editors\ClipboardUploaderCommandEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Editors\ImageBinUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\ImageFileUploaderEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

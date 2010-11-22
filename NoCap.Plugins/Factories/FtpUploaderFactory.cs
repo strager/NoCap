@@ -20,8 +20,8 @@ namespace NoCap.Plugins.Factories {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new FtpUploaderEditor((FtpUploader) command);
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+            return new FtpUploaderEditor();
         }
 
         public CommandFeatures CommandFeatures {

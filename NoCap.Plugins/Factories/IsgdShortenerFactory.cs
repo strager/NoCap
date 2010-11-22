@@ -18,7 +18,7 @@ namespace NoCap.Plugins.Factories {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
             return null;
         }
 

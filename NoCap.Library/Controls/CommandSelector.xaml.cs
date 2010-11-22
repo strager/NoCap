@@ -41,7 +41,9 @@ namespace NoCap.Library.Controls {
                 "Command",
                 typeof(ICommand),
                 typeof(CommandSelector),
-                new PropertyMetadata(OnCommandChanged)
+                new FrameworkPropertyMetadata(OnCommandChanged) {
+                    BindsTwoWayByDefault = true
+                }
             );
 
             CommandsSourceProperty = DependencyProperty.Register(

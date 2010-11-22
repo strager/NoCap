@@ -78,7 +78,7 @@ namespace NoCap.Library.Imaging {
             return new PngBitmapCodec();
         }
 
-        public override ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
+        public override ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
             return null;
         }
     }

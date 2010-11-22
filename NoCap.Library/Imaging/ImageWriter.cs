@@ -135,8 +135,8 @@ namespace NoCap.Library.Imaging {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ImageWriterEditor((ImageWriter) command, infoStuff);
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+            return new ImageWriterEditor(infoStuff);
         }
 
         public CommandFeatures CommandFeatures {

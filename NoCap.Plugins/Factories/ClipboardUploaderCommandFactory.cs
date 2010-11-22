@@ -23,8 +23,8 @@ namespace NoCap.Plugins.Factories {
             uploader.TextUploader = infoStuff.GetDefaultCommand(CommandFeatures.TextUploader);
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new ClipboardUploaderCommandEditor((ClipboardUploaderCommand) command);
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+            return new ClipboardUploaderCommandEditor();
         }
 
         public CommandFeatures CommandFeatures {

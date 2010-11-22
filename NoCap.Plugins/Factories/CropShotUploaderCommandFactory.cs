@@ -21,8 +21,8 @@ namespace NoCap.Plugins.Factories {
             uploader.ImageUploader = infoStuff.GetDefaultCommand(CommandFeatures.ImageUploader);
         }
 
-        public ICommandEditor GetCommandEditor(ICommand command, IInfoStuff infoStuff) {
-            return new CropShotUploaderCommandEditor((CropShotUploaderCommand) command);
+        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+            return new CropShotUploaderCommandEditor();
         }
 
         public CommandFeatures CommandFeatures {
