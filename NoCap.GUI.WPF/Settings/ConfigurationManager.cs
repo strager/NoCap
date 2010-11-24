@@ -4,7 +4,10 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Xml;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
@@ -15,10 +18,10 @@ namespace NoCap.GUI.WPF.Settings {
 
         [UserScopedSetting]
         [DefaultSettingValue(null)]
-        [SettingsSerializeAs(SettingsSerializeAs.Binary)]
-        public byte[] ProgramSettingsData {
+        [SettingsSerializeAs(SettingsSerializeAs.Xml)]
+        public XmlDocument ProgramSettingsData {
             get {
-                return (byte[]) this["ProgramSettingsData"];
+                return (XmlDocument) this["ProgramSettingsData"];
             }
 
             set {
@@ -26,57 +29,86 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
+        private static XmlDocument WriteToDocument(string data) {
+            var document = new XmlDocument();
+            document.LoadXml(data);
+
+            return document;
+        }
+
+        private static string ReadFromDocument(XmlDocument document) {
+            return document.InnerXml;
+        }
+
         public void SaveSettings(ProgramSettings value) {
-            ProgramSettingsData = SerializeSettings(value);
+            ProgramSettingsData = WriteToDocument(SerializeSettings(value));
 
             Save();
         }
 
         public ProgramSettings LoadSettings(ExtensionManager extensionManager) {
-            byte[] data = ProgramSettingsData;
+            var data = ProgramSettingsData;
 
             if (data == null) {
                 return GetDefaultSettings(extensionManager);
             }
 
-            var settings = DeserializeSettings(data);
+            var settings = DeserializeSettings(ReadFromDocument(data));
             settings.ExtensionManager = extensionManager;
 
             return settings;
         }
 
-        public static byte[] SerializeSettings(ProgramSettings settings) {
-            var serializer = new BinaryFormatter {
-                Context = StreamingContext
-            };
+        private static XmlObjectSerializer GetSettingsSerializer() {
+            return new NetDataContractSerializer(
+                StreamingContext,
+                int.MaxValue,
+                false,
+                FormatterAssemblyStyle.Simple,
+                null
+            );
+        }
+
+        public static string SerializeSettings(ProgramSettings settings) {
+            var serializer = GetSettingsSerializer();
 
             return Serialize(settings, serializer);
         }
 
-        private static byte[] Serialize(object obj, IFormatter formatter) {
-            using (var writer = new MemoryStream()) {
-                try {
-                    formatter.Serialize(writer, obj);
-                } catch (SerializationException e) {
-                    // TODO Error handling
-                    throw;
-                }
-
-                return writer.GetBuffer().Take((int) writer.Length).ToArray();
-            }
-        }
-
-        public static ProgramSettings DeserializeSettings(byte[] configData) {
-            var deserializer = new BinaryFormatter {
-                Context = StreamingContext
-            };
+        public static ProgramSettings DeserializeSettings(string configData) {
+            var deserializer = GetSettingsSerializer();
 
             return (ProgramSettings) Deserialize(configData, deserializer);
         }
 
-        private static object Deserialize(byte[] data, IFormatter formatter) {
-            using (var stream = new MemoryStream(data)) {
-                return formatter.Deserialize(stream);
+        private static string Serialize(object obj, XmlObjectSerializer serializer) {
+            var output = new StringBuilder();
+
+            var xmlSettings = new XmlWriterSettings {
+                Indent = true
+            };
+
+            using (var writer = XmlWriter.Create(output, xmlSettings)) {
+                try {
+                    serializer.WriteObject(writer, obj);
+                } catch (SerializationException e) {
+                    // TODO Error handling
+                    throw;
+                }
+            }
+
+            return output.ToString();
+        }
+
+        private static object Deserialize(string data, XmlObjectSerializer serializer) {
+            using (var stringReader = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+            using (var xmlReader = XmlDictionaryReader.CreateTextReader(stringReader, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null)) {
+                try {
+                    return serializer.ReadObject(xmlReader);
+                } catch (SerializationException e) {
+                    // TODO Error handling
+                    throw;
+                }
             }
         }
 
@@ -113,7 +145,13 @@ namespace NoCap.GUI.WPF.Settings {
                 Context = new StreamingContext(StreamingContextStates.Clone)
             };
 
-            return (T) Deserialize(Serialize(obj, cloner), cloner);
+            using (var stream = new MemoryStream()) {
+                cloner.Serialize(stream, obj);
+
+                stream.Position = 0;
+
+                return (T) cloner.Deserialize(stream);
+            }
         }
     }
 }
