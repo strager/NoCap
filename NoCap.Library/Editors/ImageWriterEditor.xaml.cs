@@ -16,8 +16,8 @@ namespace NoCap.Library.Editors {
             }
         }
 
-        public ImageWriterEditor(IInfoStuff infoStuff) :
-            this(infoStuff.GetBitmapCodecFactories()) {
+        public ImageWriterEditor(ICommandProvider commandProvider) :
+            this(commandProvider.GetBitmapCodecFactories()) {
         }
 
         public ImageWriterEditor(IEnumerable<BitmapCodecFactory> codecFactories) {

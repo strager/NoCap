@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
@@ -23,17 +24,17 @@ namespace NoCap.GUI.WPF {
             this.settings = this.configurationManager.LoadSettings();
 
             if (this.settings == null) {
-                this.settings = ProgramSettings.LoadDefaultSettings(commandRunner, extensionManager);
-            } else {
-                this.settings.RuntimePluginInfo = new ProgramRuntimePluginInfo(commandRunner, extensionManager, this.settings);;
+                this.settings = new ProgramSettings(Enumerable.Empty<ICommand>());
             }
 
-            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.ImageUploader, "Image uploader");
-            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.UrlShortener, "Url shortener");
-            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.FileUploader, "File uploader");
-            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.TextUploader, "Text uploader");
+            this.settings.Initialize(commandRunner, extensionManager);
 
-            this.settings.Plugins.Initialize(this.settings.RuntimePluginInfo);
+            var featureRegistry = this.settings.RuntimeProvider.FeatureRegistry;
+
+            featureRegistry.Register(CommandFeatures.ImageUploader, "Image uploader");
+            featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );
+            featureRegistry.Register(CommandFeatures.FileUploader,  "File uploader" );
+            featureRegistry.Register(CommandFeatures.TextUploader,  "Text uploader" );
         }
 
         internal void ShowSettings() {

@@ -99,7 +99,7 @@ namespace NoCap.Library.Imaging {
             return new JpegBitmapCodec();
         }
 
-        public override ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+        public override ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
             return new JpegBitmapCodecEditor();
         }
     }

@@ -7,7 +7,7 @@ namespace NoCap.Library.Controls {
     /// </summary>
     public partial class CommandEditor {
         public readonly static DependencyProperty CommandProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty CommandProviderProperty;
 
         public readonly static RoutedEvent CommandChangedEvent;
 
@@ -16,9 +16,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(CommandProperty, value); }
         }
 
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value);  }
+        public ICommandProvider CommandProvider {
+            get { return (ICommandProvider) GetValue(CommandProviderProperty); }
+            set { SetValue(CommandProviderProperty, value);  }
         }
 
         public event RoutedPropertyChangedEventHandler<ICommand> CommandChanged {
@@ -34,9 +34,9 @@ namespace NoCap.Library.Controls {
                 new FrameworkPropertyMetadata(OnCommandChanged)
             );
             
-            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
+            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
                 typeof(CommandEditor),
-                new PropertyMetadata(OnInfoStuffChanged)
+                new PropertyMetadata(OnCommandProviderChanged)
             );
 
             CommandChangedEvent = EventManager.RegisterRoutedEvent(
@@ -47,9 +47,9 @@ namespace NoCap.Library.Controls {
             );
         }
 
-        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
-            // When InfoStuff changes to or from null, update the editor viewer
-            // because the editor viewer is not present when InfoStuff is null
+        private static void OnCommandProviderChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+            // When commandProvider changes to or from null, update the editor viewer
+            // because the editor viewer is not present when commandProvider is null
             if ((e.OldValue == null && e.NewValue != null) ||
                 (e.OldValue != null && e.NewValue == null)) {
                 var commandEditor = (CommandEditor) sender;
@@ -72,7 +72,7 @@ namespace NoCap.Library.Controls {
         }
 
         private void SetActiveCommand(ICommand command) {
-            if (InfoStuff == null) {
+            if (this.CommandProvider == null) {
                 Content = null;
 
                 return;
@@ -82,7 +82,7 @@ namespace NoCap.Library.Controls {
 
             var editor = (factory == null)
                 ? null
-                : factory.GetCommandEditor(this.InfoStuff);
+                : factory.GetCommandEditor(this.CommandProvider);
 
             var editorFrameworkElement = editor as FrameworkElement;
 
@@ -97,7 +97,7 @@ namespace NoCap.Library.Controls {
         public CommandEditor() {
             InitializeComponent();
 
-            SetResourceReference(InfoStuffProperty, "InfoStuff");
+            SetResourceReference(CommandProviderProperty, "commandProvider");
         }
     }
 }

@@ -19,7 +19,7 @@
         
         <library:CommandSelector Grid.Row="0" Grid.Column="0" x:Name="commandSelector"
             VerticalAlignment="Bottom" Margin="6"
-            CommandsSource="{Binding InfoStuff.Commands, ElementName=editor}"
+            CommandsSource="{Binding CommandProvider.Commands, ElementName=editor}"
             Filter="StandAlone" />
         
         <Button Grid.Row="0" Grid.Column="1" Content="_New..." />

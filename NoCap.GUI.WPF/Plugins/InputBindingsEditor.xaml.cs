@@ -18,7 +18,7 @@ namespace NoCap.GUI.WPF.Plugins {
     /// </summary>
     public partial class InputBindingsEditor {
         private readonly InputBindingsPlugin plugin;
-        private readonly IInfoStuff infoStuff;
+        private readonly ICommandProvider commandProvider;
 
         private MutableCommandBinding SelectedBinding {
             get {
@@ -37,15 +37,15 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        public IInfoStuff InfoStuff {
+        public ICommandProvider CommandProvider {
             get {
-                return this.infoStuff;
+                return this.commandProvider;
             }
         }
 
-        public InputBindingsEditor(InputBindingsPlugin plugin, IInfoStuff infoStuff) {
+        public InputBindingsEditor(InputBindingsPlugin plugin, ICommandProvider commandProvider) {
             this.plugin = plugin;
-            this.infoStuff = infoStuff;
+            this.commandProvider = commandProvider;
 
             InitializeComponent();
 

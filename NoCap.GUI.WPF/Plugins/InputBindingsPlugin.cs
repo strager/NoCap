@@ -42,14 +42,14 @@ namespace NoCap.GUI.WPF.Plugins {
             set;
         }
 
-        public UIElement GetEditor(IInfoStuff infoStuff) {
-            return new InputBindingsEditor(this, infoStuff);
+        public UIElement GetEditor(ICommandProvider commandProvider) {
+            return new InputBindingsEditor(this, commandProvider);
         }
 
-        public void Initialize(IRuntimePluginInfo runtimePluginInfo) {
-            this.commandRunner = runtimePluginInfo.CommandRunner;
+        public void Initialize(IRuntimeProvider runtimeProvider) {
+            this.commandRunner = runtimeProvider.CommandRunner;
 
-            var compositionContainer = runtimePluginInfo.CompositionContainer;
+            var compositionContainer = runtimeProvider.CompositionContainer;
 
             Recompose(compositionContainer);
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);

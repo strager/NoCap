@@ -92,13 +92,13 @@ namespace NoCap.Library.Imaging {
             return CreateCommand();
         }
 
-        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             // Do nothing.
         }
 
         public abstract BitmapCodec CreateCommand();
 
-        public abstract ICommandEditor GetCommandEditor(IInfoStuff infoStuff);
+        public abstract ICommandEditor GetCommandEditor(ICommandProvider commandProvider);
 
         public virtual CommandFeatures CommandFeatures {
             get {

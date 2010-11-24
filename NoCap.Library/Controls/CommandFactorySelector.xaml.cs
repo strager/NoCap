@@ -11,7 +11,7 @@ namespace NoCap.Library.Controls {
     public partial class CommandFactorySelector {
         public readonly static DependencyProperty CommandProperty;
         public readonly static DependencyProperty CommandFactoryProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty CommandProviderProperty;
         public readonly static DependencyProperty FilterProperty;
         
         public readonly static RoutedEvent CommandChangedEvent;
@@ -34,9 +34,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(CommandFactoryProperty, value); }
         }
 
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value);  }
+        public ICommandProvider CommandProvider {
+            get { return (ICommandProvider) GetValue(CommandProviderProperty); }
+            set { SetValue(CommandProviderProperty, value);  }
         }
         
         [TypeConverter(typeof(CommandFeatureFilterConverter))]
@@ -70,9 +70,9 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(null, OnCommandFactoryChanged, CoerceUpdates)
             );
 
-            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
+            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
                 typeof(CommandFactorySelector),
-                new PropertyMetadata(OnInfoStuffChanged)
+                new PropertyMetadata(OnCommandProviderChanged)
             );
 
             FilterProperty = DependencyProperty.Register(
@@ -116,7 +116,7 @@ namespace NoCap.Library.Controls {
         }
 
         private ICommandFactory CoerceCommandFactory(ICommandFactory factory) {
-            if (InfoStuff == null || factory == null) {
+            if (this.CommandProvider == null || factory == null) {
                 return factory;
             }
 
@@ -137,17 +137,17 @@ namespace NoCap.Library.Controls {
             return value;
         }
 
-        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+        private static void OnCommandProviderChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (CommandFactorySelector) sender;
-            var infoStuff = (IInfoStuff) e.NewValue;
+            var commandProvider = (ICommandProvider) e.NewValue;
 
             commandSelector.allowPropertyChanges = false;
 
             try {
                 commandSelector.filterer.Source =
-                    infoStuff == null
+                    commandProvider == null
                         ? Enumerable.Empty<ICommandFactory>()
-                        : infoStuff.CommandFactories;
+                        : commandProvider.CommandFactories;
 
                 commandSelector.commandFactoryList.SelectedIndex = -1;
             } finally {
@@ -193,7 +193,7 @@ namespace NoCap.Library.Controls {
         private void SetCommandFactoryFromCommand(ICommand command) {
             this.updatePriority = PriorityItem.Command;
 
-            if (InfoStuff == null) {
+            if (this.CommandProvider == null) {
                 return;
             }
 
@@ -217,17 +217,17 @@ namespace NoCap.Library.Controls {
         private void SetCommandFromFactory(ICommandFactory commandFactory) {
             this.updatePriority = PriorityItem.CommandFactory;
 
-            if (commandFactory == null || InfoStuff == null) {
+            if (commandFactory == null || this.CommandProvider == null) {
                 return;
             }
 
-            if (InfoStuff.CommandFactories.Any((f) => AreCommandFactoriesEqual(f, commandFactory))) {
+            if (this.CommandProvider.CommandFactories.Any((f) => AreCommandFactoriesEqual(f, commandFactory))) {
                 this.updatePriority = PriorityItem.None;
 
                 this.allowPropertyBehaviours = false;
 
                 try {
-                    Command = commandFactory.CreateCommand(InfoStuff);
+                    Command = commandFactory.CreateCommand(this.CommandProvider);
                 } finally {
                     this.allowPropertyBehaviours = true;
                 }
@@ -237,7 +237,7 @@ namespace NoCap.Library.Controls {
         public CommandFactorySelector() {
             InitializeComponent();
 
-            SetResourceReference(InfoStuffProperty, "InfoStuff");
+            SetResourceReference(CommandProviderProperty, "commandProvider");
 
             this.commandFactoryList.SetBinding(ItemsControl.ItemsSourceProperty, this.filterer.SourceBinding);
 
@@ -265,7 +265,7 @@ namespace NoCap.Library.Controls {
                 var factories = (IEnumerable<ICommandFactory>) this.filterer.Source;
 
                 if (factories != null) {
-                    CommandFactory = Library.InfoStuff.GetPreferredCommandFactory(factories, features);
+                    CommandFactory = Library.CommandProvider.GetPreferredCommandFactory(factories, features);
                 }
             } else {
                 this.commandFactoryList.SelectedIndex = 0;

@@ -20,58 +20,84 @@ namespace NoCap.GUI.WPF.Settings {
         // Plugins may reference commands, but do not own commands.  Plugins
         // are thus output after commands.
 
-        [DataMember(Name = "Commands", Order = 1)]
-        public ObservableCollection<ICommand> Commands {
-            get;
-            set;
-        }
-
         [DataMember(Name = "Defaults", Order = 0)]
-        public FeaturedCommandCollection DefaultCommands {
-            get;
-            set;
-        }
+        private readonly FeaturedCommandCollection defaultCommands;
+
+        [DataMember(Name = "Commands", Order = 1)]
+        private readonly ObservableCollection<ICommand> commands;
 
         [DataMember(Name = "Plugins", Order = 2)]
-        public PluginCollection Plugins {
-            get;
-            set;
-        }
+        private readonly PluginCollection plugins;
 
-        [IgnoreDataMember]
-        public IRuntimePluginInfo RuntimePluginInfo {
-            get;
-            set;
-        }
-
-        [IgnoreDataMember]
-        public IInfoStuff InfoStuff {
+        public FeaturedCommandCollection DefaultCommands {
             get {
-                if (RuntimePluginInfo == null) {
-                    throw new InvalidOperationException("PluginInfo must not be null");
-                }
-
-                return new ProgramSettingsInfoStuff(this, RuntimePluginInfo.CompositionContainer);
+                return this.defaultCommands;
             }
         }
 
-        public ProgramSettings() {
-            Plugins = new PluginCollection();
-            Commands = new ObservableCollection<ICommand>();
-            DefaultCommands = new FeaturedCommandCollection();
+        public ObservableCollection<ICommand> Commands {
+            get {
+                return this.commands;
+            }
+        }
+
+        public PluginCollection Plugins {
+            get {
+                return this.plugins;
+            }
+        }
+
+        [IgnoreDataMember]
+        private IRuntimeProvider runtimeProvider;
+
+        [IgnoreDataMember]
+        private ICommandProvider commandProvider;
+
+        public IRuntimeProvider RuntimeProvider {
+            get {
+                if (this.runtimeProvider == null) {
+                    throw new InvalidOperationException("Call Initialize");
+                }
+
+                return this.runtimeProvider;
+            }
+        }
+
+        public ICommandProvider CommandProvider {
+            get {
+                if (this.commandProvider == null) {
+                    throw new InvalidOperationException("Call Initialize");
+                }
+
+                return this.commandProvider;
+            }
+        }
+
+        public ProgramSettings(IEnumerable<ICommand> commands) {
+            this.plugins = new PluginCollection();
+            this.defaultCommands = new FeaturedCommandCollection();
+            this.commands = new ObservableCollection<ICommand>(commands);
+        }
+
+        public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
+            var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CompositionContainer);
+            var defaultRegistry = new ProgramFeatureRegistry(this.defaultCommands, commandProvider);
+            var runtimeProvider = new ProgramRuntimeProvider(commandRunner, extensionManager, defaultRegistry);
+
+            this.commandProvider = commandProvider;
+            this.runtimeProvider = runtimeProvider;
+
+            this.plugins.Initialize(runtimeProvider);
         }
 
         public void Dispose() {
             Plugins.Dispose();
         }
 
-        public static ProgramSettings LoadDefaultSettings(CommandRunner commandRunner, ExtensionManager extensionManager) {
+        /*public static IEnumerable<ICommand> LoadCommandDefaults(ICommandProvider commandProvider) {
             // TODO Clean this up
 
-            var settings = new ProgramSettings();
-            settings.RuntimePluginInfo = new ProgramRuntimePluginInfo(commandRunner, extensionManager, settings);
-
-            var commandFactories = settings.InfoStuff.CommandFactories
+            var commandFactories = commandProvider.CommandFactories
                 .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
 
             var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
@@ -83,13 +109,50 @@ namespace NoCap.GUI.WPF.Settings {
                 commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
             }
 
-            settings.Commands = new ObservableCollection<ICommand>(commandFactoriesToCommands.Values);
-
             foreach (var pair in commandFactoriesToCommands) {
-                pair.Key.PopulateCommand(pair.Value, settings.InfoStuff);
+                pair.Key.PopulateCommand(pair.Value, commandProvider);
             }
 
-            return settings;
+            return commandFactoriesToCommands.Values;
+        }*/
+    }
+
+    internal class ProgramFeatureRegistry : IFeatureRegistry {
+        private readonly IDictionary<CommandFeatures, string> registeredFeatures = new Dictionary<CommandFeatures, string>();
+
+        private readonly FeaturedCommandCollection defaultCommands;
+        private readonly ICommandProvider commandProvider;
+
+        public ProgramFeatureRegistry(FeaturedCommandCollection defaultCommands, ICommandProvider commandProvider) {
+            if (defaultCommands == null) {
+                throw new ArgumentNullException("defaultCommands");
+            }
+
+            if (commandProvider == null) {
+                throw new ArgumentNullException("commandProvider");
+            }
+
+            this.defaultCommands = defaultCommands;
+            this.commandProvider = commandProvider;
+        }
+
+        public IEnumerable<CommandFeatures> RegisteredFeatures {
+            get {
+                return this.registeredFeatures.Keys;
+            }
+        }
+
+        public string GetFeaturesName(CommandFeatures features) {
+            return registeredFeatures[features];
+        }
+
+        public void Register(CommandFeatures features, string name) {
+            if (this.registeredFeatures.ContainsKey(features)) {
+                throw new InvalidOperationException("Features already registered");
+            }
+
+            this.registeredFeatures[features] = name;
+            this.defaultCommands[features] = this.commandProvider.GetPreferredCommand(features);
         }
     }
 }

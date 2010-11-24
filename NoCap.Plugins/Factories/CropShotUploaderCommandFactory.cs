@@ -16,12 +16,12 @@ namespace NoCap.Plugins.Factories {
             return new CropShotUploaderCommand();
         }
 
-        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             var uploader = (CropShotUploaderCommand) command;
-            uploader.ImageUploader = infoStuff.GetDefaultCommand(CommandFeatures.ImageUploader);
+            uploader.ImageUploader = commandProvider.GetDefaultCommand(CommandFeatures.ImageUploader);
         }
 
-        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
             return new CropShotUploaderCommandEditor();
         }
 

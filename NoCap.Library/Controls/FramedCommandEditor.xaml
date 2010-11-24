@@ -30,11 +30,11 @@
                 </StackPanel.Style>
 
                 <library:CommandFactorySelector VerticalAlignment="Bottom" Margin="3,0,0,0" x:Name="commandFactorySelector"
-                    InfoStuff="{Binding InfoStuff, ElementName=framedCommandEditor, Mode=OneWay}"
+                    CommandProvider="{Binding CommandProvider, ElementName=framedCommandEditor, Mode=OneWay}"
                     CommandChanged="CommandFactorySelectorChanged" />
             
                 <library:CommandEditor Margin="0,3,0,0"
-                    InfoStuff="{Binding InfoStuff, ElementName=framedCommandEditor}"
+                    CommandProvider="{Binding CommandProvider, ElementName=framedCommandEditor}"
                     Command="{Binding Command, ElementName=commandFactorySelector}" />
             </StackPanel>
         </StackPanel>

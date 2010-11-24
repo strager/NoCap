@@ -9,7 +9,7 @@ namespace NoCap.Library.Controls {
     public partial class FramedCommandEditor {
         public readonly static DependencyProperty CommandProperty;
         public readonly static DependencyProperty IsDefaultProperty;
-        public readonly static DependencyProperty InfoStuffProperty;
+        public readonly static DependencyProperty CommandProviderProperty;
         public readonly static DependencyProperty FilterProperty;
         public readonly static DependencyProperty HeaderProperty;
 
@@ -25,9 +25,9 @@ namespace NoCap.Library.Controls {
             set { SetValue(IsDefaultProperty, value); }
         }
 
-        public IInfoStuff InfoStuff {
-            get { return (IInfoStuff) GetValue(InfoStuffProperty); }
-            set { SetValue(InfoStuffProperty, value);  }
+        public ICommandProvider CommandProvider {
+            get { return (ICommandProvider) GetValue(CommandProviderProperty); }
+            set { SetValue(CommandProviderProperty, value);  }
         }
 
         [TypeConverter(typeof(CommandFeatureConverter))]
@@ -63,9 +63,9 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(true, OnIsDefaultChanged)
             );
 
-            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(
+            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
                 typeof(FramedCommandEditor),
-                new PropertyMetadata(OnInfoStuffChanged)
+                new PropertyMetadata(OnCommandProviderChanged)
             );
 
             FilterProperty = DependencyProperty.Register(
@@ -96,7 +96,7 @@ namespace NoCap.Library.Controls {
             selector.commandFactorySelector.Filter = CommandFeatureFilterConverter.GetPredicate(filter);
         }
 
-        private static void OnInfoStuffChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
+        private static void OnCommandProviderChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandSelector = (FramedCommandEditor) sender;
 
             commandSelector.SelectCommand(commandSelector.Command);
@@ -131,15 +131,15 @@ namespace NoCap.Library.Controls {
         public FramedCommandEditor() {
             InitializeComponent();
 
-            SetResourceReference(InfoStuffProperty, "InfoStuff");
+            SetResourceReference(CommandProviderProperty, "commandProvider");
         }
 
         private void SelectCommand(ICommand command) {
-            if (InfoStuff == null || command == null) {
+            if (this.CommandProvider == null || command == null) {
                 return;
             }
 
-            bool isDefault = InfoStuff.IsDefaultCommand(command);
+            bool isDefault = this.CommandProvider.IsDefaultCommand(command);
 
             IsDefault = isDefault;
 
@@ -149,7 +149,7 @@ namespace NoCap.Library.Controls {
         }
 
         private void UpdateFromDefault() {
-            Command = InfoStuff.GetDefaultCommand(Filter);
+            Command = this.CommandProvider.GetDefaultCommand(Filter);
         }
 
         private void UpdateFromFactory() {

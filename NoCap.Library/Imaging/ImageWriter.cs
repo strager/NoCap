@@ -131,12 +131,12 @@ namespace NoCap.Library.Imaging {
             return new ImageWriter(new PngBitmapCodec());
         }
 
-        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
-            return new ImageWriterEditor(infoStuff);
+        public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
+            return new ImageWriterEditor(commandProvider);
         }
 
         public CommandFeatures CommandFeatures {

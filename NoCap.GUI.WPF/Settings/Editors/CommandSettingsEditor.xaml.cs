@@ -8,7 +8,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
     public partial class CommandSettingsEditor : INotifyPropertyChanged {
-        public static readonly DependencyProperty InfoStuffProperty;
+        public static readonly DependencyProperty CommandProviderProperty;
 
         public string DisplayName {
             get {
@@ -17,13 +17,13 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         }
 
         static CommandSettingsEditor() {
-            InfoStuffProperty = InfoStuffWpf.InfoStuffProperty.AddOwner(typeof(CommandSettingsEditor));
+            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(typeof(CommandSettingsEditor));
         }
 
         public CommandSettingsEditor() {
             InitializeComponent();
 
-            SetResourceReference(InfoStuffProperty, "InfoStuff");
+            SetResourceReference(CommandProviderProperty, "commandProvider");
 
             this.commandSelector.AutoLoad();
         }

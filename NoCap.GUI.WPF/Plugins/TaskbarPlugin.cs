@@ -123,11 +123,11 @@ namespace NoCap.GUI.WPF.Plugins {
             }
         }
 
-        public UIElement GetEditor(IInfoStuff infoStuff) {
+        public UIElement GetEditor(ICommandProvider commandProvider) {
             return null;
         }
 
-        public void Initialize(IRuntimePluginInfo runtimePluginInfo) {
+        public void Initialize(IRuntimeProvider runtimeProvider) {
             var taskbarMenu = new ContextMenu();
             taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
 
@@ -139,7 +139,7 @@ namespace NoCap.GUI.WPF.Plugins {
 
             this.logo = new NoCapLogo();
             
-            var commandRunner = runtimePluginInfo.CommandRunner;
+            var commandRunner = runtimeProvider.CommandRunner;
 
             commandRunner.TaskStarted     += BeginTask;
             commandRunner.TaskCompleted   += EndTask;

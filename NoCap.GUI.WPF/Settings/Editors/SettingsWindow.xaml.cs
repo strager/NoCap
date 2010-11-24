@@ -8,12 +8,12 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         internal SettingsWindow(ProgramSettings settings) {
             InitializeComponent();
 
-            var infoStuff = settings.InfoStuff;
+            var commandProvider = settings.CommandProvider;
 
-            Resources["InfoStuff"] = infoStuff;
+            Resources["commandProvider"] = commandProvider;
 
             this.tabControl.Items.Add(new TabItem {
-                Content = new DefaultCommandsEditor(infoStuff, settings.DefaultCommands),
+                Content = new DefaultCommandsEditor(commandProvider, settings.RuntimeProvider.FeatureRegistry, settings.DefaultCommands),
                 Header = "Defaults"
             });
 
@@ -24,7 +24,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
             foreach (var plugin in settings.Plugins) {
                 this.tabControl.Items.Add(new TabItem {
-                    Content = plugin.GetEditor(infoStuff),
+                    Content = plugin.GetEditor(commandProvider),
                     Header = plugin.Name
                 });
             }

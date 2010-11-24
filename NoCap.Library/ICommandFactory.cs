@@ -12,15 +12,15 @@ namespace NoCap.Library {
         /// <returns>A new command instance.</returns>
         ICommand CreateCommand();
 
-        void PopulateCommand(ICommand command, IInfoStuff infoStuff);
+        void PopulateCommand(ICommand command, ICommandProvider commandProvider);
 
         /// <summary>
         /// Gets an editor which can be used to edit the given command
         /// instance, or <c>null</c> if no editor is needed or can be provided.
         /// </summary>
-        /// <param name="infoStuff"></param>
+        /// <param name="commandProvider"></param>
         /// <returns>A new instance of an editor for <paramref name="command"/>, or <c>null</c>.</returns>
-        ICommandEditor GetCommandEditor(IInfoStuff infoStuff);
+        ICommandEditor GetCommandEditor(ICommandProvider commandProvider);
 
         CommandFeatures CommandFeatures { get; }
     }
@@ -34,13 +34,13 @@ namespace NoCap.Library {
             return factory.CommandFeatures.HasFlag(features);
         }
 
-        public static ICommand CreateCommand(this ICommandFactory factory, IInfoStuff infoStuff) {
+        public static ICommand CreateCommand(this ICommandFactory factory, ICommandProvider commandProvider) {
             if (factory == null) {
                 throw new ArgumentNullException("factory");
             }
 
             var command = factory.CreateCommand();
-            factory.PopulateCommand(command, infoStuff);
+            factory.PopulateCommand(command, commandProvider);
 
             return command;
         }

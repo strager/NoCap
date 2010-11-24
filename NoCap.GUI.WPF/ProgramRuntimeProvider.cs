@@ -5,28 +5,16 @@ using NoCap.Library;
 using NoCap.Library.Tasks;
 
 namespace NoCap.GUI.WPF {
-    internal class ProgramRuntimePluginInfo : IRuntimePluginInfo {
-        public ProgramRuntimePluginInfo(CommandRunner commandRunner, ExtensionManager extensionManager, ProgramSettings settings) {
-            if (commandRunner == null) {
-                throw new ArgumentNullException("commandRunner");
-            }
-
-            if (extensionManager == null) {
-                throw new ArgumentNullException("extensionManager");
-            }
-
-            if (settings == null) {
-                throw new ArgumentNullException("settings");
-            }
-
+    internal class ProgramRuntimeProvider : IRuntimeProvider {
+        public ProgramRuntimeProvider(CommandRunner commandRunner, ExtensionManager extensionManager, IFeatureRegistry featureRegistry) {
             this.commandRunner = commandRunner;
             this.extensionManager = extensionManager;
-            this.settings = settings;
+            this.featureRegistry = featureRegistry;
         }
 
         private readonly CommandRunner commandRunner;
         private readonly ExtensionManager extensionManager;
-        private readonly ProgramSettings settings;
+        private readonly IFeatureRegistry featureRegistry;
 
         public CommandRunner CommandRunner {
             get {
@@ -46,8 +34,10 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        public void RegisterDefaultType(CommandFeatures features, string name) {
-            this.settings.DefaultCommands.RegisterDefaultType(features, name, this.settings.InfoStuff);
+        public IFeatureRegistry FeatureRegistry {
+            get {
+                return this.featureRegistry;
+            }
         }
     }
 }

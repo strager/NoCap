@@ -19,7 +19,7 @@
         </Grid>
     </ContentControl.Resources>
 
-    <ItemsControl ItemsSource="{Binding DefaultCommands.RegisteredCommands, ElementName=editor}" Grid.IsSharedSizeScope="True">
+    <ItemsControl ItemsSource="{Binding DefaultCommands, ElementName=editor}" Grid.IsSharedSizeScope="True">
         <ItemsControl.ItemTemplate>
             <DataTemplate>
                 <ItemsControl>
@@ -35,9 +35,9 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
-                    <Label Grid.Column="0" Content="{Binding Features}" />
+                    <Label Grid.Column="0" Content="{Binding Name}" />
                     <Controls:CommandFactorySelector Grid.Column="1" HorizontalAlignment="Stretch"
-                        InfoStuff="{Binding InfoStuff, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
+                        CommandProvider="{Binding CommandProvider, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
                         Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
                     <Button Grid.Column="2">Edit</Button>
                 </ItemsControl>

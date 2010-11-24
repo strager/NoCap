@@ -3,29 +3,29 @@ using System.Linq;
 using System.Windows;
 
 namespace NoCap.Library {
-    public interface IInfoStuff {
+    public interface ICommandProvider {
         IEnumerable<ICommandFactory> CommandFactories { get; }
 
         ICommand GetDefaultCommand(CommandFeatures features);
         bool IsDefaultCommand(ICommand command);
     }
 
-    public class InfoStuffWpf : DependencyObject {
-        public static readonly DependencyProperty InfoStuffProperty;
+    public class CommandProviderWpf : DependencyObject {
+        public static readonly DependencyProperty CommandProviderProperty;
 
-        static InfoStuffWpf() {
-            InfoStuffProperty = DependencyProperty.Register(
-                "InfoStuff",
-                typeof(IInfoStuff),
-                typeof(InfoStuffWpf),
+        static CommandProviderWpf() {
+            CommandProviderProperty = DependencyProperty.Register(
+                "CommandProvider",
+                typeof(ICommandProvider),
+                typeof(CommandProviderWpf),
                 new PropertyMetadata(null)
             );
         }
     }
 
-    public static class InfoStuff {
-        public static ICommand GetPreferredCommand(this IInfoStuff infoStuff, CommandFeatures commandFeatures) {
-            var factory = infoStuff.GetPreferredCommandFactory(commandFeatures);
+    public static class CommandProvider {
+        public static ICommand GetPreferredCommand(this ICommandProvider commandProvider, CommandFeatures commandFeatures) {
+            var factory = commandProvider.GetPreferredCommandFactory(commandFeatures);
 
             if (factory == null) {
                 return null;
@@ -34,8 +34,8 @@ namespace NoCap.Library {
             return factory.CreateCommand();
         }
 
-        public static ICommandFactory GetPreferredCommandFactory(this IInfoStuff infoStuff, CommandFeatures features) {
-            return GetPreferredCommandFactory(infoStuff.CommandFactories, features);
+        public static ICommandFactory GetPreferredCommandFactory(this ICommandProvider commandProvider, CommandFeatures features) {
+            return GetPreferredCommandFactory(commandProvider.CommandFactories, features);
         }
 
         public static ICommandFactory GetPreferredCommandFactory(IEnumerable<ICommandFactory> commandFactories, CommandFeatures features) {

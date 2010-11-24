@@ -17,11 +17,11 @@ namespace NoCap.Plugins.Factories {
             return new ImageBinUploader(new ImageWriter(new PngBitmapCodec()));
         }
 
-        public void PopulateCommand(ICommand command, IInfoStuff infoStuff) {
+        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             // Do nothing.
         }
 
-        public ICommandEditor GetCommandEditor(IInfoStuff infoStuff) {
+        public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
             return new ImageBinUploaderEditor();
         }
 

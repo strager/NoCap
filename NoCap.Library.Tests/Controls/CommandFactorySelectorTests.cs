@@ -25,11 +25,11 @@ namespace NoCap.Library.Tests.Controls {
 
             Assert.AreEqual(command, cfs.Command);
             Assert.AreEqual(null, cfs.CommandFactory);
-            Assert.AreEqual(null, cfs.InfoStuff);
+            Assert.AreEqual(null, cfs.CommandProvider);
         }
         
         [Test, RequiresSTA]
-        public void SetCommandFactoryWithoutInfoStuffSets() {
+        public void SetCommandFactoryWithoutCommandProviderSets() {
             var commandFactory = GetCommandFactory();
 
             var cfs = new CommandFactorySelector {
@@ -40,67 +40,67 @@ namespace NoCap.Library.Tests.Controls {
 
             Assert.AreEqual(null, cfs.Command);
             Assert.AreEqual(commandFactory, cfs.CommandFactory);
-            Assert.AreEqual(null, cfs.InfoStuff);
+            Assert.AreEqual(null, cfs.CommandProvider);
         }
         
         [Test, RequiresSTA]
-        public void SetCommandFactoryWithInfoStuffSets() {
+        public void SetCommandFactoryWithCommandProviderSets() {
             var commandFactory = GetCommandFactory();
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory });
 
             var cfs = new CommandFactorySelector {
                 CommandFactory = commandFactory,
-                InfoStuff = infoStuff
+                CommandProvider = commandProvider
             };
 
             DoEvents();
 
             Assert.AreEqual(commandFactory, cfs.CommandFactory);
-            Assert.AreEqual(infoStuff, cfs.InfoStuff);
+            Assert.AreEqual(commandProvider, cfs.CommandProvider);
         }
 
         [Test, RequiresSTA]
-        public void SetCommandFactoryWithBadInfoStuffSets() {
+        public void SetCommandFactoryWithBadCommandProviderSets() {
             var commandFactory = GetCommandFactory();
             var badCommandFactory = GetCommandFactory();
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { badCommandFactory });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { badCommandFactory });
 
             var cfs = new CommandFactorySelector {
                 CommandFactory = commandFactory,
-                InfoStuff = infoStuff
+                CommandProvider = commandProvider
             };
 
             DoEvents();
 
             Assert.AreEqual(commandFactory, cfs.CommandFactory);
-            Assert.AreEqual(infoStuff, cfs.InfoStuff);
+            Assert.AreEqual(commandProvider, cfs.CommandProvider);
         }
 
         [Test, RequiresSTA]
-        public void SetInfoStuffShowsFactories() {
+        public void SetCommandProviderShowsFactories() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
-                InfoStuff = infoStuff
+                CommandProvider = commandProvider
             };
 
             DoEvents();
 
             var comboBox = GetComboBox(cfs);
 
-            CollectionAssert.AreEquivalent(infoStuff.CommandFactories, comboBox.Items);
+            CollectionAssert.AreEquivalent(commandProvider.CommandFactories, comboBox.Items);
         }
 
         [Test, RequiresSTA]
-        public void SetInfoStuffSelectsNull() {
+        public void SetCommandProviderSelectsNull() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
-                InfoStuff = infoStuff
+                CommandProvider = commandProvider
             };
 
             DoEvents();
@@ -115,10 +115,10 @@ namespace NoCap.Library.Tests.Controls {
         public void SetCommandFactorySelects() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
-                InfoStuff = infoStuff,
+                CommandProvider = commandProvider,
                 CommandFactory = commandFactory1
             };
 
@@ -138,10 +138,10 @@ namespace NoCap.Library.Tests.Controls {
 
             command = GetCommand(commandFactory);
 
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory });
 
             var cfs = new CommandFactorySelector {
-                InfoStuff = infoStuff,
+                CommandProvider = commandProvider,
                 CommandFactory = commandFactory
             };
 
@@ -154,12 +154,12 @@ namespace NoCap.Library.Tests.Controls {
         public void SettingCommandLateSelectsFactory() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
             var command = commandFactory2.CreateCommand();
 
             var cfs = new CommandFactorySelector {
-                InfoStuff = infoStuff,
+                CommandProvider = commandProvider,
                 Command = command
             };
 
@@ -175,13 +175,13 @@ namespace NoCap.Library.Tests.Controls {
         public void SettingCommandEarlySelectsFactory() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var infoStuff = GetInfoStuff(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
 
             var command = commandFactory2.CreateCommand();
 
             var cfs = new CommandFactorySelector {
                 Command = command,
-                InfoStuff = infoStuff
+                CommandProvider = commandProvider
             };
 
             DoEvents();
@@ -229,18 +229,18 @@ namespace NoCap.Library.Tests.Controls {
             var mockCommandFactory = new Mock<ICommandFactory>(MockBehavior.Strict);
             mockCommandFactory.Setup((factory) => factory.CreateCommand()).Returns(commandGenerator);
             mockCommandFactory.Setup((factory) => factory.Name).Returns(name);
-            mockCommandFactory.Setup((factory) => factory.PopulateCommand(It.IsAny<ICommand>(), It.IsAny<IInfoStuff>()));
+            mockCommandFactory.Setup((factory) => factory.PopulateCommand(It.IsAny<ICommand>(), It.IsAny<ICommandProvider>()));
 
             return mockCommandFactory.Object;
         }
 
-        private static IInfoStuff GetInfoStuff(IEnumerable<ICommand> commands, IEnumerable<ICommandFactory> commandFactories) {
+        private static ICommandProvider GetCommandProvider(IEnumerable<ICommand> commands, IEnumerable<ICommandFactory> commandFactories) {
             var commandsCollection = new ObservableCollection<ICommand>(commands);
 
-            var mockInfoStuff = new Mock<IInfoStuff>(MockBehavior.Strict);
-            mockInfoStuff.Setup((infoStuff) => infoStuff.CommandFactories).Returns(commandFactories);
+            var mockCommandProvider = new Mock<ICommandProvider>(MockBehavior.Strict);
+            mockCommandProvider.Setup((commandProvider) => commandProvider.CommandFactories).Returns(commandFactories);
 
-            return mockInfoStuff.Object;
+            return mockCommandProvider.Object;
         }
 
         [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]

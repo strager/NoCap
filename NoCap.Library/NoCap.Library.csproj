@@ -59,14 +59,14 @@
     </Compile>
     <Compile Include="IDefaultRegister.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="IRuntimePluginInfo.cs" />
+    <Compile Include="IRuntimeProvider.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
     <Compile Include="CommandCanceledException.cs" />
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
-    <Compile Include="Imaging\InfoStuffExtensions.cs" />
+    <Compile Include="Imaging\CommandProviderExtensions.cs" />
     <Compile Include="Imaging\JpegBitmapCodec.cs" />
     <Compile Include="Imaging\JpegBitmapCodecEditor.xaml.cs">
       <DependentUpon>JpegBitmapCodecEditor.xaml</DependentUpon>
@@ -87,7 +87,7 @@
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tasks\ICommandTask.cs" />
-    <Compile Include="IInfoStuff.cs" />
+    <Compile Include="ICommandProvider.cs" />
     <Compile Include="ICommandEditor.cs" />
     <Compile Include="ICommandFactory.cs" />
     <Compile Include="Command.cs" />

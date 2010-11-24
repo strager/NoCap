@@ -3,8 +3,8 @@ using System.Windows;
 
 namespace NoCap.Library {
     public interface IPlugin : IDisposable, INamedComponent {
-        UIElement GetEditor(IInfoStuff infoStuff);
+        UIElement GetEditor(ICommandProvider commandProvider);
 
-        void Initialize(IRuntimePluginInfo runtimePluginInfo);
+        void Initialize(IRuntimeProvider runtimeProvider);
     }
 }
