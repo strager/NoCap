@@ -10,20 +10,14 @@ using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Settings {
     // TODO Observable
-    [Serializable]
-    public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable, ISerializable, IDeserializationCallback {
+    [DataContract]
+    public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable {
+        [DataMember(Name = "Plugins")]
         private readonly IList<IPlugin> plugins = new List<IPlugin>();
 
-        [NonSerialized]
-        private IEnumerable<IPlugin> queuedPlugins;
-
-        [NonSerialized]
         private CommandRunner commandRunner;
-
-        [NonSerialized]
         private CompositionContainer compositionContainer;
 
-        [NonSerialized]
         private bool isInitialized;
 
         public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
@@ -48,22 +42,6 @@ namespace NoCap.GUI.WPF.Settings {
             var newPlugins = composedPlugins.Except(this.plugins, new TypeComparer<IPlugin>());
 
             AddRange(newPlugins);
-        }
-
-        public PluginCollection() {
-        }
-
-        private PluginCollection(SerializationInfo info, StreamingContext context) {
-            this.queuedPlugins = info.GetValue<IEnumerable<IPlugin>>("Plugins");
-        }
-
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("Plugins", this.plugins);
-        }
-
-        void IDeserializationCallback.OnDeserialization(object sender) {
-            AddRange(this.queuedPlugins);
-            this.queuedPlugins = null;
         }
 
         public IEnumerator<IPlugin> GetEnumerator() {

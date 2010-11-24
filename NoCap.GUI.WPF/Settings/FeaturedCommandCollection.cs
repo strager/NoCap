@@ -2,14 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
+    [DataContract(Name = "FeaturedCommands")]
     public class FeaturedCommandCollection : IEnumerable<FeaturedCommand> {
-        private readonly IDictionary<CommandFeatures, FeaturedCommand> commands = new Dictionary<CommandFeatures, FeaturedCommand>();
+        [DataMember]
+        private readonly IDictionary<CommandFeatures, ICommand> commands = new Dictionary<CommandFeatures, ICommand>();
+
+        [DataMember]
+        private IDictionary<CommandFeatures, CommandProxy> proxies = new Dictionary<CommandFeatures, CommandProxy>();
+
+        internal IDictionary<CommandFeatures, ICommand> Commands {
+            get {
+                return this.commands;
+            }
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context) {
+            this.proxies = new Dictionary<CommandFeatures, CommandProxy>();
+        }
 
         public IEnumerator<FeaturedCommand> GetEnumerator() {
-            return this.commands.Values.GetEnumerator();
+            return Commands.Keys.Select(Get).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -18,30 +35,37 @@ namespace NoCap.GUI.WPF.Settings {
 
         public ICommand this[CommandFeatures features] {
             get {
-                var featuredCommand = this.commands[features];
-
-                return featuredCommand == null ? null : featuredCommand.Command;
+                return Commands[features];
             }
 
             set {
-                this.commands[features] = new FeaturedCommand(features, value);
+                Commands[features] = value;
             }
         }
 
-        public void Add(FeaturedCommand item) {
-            this.commands.Add(item.Features, item);
-        }
-
         public void Clear() {
-            this.commands.Clear();
+            Commands.Clear();
         }
 
         public FeaturedCommand Get(CommandFeatures features) {
-            return this.commands[features];
+            return new FeaturedCommand(this, features);
+        }
+
+        public CommandProxy GetProxy(CommandFeatures features) {
+            CommandProxy proxy;
+
+            if (this.proxies.TryGetValue(features, out proxy)) {
+                return proxy;
+            }
+
+            proxy = new FeaturedCommandProxy(this, features);
+            this.proxies[features] = proxy;
+
+            return proxy;
         }
 
         public bool Contains(ICommand command) {
-            return this.Any((featuredCommand) => featuredCommand.Proxy == command);
+            return command != null && this.proxies.Values.Contains(command);
         }
     }
 }

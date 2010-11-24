@@ -6,16 +6,9 @@ using NoCap.Library.Util;
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]
     public class CommandProxy : ICommand {
-        public ICommand InnerCommand {
+        public virtual ICommand InnerCommand {
             get;
             set;
-        }
-
-        public CommandProxy() {
-        }
-
-        public CommandProxy(ICommand innerCommand) {
-            InnerCommand = innerCommand;
         }
 
         public string Name {

@@ -6,18 +6,21 @@ using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
-    [Serializable]
-    sealed class ProgramSettings : ISerializable, IDisposable {
+    [DataContract(Name = "ProgramSettings")]
+    sealed class ProgramSettings : IDisposable {
+        [DataMember(Name = "Commands")]
         public ObservableCollection<ICommand> Commands {
             get;
             set;
         }
 
+        [DataMember(Name = "Defaults")]
         public FeaturedCommandCollection DefaultCommands {
             get;
             set;
         }
 
+        [DataMember(Name = "Plugins")]
         private readonly PluginCollection plugins;
 
         public PluginCollection Plugins {
@@ -49,60 +52,8 @@ namespace NoCap.GUI.WPF.Settings {
             DefaultCommands[CommandFeatures.ImageUploader] = null;
         }
 
-        private ProgramSettings(SerializationInfo info, StreamingContext context) {
-            Commands = info.GetValue<ObservableCollection<ICommand>>("Commands");
-            this.plugins = info.GetValue<PluginCollection>("Plugins");
-
-            DefaultCommands = new FeaturedCommandCollection();
-            DefaultCommands[CommandFeatures.FileUploader] = null;
-            DefaultCommands[CommandFeatures.TextUploader] = null;
-            DefaultCommands[CommandFeatures.UrlShortener] = null;
-            DefaultCommands[CommandFeatures.ImageUploader] = null;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("Commands", Commands);
-            info.AddValue("Plugins", Plugins);
-        }
-
         public void Dispose() {
             this.plugins.Dispose();
-        }
-    }
-
-    public class FeaturedCommand {
-        private readonly CommandFeatures features;
-        private ICommand command;
-        private readonly CommandProxy proxy = new CommandProxy();
-
-        public CommandFeatures Features {
-            get {
-                return this.features;
-            }
-        }
-
-        public ICommand Command {
-            get {
-                return this.command;
-            }
-
-            set {
-                this.command = value;
-
-                proxy.InnerCommand = value;
-            }
-        }
-
-        public CommandProxy Proxy {
-            get {
-                return this.proxy;
-            }
-        }
-
-        public FeaturedCommand(CommandFeatures features, ICommand command) {
-            this.features = features;
-
-            Command = command;
         }
     }
 }
