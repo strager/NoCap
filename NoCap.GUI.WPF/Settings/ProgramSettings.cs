@@ -8,19 +8,28 @@ using ICommand = NoCap.Library.ICommand;
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "ProgramSettings")]
     sealed class ProgramSettings : IDisposable {
-        [DataMember(Name = "Commands")]
+        // Data member orders are important because they enforce "ownership" in
+        // the XML.  A command may reference a default command but it does not
+        // own the default command; the default command belongs to the
+        // DefaultCommands collection.  Thus, DefaultCommands should be read
+        // before Commands.
+        //
+        // Plugins may reference commands, but do not own commands.  Plugins
+        // are thus output after commands.
+
+        [DataMember(Name = "Commands", Order = 1)]
         public ObservableCollection<ICommand> Commands {
             get;
             set;
         }
 
-        [DataMember(Name = "Defaults")]
+        [DataMember(Name = "Defaults", Order = 0)]
         public FeaturedCommandCollection DefaultCommands {
             get;
             set;
         }
 
-        [DataMember(Name = "Plugins")]
+        [DataMember(Name = "Plugins", Order = 2)]
         private readonly PluginCollection plugins;
 
         public PluginCollection Plugins {
