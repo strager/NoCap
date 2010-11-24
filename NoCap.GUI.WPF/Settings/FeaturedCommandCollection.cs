@@ -11,7 +11,6 @@ namespace NoCap.GUI.WPF.Settings {
         [DataMember]
         private readonly IDictionary<CommandFeatures, ICommand> commands = new Dictionary<CommandFeatures, ICommand>();
 
-        [DataMember]
         private IDictionary<CommandFeatures, CommandProxy> proxies = new Dictionary<CommandFeatures, CommandProxy>();
 
         internal IDictionary<CommandFeatures, ICommand> Commands {
@@ -65,7 +64,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public bool Contains(ICommand command) {
-            return command != null && this.proxies.Values.Contains(command);
+            return command != null && command is FeaturedCommandProxy;
         }
     }
 }
