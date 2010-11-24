@@ -1,4 +1,5 @@
-﻿using NoCap.Library;
+﻿using System.Collections.Generic;
+using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>

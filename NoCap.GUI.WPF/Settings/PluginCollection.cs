@@ -15,23 +15,20 @@ namespace NoCap.GUI.WPF.Settings {
         [DataMember(Name = "Plugins")]
         private readonly IList<IPlugin> plugins = new List<IPlugin>();
 
-        private CommandRunner commandRunner;
-        private CompositionContainer compositionContainer;
-
+        private IRuntimePluginInfo runtimePluginInfo;
         private bool isInitialized;
 
-        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
+        public void Initialize(IRuntimePluginInfo runtimePluginInfo) {
             if (this.isInitialized) {
                 throw new InvalidOperationException("Already initialized");
             }
 
-            this.commandRunner = commandRunner;
-            this.compositionContainer = compositionContainer;
+            this.runtimePluginInfo = runtimePluginInfo;
 
-            Recompose(compositionContainer);
+            Recompose(runtimePluginInfo.CompositionContainer);
 
             foreach (var plugin in this.plugins) {
-                plugin.Initialize(commandRunner, compositionContainer);
+                plugin.Initialize(runtimePluginInfo);
             }
 
             this.isInitialized = true;
@@ -60,7 +57,7 @@ namespace NoCap.GUI.WPF.Settings {
             this.plugins.Add(plugin);
 
             if (this.isInitialized) {
-                plugin.Initialize(this.commandRunner, this.compositionContainer);
+                plugin.Initialize(this.runtimePluginInfo);
             }
         }
 

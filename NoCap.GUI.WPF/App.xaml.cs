@@ -2,6 +2,7 @@
 using System.Windows;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Settings.Editors;
+using NoCap.Library;
 using NoCap.Library.Tasks;
 
 namespace NoCap.GUI.WPF {
@@ -15,12 +16,24 @@ namespace NoCap.GUI.WPF {
         private ProgramSettings settings;
 
         private void Load() {
-            this.configurationManager = new ConfigurationManager();
-            this.settings = this.configurationManager.LoadSettings(new ExtensionManager());
-
             var commandRunner = new CommandRunner();
+            var extensionManager = new ExtensionManager();
 
-            this.settings.Plugins.Initialize(commandRunner, new ExtensionManager().CompositionContainer);
+            this.configurationManager = new ConfigurationManager();
+            this.settings = this.configurationManager.LoadSettings();
+
+            if (this.settings == null) {
+                this.settings = ProgramSettings.LoadDefaultSettings(commandRunner, extensionManager);
+            } else {
+                this.settings.RuntimePluginInfo = new ProgramRuntimePluginInfo(commandRunner, extensionManager, this.settings);;
+            }
+
+            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.ImageUploader, "Image uploader");
+            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.UrlShortener, "Url shortener");
+            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.FileUploader, "File uploader");
+            this.settings.RuntimePluginInfo.RegisterDefaultType(CommandFeatures.TextUploader, "Text uploader");
+
+            this.settings.Plugins.Initialize(this.settings.RuntimePluginInfo);
         }
 
         internal void ShowSettings() {

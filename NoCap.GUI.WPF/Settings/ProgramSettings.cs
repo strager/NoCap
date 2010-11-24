@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using NoCap.Library;
+using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
 
@@ -30,39 +33,63 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         [DataMember(Name = "Plugins", Order = 2)]
-        private readonly PluginCollection plugins;
-
         public PluginCollection Plugins {
-            get {
-                return this.plugins;
-            }
-        }
-
-        public ExtensionManager ExtensionManager {
             get;
             set;
         }
 
+        [IgnoreDataMember]
+        public IRuntimePluginInfo RuntimePluginInfo {
+            get;
+            set;
+        }
+
+        [IgnoreDataMember]
         public IInfoStuff InfoStuff {
             get {
-                return new ProgramSettingsInfoStuff(this, ExtensionManager);
+                if (RuntimePluginInfo == null) {
+                    throw new InvalidOperationException("PluginInfo must not be null");
+                }
+
+                return new ProgramSettingsInfoStuff(this, RuntimePluginInfo.CompositionContainer);
             }
         }
 
         public ProgramSettings() {
-            this.plugins = new PluginCollection();
-
+            Plugins = new PluginCollection();
             Commands = new ObservableCollection<ICommand>();
-
             DefaultCommands = new FeaturedCommandCollection();
-            DefaultCommands[CommandFeatures.FileUploader] = null;
-            DefaultCommands[CommandFeatures.TextUploader] = null;
-            DefaultCommands[CommandFeatures.UrlShortener] = null;
-            DefaultCommands[CommandFeatures.ImageUploader] = null;
         }
 
         public void Dispose() {
-            this.plugins.Dispose();
+            Plugins.Dispose();
+        }
+
+        public static ProgramSettings LoadDefaultSettings(CommandRunner commandRunner, ExtensionManager extensionManager) {
+            // TODO Clean this up
+
+            var settings = new ProgramSettings();
+            settings.RuntimePluginInfo = new ProgramRuntimePluginInfo(commandRunner, extensionManager, settings);
+
+            var commandFactories = settings.InfoStuff.CommandFactories
+                .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
+
+            var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
+
+            // We use two passes because command population often requires the
+            // presence of other commands (which may not have been constructed yet).
+            // We thus construct all commands, then populate them.
+            foreach (var commandFactory in commandFactories) {
+                commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
+            }
+
+            settings.Commands = new ObservableCollection<ICommand>(commandFactoriesToCommands.Values);
+
+            foreach (var pair in commandFactoriesToCommands) {
+                pair.Key.PopulateCommand(pair.Value, settings.InfoStuff);
+            }
+
+            return settings;
         }
     }
 }

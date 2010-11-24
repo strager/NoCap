@@ -7,10 +7,14 @@ using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "FeaturedCommands")]
-    public class FeaturedCommandCollection : IEnumerable<FeaturedCommand> {
+    public class FeaturedCommandCollection {
         [DataMember]
         private readonly IDictionary<CommandFeatures, ICommand> commands = new Dictionary<CommandFeatures, ICommand>();
 
+        [IgnoreDataMember]
+        private IDictionary<CommandFeatures, string> names = new Dictionary<CommandFeatures, string>();
+
+        [IgnoreDataMember]
         private IDictionary<CommandFeatures, CommandProxy> proxies = new Dictionary<CommandFeatures, CommandProxy>();
 
         internal IDictionary<CommandFeatures, ICommand> Commands {
@@ -19,17 +23,22 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
+        internal IDictionary<CommandFeatures, string> Names {
+            get {
+                return this.names;
+            }
+        }
+
+        public IEnumerable<FeaturedCommand> RegisteredCommands {
+            get {
+                return this.names.Keys.Select(Get);
+            }
+        }
+
         [OnDeserializing]
         private void OnDeserializing(StreamingContext context) {
+            this.names = new Dictionary<CommandFeatures, string>();
             this.proxies = new Dictionary<CommandFeatures, CommandProxy>();
-        }
-
-        public IEnumerator<FeaturedCommand> GetEnumerator() {
-            return Commands.Keys.Select(Get).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
         }
 
         public ICommand this[CommandFeatures features] {
@@ -61,6 +70,24 @@ namespace NoCap.GUI.WPF.Settings {
             this.proxies[features] = proxy;
 
             return proxy;
+        }
+
+        public void RegisterDefaultType(CommandFeatures features, string name, IInfoStuff infoStuff) {
+            if (this.names.ContainsKey(features)) {
+                throw new InvalidOperationException("Default type already registered");
+            }
+
+            var preferredCommand = infoStuff.GetPreferredCommand(features);
+
+            if (preferredCommand == null) {
+                throw new InvalidOperationException("There must be a command for the given features to register a default type");
+            }
+
+            this.names[features] = name;
+
+            if (!this.commands.ContainsKey(features)) {
+                this.commands[features] = preferredCommand;
+            }
         }
 
         public bool Contains(ICommand command) {

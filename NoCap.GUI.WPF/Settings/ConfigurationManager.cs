@@ -46,17 +46,14 @@ namespace NoCap.GUI.WPF.Settings {
             Save();
         }
 
-        public ProgramSettings LoadSettings(ExtensionManager extensionManager) {
+        public ProgramSettings LoadSettings() {
             var data = ProgramSettingsData;
 
             if (data == null) {
-                return GetDefaultSettings(extensionManager);
+                return null;
             }
 
-            var settings = DeserializeSettings(ReadFromDocument(data));
-            settings.ExtensionManager = extensionManager;
-
-            return settings;
+            return DeserializeSettings(ReadFromDocument(data));
         }
 
         private static XmlObjectSerializer GetSettingsSerializer() {
@@ -110,34 +107,6 @@ namespace NoCap.GUI.WPF.Settings {
                     throw;
                 }
             }
-        }
-
-        private static ProgramSettings GetDefaultSettings(ExtensionManager extensionManager) {
-            // TODO Clean this up
-
-            var settings = new ProgramSettings {
-                ExtensionManager = extensionManager
-            };
-
-            var commandFactories = settings.InfoStuff.CommandFactories
-                    .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
-
-            var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
-
-            // We use two passes because command population often requires the
-            // presence of other commands (which may not have been constructed yet).
-            // We thus construct all commands, then populate them.
-            foreach (var commandFactory in commandFactories) {
-                commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
-            }
-
-            settings.Commands = new ObservableCollection<ICommand>(commandFactoriesToCommands.Values);
-
-            foreach (var pair in commandFactoriesToCommands) {
-                pair.Key.PopulateCommand(pair.Value, settings.InfoStuff);
-            }
-
-            return settings;
         }
 
         public static T Clone<T>(T obj) {

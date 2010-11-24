@@ -46,8 +46,10 @@ namespace NoCap.GUI.WPF.Plugins {
             return new InputBindingsEditor(this, infoStuff);
         }
 
-        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
-            this.commandRunner = commandRunner;
+        public void Initialize(IRuntimePluginInfo runtimePluginInfo) {
+            this.commandRunner = runtimePluginInfo.CommandRunner;
+
+            var compositionContainer = runtimePluginInfo.CompositionContainer;
 
             Recompose(compositionContainer);
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);

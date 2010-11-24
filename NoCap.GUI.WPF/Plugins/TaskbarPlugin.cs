@@ -127,7 +127,7 @@ namespace NoCap.GUI.WPF.Plugins {
             return null;
         }
 
-        public void Initialize(CommandRunner commandRunner, CompositionContainer compositionContainer) {
+        public void Initialize(IRuntimePluginInfo runtimePluginInfo) {
             var taskbarMenu = new ContextMenu();
             taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
 
@@ -139,6 +139,8 @@ namespace NoCap.GUI.WPF.Plugins {
 
             this.logo = new NoCapLogo();
             
+            var commandRunner = runtimePluginInfo.CommandRunner;
+
             commandRunner.TaskStarted     += BeginTask;
             commandRunner.TaskCompleted   += EndTask;
             commandRunner.ProgressUpdated += UpdateProgress;

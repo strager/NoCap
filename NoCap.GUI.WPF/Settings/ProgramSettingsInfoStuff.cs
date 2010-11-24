@@ -6,17 +6,17 @@ using NoCap.Library;
 namespace NoCap.GUI.WPF.Settings {
     internal sealed class ProgramSettingsInfoStuff : IInfoStuff {
         private readonly ProgramSettings programSettings;
-        private readonly ExtensionManager extensionManager;
+        private readonly CompositionContainer compositionContainer;
 
         private IEnumerable<ICommandFactory> commandFactories;
 
-        public ProgramSettingsInfoStuff(ProgramSettings programSettings, ExtensionManager extensionManager) {
+        public ProgramSettingsInfoStuff(ProgramSettings programSettings, CompositionContainer compositionContainer) {
             this.programSettings = programSettings;
-            this.extensionManager = extensionManager;
+            this.compositionContainer = compositionContainer;
 
             Recompose();
 
-            this.extensionManager.CompositionContainer.ExportsChanged += Recompose;
+            this.compositionContainer.ExportsChanged += Recompose;
         }
 
         private void Recompose(object sender, ExportsChangeEventArgs e) {
@@ -24,7 +24,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         private void Recompose() {
-            this.commandFactories = this.extensionManager.CompositionContainer.GetExportedValues<ICommandFactory>();
+            this.commandFactories = this.compositionContainer.GetExportedValues<ICommandFactory>();
         }
 
         public IEnumerable<ICommandFactory> CommandFactories {

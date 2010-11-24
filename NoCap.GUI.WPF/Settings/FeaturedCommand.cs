@@ -11,6 +11,12 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
+        public string Name {
+            get {
+                return this.commandCollection.Names[features];
+            }
+        }
+
         public ICommand Command {
             get {
                 return this.commandCollection[features];

@@ -57,7 +57,9 @@
     <Compile Include="Controls\FramedCommandEditor.xaml.cs">
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IDefaultRegister.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="IRuntimePluginInfo.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
