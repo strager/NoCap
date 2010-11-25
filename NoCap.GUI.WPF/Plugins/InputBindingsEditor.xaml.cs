@@ -98,6 +98,15 @@ namespace NoCap.GUI.WPF.Plugins {
 
             var binding = new MutableCommandBinding(inputSequence, null);
 
+            // If a binding already exists, remove it and re-add it as a new instance
+            // to push it at the end of the list.
+            var existingBinding = Bindings.FirstOrDefault((b) => b.Input.Equals(inputSequence));
+
+            if (existingBinding != null) {
+                Bindings.Remove(existingBinding);
+                binding.Command = existingBinding.Command;
+            }
+
             Bindings.Add(binding);
         }
 
@@ -141,9 +150,31 @@ namespace NoCap.GUI.WPF.Plugins {
         }
     }
 
+    class MutableCommandBindingMapping {
+        private readonly MutableCommandBinding mutableCommandBinding;
+        private readonly CommandBinding immutableCommandBinding;
+
+        public MutableCommandBindingMapping(MutableCommandBinding mutableCommandBinding, CommandBinding immutableCommandBinding) {
+            this.mutableCommandBinding = mutableCommandBinding;
+            this.immutableCommandBinding = immutableCommandBinding;
+        }
+
+        public MutableCommandBinding MutableCommandBinding {
+            get {
+                return this.mutableCommandBinding;
+            }
+        }
+
+        public CommandBinding ImmutableCommandBinding {
+            get {
+                return this.immutableCommandBinding;
+            }
+        }
+    }
+
     public class MutableCommandBindingCollection : ICollection<MutableCommandBinding>, INotifyCollectionChanged {
         private readonly ICollection<CommandBinding> originalBindings;
-        private readonly IDictionary<MutableCommandBinding, CommandBinding> mapping = new Dictionary<MutableCommandBinding, CommandBinding>();
+        private readonly ICollection<MutableCommandBindingMapping> mappings = new List<MutableCommandBindingMapping>();
 
         public MutableCommandBindingCollection(ICollection<CommandBinding> originalBindings) {
             this.originalBindings = originalBindings;
@@ -152,37 +183,38 @@ namespace NoCap.GUI.WPF.Plugins {
                 var mutableBinding = GetMutableBinding(binding);
                 mutableBinding.PropertyChanged += UpdateBindingHandler;
 
-                mapping[mutableBinding] = binding;
+                this.mappings.Add(new MutableCommandBindingMapping(mutableBinding, binding));
             }
         }
 
         private MutableCommandBinding GetMutableBinding(CommandBinding binding) {
-            var mutableBinding = this.mapping.FirstOrDefault((kvp) => ReferenceEquals(kvp.Value, binding)).Key;
+            var mapping = this.mappings.FirstOrDefault((m) => ReferenceEquals(m.ImmutableCommandBinding, binding));
 
-            if (mutableBinding == null) {
-                mutableBinding = new MutableCommandBinding(binding);
+            if (mapping == null) {
+                return new MutableCommandBinding(binding);
             }
 
-            return mutableBinding;
+            return mapping.MutableCommandBinding;
         }
 
         private bool RemoveMutableBinding(MutableCommandBinding binding) {
-            var immutableBinding = this.mapping[binding];
+            var mapping = this.mappings.FirstOrDefault((m) => ReferenceEquals(m.MutableCommandBinding, binding));
+            this.mappings.Remove(mapping);
 
-            this.mapping.Remove(binding);
+            var immutableBinding = mapping.ImmutableCommandBinding;
             this.originalBindings.Remove(immutableBinding);
 
             return true;
         }
 
         private CommandBinding GetImmutableBinding(MutableCommandBinding binding) {
-            CommandBinding immutableBinding;
+            var mapping = this.mappings.FirstOrDefault((m) => ReferenceEquals(m.MutableCommandBinding, binding));
 
-            if (!this.mapping.TryGetValue(binding, out immutableBinding)) {
-                immutableBinding = new CommandBinding(binding.Input, binding.Command);
+            if (mapping == null) {
+                return new CommandBinding(binding.Input, binding.Command);
             }
 
-            return immutableBinding;
+            return mapping.ImmutableCommandBinding;
         }
 
         private void UpdateBindingHandler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -192,17 +224,18 @@ namespace NoCap.GUI.WPF.Plugins {
         private void UpdateBinding(MutableCommandBinding binding) {
             // Be careful with the order here.
 
-            var originalBinding = this.mapping[binding];
-            this.originalBindings.Remove(originalBinding);
-            this.mapping.Remove(binding);
+            Remove(this.mappings.First((m) => ReferenceEquals(m.MutableCommandBinding, binding)));
 
-            var newBinding = GetImmutableBinding(binding);
-            this.mapping[binding] = newBinding;
-            this.originalBindings.Add(newBinding);
+            Add(binding, GetImmutableBinding(binding));
+        }
+
+        private void Remove(MutableCommandBindingMapping mapping) {
+            this.originalBindings.Remove(mapping.ImmutableCommandBinding);
+            this.mappings.Remove(mapping);
         }
 
         public IEnumerator<MutableCommandBinding> GetEnumerator() {
-            return this.mapping.Keys.GetEnumerator();
+            return this.mappings.Select((m) => m.MutableCommandBinding).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -218,51 +251,57 @@ namespace NoCap.GUI.WPF.Plugins {
 
             var immutableBinding = GetImmutableBinding(item);
 
-            this.mapping[item] = immutableBinding;
-            this.originalBindings.Add(immutableBinding);
+            Add(item, immutableBinding);
 
             Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
+        private void Add(MutableCommandBinding mutableCommandBinding, CommandBinding immutableCommandBinding) {
+            this.mappings.Add(new MutableCommandBindingMapping(mutableCommandBinding, immutableCommandBinding));
+            this.originalBindings.Add(immutableCommandBinding);
+        }
+
         public void Clear() {
-            this.mapping.Clear();
+            this.mappings.Clear();
             this.originalBindings.Clear();
 
             Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public bool Contains(MutableCommandBinding item) {
-            return this.mapping.ContainsKey(item);
+            return this.mappings.Any((m) => ReferenceEquals(m.MutableCommandBinding, item));
         }
 
         public void CopyTo(MutableCommandBinding[] array, int arrayIndex) {
-            this.mapping.Keys.CopyTo(array, arrayIndex);
+            // Lazy/inefficient way.
+            new List<MutableCommandBinding>(this).CopyTo(array, arrayIndex);
         }
 
         public bool Remove(MutableCommandBinding item) {
-            CommandBinding immutableBinding;
-            bool itemRemoved = false;
+            var mapping = this.mappings.FirstOrDefault((m) => ReferenceEquals(m.MutableCommandBinding, item));
 
-            if (this.mapping.TryGetValue(item, out immutableBinding)) {
-                int itemIndex = this.mapping.TakeWhile((kvp) => kvp.Key != item).Count();
-
-                itemRemoved = RemoveMutableBinding(item);
-
-                if (itemRemoved) {
-                    item.PropertyChanged -= UpdateBindingHandler;
-
-                    this.originalBindings.Remove(immutableBinding);
-
-                    Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, itemIndex));
-                }
+            if (mapping == null) {
+                return false;
             }
 
-            return itemRemoved;
+            int itemIndex = this.mappings.TakeWhile((m) => m != mapping).Count();
+
+            if (!RemoveMutableBinding(item)) {
+                return false;
+            }
+
+            item.PropertyChanged -= UpdateBindingHandler;
+
+            this.originalBindings.Remove(mapping.ImmutableCommandBinding);
+
+            Notify(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, itemIndex));
+
+            return true;
         }
 
         public int Count {
             get {
-                return this.mapping.Count;
+                return this.mappings.Count;
             }
         }
 
