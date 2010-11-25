@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -8,6 +9,12 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         internal SettingsWindow(ProgramSettings settings) {
             InitializeComponent();
 
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, (sender, e) => Close()));
+
+            LoadTabs(settings);
+        }
+
+        private void LoadTabs(ProgramSettings settings) {
             var commandProvider = settings.CommandProvider;
 
             Resources["commandProvider"] = commandProvider;
