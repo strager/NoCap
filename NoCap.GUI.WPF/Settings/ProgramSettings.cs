@@ -73,10 +73,10 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public ProgramSettings(IEnumerable<ICommand> commands) {
+        public ProgramSettings() {
             this.plugins = new PluginCollection();
             this.defaultCommands = new FeaturedCommandCollection();
-            this.commands = new ObservableCollection<ICommand>(commands);
+            this.commands = new ObservableCollection<ICommand>();
         }
 
         public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
@@ -94,10 +94,10 @@ namespace NoCap.GUI.WPF.Settings {
             Plugins.Dispose();
         }
 
-        /*public static IEnumerable<ICommand> LoadCommandDefaults(ICommandProvider commandProvider) {
+        public void LoadCommandDefaults() {
             // TODO Clean this up
 
-            var commandFactories = commandProvider.CommandFactories
+            var commandFactories = CommandProvider.CommandFactories
                 .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
 
             var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
@@ -111,10 +111,10 @@ namespace NoCap.GUI.WPF.Settings {
 
             foreach (var pair in commandFactoriesToCommands) {
                 pair.Key.PopulateCommand(pair.Value, commandProvider);
-            }
 
-            return commandFactoriesToCommands.Values;
-        }*/
+                this.commands.Add(pair.Value);
+            }
+        }
     }
 
     internal class ProgramFeatureRegistry : IFeatureRegistry {

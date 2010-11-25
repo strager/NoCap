@@ -23,8 +23,12 @@ namespace NoCap.GUI.WPF {
             this.configurationManager = new ConfigurationManager();
             this.settings = this.configurationManager.LoadSettings();
 
+            bool loadCommandDefaults = false;
+
             if (this.settings == null) {
-                this.settings = new ProgramSettings(Enumerable.Empty<ICommand>());
+                this.settings = new ProgramSettings();
+
+                loadCommandDefaults = true;
             }
 
             this.settings.Initialize(commandRunner, extensionManager);
@@ -35,6 +39,10 @@ namespace NoCap.GUI.WPF {
             featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );
             featureRegistry.Register(CommandFeatures.FileUploader,  "File uploader" );
             featureRegistry.Register(CommandFeatures.TextUploader,  "Text uploader" );
+
+            if (loadCommandDefaults) {
+                this.settings.LoadCommandDefaults();
+            }
         }
 
         internal void ShowSettings() {
