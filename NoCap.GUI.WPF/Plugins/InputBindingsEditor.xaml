@@ -6,16 +6,20 @@
         mc:Ignorable="d"
         x:Name="self"
         d:DesignHeight="300" d:DesignWidth="300"
-        xmlns:Plugins="clr-namespace:NoCap.GUI.WPF.Plugins"
         xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
         xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListView Name="bindingsList" ItemsSource="{Binding Bindings, Mode=TwoWay}" Grid.Row="0">
+        <ComboBox Name="inputProvider" Grid.Row="0" Controls:NoCapControl.IsAdvanced="True"
+            ItemsSource="{Binding InputProviders}" DisplayMemberPath="Name"
+            SelectedItem="{Binding InputProvider, Mode=TwoWay}" />
+
+        <ListView Name="bindingsList" ItemsSource="{Binding Bindings, Mode=TwoWay}" Grid.Row="1">
             <ListView.Resources>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="acb:CommandBehavior.Event" Value="MouseDoubleClick" />
@@ -46,7 +50,7 @@
             </ListView.View>
         </ListView>
         
-        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="2" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />

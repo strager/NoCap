@@ -31,6 +31,22 @@ namespace NoCap.GUI.WPF.Plugins {
             set;
         }
 
+        public IEnumerable<IInputProvider> InputProviders {
+            get {
+                return this.plugin.InputProviders;
+            }
+        }
+
+        public IInputProvider InputProvider {
+            get {
+                return this.plugin.InputProvider;
+            }
+
+            set {
+                this.plugin.InputProvider = value;
+            }
+        }
+
         public InputBindingsPlugin Plugin {
             get {
                 return this.plugin;
