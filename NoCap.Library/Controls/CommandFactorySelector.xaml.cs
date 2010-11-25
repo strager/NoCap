@@ -70,7 +70,7 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(null, OnCommandFactoryChanged, CoerceUpdates)
             );
 
-            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
+            CommandProviderProperty = NoCapControl.CommandProviderProperty.AddOwner(
                 typeof(CommandFactorySelector),
                 new PropertyMetadata(OnCommandProviderChanged)
             );

@@ -63,7 +63,7 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(true, OnIsDefaultChanged)
             );
 
-            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
+            CommandProviderProperty = NoCapControl.CommandProviderProperty.AddOwner(
                 typeof(FramedCommandEditor),
                 new PropertyMetadata(OnCommandProviderChanged)
             );

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using NoCap.Library;
+using NoCap.Library.Controls;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -17,7 +18,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         }
 
         static CommandSettingsEditor() {
-            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(typeof(CommandSettingsEditor));
+            CommandProviderProperty = Library.Controls.NoCapControl.CommandProviderProperty.AddOwner(typeof(CommandSettingsEditor));
         }
 
         public CommandSettingsEditor() {

@@ -24,7 +24,6 @@
                             <DataTrigger Binding="{Binding IsDefault, ElementName=framedCommandEditor}" Value="False">
                                 <Setter Property="StackPanel.Visibility" Value="Visible" />
                             </DataTrigger>
-
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>

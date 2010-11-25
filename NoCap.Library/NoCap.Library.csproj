@@ -57,6 +57,7 @@
     <Compile Include="Controls\FramedCommandEditor.xaml.cs">
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NoCapControl.cs" />
     <Compile Include="IDefaultRegister.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="IRuntimeProvider.cs" />

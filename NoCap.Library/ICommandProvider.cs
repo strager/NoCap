@@ -10,19 +10,6 @@ namespace NoCap.Library {
         bool IsDefaultCommand(ICommand command);
     }
 
-    public class CommandProviderWpf : DependencyObject {
-        public static readonly DependencyProperty CommandProviderProperty;
-
-        static CommandProviderWpf() {
-            CommandProviderProperty = DependencyProperty.Register(
-                "CommandProvider",
-                typeof(ICommandProvider),
-                typeof(CommandProviderWpf),
-                new PropertyMetadata(null)
-            );
-        }
-    }
-
     public static class CommandProvider {
         public static ICommand GetPreferredCommand(this ICommandProvider commandProvider, CommandFeatures commandFeatures) {
             var factory = commandProvider.GetPreferredCommandFactory(commandFeatures);

@@ -34,7 +34,7 @@ namespace NoCap.Library.Controls {
                 new FrameworkPropertyMetadata(OnCommandChanged)
             );
             
-            CommandProviderProperty = CommandProviderWpf.CommandProviderProperty.AddOwner(
+            CommandProviderProperty = NoCapControl.CommandProviderProperty.AddOwner(
                 typeof(CommandEditor),
                 new PropertyMetadata(OnCommandProviderChanged)
             );
