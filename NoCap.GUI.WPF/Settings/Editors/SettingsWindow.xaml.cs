@@ -23,8 +23,14 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             });
 
             foreach (var plugin in settings.Plugins) {
+                var editor = plugin.GetEditor(commandProvider);
+
+                if (editor == null) {
+                    continue;
+                }
+
                 this.tabControl.Items.Add(new TabItem {
-                    Content = plugin.GetEditor(commandProvider),
+                    Content = editor,
                     Header = plugin.Name
                 });
             }
