@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Interop;
 using WinputDotNet;
 
@@ -23,6 +24,12 @@ namespace NoCap.GUI.WPF.Plugins {
         }
 
         private void StartRecording() {
+            if (!Dispatcher.CheckAccess()) {
+                Dispatcher.BeginInvoke(new Action(StartRecording));
+
+                return;
+            }
+
             InputSequence = null;
 
             var handle = new WindowInteropHelper(this).Handle;
@@ -32,6 +39,36 @@ namespace NoCap.GUI.WPF.Plugins {
 
         private void RecordingMade(IInputSequence input) {
             this.provider.Detach();
+
+            if (input.IsSystem) {
+                var result = MessageBox.Show(
+                    string.Format("The input you provided ({0}) is a known system sequence.  Binding this to a command may make your computer inoperable.  Do you want to bind the sequence anyway?", input.HumanString),
+                    "System Binding Detected",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+                );
+
+                if (result != MessageBoxResult.Yes) {
+                    StartRecording();
+
+                    return;
+                }
+            }
+
+            if (input.IsCommon) {
+                var result = MessageBox.Show(
+                    string.Format("The input you provided ({0}) is a known commonly-used sequence.  Binding this to a command may make your computer inoperable or difficult to use.  Do you want to bind the sequence anyway?", input.HumanString),
+                    "Common Binding Detected",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+                );
+
+                if (result != MessageBoxResult.Yes) {
+                    StartRecording();
+
+                    return;
+                }
+            }
 
             InputSequence = input;
 
