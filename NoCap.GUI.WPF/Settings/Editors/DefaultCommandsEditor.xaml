@@ -7,7 +7,6 @@
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
     Name="editor">
-
     <ContentControl.Resources>
         <Controls:CommandFeatureFilterConverter x:Key="FeatureFilterConverter" />
         <Grid x:Key="Grid">
@@ -31,15 +30,31 @@
                                     <ColumnDefinition Width="{Binding ColumnDefinitions[1].Width, Source={StaticResource Grid}}" />
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
                                 </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                             </Grid>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
-                    <Label Grid.Column="0" Content="{Binding Name}" />
-                    <Controls:CommandFactorySelector Grid.Column="1" HorizontalAlignment="Stretch"
-                        CommandProvider="{Binding CommandProvider, ElementName=editor}" Command="{Binding Command, Mode=TwoWay}"
+                    <Label Grid.Column="0"
+                        VerticalAlignment="Bottom"
+                        Margin="3,6"
+                        Content="{Binding Name}" />
+
+                    <Controls:CommandFactorySelector Grid.Column="1"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                        Margin="3,6"
+                        CommandProvider="{Binding CommandProvider, ElementName=editor}"
+                        Command="{Binding Command, Mode=TwoWay}"
                         Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
-                    <Button Grid.Column="2">Edit</Button>
+
+                    <Button Grid.Column="2"
+                        Style="{StaticResource CommandButtonStyle}"
+                        Margin="3,6"
+                        VerticalAlignment="Bottom"
+                        Content="_Edit" />
                 </ItemsControl>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

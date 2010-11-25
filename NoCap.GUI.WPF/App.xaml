@@ -5,10 +5,12 @@
              Startup="StartUpApplication"
              Exit="ExitApplication">
     <Application.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="3,6" />
+        <Style TargetType="Button" x:Key="CommandButtonStyle">
             <Setter Property="Padding" Value="3" />
             <Setter Property="MinWidth" Value="70" />
+        </Style>
+        <Style TargetType="Button" x:Key="PaddedCommandButtonStyle" BasedOn="{StaticResource CommandButtonStyle}">
+            <Setter Property="Margin" Value="3,6" />
         </Style>
     </Application.Resources>
 </Application>

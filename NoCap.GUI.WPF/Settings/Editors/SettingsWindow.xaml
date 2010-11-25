@@ -14,16 +14,19 @@
             <!-- Contents inserted by code dynamically -->
         </TabControl>
         
-        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" Margin="3,6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <CheckBox Grid.Column="0" Name="isAdvanced">_Advanced</CheckBox>
+            <CheckBox Grid.Column="0" Name="isAdvanced" VerticalAlignment="Center">_Advanced</CheckBox>
 
-            <Button Grid.Column="2" Command="Close" Controls:NoCapControl.IsAdvanced="True">_Close</Button>
+            <Button Grid.Column="2" Command="Close" Controls:NoCapControl.IsAdvanced="True"
+                Style="{StaticResource CommandButtonStyle}" VerticalAlignment="Center">
+                _Close
+            </Button>
         </Grid>
     </Grid>
 </Window>

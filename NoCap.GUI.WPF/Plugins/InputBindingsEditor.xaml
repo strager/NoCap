@@ -16,7 +16,9 @@
         </Grid.RowDefinitions>
 
         <ComboBox Name="inputProvider" Grid.Row="0" Controls:NoCapControl.IsAdvanced="True"
-            ItemsSource="{Binding InputProviders}" DisplayMemberPath="Name"
+            Margin="0,0,0,6"
+            ItemsSource="{Binding InputProviders}"
+            DisplayMemberPath="Name"
             SelectedItem="{Binding InputProvider, Mode=TwoWay}" />
 
         <ListView Name="bindingsList" ItemsSource="{Binding Bindings, Mode=TwoWay}" Grid.Row="1">
@@ -58,12 +60,12 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
-                <Button Content="_Add..." Command="New" />
+                <Button Content="_Add..." Command="New" Style="{StaticResource PaddedCommandButtonStyle}" />
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Left">
-                <Button Content="_Rebind..." Command="Open" />
-                <Button Content="_Delete" Command="Delete" />
+                <Button Content="_Rebind..." Command="Open" Style="{StaticResource PaddedCommandButtonStyle}" />
+                <Button Content="_Delete" Command="Delete" Style="{StaticResource PaddedCommandButtonStyle}" />
             </StackPanel>
         </Grid>
     </Grid>

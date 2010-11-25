@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="31" d:DesignWidth="301"
+    mc:Ignorable="d" VerticalAlignment="Top" d:DesignHeight="98" d:DesignWidth="335"
     Name="selector">
-    <ComboBox DisplayMemberPath="Name" Name="commandFactoryList" SelectedItem="{Binding ElementName=selector, Path=CommandFactory}" />
+    <ComboBox DisplayMemberPath="Name" Name="commandFactoryList"
+        SelectedItem="{Binding ElementName=selector, Path=CommandFactory}"
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch" />
 </ContentControl>

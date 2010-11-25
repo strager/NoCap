@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -116,7 +118,7 @@ namespace NoCap.Library.Controls {
         }
 
         private ICommandFactory CoerceCommandFactory(ICommandFactory factory) {
-            if (this.CommandProvider == null || factory == null) {
+            if (CommandProvider == null || factory == null) {
                 return factory;
             }
 
@@ -193,7 +195,7 @@ namespace NoCap.Library.Controls {
         private void SetCommandFactoryFromCommand(ICommand command) {
             this.updatePriority = PriorityItem.Command;
 
-            if (this.CommandProvider == null) {
+            if (CommandProvider == null) {
                 return;
             }
 
@@ -217,17 +219,17 @@ namespace NoCap.Library.Controls {
         private void SetCommandFromFactory(ICommandFactory commandFactory) {
             this.updatePriority = PriorityItem.CommandFactory;
 
-            if (commandFactory == null || this.CommandProvider == null) {
+            if (commandFactory == null || CommandProvider == null) {
                 return;
             }
 
-            if (this.CommandProvider.CommandFactories.Any((f) => AreCommandFactoriesEqual(f, commandFactory))) {
+            if (CommandProvider.CommandFactories.Any((f) => AreCommandFactoriesEqual(f, commandFactory))) {
                 this.updatePriority = PriorityItem.None;
 
                 this.allowPropertyBehaviours = false;
 
                 try {
-                    Command = commandFactory.CreateCommand(this.CommandProvider);
+                    Command = commandFactory.CreateCommand(CommandProvider);
                 } finally {
                     this.allowPropertyBehaviours = true;
                 }
