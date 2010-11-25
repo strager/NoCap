@@ -21,10 +21,6 @@
             VerticalAlignment="Bottom" Margin="6"
             CommandsSource="{Binding CommandProvider.Commands, ElementName=editor}"
             Filter="StandAlone" />
-        
-        <Button Grid.Row="0" Grid.Column="1" Content="_New..." />
-        <Button Grid.Row="0" Grid.Column="2" Content="_Delete" />
-        
         <library:CommandEditor Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="commandEditor"
             Command="{Binding Command, ElementName=commandSelector}" />
     </Grid>
