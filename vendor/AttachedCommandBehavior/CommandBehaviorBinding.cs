@@ -80,6 +80,15 @@ namespace AttachedCommandBehavior
         {
             EventName = eventName;
             Owner = owner;
+
+            if (string.IsNullOrEmpty(eventName))
+            {
+                Event = null;
+                EventHandler = null;
+
+                return;
+            }
+
             Event = Owner.GetType().GetEvent(EventName, BindingFlags.Public | BindingFlags.Instance);
             if (Event == null)
                 throw new InvalidOperationException(String.Format("Could not resolve event name {0}", EventName));
