@@ -102,7 +102,15 @@ namespace NoCap.Library.Controls {
         private static void OnFilterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) {
             var commandFactory = (CommandFactorySelector) sender;
 
+            // Refreshing the combo box also changes the selection.
+            // To prevent binding problems because of this, make sure
+            // the command is not changed when changing the filter.
+
+            var oldCommand = commandFactory.Command;
+
             commandFactory.filterer.Refresh();
+
+            commandFactory.Command = oldCommand;
         }
 
         private static bool AreCommandFactoriesEqual(ICommandFactory a, ICommandFactory b) {

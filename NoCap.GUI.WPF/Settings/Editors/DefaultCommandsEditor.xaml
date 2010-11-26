@@ -9,55 +9,51 @@
     Name="editor">
     <ContentControl.Resources>
         <Controls:CommandFeatureFilterConverter x:Key="FeatureFilterConverter" />
-        <Grid x:Key="Grid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
-            </Grid.ColumnDefinitions>
-        </Grid>
     </ContentControl.Resources>
 
-    <ItemsControl ItemsSource="{Binding DefaultCommands, ElementName=editor}" Grid.IsSharedSizeScope="True">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <ItemsControl>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
-                                    <ColumnDefinition Width="{Binding ColumnDefinitions[1].Width, Source={StaticResource Grid}}" />
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="C" />
-                                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                            </Grid>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+        <ListView Grid.Column="0" Name="featuresSelector"
+            ItemsSource="{Binding DefaultCommands, ElementName=editor}"
+            IsTextSearchEnabled="True"
+            SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ItemsControl>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Name}"
+                                Margin="0,3,3,0"
+                                FontWeight="SemiBold" />
 
-                    <Label Grid.Column="0"
-                        VerticalAlignment="Bottom"
-                        Margin="3,6"
-                        Content="{Binding Name}" />
+                            <TextBlock Text="{Binding Command.Name}"
+                                Margin="16,0,3,3"
+                                FontStyle="Italic" />
+                        </StackPanel>
+                    </ItemsControl>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-                    <Controls:CommandFactorySelector Grid.Column="1"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
-                        Margin="3,6"
-                        CommandProvider="{Binding CommandProvider, ElementName=editor}"
-                        Command="{Binding Command, Mode=TwoWay}"
-                        Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
+        <Grid Grid.Column="1" DataContext="{Binding SelectedItem, ElementName=featuresSelector}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                    <Button Grid.Column="2"
-                        Style="{StaticResource CommandButtonStyle}"
-                        Margin="3,6"
-                        VerticalAlignment="Bottom"
-                        Command="Open" CommandParameter="{Binding Command}"
-                        Content="_Edit" />
-                </ItemsControl>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+            <Controls:CommandFactorySelector Grid.Row="0"
+                HorizontalAlignment="Stretch"
+                Margin="3,6"
+                CommandProvider="{Binding CommandProvider, ElementName=editor}"
+                Command="{Binding Command, Mode=TwoWay}"
+                Filter="{Binding Features, Converter={StaticResource FeatureFilterConverter}}" />
+
+            <Controls:CommandEditor Grid.Row="1"
+                Margin="3,6"
+                Command="{Binding Command}" />
+        </Grid>
+    </Grid>
 </ContentControl>
