@@ -59,8 +59,8 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
-    <Compile Include="Editors\ImageBinUploaderEditor.xaml.cs">
-      <DependentUpon>ImageBinUploaderEditor.xaml</DependentUpon>
+    <Compile Include="Editors\ImagebinCaUploaderEditor.xaml.cs">
+      <DependentUpon>ImagebinCaUploaderEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Factories\ImageFileUploaderFactory.cs" />
     <Compile Include="Editors\ImageFileUploaderEditor.xaml.cs">
@@ -81,7 +81,7 @@
     <Compile Include="Factories\ClipboardFactory.cs" />
     <Compile Include="Factories\CropShotFactory.cs" />
     <Compile Include="Factories\FileSystemFactory.cs" />
-    <Compile Include="Factories\ImageBinUploaderFactory.cs" />
+    <Compile Include="Factories\ImagebinCaUploaderFactory.cs" />
     <Compile Include="Factories\IsgdShortenerFactory.cs" />
     <Compile Include="Factories\ScreenshotFactory.cs" />
     <Compile Include="Factories\SlexyUploaderFactory.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="Commands\FileSystem.cs" />
     <Compile Include="Helpers\Crosshair.cs" />
     <Compile Include="Helpers\ImageExtensions.cs" />
-    <Compile Include="Commands\ImageBinUploader.cs" />
+    <Compile Include="Commands\ImagebinCaUploader.cs" />
     <Compile Include="Commands\IsgdShortener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ScreenCapturer.cs" />
@@ -120,7 +120,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Editors\ImageBinUploaderEditor.xaml">
+    <Page Include="Editors\ImagebinCaUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

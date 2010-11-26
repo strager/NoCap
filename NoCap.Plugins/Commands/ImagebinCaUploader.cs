@@ -11,18 +11,19 @@ using NoCap.Web.Multipart;
 
 namespace NoCap.Plugins.Commands {
     [Serializable]
-    public sealed class ImageBinUploader : ImageUploader {
+    public sealed class ImagebinCaUploader : ImageUploader {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
         public override string Name {
-            get { return "ImageBin.ca uploader"; }
+            get { return "Imagebin.ca uploader"; }
         }
 
-        public ImageBinUploader(ImageWriter imageWriter) :
+        public ImagebinCaUploader(ImageWriter imageWriter) :
             base(imageWriter) {
+            IsPrivate = true;
         }
 
         protected override Uri Uri {
@@ -37,16 +38,16 @@ namespace NoCap.Plugins.Commands {
         }
 
         public override ICommandFactory GetFactory() {
-            return new ImageBinUploaderFactory();
+            return new ImagebinCaUploaderFactory();
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             parameters["t"] = "file";
-            parameters["name"] = UploaderName ?? "";
-            parameters["tags"] = "zscreen";
-            parameters["description"] = data.Name ?? "";
-            parameters["adult"] = "t";
+            parameters["name"] = data.Name ?? "";
+            parameters["tags"] = Tags ?? "";
+            parameters["description"] = Description ?? "";
+            parameters["adult"] = IsPrivate ? "t" : "f";
             parameters["sfile"] = "Upload";
             parameters["url"] = "";
 
@@ -73,7 +74,17 @@ namespace NoCap.Plugins.Commands {
             return new Uri(string.Format(@"http://imagebin.ca/img/{0}", code));
         }
 
-        protected string UploaderName {
+        public string Tags {
+            get;
+            set;
+        }
+
+        public string Description {
+            get;
+            set;
+        }
+
+        public bool IsPrivate {
             get;
             set;
         }

@@ -8,13 +8,13 @@ using NoCap.Plugins.Editors;
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
     [PreferredCommandFactory(CommandFeatures.ImageUploader)]
-    class ImageBinUploaderFactory : ICommandFactory {
+    class ImagebinCaUploaderFactory : ICommandFactory {
         public string Name {
-            get { return "ImageBin.ca uploader"; }
+            get { return "Imagebin.ca uploader"; }
         }
 
         public ICommand CreateCommand() {
-            return new ImageBinUploader(new ImageWriter(new PngBitmapCodec()));
+            return new ImagebinCaUploader(new ImageWriter(new PngBitmapCodec()));
         }
 
         public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
@@ -22,7 +22,7 @@ namespace NoCap.Plugins.Factories {
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return new ImageBinUploaderEditor();
+            return new ImagebinCaUploaderEditor();
         }
 
         public CommandFeatures CommandFeatures {
