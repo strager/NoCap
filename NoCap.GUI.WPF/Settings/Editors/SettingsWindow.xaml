@@ -1,9 +1,9 @@
 ﻿<Window x:Class="NoCap.GUI.WPF.Settings.Editors.SettingsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
-        Title="NoCap Settings" Height="300" Width="300"
-        Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
+    Title="NoCap Settings" Height="300" Width="300"
+    Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
     <Grid Margin="3,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -23,8 +23,9 @@
 
             <CheckBox Grid.Column="0" Name="isAdvanced" VerticalAlignment="Center">_Advanced</CheckBox>
 
-            <Button Grid.Column="2" Command="Close" Controls:NoCapControl.IsAdvanced="True"
-                Style="{StaticResource CommandButtonStyle}" VerticalAlignment="Center">
+            <Button Grid.Column="2" Command="Close"
+                Style="{StaticResource CommandButtonStyle}"
+                VerticalAlignment="Center">
                 _Close
             </Button>
         </Grid>
