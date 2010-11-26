@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using NoCap.Library;
+using NoCap.Library.Controls;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -22,6 +26,18 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             DefaultCommands = registry.RegisteredFeatures.Select((features) => new DefaultCommandItemThing(registry, features, defaults));
 
             InitializeComponent();
+
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, (sender, e) => EditCommand((ICommand) e.Parameter)));
+        }
+
+        private void EditCommand(ICommand command) {
+            var commandEditor = new CommandEditorWindow {
+                Command = command,
+            };
+
+            commandEditor.Resources["commandProvider"] = CommandProvider;
+
+            commandEditor.ShowDialog();
         }
     }
 

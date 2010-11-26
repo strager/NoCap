@@ -54,6 +54,7 @@
                         Style="{StaticResource CommandButtonStyle}"
                         Margin="3,6"
                         VerticalAlignment="Bottom"
+                        Command="Open" CommandParameter="{Binding Command}"
                         Content="_Edit" />
                 </ItemsControl>
             </DataTemplate>
