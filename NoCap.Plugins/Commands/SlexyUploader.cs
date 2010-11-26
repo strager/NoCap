@@ -18,6 +18,10 @@ namespace NoCap.Plugins.Commands {
             }
         }
 
+        public SlexyUploader() {
+            Language = "text";
+        }
+
         protected override IDictionary<string, string> GetParameters(TypedData data) {
             IDictionary<string, string> parameters = new Dictionary<string, string>();
             parameters["raw_paste"] = data.Data.ToString();
@@ -39,27 +43,27 @@ namespace NoCap.Plugins.Commands {
             return new SlexyUploaderFactory();
         }
 
-        protected TimeSpan Expiration {
+        public TimeSpan Expiration {
             get;
             set;
         }
 
-        protected bool ShowLineNumbers {
+        public bool ShowLineNumbers {
             get;
             set;
         }
 
-        protected bool IsPrivate {
+        public bool IsPrivate {
             get;
             set;
         }
 
-        protected string Language {
+        public string Language {
             get;
             set;
         }
 
-        protected string Author {
+        public string Author {
             get;
             set;
         }

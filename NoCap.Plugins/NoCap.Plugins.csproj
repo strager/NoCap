@@ -62,6 +62,9 @@
     <Compile Include="Editors\ImagebinCaUploaderEditor.xaml.cs">
       <DependentUpon>ImagebinCaUploaderEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Editors\SlexyUploaderEditor.xaml.cs">
+      <DependentUpon>SlexyUploaderEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Factories\ImageFileUploaderFactory.cs" />
     <Compile Include="Editors\ImageFileUploaderEditor.xaml.cs">
       <DependentUpon>ImageFileUploaderEditor.xaml</DependentUpon>
@@ -133,6 +136,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Editors\FtpUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\SlexyUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

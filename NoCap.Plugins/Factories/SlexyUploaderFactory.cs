@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using NoCap.Library;
 using NoCap.Plugins.Commands;
+using NoCap.Plugins.Editors;
 
 namespace NoCap.Plugins.Factories {
     [Export(typeof(ICommandFactory))]
@@ -19,7 +20,7 @@ namespace NoCap.Plugins.Factories {
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return null;
+            return new SlexyUploaderEditor();
         }
 
         public CommandFeatures CommandFeatures {
