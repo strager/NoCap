@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NoCap.GUI.WPF</RootNamespace>
-    <AssemblyName>NoCap.GUI.WPF</AssemblyName>
+    <AssemblyName>NoCap</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -37,10 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
@@ -64,20 +60,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CountdownTimer.cs" />
-    <Compile Include="NoCapLogo.xaml.cs">
-      <DependentUpon>NoCapLogo.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\InputBindingsPlugin.cs" />
-    <Compile Include="Plugins\BoundCommand.cs" />
-    <Compile Include="Plugins\InputBindingsEditor.xaml.cs">
-      <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Plugins\BindWindow.xaml.cs">
-      <DependentUpon>BindWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ExtensionManager.cs" />
-    <Compile Include="ProgramRuntimeProvider.cs" />
+    <Compile Include="ProgramPluginContext.cs" />
     <Compile Include="Settings\CommandProxy.cs" />
     <Compile Include="Settings\Editors\CommandEditorWindow.xaml.cs">
       <DependentUpon>CommandEditorWindow.xaml</DependentUpon>
@@ -102,24 +86,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Settings\ConfigurationManager.cs" />
-    <Compile Include="Plugins\CommandBinding.cs" />
-    <Compile Include="Plugins\TaskbarPlugin.cs" />
     <Compile Include="Settings\TypeComparer.cs" />
-    <Compile Include="TaskPopup.xaml.cs">
-      <DependentUpon>TaskPopup.xaml</DependentUpon>
-    </Compile>
-    <Page Include="NoCapLogo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Plugins\InputBindingsEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Plugins\BindWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Settings\Editors\CommandEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,10 +100,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Settings\Editors\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TaskPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,40 +130,19 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\VB.NET\XAMLPowerToys.Controls\XAMLPowerToys.Controls.vbproj">
-      <Project>{EACF1F4F-DB79-418B-9D33-23771B427AF2}</Project>
-      <Name>XAMLPowerToys.Controls</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NoCap.Library\NoCap.Library.csproj">
       <Project>{F8575C27-A6A0-4D6F-A9C8-C93A4DB20C4E}</Project>
       <Name>NoCap.Library</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NoCap.Plugins\NoCap.Plugins.csproj">
-      <Project>{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}</Project>
-      <Name>NoCap.Plugins</Name>
     </ProjectReference>
     <ProjectReference Include="..\vendor\AttachedCommandBehavior\AttachedCommandBehavior.csproj">
       <Project>{BA852758-6682-4878-906A-917A1E75DE16}</Project>
       <Name>AttachedCommandBehavior</Name>
     </ProjectReference>
-    <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
-      <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
-      <Name>Windows7.DesktopIntegration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\vendor\WinputDotNet\WinputDotNet.Providers\WinputDotNet.Providers.csproj">
-      <Project>{DDD13750-8319-406C-BC5F-E430D28258BB}</Project>
-      <Name>WinputDotNet.Providers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\vendor\WinputDotNet\WinputDotNet\WinputDotNet.csproj">
-      <Project>{58A26DE2-2BAB-4E99-8AD3-B6D8F56747AB}</Project>
-      <Name>WinputDotNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\vendor\wpf-notifyicon\NotifyIconWpf\NotifyIconWpf.csproj">
-      <Project>{7AC63864-7638-41C4-969C-D3197EF2BED9}</Project>
-      <Name>NotifyIconWpf</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /I /Y $(SolutionDir)NoCap.Extensions.Default\bin\$(ConfigurationName) $(TargetDir)NoCap.Extensions.Default</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

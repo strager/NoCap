@@ -1,0 +1,51 @@
+﻿<ContentControl x:Class="NoCap.Extensions.Default.NoCapLogo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300"
+    Name="logo">
+    <Image>
+        <Image.Source>
+            <DrawingImage x:Name="imageSource">
+                <DrawingImage.Drawing>
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.Children>
+                            <DrawingGroup Opacity="1" Transform="0.90265999,0,0,0.90265999,39.098264,34.798694">
+                                <DrawingGroup.Children>
+                                    <GeometryDrawing>
+                                        <GeometryDrawing.Brush>
+                                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad" Opacity="1">
+                                                <LinearGradientBrush.GradientStops>
+                                                    <GradientStop Color="sc#1, 0.0431372561, 0.858823538, 0.06666667" Offset="0" />
+                                                    <GradientStop Color="sc#1, 0.0431372561, 0.858823538, 0.06666667" Offset="{Binding ElementName=logo, Path=Progress}" />
+                                                    <GradientStop Color="sc#1, 1, 1, 1" Offset="{Binding ElementName=logo, Path=Progress2}" />
+                                                    <GradientStop Color="sc#1, 1, 1, 1" Offset="1" />
+                                                </LinearGradientBrush.GradientStops>
+                                            </LinearGradientBrush>
+                                        </GeometryDrawing.Brush>
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="#FF000000" Thickness="3.99999976" />
+                                        </GeometryDrawing.Pen>
+                                        <GeometryDrawing.Geometry>
+                                            <PathGeometry FillRule="Nonzero" Figures="M503.95458984375,284.833404541016L528.603942871094,284.833404541016 579.91064453125,368.613586425781 579.91064453125,327.969818115234 603.4521484375,327.969818115234 603.4521484375,410.261322021484 578.041198730469,410.261322021484 527.49609375,328.489105224609 527.49609375,410.261322021484 503.95458984375,410.261322021484 503.95458984375,284.833404541016z" />
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingGroup.Children>
+                            </DrawingGroup>
+                            <GeometryDrawing Brush="#FFFFFFFF">
+                                <GeometryDrawing.Pen>
+                                    <Pen Brush="#FF000000" Thickness="4" />
+                                </GeometryDrawing.Pen>
+                                <GeometryDrawing.Geometry>
+                                    <PathGeometry FillRule="Nonzero" Figures="M562.570190429688,291.917663574219C562.570190429688,291.917663574219 576.7275390625,291.917663574219 583.806213378906,291.917663574219 589.089233398438,291.917663574219 607.405883789063,292.364166259766 607.405883789063,313.153656005859 607.405883789063,313.267395019531 562.570190429688,313.153656005859 562.570190429688,313.153656005859L562.570190429688,291.917663574219z" />
+                                </GeometryDrawing.Geometry>
+                            </GeometryDrawing>
+                        </DrawingGroup.Children>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+        </Image.Source>
+    </Image>
+</ContentControl>

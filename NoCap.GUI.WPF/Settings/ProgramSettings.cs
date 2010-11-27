@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using NoCap.Library;
+using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
@@ -48,18 +49,18 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         [IgnoreDataMember]
-        private IRuntimeProvider runtimeProvider;
+        private IPluginContext pluginContext;
 
         [IgnoreDataMember]
         private ICommandProvider commandProvider;
 
-        public IRuntimeProvider RuntimeProvider {
+        public IPluginContext PluginContext {
             get {
-                if (this.runtimeProvider == null) {
+                if (this.pluginContext == null) {
                     throw new InvalidOperationException("Call Initialize");
                 }
 
-                return this.runtimeProvider;
+                return this.pluginContext;
             }
         }
 
@@ -82,10 +83,10 @@ namespace NoCap.GUI.WPF.Settings {
         public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
             var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CompositionContainer);
             var defaultRegistry = new ProgramFeatureRegistry(this.defaultCommands, commandProvider);
-            var runtimeProvider = new ProgramRuntimeProvider(commandRunner, extensionManager, defaultRegistry);
+            var runtimeProvider = new ProgramPluginContext(commandRunner, extensionManager, defaultRegistry);
 
             this.commandProvider = commandProvider;
-            this.runtimeProvider = runtimeProvider;
+            this.pluginContext = runtimeProvider;
 
             this.plugins.Initialize(runtimeProvider);
         }

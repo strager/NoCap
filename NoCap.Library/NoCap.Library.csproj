@@ -58,9 +58,9 @@
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\NoCapControl.cs" />
-    <Compile Include="IDefaultRegister.cs" />
-    <Compile Include="IPlugin.cs" />
-    <Compile Include="IRuntimeProvider.cs" />
+    <Compile Include="Extensions\IFeatureRegistry.cs" />
+    <Compile Include="Extensions\IPlugin.cs" />
+    <Compile Include="Extensions\IPluginContext.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />
@@ -98,8 +98,8 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\ImageUploader.cs" />
     <Compile Include="Imaging\ImageWriter.cs" />
-    <Compile Include="INamedComponent.cs" />
-    <Compile Include="Security.cs" />
+    <Compile Include="Extensions\INamedComponent.cs" />
+    <Compile Include="Util\Security.cs" />
     <Compile Include="Util\AggregateProgressTracker.cs" />
     <Compile Include="Util\IMutableProgressTracker.cs" />
     <Compile Include="Util\IProgressTracker.cs" />

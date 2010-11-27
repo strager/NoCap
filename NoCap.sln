@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Plugins", "NoCap.Plugins\NoCap.Plugins.csproj", "{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Extensions.Default", "NoCap.Extensions.Default\NoCap.Extensions.Default.csproj", "{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Library", "NoCap.Library\NoCap.Library.csproj", "{F8575C27-A6A0-4D6F-A9C8-C93A4DB20C4E}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Web.Tests", "NoCap.Web.Tests\NoCap.Web.Tests.csproj", "{475BE876-2708-4AF6-BA9B-33B71823ED98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.GUI.WPF", "NoCap.GUI.WPF\NoCap.GUI.WPF.csproj", "{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DA3CA2D6-22ED-449B-8C58-3B088D34D6B5} = {DA3CA2D6-22ED-449B-8C58-3B088D34D6B5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Library.Tests", "NoCap.Library.Tests\NoCap.Library.Tests.csproj", "{F11795C7-06DD-4684-9F04-BAFEECA1C0EC}"
 EndProject

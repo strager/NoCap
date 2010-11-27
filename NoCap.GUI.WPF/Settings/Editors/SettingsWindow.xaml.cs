@@ -20,7 +20,7 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             Resources["commandProvider"] = commandProvider;
 
             this.tabControl.Items.Add(new TabItem {
-                Content = new DefaultCommandsEditor(commandProvider, settings.RuntimeProvider.FeatureRegistry, settings.DefaultCommands),
+                Content = new DefaultCommandsEditor(commandProvider, settings.PluginContext.FeatureRegistry, settings.DefaultCommands),
                 Header = "Defaults"
             });
 

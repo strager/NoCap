@@ -5,6 +5,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Runtime.Serialization;
 using NoCap.Library;
+using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 
@@ -15,20 +16,20 @@ namespace NoCap.GUI.WPF.Settings {
         [DataMember(Name = "Plugins")]
         private readonly IList<IPlugin> plugins = new List<IPlugin>();
 
-        private IRuntimeProvider runtimeProvider;
+        private IPluginContext pluginContext;
         private bool isInitialized;
 
-        public void Initialize(IRuntimeProvider runtimeProvider) {
+        public void Initialize(IPluginContext pluginContext) {
             if (this.isInitialized) {
                 throw new InvalidOperationException("Already initialized");
             }
 
-            this.runtimeProvider = runtimeProvider;
+            this.pluginContext = pluginContext;
 
-            Recompose(runtimeProvider.CompositionContainer);
+            Recompose(pluginContext.CompositionContainer);
 
             foreach (var plugin in this.plugins) {
-                plugin.Initialize(runtimeProvider);
+                plugin.Initialize(pluginContext);
             }
 
             this.isInitialized = true;
@@ -57,7 +58,7 @@ namespace NoCap.GUI.WPF.Settings {
             this.plugins.Add(plugin);
 
             if (this.isInitialized) {
-                plugin.Initialize(this.runtimeProvider);
+                plugin.Initialize(this.pluginContext);
             }
         }
 

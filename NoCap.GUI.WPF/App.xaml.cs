@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using NoCap.GUI.WPF.Settings;
@@ -18,7 +19,7 @@ namespace NoCap.GUI.WPF {
 
         private void Load() {
             var commandRunner = new CommandRunner();
-            var extensionManager = new ExtensionManager();
+            var extensionManager = new ExtensionManager(Directory.CreateDirectory(Directory.GetCurrentDirectory()));
 
             this.configurationManager = new ConfigurationManager();
             this.settings = this.configurationManager.LoadSettings();
@@ -33,7 +34,7 @@ namespace NoCap.GUI.WPF {
 
             this.settings.Initialize(commandRunner, extensionManager);
 
-            var featureRegistry = this.settings.RuntimeProvider.FeatureRegistry;
+            var featureRegistry = this.settings.PluginContext.FeatureRegistry;
 
             featureRegistry.Register(CommandFeatures.ImageUploader, "Image uploader");
             featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );

@@ -1,4 +1,5 @@
 ﻿using System;
+using NoCap.Library.Extensions;
 
 namespace NoCap.Library {
     /// <summary>

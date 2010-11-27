@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using NoCap.Library;
 using NoCap.Library.Controls;
+using NoCap.Library.Extensions;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings.Editors {

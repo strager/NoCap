@@ -1,4 +1,5 @@
 ﻿using System;
+using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests {

@@ -1,0 +1,189 @@
+﻿<UserControl x:Class="NoCap.Extensions.Default.Editors.SlexyUploaderEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <XmlDataProvider x:Key="SlexyLanguagesData" XPath="Languages">
+            <x:XData>
+                <Languages xmlns="">
+                    <Language><Code>text</Code><Label>Text</Label></Language>
+
+                    <Language><Code>abap</Code><Label>ABAP</Label></Language>
+                    <Language><Code>actionscript</Code><Label>ActionScript</Label></Language>
+                    <Language><Code>actionscript3</Code><Label>ActionScript 3</Label></Language>
+                    <Language><Code>ada</Code><Label>Ada</Label></Language>
+                    <Language><Code>apache</Code><Label>Apache Config</Label></Language>
+                    <Language><Code>applescript</Code><Label>AppleScript</Label></Language>
+                    <Language><Code>apt_sources</Code><Label>Apt sources</Label></Language>
+                    <Language><Code>asm</Code><Label>ASM</Label></Language>
+                    <Language><Code>asp</Code><Label>ASP</Label></Language>
+                    <Language><Code>autoit</Code><Label>AutoIt</Label></Language>
+                    <Language><Code>avisynth</Code><Label>AviSynth</Label></Language>
+                    <Language><Code>bash</Code><Label>Bash</Label></Language>
+                    <Language><Code>basic4gl</Code><Label>Basic4GL</Label></Language>
+                    <Language><Code>bf</Code><Label>Brainfuck</Label></Language>
+                    <Language><Code>bibtex</Code><Label>BibTeX</Label></Language>
+                    <Language><Code>blitzbasic</Code><Label>BlitzBasic</Label></Language>
+                    <Language><Code>bnf</Code><Label>bnf</Label></Language>
+                    <Language><Code>boo</Code><Label>Boo</Label></Language>
+                    <Language><Code>c</Code><Label>C</Label></Language>
+                    <Language><Code>c_mac</Code><Label>C (Mac)</Label></Language>
+                    <Language><Code>caddcl</Code><Label>CAD DCL</Label></Language>
+                    <Language><Code>cadlisp</Code><Label>CAD Lisp</Label></Language>
+                    <Language><Code>cfdg</Code><Label>CFDG</Label></Language>
+                    <Language><Code>cfm</Code><Label>ColdFusion</Label></Language>
+                    <Language><Code>cil</Code><Label>CIL</Label></Language>
+                    <Language><Code>cmake</Code><Label>CMake</Label></Language>
+                    <Language><Code>cobol</Code><Label>COBOL</Label></Language>
+                    <Language><Code>cpp-qt</Code><Label>C++ (QT)</Label></Language>
+                    <Language><Code>cpp</Code><Label>C++</Label></Language>
+                    <Language><Code>csharp</Code><Label>C#</Label></Language>
+                    <Language><Code>css</Code><Label>CSS</Label></Language>
+                    <Language><Code>d</Code><Label>D</Label></Language>
+                    <Language><Code>dcs</Code><Label>DCS</Label></Language>
+                    <Language><Code>delphi</Code><Label>Delphi</Label></Language>
+                    <Language><Code>diff</Code><Label>Diff</Label></Language>
+                    <Language><Code>div</Code><Label>DIV</Label></Language>
+                    <Language><Code>dos</Code><Label>DOS</Label></Language>
+                    <Language><Code>dot</Code><Label>dot</Label></Language>
+                    <Language><Code>eiffel</Code><Label>Eiffel</Label></Language>
+                    <Language><Code>email</Code><Label>Email (mbox)</Label></Language>
+                    <Language><Code>erlang</Code><Label>Erlang</Label></Language>
+                    <Language><Code>fo</Code><Label>FO (abas-ERP)</Label></Language>
+                    <Language><Code>fortran</Code><Label>Fortran</Label></Language>
+                    <Language><Code>freebasic</Code><Label>FreeBasic</Label></Language>
+                    <Language><Code>genero</Code><Label>genero</Label></Language>
+                    <Language><Code>gettext</Code><Label>GNU Gettext</Label></Language>
+                    <Language><Code>glsl</Code><Label>glSlang</Label></Language>
+                    <Language><Code>gml</Code><Label>GML</Label></Language>
+                    <Language><Code>gnuplot</Code><Label>Gnuplot</Label></Language>
+                    <Language><Code>groovy</Code><Label>Groovy</Label></Language>
+                    <Language><Code>haskell</Code><Label>Haskell</Label></Language>
+                    <Language><Code>hq9plus</Code><Label>HQ9+</Label></Language>
+                    <Language><Code>html4strict</Code><Label>HTML 4 Strict</Label></Language>
+                    <Language><Code>idl</Code><Label>Uno Idl</Label></Language>
+                    <Language><Code>ini</Code><Label>Ini</Label></Language>
+                    <Language><Code>inno</Code><Label>Inno</Label></Language>
+                    <Language><Code>intercal</Code><Label>INTERCAL</Label></Language>
+                    <Language><Code>io</Code><Label>Io</Label></Language>
+                    <Language><Code>java</Code><Label>Java</Label></Language>
+                    <Language><Code>java5</Code><Label>Java 5</Label></Language>
+                    <Language><Code>javascript</Code><Label>Javascript</Label></Language>
+                    <Language><Code>kixtart</Code><Label>KiXtart</Label></Language>
+                    <Language><Code>klonec</Code><Label>KLone C</Label></Language>
+                    <Language><Code>klonecpp</Code><Label>KLone C++</Label></Language>
+                    <Language><Code>latex</Code><Label>LaTeX</Label></Language>
+                    <Language><Code>lisp</Code><Label>Lisp</Label></Language>
+                    <Language><Code>locobasic</Code><Label>Locomotive Basic</Label></Language>
+                    <Language><Code>lolcode</Code><Label>LOLcode</Label></Language>
+                    <Language><Code>lotusformulas</Code><Label>Lotus Notes @Formulas</Label></Language>
+                    <Language><Code>lotusscript</Code><Label>LotusScript</Label></Language>
+                    <Language><Code>lscript</Code><Label>LScript</Label></Language>
+                    <Language><Code>lsl2</Code><Label>LSL2</Label></Language>
+                    <Language><Code>lua</Code><Label>Lua</Label></Language>
+                    <Language><Code>m68k</Code><Label>m68k ASM</Label></Language>
+                    <Language><Code>make</Code><Label>GNU make</Label></Language>
+                    <Language><Code>matlab</Code><Label>Matlab M</Label></Language>
+                    <Language><Code>mirc</Code><Label>mIRC Scripting</Label></Language>
+                    <Language><Code>modula3</Code><Label>Modula-3</Label></Language>
+                    <Language><Code>mpasm</Code><Label>Microchip ASM</Label></Language>
+                    <Language><Code>mxml</Code><Label>MXML</Label></Language>
+                    <Language><Code>mysql</Code><Label>MySQL</Label></Language>
+                    <Language><Code>nsis</Code><Label>NSIS</Label></Language>
+                    <Language><Code>oberon2</Code><Label>Oberon-2</Label></Language>
+                    <Language><Code>objc</Code><Label>Objective-C</Label></Language>
+                    <Language><Code>ocaml</Code><Label>OCaml</Label></Language>
+                    <Language><Code>oobas</Code><Label>OpenOffice.org Basic</Label></Language>
+                    <Language><Code>oracle11</Code><Label>Oracle 11 SQL</Label></Language>
+                    <Language><Code>oracle8</Code><Label>Oracle 8 SQL</Label></Language>
+                    <Language><Code>pascal</Code><Label>Pascal</Label></Language>
+                    <Language><Code>per</Code><Label>per</Label></Language>
+                    <Language><Code>perl</Code><Label>Perl</Label></Language>
+                    <Language><Code>php</Code><Label>PHP</Label></Language>
+                    <Language><Code>pic16</Code><Label>PIC16</Label></Language>
+                    <Language><Code>pixelbender</Code><Label>Pixel Bender 1.0</Label></Language>
+                    <Language><Code>plsql</Code><Label>PL/SQL</Label></Language>
+                    <Language><Code>povray</Code><Label>POVRAY</Label></Language>
+                    <Language><Code>powershell</Code><Label>PowerShell</Label></Language>
+                    <Language><Code>progress</Code><Label>Progress</Label></Language>
+                    <Language><Code>prolog</Code><Label>Prolog</Label></Language>
+                    <Language><Code>properties</Code><Label>PROPERTIES</Label></Language>
+                    <Language><Code>providex</Code><Label>ProvideX</Label></Language>
+                    <Language><Code>python</Code><Label>Python</Label></Language>
+                    <Language><Code>qbasic</Code><Label>QBasic/QuickBASIC</Label></Language>
+                    <Language><Code>rails</Code><Label>Rails</Label></Language>
+                    <Language><Code>rebol</Code><Label>REBOL</Label></Language>
+                    <Language><Code>reg</Code><Label>Microsoft Registry</Label></Language>
+                    <Language><Code>robots</Code><Label>robots.txt</Label></Language>
+                    <Language><Code>ruby</Code><Label>Ruby</Label></Language>
+                    <Language><Code>sas</Code><Label>SAS</Label></Language>
+                    <Language><Code>scala</Code><Label>Scala</Label></Language>
+                    <Language><Code>scheme</Code><Label>Scheme</Label></Language>
+                    <Language><Code>scilab</Code><Label>SciLab</Label></Language>
+                    <Language><Code>sdlbasic</Code><Label>sdlBasic</Label></Language>
+                    <Language><Code>smalltalk</Code><Label>Smalltalk</Label></Language>
+                    <Language><Code>smarty</Code><Label>Smarty</Label></Language>
+                    <Language><Code>sql</Code><Label>SQL</Label></Language>
+                    <Language><Code>tcl</Code><Label>TCL</Label></Language>
+                    <Language><Code>teraterm</Code><Label>Tera Term Macro</Label></Language>
+                    <Language><Code>thinbasic</Code><Label>thinBasic</Label></Language>
+                    <Language><Code>tsql</Code><Label>T-SQL</Label></Language>
+                    <Language><Code>typoscript</Code><Label>TypoScript</Label></Language>
+                    <Language><Code>vb</Code><Label>Visual Basic</Label></Language>
+                    <Language><Code>vbnet</Code><Label>vb.net</Label></Language>
+                    <Language><Code>verilog</Code><Label>Verilog</Label></Language>
+                    <Language><Code>vhdl</Code><Label>VHDL</Label></Language>
+                    <Language><Code>vim</Code><Label>Vim Script</Label></Language>
+                    <Language><Code>visualfoxpro</Code><Label>Visual Fox Pro</Label></Language>
+                    <Language><Code>visualprolog</Code><Label>Visual Prolog</Label></Language>
+                    <Language><Code>whitespace</Code><Label>Whitespace</Label></Language>
+                    <Language><Code>whois</Code><Label>Whois (RPSL format)</Label></Language>
+                    <Language><Code>winbatch</Code><Label>Winbatch</Label></Language>
+                    <Language><Code>xml</Code><Label>XML</Label></Language>
+                    <Language><Code>xorg_conf</Code><Label>Xorg configuration</Label></Language>
+                    <Language><Code>xpp</Code><Label>X++</Label></Language>
+                    <Language><Code>z80</Code><Label>ZiLOG Z80 Assembler</Label></Language>
+                </Languages>
+            </x:XData>
+        </XmlDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0">_Author</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Author}" />
+
+        <Label Grid.Row="1" Grid.Column="0">_Language</Label>
+        <ComboBox Grid.Row="1" Grid.Column="1"
+            ItemsSource="{Binding Source={StaticResource SlexyLanguagesData}, XPath=Language}"
+            SelectedValue="{Binding Language}"
+            SelectedValuePath="Code"
+            DisplayMemberPath="Label" />
+
+        <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+            Margin="3"
+            IsChecked="{Binding ShowLineNumbers}">
+            Show line _numbers
+        </CheckBox>
+
+        <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+            Margin="3"
+            IsChecked="{Binding IsPrivate}">
+            _Private or adult content
+        </CheckBox>
+    </Grid>
+</UserControl>
