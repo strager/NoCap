@@ -79,7 +79,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Libraries\ShellLibrary.cs" />
-    <Compile Include="RegistrationHelper.cs" />
     <Compile Include="JumpLists\JumpListImpl.cs" />
     <Compile Include="JumpLists\JumpListManager.cs" />
     <Compile Include="ThumbnailButtons\ThumbButton.cs" />
@@ -112,10 +111,6 @@
     <ProjectReference Include="..\vistabridgelibrary\vistabridgelibrary.csproj">
       <Project>{CE304F35-FABF-4A24-AC48-5710670A82BE}</Project>
       <Name>vistabridgelibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Windows7.DesktopIntegration.Registration\Windows7.DesktopIntegration.Registration.csproj">
-      <Project>{03F9F5A8-F3F4-499A-8B15-57ADBA5148CC}</Project>
-      <Name>Windows7.DesktopIntegration.Registration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
