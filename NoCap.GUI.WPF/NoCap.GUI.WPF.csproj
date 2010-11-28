@@ -63,9 +63,6 @@
     <Compile Include="ExtensionManager.cs" />
     <Compile Include="ProgramPluginContext.cs" />
     <Compile Include="Settings\CommandProxy.cs" />
-    <Compile Include="Settings\Editors\CommandEditorWindow.xaml.cs">
-      <DependentUpon>CommandEditorWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings\Editors\CommandSettingsEditor.xaml.cs">
       <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
     </Compile>
@@ -87,10 +84,6 @@
     </Compile>
     <Compile Include="Settings\ConfigurationManager.cs" />
     <Compile Include="Settings\TypeComparer.cs" />
-    <Page Include="Settings\Editors\CommandEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Settings\Editors\CommandSettingsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

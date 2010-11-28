@@ -8,7 +8,7 @@ namespace NoCap.Library.Controls {
     public class NoCapControl : DependencyObject {
         public static readonly DependencyProperty CommandProviderProperty;
 
-        public static readonly DependencyProperty IsAdvancedProperty;
+        public static readonly DependencyProperty ShowAdvancedProperty;
 
         static NoCapControl() {
             CommandProviderProperty = DependencyProperty.Register(
@@ -18,11 +18,14 @@ namespace NoCap.Library.Controls {
                 new PropertyMetadata(null)
             );
 
-            IsAdvancedProperty = DependencyProperty.RegisterAttached(
-                "IsAdvanced",
+            ShowAdvancedProperty = DependencyProperty.RegisterAttached(
+                "ShowAdvanced",
                 typeof(bool),
                 typeof(NoCapControl),
-                new PropertyMetadata(false)
+                new FrameworkPropertyMetadata(
+                    false,
+                    FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.OverridesInheritanceBehavior
+                )
             );
         }
 
@@ -31,11 +34,11 @@ namespace NoCap.Library.Controls {
         }
 
         public static void SetIsAdvanced(DependencyObject dependencyObject, bool isAdvanced) {
-            dependencyObject.SetValue(IsAdvancedProperty, isAdvanced);
+            dependencyObject.SetValue(ShowAdvancedProperty, isAdvanced);
         }
 
         public static bool GetIsAdvanced(DependencyObject dependencyObject) {
-            return (bool) dependencyObject.GetValue(IsAdvancedProperty);
+            return (bool) dependencyObject.GetValue(ShowAdvancedProperty);
         }
     }
 }

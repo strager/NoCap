@@ -1,5 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using NoCap.Library.Controls;
 
 namespace NoCap.GUI.WPF.Settings.Editors {
     /// <summary>
@@ -19,15 +22,12 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
             Resources["commandProvider"] = commandProvider;
 
-            this.tabControl.Items.Add(new TabItem {
-                Content = new DefaultCommandsEditor(commandProvider, settings.PluginContext.FeatureRegistry, settings.DefaultCommands),
-                Header = "Defaults"
-            });
+            AddTab(
+                new DefaultCommandsEditor(commandProvider, settings.PluginContext.FeatureRegistry, settings.DefaultCommands),
+                "Defaults"
+            );
 
-            this.tabControl.Items.Add(new TabItem {
-                Content = new CommandSettingsEditor(),
-                Header = "Commands"
-            });
+            AddTab(new CommandSettingsEditor(), "Commands");
 
             foreach (var plugin in settings.Plugins) {
                 var editor = plugin.GetEditor(commandProvider);
@@ -36,11 +36,22 @@ namespace NoCap.GUI.WPF.Settings.Editors {
                     continue;
                 }
 
-                this.tabControl.Items.Add(new TabItem {
-                    Content = editor,
-                    Header = plugin.Name
-                });
+                AddTab(editor, plugin.Name);
             }
+        }
+
+        private void AddTab(UIElement content, string header) {
+            var tabItem = new TabItem {
+                Content = content,
+                Header = header
+            };
+
+            tabItem.SetBinding(VisibilityProperty, new Binding {
+                Path = new PropertyPath(VisibilityProperty),
+                Source = content
+            });
+
+            this.tabControl.Items.Add(tabItem);
         }
     }
 }

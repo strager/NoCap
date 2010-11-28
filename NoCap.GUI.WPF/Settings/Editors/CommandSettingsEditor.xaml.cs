@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using NoCap.Library;
 using NoCap.Library.Controls;
 
@@ -18,11 +20,19 @@ namespace NoCap.GUI.WPF.Settings.Editors {
         }
 
         static CommandSettingsEditor() {
-            CommandProviderProperty = Library.Controls.NoCapControl.CommandProviderProperty.AddOwner(typeof(CommandSettingsEditor));
+            CommandProviderProperty = NoCapControl.CommandProviderProperty.AddOwner(typeof(CommandSettingsEditor));
         }
 
         public CommandSettingsEditor() {
             InitializeComponent();
+
+            // Can't easily be set in XAML
+            // TODO Move to XAML
+            SetBinding(VisibilityProperty, new Binding {
+                Path = new PropertyPath(NoCapControl.ShowAdvancedProperty),
+                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                Converter = new BooleanToVisibilityConverter()
+            });
 
             SetResourceReference(CommandProviderProperty, "commandProvider");
 

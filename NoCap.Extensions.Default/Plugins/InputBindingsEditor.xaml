@@ -4,18 +4,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    x:Name="self"
     d:DesignHeight="300" d:DesignWidth="300"
     xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
     xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
-    <Grid>
+    <ContentControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </ContentControl.Resources>
+	<Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ComboBox Name="inputProvider" Grid.Row="0" Controls:NoCapControl.IsAdvanced="True"
+        <ComboBox Name="inputProvider" Grid.Row="0"
+            Visibility="{Binding (Controls:NoCapControl.ShowAdvanced), RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToVisibilityConverter}}"
             Margin="0,0,0,6"
             ItemsSource="{Binding InputProviders}"
             DisplayMemberPath="Name"
