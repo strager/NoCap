@@ -6,5 +6,6 @@ namespace NoCap.Library.Extensions {
         CommandRunner CommandRunner { get; }
         CompositionContainer CompositionContainer { get; }
         IFeatureRegistry FeatureRegistry { get; }
+        ICommandProvider CommandProvider { get; }
     }
 }

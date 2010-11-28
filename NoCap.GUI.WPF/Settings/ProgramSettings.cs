@@ -83,7 +83,7 @@ namespace NoCap.GUI.WPF.Settings {
         public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
             var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CompositionContainer);
             var defaultRegistry = new ProgramFeatureRegistry(this.defaultCommands, commandProvider);
-            var runtimeProvider = new ProgramPluginContext(commandRunner, extensionManager, defaultRegistry);
+            var runtimeProvider = new ProgramPluginContext(commandRunner, extensionManager, defaultRegistry, commandProvider);
 
             this.commandProvider = commandProvider;
             this.pluginContext = runtimeProvider;

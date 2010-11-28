@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -13,6 +15,8 @@ using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 using Windows7.DesktopIntegration;
+using ICommand = NoCap.Library.ICommand;
+using Separator = System.Windows.Controls.Separator;
 
 namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin)), Serializable]
@@ -22,6 +26,12 @@ namespace NoCap.Extensions.Default.Plugins {
 
         [NonSerialized]
         private TaskbarIcon taskbarIcon;
+
+        [NonSerialized]
+        private ObservableCollection<MenuItem> commandMenuItems;
+
+        [NonSerialized]
+        private CommandRunner commandRunner;
 
         public TaskbarPlugin() {
         }
@@ -37,19 +47,26 @@ namespace NoCap.Extensions.Default.Plugins {
         private void AddBindings() {
             var app = Application.Current;
 
-            this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Close,
-                (sender, e) => app.Shutdown(0)
-            ));
-            
-            this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Properties,
-                (sender, e) => app.GetType().InvokeMember(
-                    "ShowSettings",             // Name
-                    BindingFlags.InvokeMethod,  // Binding flags
-                    null,                       // Binder
-                    app,                        // This
-                    new object[] { }            // Arguments
+            this.taskbarIcon.CommandBindings.AddRange(new [] {
+                new System.Windows.Input.CommandBinding(
+                    ApplicationCommands.Close,
+                    (sender, e) => app.Shutdown(0)
+                ),
+                new System.Windows.Input.CommandBinding(
+                    ApplicationCommands.Properties,
+                    (sender, e) => app.GetType().InvokeMember(
+                        "ShowSettings",             // Name
+                        BindingFlags.InvokeMethod,  // Binding flags
+                        null,                       // Binder
+                        app,                        // This
+                        new object[] { }            // Arguments
+                    )
+                ),
+                new System.Windows.Input.CommandBinding(
+                    NoCapCommands.Execute,
+                    (sender, e) => this.commandRunner.Run((ICommand) e.Parameter)
                 )
-            ));
+            });
         }
 
         public void BeginTask(object sender, CommandTaskEventArgs e) {
@@ -136,8 +153,24 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void Initialize(IPluginContext pluginContext) {
-            var taskbarMenu = new ContextMenu();
-            taskbarMenu.Items.Add(new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" });
+            this.commandMenuItems = new ObservableCollection<MenuItem>();
+
+            // TODO Observe StandAloneCommands
+            foreach (var command in pluginContext.CommandProvider.StandAloneCommands) {
+                this.commandMenuItems.Add(new MenuItem {
+                    Command = NoCapCommands.Execute,
+                    CommandParameter = command,
+                    Header = command.Name,
+                });
+            }
+
+            var taskbarMenu = new ContextMenu {
+                ItemsSource = new CompositeCollection {
+                    new CollectionContainer { Collection = this.commandMenuItems },
+                    new Separator(),
+                    new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
+                }
+            };
 
             this.taskbarIcon = new TaskbarIcon {
                 Visibility = Visibility.Visible,
@@ -147,11 +180,11 @@ namespace NoCap.Extensions.Default.Plugins {
 
             this.logo = new NoCapLogo();
             
-            var commandRunner = pluginContext.CommandRunner;
+            this.commandRunner = pluginContext.CommandRunner;
 
-            commandRunner.TaskStarted     += BeginTask;
-            commandRunner.TaskCompleted   += EndTask;
-            commandRunner.ProgressUpdated += UpdateProgress;
+            this.commandRunner.TaskStarted     += BeginTask;
+            this.commandRunner.TaskCompleted   += EndTask;
+            this.commandRunner.ProgressUpdated += UpdateProgress;
 
             AddBindings();
 

@@ -61,6 +61,7 @@
     <Compile Include="Extensions\IFeatureRegistry.cs" />
     <Compile Include="Extensions\IPlugin.cs" />
     <Compile Include="Extensions\IPluginContext.cs" />
+    <Compile Include="NoCapCommands.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
     <Compile Include="Imaging\BitmapCodec.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
 using NoCap.Library;
@@ -30,6 +31,12 @@ namespace NoCap.GUI.WPF.Settings {
         public IEnumerable<ICommandFactory> CommandFactories {
             get {
                 return this.commandFactories;
+            }
+        }
+
+        public IEnumerable<ICommand> StandAloneCommands {
+            get {
+                return Commands.WithFeatures(CommandFeatures.StandAlone);
             }
         }
 

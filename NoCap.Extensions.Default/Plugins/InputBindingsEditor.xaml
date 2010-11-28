@@ -48,7 +48,7 @@
                             <DataTemplate>
                                 <Controls:CommandSelector HorizontalAlignment="Stretch"
                                     Command="{Binding Command, Mode=TwoWay}"
-                                    CommandsSource="{Binding CommandProvider.Commands, ElementName=self}" />
+                                    CommandsSource="{Binding CommandProvider.StandAloneCommands, ElementName=self}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
