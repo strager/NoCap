@@ -46,9 +46,11 @@ namespace NoCap.GUI.WPF {
             }
         }
 
-        internal void ShowSettings() {
+        public void ShowSettings() {
             if (this.settingsWindow != null) {
                 this.settingsWindow.Activate();
+
+                return;
             }
 
             this.settingsWindow = new SettingsWindow(this.settings);
@@ -62,7 +64,7 @@ namespace NoCap.GUI.WPF {
             this.configurationManager.SaveSettings(this.settings);
         }
 
-        public void Start() {
+        private void Start() {
             ShowSettings();
         }
 

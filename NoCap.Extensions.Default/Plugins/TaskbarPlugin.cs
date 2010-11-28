@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,18 +35,21 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private void AddBindings() {
-            // TODO
-            /*
-            var app = (App) Application.Current;
+            var app = Application.Current;
 
             this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Close,
                 (sender, e) => app.Shutdown(0)
             ));
             
             this.taskbarIcon.CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Properties,
-                (sender, e) => app.ShowSettings()
+                (sender, e) => app.GetType().InvokeMember(
+                    "ShowSettings",             // Name
+                    BindingFlags.InvokeMethod,  // Binding flags
+                    null,                       // Binder
+                    app,                        // This
+                    new object[] { }            // Arguments
+                )
             ));
-            */
         }
 
         public void BeginTask(object sender, CommandTaskEventArgs e) {
