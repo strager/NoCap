@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using NoCap.Library.Editors;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
@@ -107,32 +106,6 @@ namespace NoCap.Library.Imaging {
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-
-    public class ImageWriterFactory : ICommandFactory {
-        public string Name {
-            get {
-                return "Image writer";
-            }
-        }
-
-        public ICommand CreateCommand() {
-            return new ImageWriter(new PngBitmapCodec());
-        }
-
-        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
-            // Do nothing.
-        }
-
-        public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return new ImageWriterEditor(commandProvider);
-        }
-
-        public CommandFeatures CommandFeatures {
-            get {
-                return 0;
             }
         }
     }

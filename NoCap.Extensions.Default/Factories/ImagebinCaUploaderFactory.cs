@@ -2,7 +2,6 @@
 using NoCap.Extensions.Default.Commands;
 using NoCap.Extensions.Default.Editors;
 using NoCap.Library;
-using NoCap.Library.Editors;
 using NoCap.Library.Imaging;
 
 namespace NoCap.Extensions.Default.Factories {

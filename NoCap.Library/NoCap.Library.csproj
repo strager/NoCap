@@ -61,6 +61,7 @@
     <Compile Include="Extensions\IFeatureRegistry.cs" />
     <Compile Include="Extensions\IPlugin.cs" />
     <Compile Include="Extensions\IPluginContext.cs" />
+    <Compile Include="Imaging\ImageWriterFactory.cs" />
     <Compile Include="NoCapCommands.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Controls\CommandSelector.xaml.cs">
       <DependentUpon>CommandSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Editors\ImageWriterEditor.xaml.cs">
+    <Compile Include="Imaging\ImageWriterEditor.xaml.cs">
       <DependentUpon>ImageWriterEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tasks\ICommandTask.cs" />
@@ -124,6 +125,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Editors\" />
     <Folder Include="Factories\" />
   </ItemGroup>
   <ItemGroup>
@@ -147,7 +149,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Editors\ImageWriterEditor.xaml">
+    <Page Include="Imaging\ImageWriterEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

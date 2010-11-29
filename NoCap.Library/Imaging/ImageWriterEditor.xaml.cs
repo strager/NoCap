@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NoCap.Library.Imaging;
 
-namespace NoCap.Library.Editors {
+namespace NoCap.Library.Imaging {
     /// <summary>
     /// Interaction logic for ImageWriterEditor.xaml
     /// </summary>
