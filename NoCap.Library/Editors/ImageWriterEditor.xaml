@@ -9,21 +9,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <GroupBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Header="_Codec">
-            <StackPanel Orientation="Vertical">
-                <Controls:CommandFactorySelector Grid.Row="0" Grid.Column="1" x:Name="codecSelector" Command="{Binding Codec}" />
-                <Controls:CommandEditor Command="{Binding Codec}" />
-            </StackPanel>
-        </GroupBox>
+        <Controls:CommandFactorySelector Grid.Row="0" x:Name="codecSelector"
+            Command="{Binding Codec}" />
 
-        <Label Grid.Row="1" Grid.Column="0" Content="File _extension" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Extension}" />
+        <Controls:CommandEditor Grid.Row="1"
+            Command="{Binding Codec}" />
     </Grid>
 </ContentControl>

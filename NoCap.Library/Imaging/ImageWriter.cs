@@ -8,7 +8,6 @@ namespace NoCap.Library.Imaging {
     [Serializable]
     public sealed class ImageWriter : ICommand, INotifyPropertyChanged {
         private string name;
-        private string extension;
         private BitmapCodec codec;
 
         public string Name {
@@ -29,13 +28,7 @@ namespace NoCap.Library.Imaging {
 
         public string Extension {
             get {
-                return this.extension ?? (Codec == null ? null : Codec.Extension);
-            }
-
-            set {
-                this.extension = value;
-
-                Notify("Extension");
+                return Codec == null ? null : Codec.Extension;
             }
         }
 
@@ -49,20 +42,18 @@ namespace NoCap.Library.Imaging {
 
                 Notify("Codec");
 
-                if (this.name == null) {
+                if (Name == null) {
                     Notify("Name");
                 }
 
-                if (this.extension == null) {
+                if (Extension == null) {
                     Notify("Extension");
                 }
             }
         }
 
         public static bool IsCodecValid(BitmapCodec codec) {
-            return
-                codec != null &&
-                codec.CanEncode;
+            return codec != null && codec.CanEncode;
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress) {
