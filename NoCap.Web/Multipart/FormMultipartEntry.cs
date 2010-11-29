@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace NoCap.Web.Multipart {
     public class FormMultipartEntry : MultipartEntryBase {
@@ -48,10 +49,18 @@ namespace NoCap.Web.Multipart {
         }
 
         public override void WriteContents(Stream stream) {
+            WriteContents(stream, CancellationToken.None);
+        }
+
+        public override void WriteContents(Stream stream, CancellationToken cancelToken) {
             // Do not dispose (because it closes the stream)
             var writer = new StreamWriter(stream, ValueEncoding);
+            
+            cancelToken.ThrowIfCancellationRequested();
 
             writer.Write(Value);
+            
+            cancelToken.ThrowIfCancellationRequested();
 
             writer.Flush();
         }

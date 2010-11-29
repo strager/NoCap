@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace NoCap.Web.Multipart {
     public abstract class MultipartEntryBase : IMultipartEntry {
@@ -9,6 +10,10 @@ namespace NoCap.Web.Multipart {
         }
 
         public void WriteHeaders(Stream stream) {
+            WriteHeaders(stream, CancellationToken.None);
+        }
+
+        public void WriteHeaders(Stream stream, CancellationToken cancelToken) {
             if (Headers == null) {
                 return;
             }
@@ -17,14 +22,22 @@ namespace NoCap.Web.Multipart {
             var writer = new StreamWriter(stream, Utility.Encoding);
 
             foreach (var header in Headers) {
+                cancelToken.ThrowIfCancellationRequested();
+
                 header.Write(writer);
+
+                cancelToken.ThrowIfCancellationRequested();
+
                 writer.Write(Utility.LineSeparator);
             }
+
+            cancelToken.ThrowIfCancellationRequested();
 
             writer.Flush();
         }
 
         public abstract void WriteContents(Stream stream);
+        public abstract void WriteContents(Stream stream, CancellationToken cancelToken);
 
         public long GetHeadersByteCount() {
             long separatorLength = Utility.Encoding.GetByteCount(Utility.LineSeparator);

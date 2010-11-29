@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace NoCap.Web.Multipart {
     public class MultipartEntry : MultipartEntryBase {
@@ -22,6 +23,10 @@ namespace NoCap.Web.Multipart {
 
         public override void WriteContents(Stream stream) {
             // Do nothing
+        }
+
+        public override void WriteContents(Stream stream, CancellationToken cancelToken) {
+            throw new NotImplementedException();
         }
 
         public override long GetContentsByteCount() {

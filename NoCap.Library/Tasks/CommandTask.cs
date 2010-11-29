@@ -98,9 +98,9 @@ namespace NoCap.Library.Tasks {
                     using (command.Process(null, this.progressTracker, cancelToken)) {
                         // Auto-dispose
                     }
-                } catch (CommandCanceledException e) {
+                } catch (OperationCanceledException e) {
                     State = TaskState.Canceled;
-                    OnCanceled(e);
+                    OnCanceled(CommandCanceledException.Wrap(e, command));
 
                     return;
                 }

@@ -10,7 +10,7 @@ namespace NoCap.Library.Commands {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Text:
-                    return Upload(data, progress);
+                    return Upload(data, progress, cancelToken);
 
                 default:
                     return null;

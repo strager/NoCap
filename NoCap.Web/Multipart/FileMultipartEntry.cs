@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace NoCap.Web.Multipart {
     public class FileMultipartEntry : MultipartEntryBase {
@@ -54,6 +56,26 @@ namespace NoCap.Web.Multipart {
 
         public override void WriteContents(Stream stream) {
             InputStream.CopyTo(stream);
+        }
+
+        public override void WriteContents(Stream stream, CancellationToken cancelToken) {
+            const int bufferSize = 1024;
+
+            byte[] buffer = new byte[bufferSize];
+
+            while (true) {
+                cancelToken.ThrowIfCancellationRequested();
+
+                int readBytes = InputStream.Read(buffer, 0, bufferSize);
+
+                if (readBytes == 0) {
+                    break;
+                }
+
+                cancelToken.ThrowIfCancellationRequested();
+
+                stream.Write(buffer, 0, readBytes);
+            }
         }
 
         public override long GetContentsByteCount() {

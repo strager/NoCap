@@ -25,7 +25,7 @@ namespace NoCap.Library.Commands {
                     aggregateProgress.BindTo(progress);
 
                     using (var rawImageData = ImageWriter.Process(data, rawImageProgress, cancelToken)) {
-                        return Upload(rawImageData, uploadProgress);
+                        return Upload(rawImageData, uploadProgress, cancelToken);
                     }
 
                 default:

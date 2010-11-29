@@ -14,6 +14,26 @@ namespace NoCap.Library {
             }
         }
 
+        public static CommandCanceledException Wrap(OperationCanceledException e, ICommand commandSuggestion) {
+            var commandCanceledException = e as CommandCanceledException;
+
+            if (commandCanceledException != null) {
+                return new CommandCanceledException(
+                    commandCanceledException.Command,
+                    commandCanceledException.Message,
+                    commandCanceledException,
+                    commandCanceledException.CancellationToken
+                );
+            }
+
+            return new CommandCanceledException(
+                commandSuggestion,
+                e.Message,
+                e,
+                e.CancellationToken
+            );
+        }
+
         public CommandCanceledException() {
         }
 

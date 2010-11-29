@@ -15,7 +15,7 @@ namespace NoCap.Library.Commands {
 
         public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
-        public TypedData Upload(TypedData originalData, IMutableProgressTracker progress) {
+        public TypedData Upload(TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
             string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
@@ -25,7 +25,7 @@ namespace NoCap.Library.Commands {
             var aggregateProgress = new AggregateProgressTracker(requestProgress, responseProgress);
             aggregateProgress.BindTo(progress);
 
-            var request = BuildRequest(originalData, requestMethod, parameters, requestProgress);
+            var request = BuildRequest(originalData, requestMethod, parameters, requestProgress, cancelToken);
             var response = (HttpWebResponse) request.GetResponse();
 
             var ret = GetResponseData(response, originalData);
@@ -35,13 +35,13 @@ namespace NoCap.Library.Commands {
             return ret;
         }
 
-        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress) {
+        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (requestMethod) {
                 case @"GET":
                     return BuildGetRequest(parameters, progress);
 
                 case @"POST":
-                    return BuildPostRequest(parameters, originalData, progress);
+                    return BuildPostRequest(parameters, originalData, progress, cancelToken);
 
                 default:
                     throw new ArgumentException("Unknown request method", "requestMethod");
@@ -62,7 +62,7 @@ namespace NoCap.Library.Commands {
             return request;
         }
 
-        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData, IMutableProgressTracker progress) {
+        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var builder = new MultipartBuilder();
 
             if (parameters != null) {
@@ -85,7 +85,7 @@ namespace NoCap.Library.Commands {
             progressStream.BindTo(progress);
 
             Utility.WriteBoundary(progressStream, boundary);
-            builder.Write(progressStream);
+            builder.Write(progressStream, cancelToken);
 
             System.Diagnostics.Debug.Assert(progress.Progress == 1);
 
