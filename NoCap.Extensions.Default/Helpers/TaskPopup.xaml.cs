@@ -28,6 +28,11 @@ namespace NoCap.Extensions.Default.Helpers {
                     e.Handled = true;
                 }
             ));
+
+            CommandBindings.Add(new CommandBinding(
+                ApplicationCommands.Close,
+                (sender, e) => QueueClose()
+            ));
         }
 
         public void QueueClose() {
