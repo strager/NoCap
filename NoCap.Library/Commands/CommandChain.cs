@@ -64,14 +64,24 @@ namespace NoCap.Library.Commands {
 
             using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
                 foreach (var destination in this.commands) {
-                    trackerEnumerator.MoveNext();
+                    cancelToken.ThrowIfCancellationRequested();
 
-                    destination.CheckValidInputType(data);
+                    TypedData newData;
 
-                    var newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
+                    try {
+                        trackerEnumerator.MoveNext();
 
-                    if (shouldDisposeData && data != null) {
-                        data.Dispose();
+                        destination.CheckValidInputType(data);
+
+                        cancelToken.ThrowIfCancellationRequested();
+
+                        newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
+
+                        cancelToken.ThrowIfCancellationRequested();
+                    } finally {
+                        if (shouldDisposeData && data != null) {
+                            data.Dispose();
+                        }
                     }
 
                     data = newData;
