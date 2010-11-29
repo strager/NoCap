@@ -60,7 +60,6 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
-    <Compile Include="Helpers\CountdownTimer.cs" />
     <Compile Include="Editors\ImagebinCaUploaderEditor.xaml.cs">
       <DependentUpon>ImagebinCaUploaderEditor.xaml</DependentUpon>
     </Compile>
