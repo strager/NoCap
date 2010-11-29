@@ -22,6 +22,10 @@ namespace NoCap.Extensions.Default.Helpers {
                 NoCapCommands.Cancel,
                 (sender, e) => {
                     MessageBox.Show("Not implemented");
+                },
+                (sender, e) => {
+                    e.CanExecute = !this.closing;
+                    e.Handled = true;
                 }
             ));
         }
@@ -37,7 +41,9 @@ namespace NoCap.Extensions.Default.Helpers {
                 return;
             }
 
-            BeginAnimation(OpacityProperty, (DoubleAnimation) Resources["CloseAnimation"]);
+            var storyboard = (Storyboard) Resources["CloseAnimation"];
+
+            storyboard.Begin(this);
 
             this.closing = true;
         }

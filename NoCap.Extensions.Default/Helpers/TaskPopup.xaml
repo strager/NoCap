@@ -2,7 +2,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Library="clr-namespace:NoCap.Library;assembly=NoCap.Library" mc:Ignorable="d"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Library="clr-namespace:NoCap.Library;assembly=NoCap.Library"
+    mc:Ignorable="d"
+    Name="taskPopup"
     Foreground="White"
     Background="Transparent">
 
@@ -40,7 +43,9 @@
             </Grid>
         </ControlTemplate>
 
-        <DoubleAnimation From="1" To="0" Duration="0:00:00.3" BeginTime="0:00:01.3" x:Key="CloseAnimation" Completed="Close" />
+        <Storyboard x:Key="CloseAnimation" TargetName="taskPopup">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:00:00.3" BeginTime="0:00:01.3" Completed="Close" />
+        </Storyboard>
     </UserControl.Resources>
 
     <Border BorderThickness="13,10" CornerRadius="3"
