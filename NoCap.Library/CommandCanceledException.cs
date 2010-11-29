@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
     [Serializable]
-    public class CommandCanceledException : Exception {
+    public class CommandCanceledException : OperationCanceledException {
         private readonly ICommand command;
 
         public ICommand Command {
@@ -13,16 +14,28 @@ namespace NoCap.Library {
             }
         }
 
-        public CommandCanceledException() :
-            this((ICommand) null) {
+        public CommandCanceledException() {
+        }
+
+        public CommandCanceledException(CancellationToken token) :
+            base(token) {
         }
 
         public CommandCanceledException(ICommand command) {
             this.command = command;
         }
 
+        public CommandCanceledException(ICommand command, CancellationToken token) :
+            base(token) {
+            this.command = command;
+        }
+
         public CommandCanceledException(string message) :
-            this(null, message) {
+            base(message) {
+        }
+
+        public CommandCanceledException(string message, CancellationToken token) :
+            base(message, token) {
         }
 
         public CommandCanceledException(ICommand command, string message) :
@@ -30,12 +43,26 @@ namespace NoCap.Library {
             this.command = command;
         }
 
+        public CommandCanceledException(ICommand command, string message, CancellationToken token) :
+            base(message, token) {
+            this.command = command;
+        }
+
         public CommandCanceledException(string message, Exception inner) :
-            this(null, message, inner) {
+            base(message, inner) {
+        }
+
+        public CommandCanceledException(string message, Exception inner, CancellationToken token) :
+            base(message, inner, token) {
         }
 
         public CommandCanceledException(ICommand command, string message, Exception inner) :
             base(message, inner) {
+            this.command = command;
+        }
+
+        public CommandCanceledException(ICommand command, string message, Exception inner, CancellationToken token) :
+            base(message, inner, token) {
             this.command = command;
         }
 
