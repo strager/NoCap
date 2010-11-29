@@ -14,6 +14,9 @@ namespace NoCap.Library.Tasks {
 
         private Thread thread;
 
+        private readonly CancellationTokenSource cancellationTokenSource;
+        private readonly bool ownsCancellationTokenSource;
+
         private CommandCanceledException cancelReason;
         private TaskState taskState = TaskState.NotStarted;
 
@@ -22,7 +25,15 @@ namespace NoCap.Library.Tasks {
         public event EventHandler<CommandTaskCancellationEventArgs> Canceled;
         public event EventHandler<CommandTaskProgressEventArgs> ProgressUpdated;
 
-        public CommandTask(ICommand command, CommandRunner commandRunner) {
+        public CommandTask(ICommand command, CommandRunner commandRunner) :
+            this(command, commandRunner, new CancellationTokenSource(), true) {
+        }
+
+        public CommandTask(ICommand command, CommandRunner commandRunner, CancellationTokenSource cancellationTokenSource) :
+            this(command, commandRunner, cancellationTokenSource, false) {
+        }
+
+        private CommandTask(ICommand command, CommandRunner commandRunner, CancellationTokenSource cancellationTokenSource, bool ownsCancellationTokenSource) {
             if (command == null) {
                 throw new ArgumentNullException("command");
             }
@@ -31,8 +42,14 @@ namespace NoCap.Library.Tasks {
                 throw new ArgumentNullException("commandRunner");
             }
 
+            if (cancellationTokenSource == null) {
+                throw new ArgumentNullException("cancellationTokenSource");
+            }
+
             this.command = command;
             this.commandRunner = commandRunner;
+            this.cancellationTokenSource = cancellationTokenSource;
+            this.ownsCancellationTokenSource = ownsCancellationTokenSource;
 
             this.progressTracker = new NotifyingProgressTracker();
             this.publicProgressTracker = new ReadOnlyProgressTracker(this.progressTracker);
@@ -63,6 +80,10 @@ namespace NoCap.Library.Tasks {
         }
 
         private void RunThread() {
+            var cancelToken = this.cancellationTokenSource == null
+                ? CancellationToken.None
+                : this.cancellationTokenSource.Token;
+
             this.progressTracker.PropertyChanged += (sender, e) => {
                 if (e.PropertyName == "Progress") {
                     OnProgressUpdated();
@@ -73,14 +94,20 @@ namespace NoCap.Library.Tasks {
             OnStarted();
 
             try {
-                using (command.Process(null, this.progressTracker)) {
-                    // Auto-dispose
-                }
-            } catch (CommandCanceledException e) {
-                State = TaskState.Canceled;
-                OnCanceled(e);
+                try {
+                    using (command.Process(null, this.progressTracker, cancelToken)) {
+                        // Auto-dispose
+                    }
+                } catch (CommandCanceledException e) {
+                    State = TaskState.Canceled;
+                    OnCanceled(e);
 
-                return;
+                    return;
+                }
+            } finally {
+                if (this.ownsCancellationTokenSource) {
+                    this.cancellationTokenSource.Dispose();
+                }
             }
 
             State = TaskState.Completed;
@@ -136,6 +163,16 @@ namespace NoCap.Library.Tasks {
 
             if (handler != null) {
                 handler(this, eventArgs);
+            }
+        }
+
+        public void Cancel() {
+            switch (State) {
+                case TaskState.Started:
+                case TaskState.Running:
+                    this.cancellationTokenSource.Cancel();
+
+                    break;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
@@ -53,7 +54,7 @@ namespace NoCap.Library.Commands {
             this.timeEstimate = new CommandChainTimeEstimate(this);
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             // ToList is needed for some strange reason
             var progressTrackers = this.commands.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
             var aggregateProgress = new AggregateProgressTracker(progressTrackers);
@@ -67,7 +68,7 @@ namespace NoCap.Library.Commands {
 
                     destination.CheckValidInputType(data);
 
-                    var newData = destination.Process(data, trackerEnumerator.Current);
+                    var newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
 
                     if (shouldDisposeData && data != null) {
                         data.Dispose();

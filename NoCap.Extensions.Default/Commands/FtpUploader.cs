@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Security;
+using System.Threading;
 using AlexPilotti.FTPS.Client;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
@@ -25,7 +26,7 @@ namespace NoCap.Extensions.Default.Commands {
 
         private int timeout = 20000;
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             string fileName = data.Name;
             var stream = (Stream) data.Data;
 

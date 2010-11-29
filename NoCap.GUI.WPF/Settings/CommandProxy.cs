@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NoCap.Library;
 using NoCap.Library.Util;
 
@@ -17,8 +18,8 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
-            return InnerCommand.Process(data, progress);
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            return InnerCommand.Process(data, progress, cancelToken);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

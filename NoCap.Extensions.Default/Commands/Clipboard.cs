@@ -14,7 +14,7 @@ namespace NoCap.Extensions.Default.Commands {
             get { return "Clipboard"; }
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             this.CheckValidInputType(data);
 
             Action operation;

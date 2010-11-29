@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
@@ -55,7 +56,7 @@ namespace NoCap.Library.Imaging {
             return codec != null && codec.CanEncode;
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             if (data.DataType != TypedDataType.Image) {
                 throw new ArgumentException("data must be an image", "data");
             }
@@ -64,7 +65,7 @@ namespace NoCap.Library.Imaging {
                 throw new InvalidOperationException("Codec must be non-null and support bitmap encoding");
             }
 
-            return Codec.Process(data, progress);
+            return Codec.Process(data, progress, cancelToken);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

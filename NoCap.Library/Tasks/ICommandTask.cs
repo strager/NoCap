@@ -36,6 +36,7 @@ namespace NoCap.Library.Tasks {
             get;
         }
 
+        void Cancel();
         void WaitForCompletion();
     }
 

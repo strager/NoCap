@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NoCap.Library.Extensions;
 using NoCap.Library.Util;
 
@@ -32,15 +33,16 @@ namespace NoCap.Library {
         /// <see cref="IDisposable.Dispose"/> appropriately.
         /// </remarks>
         /// <param name="data">
-        /// The data to process, if any.  Must be null or
-        /// have a type in <see cref="GetInputDataTypes"/>.
+        ///     The data to process, if any.  Must be null or
+        ///     have a type in <see cref="GetInputDataTypes"/>.
         /// </param>
         /// <param name="progress">The progress tracker to be updated while the data is processed.</param>
+        /// <param name="cancelToken"></param>
         /// <returns>
         /// Typed data representing the result of the operation, or
         /// null if no data could be returned.
         /// </returns>
-        TypedData Process(TypedData data, IMutableProgressTracker progress);
+        TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
         /// <summary>
         /// Gets the data types which can be input into <see cref="Process"/>.

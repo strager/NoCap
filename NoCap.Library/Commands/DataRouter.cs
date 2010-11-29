@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
@@ -48,7 +49,7 @@ namespace NoCap.Library.Commands {
             this.routes = new Dictionary<TypedDataType, ICommand>();
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             ICommand command;
 
             if (!Routes.TryGetValue(data.DataType, out command)) {
@@ -57,7 +58,7 @@ namespace NoCap.Library.Commands {
 
             command.CheckValidInputType(data);
 
-            return command.Process(data, progress);
+            return command.Process(data, progress, cancelToken);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

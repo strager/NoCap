@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
@@ -59,8 +60,8 @@ namespace NoCap.Extensions.Default.Commands {
             return new CommandChain(ImageWriter, FileUploader);
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
-            return new CommandChain(ImageWriter, FileUploader).Process(data, progress);
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            return new CommandChain(ImageWriter, FileUploader).Process(data, progress, cancelToken);
         }
 
         public IEnumerable<TypedDataType> GetInputDataTypes() {

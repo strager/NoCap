@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
@@ -80,7 +81,7 @@ namespace NoCap.Extensions.Default.Commands {
                 && UrlShortener.IsValidAndNotNull();
         }
 
-        public override void Execute(IMutableProgressTracker progress) {
+        public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
             var router = new DataRouter();
 
             router.Connect(TypedDataType.Image, new CommandChain(
@@ -103,7 +104,7 @@ namespace NoCap.Extensions.Default.Commands {
                 router
             );
 
-            using (commandChain.Process(null, progress)) {
+            using (commandChain.Process(null, progress, cancelToken)) {
                 // Auto-dispose
             }
         }

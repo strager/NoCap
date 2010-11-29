@@ -54,13 +54,13 @@ namespace NoCap.Library.Tests.Tasks {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            mockCommand.Verify((command) => command.Process(null, It.IsAny<IMutableProgressTracker>()), Times.Once());
+            mockCommand.Verify((command) => command.Process(null, It.IsAny<IMutableProgressTracker>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace NoCap.Library.Tests.Tasks {
             Thread commandThread = null;
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
                     commandThread = Thread.CurrentThread;
@@ -90,9 +90,9 @@ namespace NoCap.Library.Tests.Tasks {
             runner.ProgressUpdated += (sender, e) => progressUpdates.Add(e.Progress);
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
-                .Callback((TypedData data, IMutableProgressTracker progress) => {
+                .Callback((TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) => {
                     progress.Progress = 0.5;
                     progress.Progress = 0.6;
                     progress.Progress = 1;
@@ -112,7 +112,7 @@ namespace NoCap.Library.Tests.Tasks {
             TaskState? taskStateInCommand = null;
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
                     taskStateInCommand = task.State;
@@ -130,7 +130,7 @@ namespace NoCap.Library.Tests.Tasks {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
@@ -144,7 +144,7 @@ namespace NoCap.Library.Tests.Tasks {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
@@ -159,7 +159,7 @@ namespace NoCap.Library.Tests.Tasks {
             mockDisposable.Setup((typedData) => typedData.Dispose());
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns(new TypedData(TypedDataType.User, mockDisposable.Object, "my data"));
 
             var runner = new CommandRunner();
@@ -174,7 +174,7 @@ namespace NoCap.Library.Tests.Tasks {
             var runner = new CommandRunner();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
                     throw new CommandCanceledException();
@@ -193,7 +193,7 @@ namespace NoCap.Library.Tests.Tasks {
             var cancelException = new CommandCanceledException();
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
                     throw cancelException;
@@ -221,7 +221,7 @@ namespace NoCap.Library.Tests.Tasks {
             };
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
                     throw cancelException;
@@ -241,7 +241,7 @@ namespace NoCap.Library.Tests.Tasks {
             const string commandName = "Command name";
 
             var mockCommand = GetCommandMock();
-            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null)))
+            mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null);
             mockCommand.Setup((command) => command.Name)
                 .Returns(commandName);

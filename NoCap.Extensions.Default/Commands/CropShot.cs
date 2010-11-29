@@ -14,7 +14,7 @@ namespace NoCap.Extensions.Default.Commands {
             get { return "Crop shot"; }
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             CropShotWindow cropShotWindow = null;
 
             var thread = new Thread(() => {

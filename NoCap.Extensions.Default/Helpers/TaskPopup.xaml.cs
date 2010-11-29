@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using NoCap.Library;
+using NoCap.Library.Tasks;
 
 namespace NoCap.Extensions.Default.Helpers {
     /// <summary>
@@ -21,7 +22,9 @@ namespace NoCap.Extensions.Default.Helpers {
             CommandBindings.Add(new CommandBinding(
                 NoCapCommands.Cancel,
                 (sender, e) => {
-                    MessageBox.Show("Not implemented");
+                    var task = (ICommandTask) DataContext;
+
+                    task.Cancel();
                 },
                 (sender, e) => {
                     e.CanExecute = !this.closing;

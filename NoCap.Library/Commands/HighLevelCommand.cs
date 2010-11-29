@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
@@ -10,8 +11,8 @@ namespace NoCap.Library.Commands {
             set;
         }
 
-        TypedData ICommand.Process(TypedData data, IMutableProgressTracker progress) {
-            Execute(progress);
+        TypedData ICommand.Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            Execute(progress, cancelToken);
 
             return null;
         }
@@ -28,6 +29,6 @@ namespace NoCap.Library.Commands {
             return new[] { TypedDataType.None };
         }
 
-        public abstract void Execute(IMutableProgressTracker progress);
+        public abstract void Execute(IMutableProgressTracker progress, CancellationToken cancelToken);
     }
 }

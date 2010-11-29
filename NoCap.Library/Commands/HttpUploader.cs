@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;
@@ -12,7 +13,7 @@ namespace NoCap.Library.Commands {
     public abstract class HttpUploader : ICommand {
         public abstract string Name { get; }
 
-        public abstract TypedData Process(TypedData data, IMutableProgressTracker progress);
+        public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
         public TypedData Upload(TypedData originalData, IMutableProgressTracker progress) {
             string requestMethod = RequestMethod;

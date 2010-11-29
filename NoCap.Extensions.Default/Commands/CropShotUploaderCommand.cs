@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Util;
@@ -50,7 +51,7 @@ namespace NoCap.Extensions.Default.Commands {
             return ImageUploader.IsValidAndNotNull();
         }
 
-        public override void Execute(IMutableProgressTracker progress) {
+        public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
             var commandChain = new CommandChain(
                 new Screenshot(),
                 new CropShot(),
@@ -58,7 +59,7 @@ namespace NoCap.Extensions.Default.Commands {
                 new Clipboard()
             );
 
-            using (commandChain.Process(null, progress)) {
+            using (commandChain.Process(null, progress, cancelToken)) {
                 // Auto-dispose
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
@@ -21,7 +22,7 @@ namespace NoCap.Extensions.Default.Commands {
             SourceType = ScreenshotSourceType.EntireDesktop;
         }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             this.CheckValidInputType(data);
 
             switch (SourceType) {

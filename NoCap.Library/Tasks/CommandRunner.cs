@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace NoCap.Library.Tasks {
     public class CommandRunner {
@@ -8,6 +9,17 @@ namespace NoCap.Library.Tasks {
             }
 
             var task = new CommandTask(command, this);
+            task.Run();
+
+            return task;
+        }
+
+        public ICommandTask Run(ICommand command, CancellationTokenSource cancellationTokenSource) {
+            if (command == null) {
+                throw new ArgumentNullException("command");
+            }
+
+            var task = new CommandTask(command, this, cancellationTokenSource);
             task.Run();
 
             return task;

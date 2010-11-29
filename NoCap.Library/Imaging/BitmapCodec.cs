@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
@@ -15,7 +16,7 @@ namespace NoCap.Library.Imaging {
         public abstract bool CanEncode { get; }
         public abstract bool CanDecode { get; }
 
-        public TypedData Process(TypedData data, IMutableProgressTracker progress) {
+        public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Image:
                     return TypedData.FromStream(Encode((Bitmap) data.Data, progress), data.Name);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
 using NoCap.Library.Tests.TestHelpers;
@@ -37,7 +38,7 @@ namespace NoCap.Library.Tests.Commands {
             var inputData = GetTextData();
 
             var commandMock = GetCommandMock();
-            commandMock.Setup((command) => command.Process(inputData, inputTracker)).Returns((TypedData) null);
+            commandMock.Setup((command) => command.Process(inputData, inputTracker, CancellationToken.None)).Returns((TypedData) null);
             
             // .Connect checks the type too, so we make sure it passes .Connect's check first
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
@@ -47,7 +48,7 @@ namespace NoCap.Library.Tests.Commands {
 
             // No need to change the type here
 
-            dataRouter.Process(inputData, inputTracker);
+            dataRouter.Process(inputData, inputTracker, CancellationToken.None);
 
             // Two calls: one from .Connect, one from .Process
             commandMock.Verify((command) => command.GetInputDataTypes(), Times.AtLeast(2));
@@ -69,7 +70,7 @@ namespace NoCap.Library.Tests.Commands {
             // Change the types the command accepts so the type check fails
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Uri });
 
-            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker));
+            Assert.Throws<InvalidOperationException>(() => dataRouter.Process(inputData, inputTracker, CancellationToken.None));
 
             // Two calls: one from .Connect, one from .Process
             commandMock.Verify((command) => command.GetInputDataTypes(), Times.AtLeast(2));
@@ -82,14 +83,14 @@ namespace NoCap.Library.Tests.Commands {
 
             var commandMock = GetCommandMock();
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
-            commandMock.Setup((command) => command.Process(inputData, inputTracker)).Returns((TypedData) null);
+            commandMock.Setup((command) => command.Process(inputData, inputTracker, CancellationToken.None)).Returns((TypedData) null);
 
             var dataRouter = new DataRouter();
             dataRouter.Connect(TypedDataType.Text, commandMock.Object);
 
-            dataRouter.Process(inputData, inputTracker);
+            dataRouter.Process(inputData, inputTracker, CancellationToken.None);
 
-            commandMock.Verify((command) => command.Process(inputData, inputTracker), Times.Once());
+            commandMock.Verify((command) => command.Process(inputData, inputTracker, CancellationToken.None), Times.Once());
         }
 
         [Test]
@@ -101,12 +102,12 @@ namespace NoCap.Library.Tests.Commands {
 
             var commandMock = GetCommandMock();
             commandMock.Setup((command) => command.GetInputDataTypes()).Returns(new[] { TypedDataType.Text });
-            commandMock.Setup((command) => command.Process(inputData, inputTracker)).Returns(expectedOutput);
+            commandMock.Setup((command) => command.Process(inputData, inputTracker, CancellationToken.None)).Returns(expectedOutput);
 
             var dataRouter = new DataRouter();
             dataRouter.Connect(TypedDataType.Text, commandMock.Object);
 
-            var actualOutput = dataRouter.Process(inputData, inputTracker);
+            var actualOutput = dataRouter.Process(inputData, inputTracker, CancellationToken.None);
             Assert.AreSame(expectedOutput, actualOutput);
         }
 
