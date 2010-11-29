@@ -195,6 +195,8 @@ namespace NoCap.Extensions.Default.Plugins {
             this.commandRunner.ProgressUpdated += UpdateProgress;
             this.commandRunner.TaskCanceled    += CancelTask;
 
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
             AddBindings();
 
             UpdateIcon(1);
