@@ -77,9 +77,17 @@ namespace NoCap.Extensions.Default.Plugins {
             // Do nothing
         }
 
+        private void CancelTask(object sender, CommandTaskCancellationEventArgs e) {
+            UpdateProgress(1);
+        }
+
         public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
             double progress = e.Progress;
 
+            UpdateProgress(progress);
+        }
+
+        private void UpdateProgress(double progress) {
             UpdateWindows(progress);
             UpdateIcon(progress);
             UpdateIconToolTip(progress);
@@ -127,7 +135,7 @@ namespace NoCap.Extensions.Default.Plugins {
 
         private void ShowTaskPopup(ICommandTask task) {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                var taskPopup = new TaskPopup() {
+                var taskPopup = new TaskPopup {
                     DataContext = task
                 };
 
@@ -185,6 +193,7 @@ namespace NoCap.Extensions.Default.Plugins {
             this.commandRunner.TaskStarted     += BeginTask;
             this.commandRunner.TaskCompleted   += EndTask;
             this.commandRunner.ProgressUpdated += UpdateProgress;
+            this.commandRunner.TaskCanceled    += CancelTask;
 
             AddBindings();
 
