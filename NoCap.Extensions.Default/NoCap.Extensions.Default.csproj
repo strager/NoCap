@@ -115,6 +115,10 @@
     <Compile Include="NoCapLogo.xaml.cs">
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\AboutEditor.xaml.cs">
+      <DependentUpon>AboutEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Plugins\AboutPlugin.cs" />
     <Compile Include="Plugins\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
@@ -213,6 +217,10 @@
     <Page Include="Helpers\CropShotWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\AboutEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Plugins\BindWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
