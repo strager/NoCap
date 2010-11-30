@@ -61,6 +61,11 @@
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
     <Compile Include="Commands\Renamer.cs" />
+    <Compile Include="Commands\SshUploader.cs" />
+    <Compile Include="Editors\SshUploaderEditor.xaml.cs">
+      <DependentUpon>SshUploaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\SshUploaderFactory.cs" />
     <Compile Include="Editors\RenamerEditor.xaml.cs">
       <DependentUpon>RenamerEditor.xaml</DependentUpon>
     </Compile>
@@ -145,6 +150,10 @@
       <Project>{8271707D-0C08-460D-A332-6FDB8D0BB6D1}</Project>
       <Name>FTPSClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\Granados\Granados.csproj">
+      <Project>{9D114B8B-E62C-4FBF-B281-0227755C8091}</Project>
+      <Name>Granados</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
       <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
       <Name>Windows7.DesktopIntegration</Name>
@@ -188,6 +197,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\SlexyUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\SshUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Security;
+using System.Text;
 using System.Threading;
-using AlexPilotti.FTPS.Client;
+using Granados;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
     [Serializable]
-    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
+    public sealed class SshUploader : ICommand, INotifyPropertyChanged, ISerializable {
         private string name = "SSH file uploader";
 
         private string host = "example.com";
-        private int port = 21;
+        private int port = 22;
         private string userName = "foobar";
         private SecureString password;
 
@@ -41,20 +45,36 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
-            using (var client = new FTPSClient()) {
+            var reader = new Reader();
+
+            using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) {
+                //socket.Blocking = true;
+
+                socket.Connect(new IPEndPoint(IPAddress.Parse(@"127.0.0.1"), Port));
+
+                var sshConnection = SSHConnection.Connect(
+                    new SSHConnectionParameter {
+                        AuthenticationType = AuthenticationType.Password,
+                        UserName = UserName,
+                        Password = Security.ToInsecureString(Password),
+                        Protocol = SSHProtocol.SSH2,
+                    },
+                    reader,
+                    socket
+                );
+
                 try {
-                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, this.timeout);
-                } catch (TimeoutException e) {
-                    throw new CommandCanceledException(this, "Connection to FTP server timed out", e);
-                } catch (IOException e) {
-                    throw new CommandCanceledException(this, "Connection to FTP server failed", e);
-                }
+                    sshConnection.AutoDisconnect = false;
 
-                using (var outStream = client.PutFile(GetRemotePathName(fileName)))
-                using (var outStreamWrapper = new ProgressTrackingStreamWrapper(outStream, stream.Length)) {
-                    outStreamWrapper.BindTo(progress);
+                    reader._conn = sshConnection;
 
-                    stream.CopyTo(outStreamWrapper);
+                    sshConnection.ExecuteSCP(new ScpParameter {
+                        Direction = SCPCopyDirection.LocalToRemote,
+                        LocalSource = new ScpLocalSource(@"F:\Documents\da.conf"),
+                        RemoteFilename = "/C/da.conf",
+                    });
+                } finally {
+                    sshConnection.Disconnect("");
                 }
             }
         }
@@ -162,7 +182,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public ICommandFactory GetFactory() {
-            return new FtpUploaderFactory();
+            return new SshUploaderFactory();
         }
 
         public ITimeEstimate ProcessTimeEstimate {
@@ -185,10 +205,10 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        public FtpUploader() {
+        public SshUploader() {
         }
 
-        private FtpUploader(SerializationInfo info, StreamingContext context) {
+        private SshUploader(SerializationInfo info, StreamingContext context) {
             Name = info.GetValue<string>("Name");
 
             Host = info.GetValue<string>("Host");
@@ -214,4 +234,67 @@ namespace NoCap.Extensions.Default.Commands {
             info.AddValue("ResultFormat", ResultFormat);
         }
     }
+
+    class Reader : ISSHConnectionEventReceiver, ISSHChannelEventReceiver {
+		public SSHConnection _conn;
+		public bool _ready;
+
+		public void OnData(byte[] data, int offset, int length) {
+			System.Console.Write(Encoding.ASCII.GetString(data, offset, length));
+		}
+		public void OnDebugMessage(bool always_display, byte[] data) {
+			Debug.WriteLine("DEBUG: "+ Encoding.ASCII.GetString(data));
+		}
+		public void OnIgnoreMessage(byte[] data) {
+			Debug.WriteLine("Ignore: "+ Encoding.ASCII.GetString(data));
+		}
+		public void OnAuthenticationPrompt(string[] msg) {
+			Debug.WriteLine("Auth Prompt "+msg[0]);
+		}
+		public void OnChannelClosed() {
+			Debug.WriteLine("Channel closed");
+			_conn.Disconnect("");
+			//_conn.AsyncReceive(this);
+		}
+		public void OnChannelEOF() {
+			_pf.Close();
+			Debug.WriteLine("Channel EOF");
+		}
+
+        public void OnChannelError(Exception error) {
+            throw new NotImplementedException();
+        }
+
+        public void OnExtendedData(int type, byte[] data) {
+			Debug.WriteLine("EXTENDED DATA");
+		}
+
+        public void OnError(Exception error) {
+            throw new NotImplementedException();
+        }
+
+        public void OnConnectionClosed() {
+			Debug.WriteLine("Connection closed");
+		}
+		public void OnUnknownMessage(byte type, byte[] data) {
+			Debug.WriteLine("Unknown Message " + type);
+		}
+		public void OnChannelReady() {
+			_ready = true;
+		}
+		public void OnMiscPacket(byte type, byte[] data, int offset, int length) {
+		}
+
+		public PortForwardingCheckResult CheckPortForwardingRequest(string host, int port, string originator_host, int originator_port) {
+			PortForwardingCheckResult r = new PortForwardingCheckResult();
+			r.allowed = true;
+			r.channel = this;
+			return r;
+		}
+		public void EstablishPortforwarding(ISSHChannelEventReceiver rec, SSHChannel channel) {
+			_pf = channel;
+		}
+
+		public SSHChannel _pf;
+	}
 }
