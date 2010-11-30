@@ -20,9 +20,5 @@ namespace NoCap.Library.Commands {
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
             return TypedData.FromUri(response.ResponseUri, originalData.Name);
         }
-
-        public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Text };
-        }
     }
 }

@@ -41,10 +41,6 @@ namespace NoCap.Extensions.Default.Commands {
             return cropShotWindow.Data;
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Image };
-        }
-
         public ICommandFactory GetFactory() {
             return new CropShotFactory();
         }

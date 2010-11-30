@@ -25,10 +25,6 @@ namespace NoCap.Library.Commands {
 
         public abstract bool IsValid();
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.None };
-        }
-
         public abstract void Execute(IMutableProgressTracker progress, CancellationToken cancelToken);
     }
 }

@@ -32,10 +32,7 @@ namespace NoCap.Library {
         /// They are responsible for disposing of the data by calling
         /// <see cref="IDisposable.Dispose"/> appropriately.
         /// </remarks>
-        /// <param name="data">
-        ///     The data to process, if any.  Must be null or
-        ///     have a type in <see cref="GetInputDataTypes"/>.
-        /// </param>
+        /// <param name="data">The data to process, if any.</param>
         /// <param name="progress">The progress tracker to be updated while the data is processed.</param>
         /// <param name="cancelToken"></param>
         /// <returns>
@@ -43,16 +40,6 @@ namespace NoCap.Library {
         /// null if no data could be returned.
         /// </returns>
         TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
-
-        /// <summary>
-        /// Gets the data types which can be input into <see cref="Process"/>.
-        /// </summary>
-        /// <returns>
-        /// A list of data types which <see cref="Process"/> accepts as its input.
-        /// If <see cref="Process"/> can accept a null input,
-        /// <see cref="TypedDataType.None" /> must be specified.
-        /// </returns>
-        IEnumerable<TypedDataType> GetInputDataTypes();
 
         /// <summary>
         /// Gets a factory which can accept this instance as a parameter to the

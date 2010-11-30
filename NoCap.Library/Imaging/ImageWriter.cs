@@ -68,10 +68,6 @@ namespace NoCap.Library.Imaging {
             return Codec.Process(data, progress, cancelToken);
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return Codec.GetInputDataTypes();
-        }
-
         public ICommandFactory GetFactory() {
             return new ImageWriterFactory();
         }

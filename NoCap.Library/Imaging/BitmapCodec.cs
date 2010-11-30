@@ -37,20 +37,6 @@ namespace NoCap.Library.Imaging {
             throw new NotSupportedException();
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            var types = new List<TypedDataType>();
-
-            if (CanEncode) {
-                types.Add(TypedDataType.Image);
-            }
-
-            if (CanDecode) {
-                types.Add(TypedDataType.Stream);
-            }
-
-            return types;
-        }
-
         ICommandFactory ICommand.GetFactory() {
             return GetFactory();
         }

@@ -71,8 +71,6 @@ namespace NoCap.Library.Commands {
                     try {
                         trackerEnumerator.MoveNext();
 
-                        destination.CheckValidInputType(data);
-
                         cancelToken.ThrowIfCancellationRequested();
 
                         newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
@@ -90,14 +88,6 @@ namespace NoCap.Library.Commands {
             }
 
             return data;
-        }
-
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            if (!this.commands.Any()) {
-                return new TypedDataType[] { };
-            }
-
-            return this.commands.First().GetInputDataTypes();
         }
 
         public ICommandFactory GetFactory() {

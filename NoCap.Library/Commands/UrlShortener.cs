@@ -22,9 +22,5 @@ namespace NoCap.Library.Commands {
 
             return TypedData.FromUri(new Uri(urlText, UriKind.Absolute), originalData.Name);
         }
-
-        public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Uri };
-        }
     }
 }

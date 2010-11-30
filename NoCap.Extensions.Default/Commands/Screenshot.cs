@@ -23,8 +23,6 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            this.CheckValidInputType(data);
-
             switch (SourceType) {
                 case ScreenshotSourceType.EntireDesktop:
                     var image = ScreenCapturer.CaptureEntireDesktop();
@@ -36,10 +34,6 @@ namespace NoCap.Extensions.Default.Commands {
                 default:
                     return null;
             }
-        }
-
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.None };
         }
 
         public ICommandFactory GetFactory() {

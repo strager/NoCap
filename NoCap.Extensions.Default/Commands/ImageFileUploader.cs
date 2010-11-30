@@ -64,10 +64,6 @@ namespace NoCap.Extensions.Default.Commands {
             return new CommandChain(ImageWriter, FileUploader).Process(data, progress, cancelToken);
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return GetCommand().GetInputDataTypes();
-        }
-
         public ICommandFactory GetFactory() {
             return new ImageFileUploaderFactory();
         }

@@ -161,10 +161,6 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Stream };
-        }
-
         public ICommandFactory GetFactory() {
             return new FtpUploaderFactory();
         }

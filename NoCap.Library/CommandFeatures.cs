@@ -5,6 +5,8 @@ using System.Linq;
 namespace NoCap.Library {
     [Flags]
     public enum CommandFeatures {
+        None = 0,
+
         ImageUploader = (1 << 0),
         FileUploader = (1 << 1),
         UrlShortener = (1 << 2),

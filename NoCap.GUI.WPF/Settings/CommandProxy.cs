@@ -22,10 +22,6 @@ namespace NoCap.GUI.WPF.Settings {
             return InnerCommand.Process(data, progress, cancelToken);
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return InnerCommand.GetInputDataTypes();
-        }
-
         public ICommandFactory GetFactory() {
             return null;
         }

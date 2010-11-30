@@ -56,13 +56,7 @@ namespace NoCap.Library.Commands {
                 return null;
             }
 
-            command.CheckValidInputType(data);
-
             return command.Process(data, progress, cancelToken);
-        }
-
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return Routes.Keys;
         }
 
         public ICommandFactory GetFactory() {
@@ -82,10 +76,6 @@ namespace NoCap.Library.Commands {
         public void Connect(TypedDataType key, ICommand value) {
             if (value == null) {
                 throw new ArgumentNullException("value");
-            }
-
-            if (!value.IsValidInputType(key)) {
-                throw new ArgumentException("Destination must accept type", "value");
             }
 
             Routes.Add(key, value);

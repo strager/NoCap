@@ -32,9 +32,5 @@ namespace NoCap.Library.Commands {
                     return null;
             }
         }
-
-        public override IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Image };
-        }
     }
 }

@@ -15,8 +15,6 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            this.CheckValidInputType(data);
-
             Action operation;
 
             if (data == null) {
@@ -89,18 +87,6 @@ namespace NoCap.Extensions.Default.Commands {
                 default:
                     break;
             }
-        }
-
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.None, TypedDataType.Text, TypedDataType.Uri, TypedDataType.Image };
-        }
-
-        public IEnumerable<TypedDataType> GetOutputDataTypes(TypedDataType input) {
-            if (input == TypedDataType.None) {
-                return new[] { TypedDataType.Image, TypedDataType.Text, TypedDataType.Uri };
-            }
-
-            return new[] { input };
         }
 
         public ICommandFactory GetFactory() {

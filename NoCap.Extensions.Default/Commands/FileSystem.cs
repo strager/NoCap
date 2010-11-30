@@ -81,10 +81,6 @@ namespace NoCap.Extensions.Default.Commands {
             progress.Progress = 1;
         }
 
-        public IEnumerable<TypedDataType> GetInputDataTypes() {
-            return new[] { TypedDataType.Stream };
-        }
-
         public ICommandFactory GetFactory() {
             return new FileSystemFactory();
         }
