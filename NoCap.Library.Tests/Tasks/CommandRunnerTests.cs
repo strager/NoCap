@@ -202,7 +202,7 @@ namespace NoCap.Library.Tests.Tasks {
             var task = runner.Run(mockCommand.Object);
             task.WaitForCompletion();
 
-            Assert.AreSame(cancelException, task.CancelReason);
+            AssertCanceledExceptionsSame(cancelException, task.CancelReason);
         }
 
         [Test]
@@ -231,7 +231,7 @@ namespace NoCap.Library.Tests.Tasks {
             task.WaitForCompletion();
 
             Assert.AreEqual(1, fireCount);
-            Assert.AreSame(cancelException, firedReason);
+            AssertCanceledExceptionsSame(cancelException, firedReason);
         }
 
         [Test]
@@ -254,6 +254,21 @@ namespace NoCap.Library.Tests.Tasks {
 
         private static Mock<ICommand> GetCommandMock() {
             return new Mock<ICommand>(MockBehavior.Strict);
+        }
+
+        private void AssertCanceledExceptionsSame(CommandCanceledException expected, Exception actual) {
+            if (expected == null && actual == null) {
+                return;
+            }
+
+            Assert.IsNotNull(expected);
+            Assert.IsNotNull(actual);
+
+            while (actual.InnerException != null) {
+                actual = actual.InnerException;
+            }
+
+            Assert.AreSame(expected, actual);
         }
     }
 }
