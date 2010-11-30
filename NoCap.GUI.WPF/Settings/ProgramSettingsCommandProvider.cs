@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition.Hosting;
 using Bindable.Linq;
+using Bindable.Linq.Collections;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
@@ -7,7 +8,7 @@ namespace NoCap.GUI.WPF.Settings {
         private readonly ProgramSettings programSettings;
         private readonly CompositionContainer compositionContainer;
 
-        private IBindableCollection<ICommandFactory> commandFactories;
+        private BindableCollection<ICommandFactory> commandFactories = new BindableCollection<ICommandFactory>();
 
         public ProgramSettingsCommandProvider(ProgramSettings programSettings, CompositionContainer compositionContainer) {
             this.programSettings = programSettings;
@@ -23,8 +24,12 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         private void Recompose() {
-            // TODO Recompose into bindable
-            this.commandFactories = this.compositionContainer.GetExportedValues<ICommandFactory>().AsBindable();
+            var newFactories = this.compositionContainer.GetExportedValues<ICommandFactory>().AsBindable();
+
+            var transaction = this.commandFactories.BeginTransaction();
+            this.commandFactories.Clear(transaction);
+            this.commandFactories.AddRange(newFactories, transaction);
+            transaction.Commit();
         }
 
         public IBindableCollection<ICommandFactory> CommandFactories {

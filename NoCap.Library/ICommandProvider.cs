@@ -6,7 +6,6 @@ using Bindable.Linq;
 
 namespace NoCap.Library {
     public interface ICommandProvider {
-        // TODO Observable 'collections'
         IBindableCollection<ICommandFactory> CommandFactories { get; }
         IBindableCollection<ICommand> StandAloneCommands { get; }
 
