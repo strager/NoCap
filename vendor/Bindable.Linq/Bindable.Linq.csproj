@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1BD32C0F-5FDE-4913-AEED-13840ACBF4E0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bindable.Linq</RootNamespace>
+    <AssemblyName>Bindable.Linq</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>PrivateKey.pfx</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Bindable.Linq.xml</DocumentationFile>
+    <CodeAnalysisRules>-Microsoft.Design#CA1006;-Microsoft.Design#CA1004</CodeAnalysisRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Bindable.Linq.xml</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapters\BindingListAdapter.cs" />
+    <Compile Include="Aggregators\AverageAggregator.cs" />
+    <Compile Include="Aggregators\CountAggregator.cs" />
+    <Compile Include="Aggregators\CustomAggregator.cs" />
+    <Compile Include="Aggregators\ElementAtAggregator.cs" />
+    <Compile Include="Aggregators\MaxAggregator.cs" />
+    <Compile Include="Aggregators\MinAggregator.cs" />
+    <Compile Include="Collections\BindableCollectionInterceptor.cs" />
+    <Compile Include="Collections\IBindableCollectionInterceptor.cs" />
+    <Compile Include="Configuration\BindingConfigurations.cs" />
+    <Compile Include="Configuration\DefaultBindingConfiguration.cs" />
+    <Compile Include="Configuration\ExplicitBindingConfiguration.cs" />
+    <Compile Include="Configuration\IBindingConfiguration.cs" />
+    <Compile Include="Configuration\IConfigurable.cs" />
+    <Compile Include="Dependencies\Definitions\ItemDependencyDefinition.cs" />
+    <Compile Include="Dependencies\Definitions\ExternalDependencyDefinition.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\IExpressionAnalyzer.cs" />
+    <Compile Include="Dependencies\Instances\StaticDependency.cs" />
+    <Compile Include="Dependencies\PathNavigation\IPathNavigator.cs" />
+    <Compile Include="Dependencies\PathNavigation\TokenFactories\ClrMemberTokenFactory.cs" />
+    <Compile Include="Dependencies\PathNavigation\TokenFactories\ITokenFactory.cs" />
+    <Compile Include="Dependencies\PathNavigation\TokenFactories\SilverlightMemberTokenFactory.cs" />
+    <Compile Include="Dependencies\PathNavigation\TokenFactories\WindowsFormsMemberTokenFactory.cs" />
+    <Compile Include="Dependencies\PathNavigation\TokenFactories\WpfMemberTokenFactory.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\SilverlightMemberToken.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\WindowsFormsMemberToken.cs" />
+    <Compile Include="Dependencies\Definitions\StaticDependencyDefinition.cs" />
+    <Compile Include="Dependencies\Instances\ExternalDependency.cs" />
+    <Compile Include="Dependencies\IDependency.cs" />
+    <Compile Include="Dependencies\Instances\ItemDependency.cs" />
+    <Compile Include="Dependencies\DependencyComparer.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\Extractors\IDependencyExtractor.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\Extractors\ItemDependencyExtractor.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\Extractors\ExternalDependencyExtractor.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\Extractors\DependencyExtractor.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\Extractors\StaticDependencyExtractor.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\ExpressionAnalyzer.cs" />
+    <Compile Include="Dependencies\ExpressionAnalysis\ExpressionFlattener.cs" />
+    <Compile Include="Dependencies\IDependencyDefinition.cs" />
+    <Compile Include="Dependencies\IAcceptsDependencies.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\ClrMemberToken.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\IToken.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\MemberToken.cs" />
+    <Compile Include="Dependencies\PathNavigation\PathNavigator.cs" />
+    <Compile Include="Dependencies\PathNavigation\Tokens\WpfMemberToken.cs" />
+    <Compile Include="Adapters\BindableCollectionAdapter.cs" />
+    <Compile Include="Helpers\ElementActioner.cs" />
+    <Compile Include="Helpers\ElementComparerFactory.cs" />
+    <Compile Include="Dependencies\IPropertyReader.cs" />
+    <Compile Include="Dependencies\PropertyReaderFactory.cs" />
+    <Compile Include="Helpers\PropertyChangedCache.cs" />
+    <Compile Include="Helpers\WeakTimer.cs" />
+    <Compile Include="IEditableBindableGrouping.cs" />
+    <Compile Include="Helpers\InternalExtensions.cs" />
+    <Compile Include="ILoadable.cs" />
+    <Compile Include="Iterators\LoadState.cs" />
+    <Compile Include="Collections\SnapshotManager.cs" />
+    <Compile Include="Iterators\StateManager.cs" />
+    <Compile Include="Helpers\LockAttemptTimeoutException.cs" />
+    <Compile Include="Helpers\LockScope.cs" />
+    <Compile Include="Aggregators\Numerics\FloatNumeric.cs" />
+    <Compile Include="Aggregators\Numerics\DoubleNumeric.cs" />
+    <Compile Include="Aggregators\Numerics\Int64Numeric.cs" />
+    <Compile Include="Aggregators\Numerics\DecimalNumeric.cs" />
+    <Compile Include="Aggregators\Numerics\INumeric.cs" />
+    <Compile Include="Aggregators\Numerics\Int32Numeric.cs" />
+    <Compile Include="Aggregators\Aggregator.cs" />
+    <Compile Include="Aggregators\SumAggregator.cs" />
+    <Compile Include="Extensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dependencies\Observers\CollectionChangeObserver.cs" />
+    <Compile Include="Dependencies\Observers\EventObserver.cs" />
+    <Compile Include="Collections\BindableGrouping.cs" />
+    <Compile Include="Helpers\DefaultComparer.cs" />
+    <Compile Include="Iterators\ItemSorter.cs" />
+    <Compile Include="Collections\BindableCollection.cs" />
+    <Compile Include="Iterators\ProjectionRegister.cs" />
+    <Compile Include="Dependencies\Observers\PropertyChangeObserver.cs" />
+    <Compile Include="Helpers\StateScope.cs" />
+    <Compile Include="Helpers\WeakEventReference.cs" />
+    <Compile Include="IBindableCollection.cs" />
+    <Compile Include="IBindable.cs" />
+    <Compile Include="IOrderedBindableQuery.cs" />
+    <Compile Include="IRefreshable.cs" />
+    <Compile Include="IBindableQuery.cs" />
+    <Compile Include="IBindableGrouping.cs" />
+    <Compile Include="Iterators\AsynchronousIterator.cs" />
+    <Compile Include="Iterators\Iterator.cs" />
+    <Compile Include="Iterators\GroupByIterator.cs" />
+    <Compile Include="Iterators\OrderByIterator.cs" />
+    <Compile Include="Iterators\PollIterator.cs" />
+    <Compile Include="Iterators\SelectIterator.cs" />
+    <Compile Include="Iterators\UnionIterator.cs" />
+    <Compile Include="Iterators\WhereIterator.cs" />
+    <Compile Include="Operators\IfOperator.cs" />
+    <Compile Include="Operators\Operator.cs" />
+    <Compile Include="Operators\ProjectOperator.cs" />
+    <Compile Include="Properties\SolutionInfo.cs" />
+    <Compile Include="Threading\DispatcherFactory.cs" />
+    <Compile Include="Threading\SilverlightDispatcher.cs" />
+    <Compile Include="Threading\IDispatcher.cs" />
+    <Compile Include="Threading\WpfDispatcher.cs" />
+    <Compile Include="Transactions\Transaction.cs" />
+    <Compile Include="Transactions\ITransaction.cs" />
+    <Compile Include="Transactions\TransactionLog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagrams\Everything.cd" />
+    <None Include="PrivateKey.pfx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>cd $(ProjectDir)
+set PF=%25PROGRAMFILES(x86)%25
+if "%25PF%25"=="" set PF=%25PROGRAMFILES%25
+
+set SILVERLIGHTPATH=%25PF%25\Microsoft Silverlight\2.0.30226.2
+if exist "%25SILVERLIGHTPATH%25" (
+    mkdir bin\Silverlight
+    %25WINDIR%25\Microsoft.NET\Framework\v3.5\Csc.exe /noconfig /nostdlib+ /nowarn:1701,1702 /errorreport:prompt /warn:4 /doc:bin\Silverlight\Bindable.Linq.xml /define:DEBUG;TRACE;SILVERLIGHT /reference:"%25SILVERLIGHTPATH%25\System.Windows.dll" /reference:"%25SILVERLIGHTPATH%25\mscorlib.dll" /reference:"%25SILVERLIGHTPATH%25\System.Core.dll" /reference:"%25SILVERLIGHTPATH%25\System.dll" /debug+ /debug:full /filealign:512 /optimize- /out:bin\Silverlight\Bindable.Linq.dll /target:library /recurse:*.cs
+)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

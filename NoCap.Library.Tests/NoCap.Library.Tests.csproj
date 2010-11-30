@@ -68,6 +68,10 @@
       <Project>{F8575C27-A6A0-4D6F-A9C8-C93A4DB20C4E}</Project>
       <Name>NoCap.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\Bindable.Linq\Bindable.Linq.csproj">
+      <Project>{1BD32C0F-5FDE-4913-AEED-13840ACBF4E0}</Project>
+      <Name>Bindable.Linq</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

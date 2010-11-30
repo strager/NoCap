@@ -6,6 +6,7 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Bindable.Linq;
 using Moq;
 using NoCap.Library.Controls;
 using NUnit.Framework;
@@ -46,7 +47,7 @@ namespace NoCap.Library.Tests.Controls {
         [Test, RequiresSTA]
         public void SetCommandFactoryWithCommandProviderSets() {
             var commandFactory = GetCommandFactory();
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory });
+            var commandProvider = GetCommandProvider(new[] { commandFactory });
 
             var cfs = new CommandFactorySelector {
                 CommandFactory = commandFactory,
@@ -63,7 +64,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SetCommandFactoryWithBadCommandProviderSets() {
             var commandFactory = GetCommandFactory();
             var badCommandFactory = GetCommandFactory();
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { badCommandFactory });
+            var commandProvider = GetCommandProvider(new[] { badCommandFactory });
 
             var cfs = new CommandFactorySelector {
                 CommandFactory = commandFactory,
@@ -80,7 +81,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SetCommandProviderShowsFactories() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
                 CommandProvider = commandProvider
@@ -97,7 +98,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SetCommandProviderSelectsNull() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
                 CommandProvider = commandProvider
@@ -115,7 +116,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SetCommandFactorySelects() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(new[] { commandFactory1, commandFactory2 });
 
             var cfs = new CommandFactorySelector {
                 CommandProvider = commandProvider,
@@ -138,7 +139,7 @@ namespace NoCap.Library.Tests.Controls {
 
             command = GetCommand(commandFactory);
 
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory });
+            var commandProvider = GetCommandProvider(new[] { commandFactory });
 
             var cfs = new CommandFactorySelector {
                 CommandProvider = commandProvider,
@@ -154,7 +155,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SettingCommandLateSelectsFactory() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(new[] { commandFactory1, commandFactory2 });
 
             var command = commandFactory2.CreateCommand();
 
@@ -175,7 +176,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SettingCommandEarlySelectsFactory() {
             var commandFactory1 = GetCommandFactory("1");
             var commandFactory2 = GetCommandFactory("2");
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { commandFactory1, commandFactory2 });
+            var commandProvider = GetCommandProvider(new[] { commandFactory1, commandFactory2 });
 
             var command = commandFactory2.CreateCommand();
 
@@ -196,7 +197,7 @@ namespace NoCap.Library.Tests.Controls {
         public void SettingFilterDoesNotChangeCommand() {
             var fileCommandFactory = GetCommandFactory("file", CommandFeatures.FileUploader);
             var textCommandFactory = GetCommandFactory("text", CommandFeatures.TextUploader);
-            var commandProvider = GetCommandProvider(Enumerable.Empty<ICommand>(), new[] { fileCommandFactory, textCommandFactory });
+            var commandProvider = GetCommandProvider(new[] { fileCommandFactory, textCommandFactory });
 
             var command = fileCommandFactory.CreateCommand();
 
@@ -257,11 +258,9 @@ namespace NoCap.Library.Tests.Controls {
             return mockCommandFactory.Object;
         }
 
-        private static ICommandProvider GetCommandProvider(IEnumerable<ICommand> commands, IEnumerable<ICommandFactory> commandFactories) {
-            var commandsCollection = new ObservableCollection<ICommand>(commands);
-
+        private static ICommandProvider GetCommandProvider(IEnumerable<ICommandFactory> commandFactories) {
             var mockCommandProvider = new Mock<ICommandProvider>(MockBehavior.Strict);
-            mockCommandProvider.Setup((commandProvider) => commandProvider.CommandFactories).Returns(commandFactories);
+            mockCommandProvider.Setup((commandProvider) => commandProvider.CommandFactories).Returns(commandFactories.AsBindable());
 
             return mockCommandProvider.Object;
         }

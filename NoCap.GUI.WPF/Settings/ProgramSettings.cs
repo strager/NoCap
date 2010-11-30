@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Bindable.Linq;
+using Bindable.Linq.Collections;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
@@ -25,7 +27,7 @@ namespace NoCap.GUI.WPF.Settings {
         private readonly FeaturedCommandCollection defaultCommands;
 
         [DataMember(Name = "Commands", Order = 1)]
-        private readonly ObservableCollection<ICommand> commands;
+        private readonly BindableCollection<ICommand> commands;
 
         [DataMember(Name = "Plugins", Order = 2)]
         private readonly PluginCollection plugins;
@@ -36,9 +38,10 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public ObservableCollection<ICommand> Commands {
+        public IBindableCollection<ICommand> Commands {
             get {
-                return this.commands;
+                // Wrap to prevent modification.
+                return this.commands.AsBindable();
             }
         }
 
@@ -77,7 +80,7 @@ namespace NoCap.GUI.WPF.Settings {
         public ProgramSettings() {
             this.plugins = new PluginCollection();
             this.defaultCommands = new FeaturedCommandCollection();
-            this.commands = new ObservableCollection<ICommand>();
+            this.commands = new BindableCollection<ICommand>();
         }
 
         public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
@@ -98,8 +101,7 @@ namespace NoCap.GUI.WPF.Settings {
         public void LoadCommandDefaults() {
             // TODO Clean this up
 
-            var commandFactories = CommandProvider.CommandFactories
-                .Where((factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
+            var commandFactories = Enumerable.Where(CommandProvider.CommandFactories, (factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
 
             var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
 

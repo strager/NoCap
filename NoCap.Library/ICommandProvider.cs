@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Bindable.Linq;
 
 namespace NoCap.Library {
     public interface ICommandProvider {
         // TODO Observable 'collections'
-        IEnumerable<ICommandFactory> CommandFactories { get; }
-        IEnumerable<ICommand> StandAloneCommands { get; }
+        IBindableCollection<ICommandFactory> CommandFactories { get; }
+        IBindableCollection<ICommand> StandAloneCommands { get; }
 
         ICommand GetDefaultCommand(CommandFeatures features);
         bool IsDefaultCommand(ICommand command);

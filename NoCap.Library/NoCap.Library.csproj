@@ -122,6 +122,10 @@
       <Project>{48EAB6A5-2882-4DF7-9846-FD06581B33B5}</Project>
       <Name>NoCap.Web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\Bindable.Linq\Bindable.Linq.csproj">
+      <Project>{1BD32C0F-5FDE-4913-AEED-13840ACBF4E0}</Project>
+      <Name>Bindable.Linq</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Editors\" />

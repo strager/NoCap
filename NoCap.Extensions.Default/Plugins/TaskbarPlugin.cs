@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reflection;
@@ -26,9 +27,6 @@ namespace NoCap.Extensions.Default.Plugins {
 
         [NonSerialized]
         private TaskbarIcon taskbarIcon;
-
-        [NonSerialized]
-        private ObservableCollection<MenuItem> commandMenuItems;
 
         [NonSerialized]
         private CommandRunner commandRunner;
@@ -167,29 +165,10 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void Initialize(IPluginContext pluginContext) {
-            this.commandMenuItems = new ObservableCollection<MenuItem>();
-
-            // TODO Observe StandAloneCommands
-            foreach (var command in pluginContext.CommandProvider.StandAloneCommands) {
-                this.commandMenuItems.Add(new MenuItem {
-                    Command = NoCapCommands.Execute,
-                    CommandParameter = command,
-                    Header = command.Name,
-                });
-            }
-
-            var taskbarMenu = new ContextMenu {
-                ItemsSource = new CompositeCollection {
-                    new CollectionContainer { Collection = this.commandMenuItems },
-                    new Separator(),
-                    new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
-                }
-            };
-
             this.taskbarIcon = new TaskbarIcon {
                 Visibility = Visibility.Visible,
                 DoubleClickCommand = ApplicationCommands.Properties,
-                ContextMenu = taskbarMenu
+                ContextMenu = BuildContextMenu(pluginContext),
             };
 
             this.logo = new NoCapLogo();
@@ -206,6 +185,35 @@ namespace NoCap.Extensions.Default.Plugins {
             AddBindings();
 
             UpdateIcon(1);
+        }
+
+        private static ContextMenu BuildContextMenu(IPluginContext pluginContext) {
+            var commands = pluginContext.CommandProvider.StandAloneCommands;
+            var commandMenuItems = new ObservableCollection<MenuItem>();
+
+            BuildCommandMenuItems(commands, commandMenuItems);
+
+            commands.CollectionChanged += (sender, e) => BuildCommandMenuItems(commands, commandMenuItems);
+
+            return new ContextMenu {
+                ItemsSource = new CompositeCollection {
+                    new CollectionContainer { Collection = commandMenuItems },
+                    new Separator(),
+                    new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
+                }
+            };
+        }
+
+        private static void BuildCommandMenuItems(IEnumerable<ICommand> commands, ICollection<MenuItem> commandMenuItems) {
+            commandMenuItems.Clear();
+
+            foreach (var command in commands) {
+                commandMenuItems.Add(new MenuItem {
+                    Command = NoCapCommands.Execute,
+                    CommandParameter = command,
+                    Header = command.Name,
+                });
+            }
         }
 
         public void Dispose() {
