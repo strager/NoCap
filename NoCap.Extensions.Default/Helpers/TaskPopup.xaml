@@ -11,7 +11,7 @@
     Height="106">
 
     <UserControl.CommandBindings>
-        <CommandBinding Command="Close" Executed="Close" />
+        <CommandBinding Command="Close" Executed="QueueHide" />
     </UserControl.CommandBindings>
 
     <UserControl.Resources>
@@ -53,11 +53,13 @@
             </Border>
         </ControlTemplate>
 
-        <Storyboard x:Key="CloseAnimation" TargetName="taskPopup">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:00:00.3" BeginTime="0:00:02.3" Completed="Close" />
+        <Storyboard x:Key="HideAnimation" TargetName="taskPopup">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:00:00.3" BeginTime="0:00:02.3" />
         </Storyboard>
 
-
+        <Storyboard x:Key="ShowAnimation" TargetName="taskPopup">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:00:00.3" />
+        </Storyboard>
     </UserControl.Resources>
 
     <UserControl.Triggers>
@@ -83,7 +85,6 @@
 
     <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
         <Button Name="hideButton"
-            Height="0"
             Command="Close"
             Content="Hide"
             HorizontalAlignment="Right"
@@ -91,7 +92,7 @@
             FontSize="13"
             Padding="5,1,5,0"
             Foreground="{StaticResource ForegroundBrush}"
-            Background="#33000000"
+            Background="#99000000"
             Template="{StaticResource HideButtonTemplate}" />
 
         <Border BorderThickness="13,10" CornerRadius="3"

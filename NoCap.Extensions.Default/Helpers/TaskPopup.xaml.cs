@@ -1,11 +1,5 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Media.Animation;
-using System.Windows.Threading;
 using NoCap.Library;
 using NoCap.Library.Tasks;
 
@@ -14,10 +8,16 @@ namespace NoCap.Extensions.Default.Helpers {
     /// Interaction logic for TaskPopup.xaml
     /// </summary>
     public partial class TaskPopup {
-        private bool closing = false;
+        private readonly StoryboardQueue storyboardQueue = new StoryboardQueue();
+        private readonly Storyboard showStoryboard;
+        private readonly Storyboard hideStoryboard;
 
         public TaskPopup() {
             InitializeComponent();
+
+            // HACK
+            this.hideButton.Height = 0;
+            Opacity = 0;
 
             CommandBindings.Add(new CommandBinding(
                 NoCapCommands.Cancel,
@@ -25,43 +25,28 @@ namespace NoCap.Extensions.Default.Helpers {
                     var task = (ICommandTask) DataContext;
 
                     task.Cancel();
-                },
-                (sender, e) => {
-                    e.CanExecute = !this.closing;
-                    e.Handled = true;
                 }
             ));
 
             CommandBindings.Add(new CommandBinding(
                 ApplicationCommands.Close,
-                (sender, e) => QueueClose()
+                (sender, e) => QueueHide()
             ));
+
+            this.showStoryboard = (Storyboard) Resources["ShowAnimation"];
+            this.hideStoryboard = (Storyboard) Resources["HideAnimation"];
         }
 
-        public void QueueClose() {
-            if (!Dispatcher.CheckAccess()) {
-                Dispatcher.BeginInvoke(new Action(QueueClose));
-
-                return;
-            }
-
-            if (this.closing) {
-                return;
-            }
-
-            var storyboard = (Storyboard) Resources["CloseAnimation"];
-
-            storyboard.Begin(this);
-
-            this.closing = true;
+        public void QueueShow() {
+            this.storyboardQueue.Enqueue(this.showStoryboard, this);
         }
 
-        private void Close() {
-            Visibility = Visibility.Collapsed;
+        public void QueueHide() {
+            this.storyboardQueue.Enqueue(this.hideStoryboard, this, false);
         }
 
-        private void Close(object sender, EventArgs e) {
-            Close();
+        private void QueueHide(object sender, ExecutedRoutedEventArgs e) {
+            QueueHide();
         }
     }
 }

@@ -139,14 +139,20 @@ namespace NoCap.Extensions.Default.Plugins {
                     DataContext = task
                 };
 
-                task.Completed += (sender, e) => taskPopup.QueueClose();
-                task.Canceled += (sender, e) => taskPopup.QueueClose();
+                task.Completed += (sender, e) => {
+                    taskPopup.QueueShow();
+                    taskPopup.QueueHide();
+                };
+
+                task.Canceled += (sender, e) => taskPopup.QueueHide();
+
+                this.taskbarIcon.ShowCustomBalloon(taskPopup, PopupAnimation.None, null);
+
+                taskPopup.QueueShow();
 
                 if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
-                    taskPopup.QueueClose();
+                    taskPopup.QueueHide();
                 }
-
-                this.taskbarIcon.ShowCustomBalloon(taskPopup, PopupAnimation.Fade, null);
             }));
         }
 
