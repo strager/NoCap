@@ -153,7 +153,10 @@ namespace NoCap.GUI.WPF.Settings {
             }
 
             this.registeredFeatures[features] = name;
-            this.defaultCommands[features] = this.commandProvider.GetPreferredCommand(features);
+
+            if (!this.defaultCommands.ContainsKey(features)) {
+                this.defaultCommands[features] = this.commandProvider.GetPreferredCommand(features);
+            }
         }
     }
 }

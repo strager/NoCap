@@ -52,5 +52,9 @@ namespace NoCap.GUI.WPF.Settings {
         public bool Contains(ICommand command) {
             return command != null && command is FeaturedCommandProxy;
         }
+
+        public bool ContainsKey(CommandFeatures features) {
+            return this.commands.ContainsKey(features);
+        }
     }
 }
