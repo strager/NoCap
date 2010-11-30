@@ -14,7 +14,7 @@ using NoCap.Library.Util;
 namespace NoCap.Extensions.Default.Commands {
     [Serializable]
     public sealed class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
-        private string name = "SSH file uploader";
+        private string name = "FTP file uploader";
 
         private string host = "example.com";
         private int port = 21;
