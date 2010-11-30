@@ -60,6 +60,11 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
+    <Compile Include="Commands\Renamer.cs" />
+    <Compile Include="Editors\RenamerEditor.xaml.cs">
+      <DependentUpon>RenamerEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\RenamerFactory.cs" />
     <Compile Include="Editors\ImagebinCaUploaderEditor.xaml.cs">
       <DependentUpon>ImagebinCaUploaderEditor.xaml</DependentUpon>
     </Compile>
@@ -175,6 +180,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Editors\FtpUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\RenamerEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -162,6 +162,20 @@ namespace NoCap.Library {
                 dataAsDisposable.Dispose();
             }
         }
+
+        public object CloneData() {
+            // TODO Allow smart cloning or something (e.g. register a cloner?)
+            switch (DataType) {
+                case TypedDataType.Image:
+                    return ((Image) Data).Clone();
+
+                case TypedDataType.Stream:
+                    throw new InvalidOperationException("Don't know how to clone a stream");
+
+                default:
+                    return Data;
+            }
+        }
     }
 
     public static class TypedDataExtensions {

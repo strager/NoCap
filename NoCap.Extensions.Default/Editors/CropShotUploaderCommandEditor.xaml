@@ -12,5 +12,6 @@
             Command="{Binding ImageUploader}"
             Filter="ImageUploader"
             Name="imageUploaderEditor" />
+        <local:CommandEditor Command="{Binding Renamer}" />
     </StackPanel>
 </ContentControl>

@@ -10,6 +10,7 @@ namespace NoCap.Extensions.Default.Commands {
     [Serializable]
     public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
         private ICommand imageUploader;
+        private ICommand renamer;
 
         private string name = "Crop shot uploader";
 
@@ -37,6 +38,18 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        public ICommand Renamer {
+            get {
+                return this.renamer;
+            }
+
+            set {
+                this.renamer = value;
+
+                Notify("Renamer");
+            }
+        }
+
         public override ICommandFactory GetFactory() {
             return new CropShotUploaderCommandFactory();
         }
@@ -54,6 +67,7 @@ namespace NoCap.Extensions.Default.Commands {
         public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
             var commandChain = new CommandChain(
                 new Screenshot(),
+                Renamer,
                 new CropShot(),
                 ImageUploader,
                 new Clipboard()
