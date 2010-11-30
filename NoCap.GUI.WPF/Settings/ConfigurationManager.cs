@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
@@ -8,7 +10,10 @@ using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
+using Bindable.Linq;
+using Bindable.Linq.Collections;
 using NoCap.Library;
+using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
@@ -62,7 +67,7 @@ namespace NoCap.GUI.WPF.Settings {
                 int.MaxValue,
                 false,
                 FormatterAssemblyStyle.Simple,
-                null
+                new MySurrogateSelector()
             );
         }
 
@@ -121,6 +126,62 @@ namespace NoCap.GUI.WPF.Settings {
 
                 return (T) cloner.Deserialize(stream);
             }
+        }
+    }
+
+    internal class MySurrogateSelector : ISurrogateSelector {
+        private ISurrogateSelector nextSelector;
+
+        public void ChainSelector(ISurrogateSelector selector) {
+            this.nextSelector = selector;
+        }
+
+        public ISerializationSurrogate GetSurrogate(Type type, StreamingContext context, out ISurrogateSelector selector) {
+            if (type.IsGenericType && type.GetInterfaces().Contains(typeof(IBindableCollection))) {
+                selector = this;
+
+                return new BindableCollectionSurrogate();
+            }
+
+            if (this.nextSelector == null) {
+                selector = null;
+
+                return null;
+            } else {
+                return this.nextSelector.GetSurrogate(type, context, out selector);
+            }
+        }
+
+        public ISurrogateSelector GetNextSelector() {
+            return this.nextSelector;
+        }
+    }
+
+    internal class BindableCollectionSurrogate : ISerializationSurrogate {
+        public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) {
+            var bindableCollection = (IBindableCollection) obj;
+
+            var items = new ArrayList(bindableCollection.Count);
+
+            foreach (var item in bindableCollection) {
+                items.Add(item);
+            }
+
+            info.AddValue("Items", items);
+            info.AddValue("ItemType", obj.GetType());
+        }
+
+        public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) {
+            var items = info.GetValue<IEnumerable>("Items");
+            var type = info.GetValue<Type>("ItemType");
+
+            dynamic bindableCollection = Activator.CreateInstance(type, new object[] { });
+
+            foreach (var item in items) {
+                bindableCollection.Add(item);
+            }
+
+            return bindableCollection;
         }
     }
 }
