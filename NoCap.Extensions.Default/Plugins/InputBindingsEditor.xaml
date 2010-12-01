@@ -8,14 +8,15 @@
     d:DesignHeight="300" d:DesignWidth="300"
     xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
     xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
+
     <ContentControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </ContentControl.Resources>
-	<Grid>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ComboBox Name="inputProvider" Grid.Row="0"
@@ -32,45 +33,30 @@
                     <Setter Property="acb:CommandBehavior.Command" Value="{x:Static ApplicationCommands.Open}" />
                 </Style>
             </ListView.Resources>
-            
+
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Bind" Width="NaN">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Input.HumanString}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    
                     <GridViewColumn Header="Command" Width="NaN">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Controls:CommandSelector HorizontalAlignment="Stretch"
-                                    Command="{Binding Command, Mode=TwoWay}"
-                                    CommandsSource="{Binding CommandProvider.StandAloneCommands, ElementName=self}" />
+                                <Label Content="{Binding Command.Name}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Binding" Width="NaN">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Hyperlink Command="Open" CommandParameter="{Binding}">
+                                        <TextBlock Text="{Binding Input.HumanString, FallbackValue=None}" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        
-        <Grid Grid.Row="2" HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            
-            <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Right">
-                <Button Content="_Add..." Command="New" Style="{StaticResource PaddedCommandButtonStyle}" />
-            </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Left">
-                <Button Content="_Rebind..." Command="Open" Style="{StaticResource PaddedCommandButtonStyle}" />
-                <Button Content="_Delete" Command="Delete" Style="{StaticResource PaddedCommandButtonStyle}" />
-            </StackPanel>
-        </Grid>
     </Grid>
 </ContentControl>

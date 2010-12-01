@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using NoCap.Library;
@@ -67,58 +68,27 @@ namespace NoCap.Extensions.Default.Plugins {
 
             Bindings = new MutableCommandBindingCollection(plugin.Bindings);
 
+            foreach (var command in commandProvider.StandAloneCommands) {
+                if (!Bindings.Any((binding) => ReferenceEquals(binding.Command, command))) {
+                    Bindings.Add(new MutableCommandBinding(null, command));
+                }
+            }
+
             DataContext = this;
 
-            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.New, AddBinding, CanAddBinding));
             CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Open, EditBinding, CanEditBinding));
-            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Delete, DeleteBinding, CanDeleteBinding));
-        }
-
-        private void CanAddBinding(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = true;
-            e.Handled = true;
         }
 
         private void CanEditBinding(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = (SelectedBinding != null);
+            e.CanExecute = (SelectedBinding != null) || (e.Parameter is MutableCommandBinding);
             e.Handled = true;
         }
 
-        private void CanDeleteBinding(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = (SelectedBinding != null);
-            e.Handled = true;
-        }
+        private void EditBinding(object sender, ExecutedRoutedEventArgs e) {
+            var binding = e.Parameter as MutableCommandBinding ?? SelectedBinding;
 
-        private void AddBinding(object sender, RoutedEventArgs e) {
-            IInputSequence inputSequence;
-
-            if (!TryGetInputSequence(out inputSequence)) {
-                return;
-            }
-
-            var binding = new MutableCommandBinding(inputSequence, null);
-
-            // If a binding already exists, remove it and re-add it as a new instance
-            // to push it at the end of the list.
-            var existingBinding = Bindings.FirstOrDefault((b) => b.Input.Equals(inputSequence));
-
-            if (existingBinding != null) {
-                Bindings.Remove(existingBinding);
-                binding.Command = existingBinding.Command;
-            }
-
-            Bindings.Add(binding);
-        }
-
-        private void EditBinding(object sender, RoutedEventArgs e) {
-            if (SelectedBinding != null) {
-                EditBinding(SelectedBinding);
-            }
-        }
-
-        private void DeleteBinding(object sender, RoutedEventArgs e) {
-            if (SelectedBinding != null) {
-                Bindings.Remove(SelectedBinding);
+            if (binding != null) {
+                EditBinding(binding);
             }
         }
 
@@ -377,6 +347,28 @@ namespace NoCap.Extensions.Default.Plugins {
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotSupportedException();
+        }
+    }
+
+    public class InverseBooleanToVisibilityConverter : IValueConverter {
+        private readonly BooleanToVisibilityConverter sourceConverter = new BooleanToVisibilityConverter();
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value is bool) {
+                value = !((bool) value);
+            }
+
+            return this.sourceConverter.Convert(value, targetType, parameter, culture);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            var newValue = this.sourceConverter.ConvertBack(value, targetType, parameter, culture);
+
+            if (newValue is bool) {
+                newValue = !((bool) value);
+            }
+
+            return newValue;
         }
     }
 }

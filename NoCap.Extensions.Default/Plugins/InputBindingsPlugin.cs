@@ -102,7 +102,7 @@ namespace NoCap.Extensions.Default.Plugins {
             var handle = IntPtr.Zero;
             
             InputProvider.CommandStateChanged += CommandStateChanged;
-            InputProvider.SetBindings(Bindings);
+            UpdateBindings();
             InputProvider.Attach(handle);
         }
 
@@ -148,7 +148,7 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private void UpdateBindings() {
-            InputProvider.SetBindings(Bindings);
+            InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
         }
 
         protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
