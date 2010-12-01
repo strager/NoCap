@@ -18,6 +18,8 @@
         </Grid.ColumnDefinitions>
 
         <ListView Grid.Column="0" Name="featuresSelector"
+            SelectedIndex="0"
+            SelectionChanged="EnforceSelection"
             ItemsSource="{Binding DefaultCommands, ElementName=editor}"
             IsTextSearchEnabled="True"
             SelectionMode="Single">

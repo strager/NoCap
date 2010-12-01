@@ -28,6 +28,21 @@ namespace NoCap.GUI.WPF.Settings.Editors {
 
             InitializeComponent();
         }
+
+        private void EnforceSelection(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+            // HACK to prevent unselection
+            if (this.featuresSelector.SelectedItems.Count != 0) {
+                return;
+            }
+
+            var items = e.RemovedItems;
+
+            if (items.Count == 0) {
+                this.featuresSelector.SelectedIndex = 0;
+            } else {
+                this.featuresSelector.SelectedItem = items[0];
+            }
+        }
     }
 
     class DefaultCommandItemThing {
