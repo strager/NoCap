@@ -199,6 +199,7 @@ namespace NoCap.Extensions.Default.Plugins {
                 ItemsSource = new CompositeCollection {
                     new CollectionContainer { Collection = commandMenuItems },
                     new Separator(),
+                    new MenuItem { Command = ApplicationCommands.Properties, Header = "_Settings" },
                     new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
                 }
             };
