@@ -25,10 +25,15 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        public string FeedbackUserName {
+            get;
+            set;
+        }
+
         public UIElement GetEditor(ICommandProvider commandProvider) {
-            return new AboutEditor() {
+            return new AboutEditor {
                 DataContext = new {
-                    Feedback = new Feedback()
+                    Feedback = new Feedback(this)
                 }
             };
         }
@@ -41,16 +46,17 @@ namespace NoCap.Extensions.Default.Plugins {
     public class Feedback : INotifyPropertyChanged {
         private readonly static Uri Uri = new Uri(@"http://strager.net/nocap/feedback");
 
-        private string userName;
+        private readonly AboutPlugin plugin;
+
         private string message;
 
         public string UserName {
             get {
-                return this.userName;
+                return this.plugin.FeedbackUserName;
             }
 
             set {
-                this.userName = value;
+                this.plugin.FeedbackUserName = value;
 
                 Notify("UserName");
             }
@@ -66,6 +72,10 @@ namespace NoCap.Extensions.Default.Plugins {
 
                 Notify("Message");
             }
+        }
+
+        internal Feedback(AboutPlugin plugin) {
+            this.plugin = plugin;
         }
 
         public void Submit() {

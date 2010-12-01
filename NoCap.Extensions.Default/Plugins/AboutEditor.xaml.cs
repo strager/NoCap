@@ -18,12 +18,13 @@ namespace NoCap.Extensions.Default.Plugins {
     /// Interaction logic for AboutEditor.xaml
     /// </summary>
     public partial class AboutEditor {
-        private readonly Feedback feedback = new Feedback();
         private readonly Storyboard feedbackSubmittedStoryboard;
 
         public Feedback Feedback {
             get {
-                return this.feedback;
+                dynamic context = DataContext;
+
+                return (Feedback) context.Feedback;
             }
         }
 

@@ -25,7 +25,7 @@
     <StackPanel Orientation="Vertical">
         <TextBlock Margin="6">NoCap (c) 2010 Strager Neds</TextBlock>
 
-        <GroupBox Header="Feedback">
+        <GroupBox Header="Feedback" DataContext="{Binding Feedback}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -49,10 +49,10 @@
                 </TextBlock>
 
                 <Label Grid.Row="1" Grid.Column="0">_E-mail</Label>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Feedback.UserName, ElementName=about}" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UserName}" />
 
                 <Label Grid.Row="2" Grid.Column="0">_Message</Label>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Feedback.Message, ElementName=about}"
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Message}"
                     TextWrapping="Wrap" Height="100"
                     AcceptsReturn="True" />
 
