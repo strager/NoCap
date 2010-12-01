@@ -99,7 +99,7 @@
             BorderBrush="{StaticResource BackgroundBrush}"
             Background="{StaticResource BackgroundBrush}"
             TextBlock.Foreground="{StaticResource ForegroundBrush}"
-            TextBlock.FontSize="14"
+            TextBlock.FontSize="13"
             Height="67" Width="249">
             <Grid>
                 <Grid.ColumnDefinitions>
