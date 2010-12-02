@@ -25,7 +25,7 @@ namespace NoCap.Library.Tests {
 
         [Test]
         public void GetEffectiveDataTypeOnNone() {
-            var type = TypedData.Null.GetEffectiveDataType();
+            var type = new TypedData(TypedDataType.None, null, "null").GetEffectiveDataType();
 
             Assert.AreEqual(TypedDataType.None, type);
         }
@@ -35,15 +35,6 @@ namespace NoCap.Library.Tests {
             var type = TypedData.FromText("", "").GetEffectiveDataType();
 
             Assert.AreEqual(TypedDataType.Text, type);
-        }
-
-        [Test]
-        public void Null() {
-            var nullData = TypedData.Null;
-
-            Assert.AreEqual(TypedDataType.None, nullData.DataType);
-            Assert.AreEqual(null, nullData.Data);
-            Assert.AreEqual("null", nullData.Name);
         }
 
         [Test]
