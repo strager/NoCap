@@ -5,7 +5,6 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
     [Serializable]
@@ -16,18 +15,8 @@ namespace NoCap.Extensions.Default.Commands {
 
         private readonly Clipboard clipboard = new Clipboard();
 
-        private string name = "Clipboard uploader";
-
         public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
+            get { return "Clipboard uploader"; }
         }
 
         public ICommand TextUploader {

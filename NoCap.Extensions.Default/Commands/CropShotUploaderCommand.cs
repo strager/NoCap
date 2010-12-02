@@ -4,7 +4,6 @@ using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
@@ -13,18 +12,8 @@ namespace NoCap.Extensions.Default.Commands {
         private ICommand imageUploader;
         private ICommand renamer;
 
-        private string name = "Crop shot uploader";
-
         public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
+            get { return "Crop shot uploader"; }
         }
 
         public ICommand ImageUploader {
