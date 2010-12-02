@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using NoCap.Library.Progress;
 
-namespace NoCap.Library.Util {
-    public class ProgressTrackingStreamWrapper : Stream, IProgressTracker {
+namespace NoCap.Library.Progress {
+    public sealed class ProgressTrackingStreamWrapper : Stream, IProgressTracker {
         private readonly Stream wrappedStream;
         private long expectedLength;
         private long writtenLength;

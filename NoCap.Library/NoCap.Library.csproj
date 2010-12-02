@@ -109,17 +109,15 @@
     <Compile Include="Progress\IMutableProgressTracker.cs" />
     <Compile Include="Progress\IProgressTracker.cs" />
     <Compile Include="Progress\ITimeEstimate.cs" />
-    <Compile Include="Util\LinqHelpers.cs" />
     <Compile Include="Commands\TextUploader.cs" />
     <Compile Include="Commands\UrlShortener.cs" />
     <Compile Include="Progress\MutableProgressTracker.cs" />
     <Compile Include="Progress\ProgressTrackerExtensions.cs" />
-    <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
+    <Compile Include="Progress\ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypedData.cs" />
     <Compile Include="Progress\ReadOnlyProgressTracker.cs" />
     <Compile Include="Util\SerializationExtensions.cs" />
-    <Compile Include="Util\StreamExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NoCap.Web\NoCap.Web.csproj">

@@ -59,7 +59,6 @@
     <Compile Include="TestHelpers\TestTimeEstimate.cs" />
     <Compile Include="TypedDataTests.cs" />
     <Compile Include="Util\AggregateProgressTrackerTests.cs" />
-    <Compile Include="Util\LinqHelpersTests.cs" />
     <Compile Include="Util\MutableProgressTrackerTests.cs" />
     <Compile Include="Util\TimeEstimateTests.cs" />
   </ItemGroup>
