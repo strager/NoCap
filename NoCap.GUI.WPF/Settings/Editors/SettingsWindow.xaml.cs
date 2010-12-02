@@ -27,8 +27,6 @@ namespace NoCap.GUI.WPF.Settings.Editors {
                 "Defaults"
             );
 
-            AddTab(new CommandSettingsEditor(), "Commands");
-
             foreach (var plugin in settings.Plugins) {
                 var editor = plugin.GetEditor(commandProvider);
 

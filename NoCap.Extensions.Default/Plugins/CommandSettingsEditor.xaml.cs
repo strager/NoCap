@@ -1,22 +1,17 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using NoCap.Library;
 using NoCap.Library.Controls;
 
-namespace NoCap.GUI.WPF.Settings.Editors {
+namespace NoCap.Extensions.Default.Plugins {
     /// <summary>
     /// Interaction logic for ProviderEditor.xaml
     /// </summary>
-    public partial class CommandSettingsEditor : INotifyPropertyChanged {
+    public partial class CommandSettingsEditor {
         public static readonly DependencyProperty CommandProviderProperty;
 
         public string DisplayName {
-            get {
-                return "Commands";
-            }
+            get { return "Commands"; }
         }
 
         static CommandSettingsEditor() {
@@ -37,16 +32,6 @@ namespace NoCap.GUI.WPF.Settings.Editors {
             SetResourceReference(CommandProviderProperty, "commandProvider");
 
             this.commandSelector.AutoLoad();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void Notify(string propertyName) {
-            var handler = PropertyChanged;
-
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }

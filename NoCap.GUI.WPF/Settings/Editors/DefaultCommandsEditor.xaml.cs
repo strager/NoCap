@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using NoCap.Library;
-using NoCap.Library.Controls;
 using NoCap.Library.Extensions;
 using ICommand = NoCap.Library.ICommand;
 

@@ -125,6 +125,10 @@
     </Compile>
     <Compile Include="Plugins\BoundCommand.cs" />
     <Compile Include="Plugins\CommandBinding.cs" />
+    <Compile Include="Plugins\CommandEditorPlugin.cs" />
+    <Compile Include="Plugins\CommandSettingsEditor.xaml.cs">
+      <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\InputBindingsEditor.xaml.cs">
       <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
     </Compile>
@@ -224,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Plugins\BindWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\CommandSettingsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
