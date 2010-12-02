@@ -61,6 +61,7 @@
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\NoCapControl.cs" />
+    <Compile Include="EnumerableCommandFeaturesExtensions.cs" />
     <Compile Include="Extensions\IFeatureRegistry.cs" />
     <Compile Include="Extensions\IPlugin.cs" />
     <Compile Include="Extensions\IPluginContext.cs" />

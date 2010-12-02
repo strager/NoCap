@@ -15,27 +15,6 @@ namespace NoCap.Library.Tests {
         public void ConstructorDoesNotThrowOnNullNullTypeData() {
             Assert.DoesNotThrow(() => new TypedData(TypedDataType.None, null, "null data"));
         }
-        
-        [Test]
-        public void GetEffectiveDataTypeOnNull() {
-            var type = ((TypedData) null).GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.None, type);
-        }
-
-        [Test]
-        public void GetEffectiveDataTypeOnNone() {
-            var type = new TypedData(TypedDataType.None, null, "null").GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.None, type);
-        }
-
-        [Test]
-        public void GetEffectiveDataTypeOnText() {
-            var type = TypedData.FromText("", "").GetEffectiveDataType();
-
-            Assert.AreEqual(TypedDataType.Text, type);
-        }
 
         [Test]
         public void FromImage() {
