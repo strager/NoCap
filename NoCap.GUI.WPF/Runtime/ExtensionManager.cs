@@ -4,7 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Reflection;
 
-namespace NoCap.GUI.WPF {
+namespace NoCap.GUI.WPF.Runtime {
     // TODO Rewrite
     class ExtensionManager {
         private readonly CompositionContainer compositionContainer;

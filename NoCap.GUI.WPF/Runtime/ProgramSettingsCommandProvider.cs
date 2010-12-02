@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.Composition.Hosting;
 using Bindable.Linq;
 using Bindable.Linq.Collections;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 
-namespace NoCap.GUI.WPF.Settings {
+namespace NoCap.GUI.WPF.Runtime {
     internal sealed class ProgramSettingsCommandProvider : ICommandProvider {
         private readonly ProgramSettings programSettings;
         private readonly CompositionContainer compositionContainer;

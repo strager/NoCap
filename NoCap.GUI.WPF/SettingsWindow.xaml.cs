@@ -2,9 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using NoCap.Library.Controls;
+using NoCap.GUI.WPF.Settings;
 
-namespace NoCap.GUI.WPF.Settings.Editors {
+namespace NoCap.GUI.WPF {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>

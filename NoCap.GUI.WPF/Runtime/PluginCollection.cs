@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Runtime.Serialization;
-using NoCap.Library;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library.Extensions;
-using NoCap.Library.Tasks;
-using NoCap.Library.Util;
 
-namespace NoCap.GUI.WPF.Settings {
+namespace NoCap.GUI.WPF.Runtime {
     // TODO Observable
     [DataContract]
     public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable {

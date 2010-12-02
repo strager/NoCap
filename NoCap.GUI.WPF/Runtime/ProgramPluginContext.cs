@@ -1,11 +1,9 @@
-﻿using System;
-using System.ComponentModel.Composition.Hosting;
-using NoCap.GUI.WPF.Settings;
+﻿using System.ComponentModel.Composition.Hosting;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 
-namespace NoCap.GUI.WPF {
+namespace NoCap.GUI.WPF.Runtime {
     internal class ProgramPluginContext : IPluginContext {
         public ProgramPluginContext(CommandRunner commandRunner, ExtensionManager extensionManager, IFeatureRegistry featureRegistry, ICommandProvider commandProvider) {
             this.commandRunner = commandRunner;

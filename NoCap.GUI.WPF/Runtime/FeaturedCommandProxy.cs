@@ -1,7 +1,8 @@
 ﻿using System.Runtime.Serialization;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 
-namespace NoCap.GUI.WPF.Settings {
+namespace NoCap.GUI.WPF.Runtime {
     [DataContract]
     public class FeaturedCommandProxy : CommandProxy {
         [DataMember]

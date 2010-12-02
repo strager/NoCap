@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {

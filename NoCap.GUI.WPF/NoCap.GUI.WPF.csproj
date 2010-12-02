@@ -60,19 +60,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ExtensionManager.cs" />
-    <Compile Include="ProgramPluginContext.cs" />
+    <Compile Include="Runtime\ExtensionManager.cs" />
+    <Compile Include="Runtime\ProgramPluginContext.cs" />
     <Compile Include="Settings\CommandProxy.cs" />
-    <Compile Include="Settings\Editors\DefaultCommandsEditor.xaml.cs">
+    <Compile Include="DefaultCommandsEditor.xaml.cs">
       <DependentUpon>DefaultCommandsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\FeaturedCommandCollection.cs" />
-    <Compile Include="Settings\FeaturedCommandProxy.cs" />
-    <Compile Include="Settings\PluginCollection.cs" />
-    <Compile Include="Settings\PluginSettingsEditor.cs" />
-    <Compile Include="Settings\ProgramSettingsCommandProvider.cs" />
+    <Compile Include="Runtime\FeaturedCommandProxy.cs" />
+    <Compile Include="Runtime\PluginCollection.cs" />
+    <Compile Include="Runtime\ProgramSettingsCommandProvider.cs" />
     <Compile Include="Settings\ProgramSettings.cs" />
-    <Compile Include="Settings\Editors\SettingsWindow.xaml.cs">
+    <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
@@ -80,12 +79,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Settings\ConfigurationManager.cs" />
-    <Compile Include="Settings\TypeComparer.cs" />
-    <Page Include="Settings\Editors\DefaultCommandsEditor.xaml">
+    <Compile Include="TypeComparer.cs" />
+    <Page Include="DefaultCommandsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Settings\Editors\SettingsWindow.xaml">
+    <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

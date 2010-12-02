@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 using NoCap.Library.Extensions;
-using ICommand = NoCap.Library.ICommand;
 
-namespace NoCap.GUI.WPF.Settings.Editors {
+namespace NoCap.GUI.WPF {
     /// <summary>
     /// Interaction logic for DefaultCommandsEditor.xaml
     /// </summary>

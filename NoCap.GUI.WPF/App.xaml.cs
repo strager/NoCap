@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
-using NoCap.GUI.WPF.Settings.Editors;
 using NoCap.Library;
 using NoCap.Library.Tasks;
 
