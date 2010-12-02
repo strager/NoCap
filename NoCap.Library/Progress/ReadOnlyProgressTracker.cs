@@ -1,11 +1,18 @@
 ﻿using System.ComponentModel;
 
-namespace NoCap.Library.Util {
+namespace NoCap.Library.Progress {
+    /// <summary>
+    /// Provides a read-only wrapper around an <see cref="IProgressTracker"/>.
+    /// </summary>
     public sealed class ReadOnlyProgressTracker : IProgressTracker {
         private readonly IProgressTracker source;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadOnlyProgressTracker"/> class.
+        /// </summary>
+        /// <param name="source">The progress tracker to wrap.</param>
         public ReadOnlyProgressTracker(IProgressTracker source) {
             this.source = source;
 

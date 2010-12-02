@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Progress;
 using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 using NUnit.Framework;

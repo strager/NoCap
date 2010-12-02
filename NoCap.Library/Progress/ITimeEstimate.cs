@@ -1,4 +1,4 @@
-﻿namespace NoCap.Library.Util {
+﻿namespace NoCap.Library.Progress {
     public interface ITimeEstimate {
         double ProgressWeight { get; }
         bool IsIndeterminate { get; }

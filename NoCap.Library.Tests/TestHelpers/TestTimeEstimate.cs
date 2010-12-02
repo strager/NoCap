@@ -1,4 +1,5 @@
-﻿using NoCap.Library.Util;
+﻿using NoCap.Library.Progress;
+using NoCap.Library.Util;
 
 namespace NoCap.Library.Tests.TestHelpers {
     class TestTimeEstimate : ITimeEstimate {

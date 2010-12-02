@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;

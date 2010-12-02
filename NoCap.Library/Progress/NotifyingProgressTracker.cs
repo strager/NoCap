@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace NoCap.Library.Util {
+namespace NoCap.Library.Progress {
     public class NotifyingProgressTracker : IMutableProgressTracker {
         private double progress;
         private readonly ITimeEstimate estimatedTimeRemaining;

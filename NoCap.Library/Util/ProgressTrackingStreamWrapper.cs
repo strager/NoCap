@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using NoCap.Library.Progress;
 
 namespace NoCap.Library.Util {
     public class ProgressTrackingStreamWrapper : Stream, IProgressTracker {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {

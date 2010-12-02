@@ -1,4 +1,5 @@
 ﻿using System;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Tasks {

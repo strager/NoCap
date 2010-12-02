@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {

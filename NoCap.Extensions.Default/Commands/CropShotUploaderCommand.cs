@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 using NoCap.Library.Commands;
 

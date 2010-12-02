@@ -105,19 +105,19 @@
     <Compile Include="Imaging\ImageWriter.cs" />
     <Compile Include="Extensions\INamedComponent.cs" />
     <Compile Include="Util\Security.cs" />
-    <Compile Include="Util\AggregateProgressTracker.cs" />
-    <Compile Include="Util\IMutableProgressTracker.cs" />
-    <Compile Include="Util\IProgressTracker.cs" />
-    <Compile Include="Util\ITimeEstimate.cs" />
+    <Compile Include="Progress\AggregateProgressTracker.cs" />
+    <Compile Include="Progress\IMutableProgressTracker.cs" />
+    <Compile Include="Progress\IProgressTracker.cs" />
+    <Compile Include="Progress\ITimeEstimate.cs" />
     <Compile Include="Util\LinqHelpers.cs" />
     <Compile Include="Commands\TextUploader.cs" />
     <Compile Include="Commands\UrlShortener.cs" />
-    <Compile Include="Util\NotifyingProgressTracker.cs" />
-    <Compile Include="Util\ProgressTrackerHelpers.cs" />
+    <Compile Include="Progress\NotifyingProgressTracker.cs" />
+    <Compile Include="Progress\ProgressTrackerExtensions.cs" />
     <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypedData.cs" />
-    <Compile Include="Util\ReadOnlyProgressTracker.cs" />
+    <Compile Include="Progress\ReadOnlyProgressTracker.cs" />
     <Compile Include="Util\SerializationExtensions.cs" />
     <Compile Include="Util\StreamExtensions.cs" />
   </ItemGroup>

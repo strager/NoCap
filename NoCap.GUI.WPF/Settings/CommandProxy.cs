@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using NoCap.Library;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Settings {
