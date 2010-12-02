@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Text;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
     [Serializable]
     public abstract class HttpUploader : ICommand {
+        private const string UserAgent = "NoCap HttpUploader";
+
         public abstract string Name { get; }
 
         public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
         public TypedData Upload(TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
             var requestProgress = new MutableProgressTracker();
@@ -30,22 +31,40 @@ namespace NoCap.Library.Commands {
 
             aggregateProgress.BindTo(progress);
 
-            var request = BuildRequest(originalData, requestMethod, parameters, requestProgress, cancelToken);
-            var response = (HttpWebResponse) request.GetResponse();
+            try {
+                var request = BuildRequest(originalData, RequestMethod, parameters, requestProgress, cancelToken);
 
-            var ret = GetResponseData(response, originalData);
-            
-            responseProgress.Progress = 1;  // TODO HTTP download Progress
+                bool canCancel = true;
 
-            return ret;
+                cancelToken.Register(() => {
+                    if (canCancel) {
+                        request.Abort();
+                    }
+                });
+                
+                var response = (HttpWebResponse) request.GetResponse();
+                var ret = GetResponseData(response, originalData);
+
+                responseProgress.Progress = 1; // TODO HTTP download Progress
+
+                canCancel = false;
+
+                return ret;
+            } catch (WebException e) {
+                if (e.Status == WebExceptionStatus.RequestCanceled) {
+                    throw new CommandCanceledException(this, null, e, cancelToken);
+                }
+
+                throw new CommandCanceledException(this, e.Message, e, cancelToken);
+            }
         }
 
-        private HttpWebRequest BuildRequest(TypedData originalData, string requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
+        private HttpWebRequest BuildRequest(TypedData originalData, HttpRequestMethod requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (requestMethod) {
-                case @"GET":
+                case HttpRequestMethod.Get:
                     return BuildGetRequest(parameters, progress);
 
-                case @"POST":
+                case HttpRequestMethod.Post:
                     return BuildPostRequest(parameters, originalData, progress, cancelToken);
 
                 default:
@@ -58,8 +77,7 @@ namespace NoCap.Library.Commands {
                 Query = HttpUtility.ToQueryString(parameters)
             };
 
-            var request = (HttpWebRequest) WebRequest.Create(uriBuilder.Uri);
-            request.Method = @"GET";
+            var request = GetRequest(uriBuilder.Uri, @"GET");
             PreprocessRequest(request);
 
             progress.Progress = 1;
@@ -68,6 +86,9 @@ namespace NoCap.Library.Commands {
         }
 
         private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            var request = GetRequest(Uri, @"POST");
+            PreprocessRequest(request);
+
             var builder = new MultipartBuilder();
 
             if (parameters != null) {
@@ -76,30 +97,40 @@ namespace NoCap.Library.Commands {
 
             PreprocessRequestData(builder, originalData);
 
-            var boundary = builder.Boundary;
-
-            var request = (HttpWebRequest) WebRequest.Create(Uri);
-            request.Method = @"POST";
-            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-            PreprocessRequest(request);
-
-            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
-
-            var requestStream = request.GetRequestStream();
-            var progressStream = new ProgressTrackingStreamWrapper(requestStream, request.ContentLength);
-            progressStream.BindTo(progress);
-
-            Utility.WriteBoundary(progressStream, boundary);
-            builder.Write(progressStream, cancelToken);
-
-            System.Diagnostics.Debug.Assert(progress.Progress == 1);
+            WritePostData(request, builder, progress, cancelToken);
 
             return request;
         }
 
-        protected abstract Uri Uri {
-            get;
+        private static HttpWebRequest GetRequest(Uri uri, string method) {
+            var request = (HttpWebRequest) WebRequest.Create(uri);
+            request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.BypassCache);
+            request.Method = method;
+            request.KeepAlive = false;
+            request.AllowWriteStreamBuffering = false;
+            request.UserAgent = UserAgent;
+
+            return request;
         }
+
+        private static void WritePostData(HttpWebRequest request, MultipartBuilder builder, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            var boundary = builder.Boundary;
+
+            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
+            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
+
+            using (var requestStream = request.GetRequestStream())
+            using (var progressStream = new ProgressTrackingStreamWrapper(requestStream, request.ContentLength)) {
+                progressStream.BindTo(progress);
+
+                Utility.WriteBoundary(progressStream, boundary);
+                builder.Write(progressStream, cancelToken);
+            }
+
+            System.Diagnostics.Debug.Assert(progress.Progress == 1);
+        }
+
+        protected abstract Uri Uri { get; }
 
         protected abstract IDictionary<string, string> GetParameters(TypedData data);
 
@@ -136,9 +167,9 @@ namespace NoCap.Library.Commands {
             // Do nothing
         }
 
-        protected virtual string RequestMethod {
+        protected virtual HttpRequestMethod RequestMethod {
             get {
-                return @"POST";
+                return HttpRequestMethod.Post;
             }
         }
 
@@ -157,5 +188,10 @@ namespace NoCap.Library.Commands {
         public virtual bool IsValid() {
             return true;
         }
+    }
+
+    public enum HttpRequestMethod {
+        Get,
+        Post,
     }
 }

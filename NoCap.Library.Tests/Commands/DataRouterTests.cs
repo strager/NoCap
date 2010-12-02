@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
 using NoCap.Library.Progress;
 using NoCap.Library.Tests.TestHelpers;
-using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Commands {

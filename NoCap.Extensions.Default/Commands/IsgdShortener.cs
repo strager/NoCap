@@ -18,16 +18,15 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["longurl"] = data.Data.ToString();
+            IDictionary<string, string> parameters = new Dictionary<string, string> {
+                { "longurl", data.Data.ToString() }
+            };
 
             return parameters;
         }
 
-        protected override string RequestMethod {
-            get {
-                return @"GET";
-            }
+        protected override HttpRequestMethod RequestMethod {
+            get { return HttpRequestMethod.Get; }
         }
 
         public override ICommandFactory GetFactory() {
