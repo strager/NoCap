@@ -1,56 +1,48 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
-    [Serializable]
+    [DataContract(Name = "JpegBitmapCodec")]
     public sealed class JpegBitmapCodec : BitmapCodec {
         private static readonly ImageFormat EncoderFormat = ImageFormat.Jpeg;
 
-        private string name;
         private int quality = 80;
 
-        public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
-        }
-
+        [IgnoreDataMember]
         public override string Extension {
             get {
                 return "jpg";
             }
         }
 
+        [IgnoreDataMember]
         public override string Description {
             get {
                 return "JPEG";
             }
         }
 
+        [IgnoreDataMember]
         public override bool CanEncode {
             get {
                 return true;
             }
         }
 
+        [IgnoreDataMember]
         public override bool CanDecode {
             get {
                 return false;
             }
         }
 
+        [DataMember(Name = "Quality")]
         public int Quality {
             get {
                 return this.quality;
@@ -62,8 +54,6 @@ namespace NoCap.Library.Imaging {
                 }
 
                 this.quality = value;
-
-                Notify("Quality");
             }
         }
 
@@ -71,7 +61,7 @@ namespace NoCap.Library.Imaging {
             return new JpegBitmapCodecFactory();
         }
 
-        protected override Stream Encode(Bitmap image, IMutableProgressTracker progress) {
+        protected override Stream Encode(Bitmap image, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var stream = new MemoryStream();
             var encoder = ImageCodecInfo.GetImageEncoders().First((enc) => enc.FormatID.Equals(EncoderFormat.Guid));
 
@@ -85,23 +75,6 @@ namespace NoCap.Library.Imaging {
             progress.Progress = 1;
 
             return stream;
-        }
-    }
-    
-    [Export(typeof(ICommandFactory))]
-    public class JpegBitmapCodecFactory : BitmapCodecFactory {
-        public override string Name {
-            get {
-                return "JPEG codec";
-            }
-        }
-
-        public override BitmapCodec CreateCommand() {
-            return new JpegBitmapCodec();
-        }
-
-        public override ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return new JpegBitmapCodecEditor();
         }
     }
 }

@@ -106,7 +106,7 @@ namespace NoCap.Library {
         public static TypedData FromUri(Uri uri, string name) {
             return new TypedData(TypedDataType.Uri, uri, name);
         }
-        
+
         /// <summary>
         /// Creates a new instance of the <see cref="TypedData"/>
         /// class representing the given image.

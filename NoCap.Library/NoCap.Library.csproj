@@ -47,6 +47,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -65,7 +66,10 @@
     <Compile Include="Extensions\IFeatureRegistry.cs" />
     <Compile Include="Extensions\IPlugin.cs" />
     <Compile Include="Extensions\IPluginContext.cs" />
+    <Compile Include="Imaging\BitmapCodecFactory.cs" />
     <Compile Include="Imaging\ImageWriterFactory.cs" />
+    <Compile Include="Imaging\JpegBitmapCodecFactory.cs" />
+    <Compile Include="Imaging\PngBitmapCodecFactory.cs" />
     <Compile Include="NoCapCommands.cs" />
     <Compile Include="PreferredCommandFactoryAttribute.cs" />
     <Compile Include="Tasks\CommandRunner.cs" />

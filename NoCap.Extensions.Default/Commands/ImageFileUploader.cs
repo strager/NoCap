@@ -54,7 +54,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public ImageFileUploader() {
-            this.imageWriter = new ImageWriter(new PngBitmapCodec());
+            this.imageWriter = new ImageWriter();
         }
 
         private ICommand GetCommand() {

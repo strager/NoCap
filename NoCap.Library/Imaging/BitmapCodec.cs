@@ -1,40 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
-    [Serializable]
-    public abstract class BitmapCodec : ICommand, INotifyPropertyChanged {
-        public abstract string Name { get; set; }
+    [DataContract(Name = "BitmapCodec")]
+    public abstract class BitmapCodec : ICommand {
+        [IgnoreDataMember]
+        public virtual string Name {
+            get {
+                return string.Format("{0} codec", Description);
+            }
+        }
+
+        [IgnoreDataMember]
         public abstract string Extension { get; }
+
+        [IgnoreDataMember]
         public abstract string Description { get; }
 
+        [IgnoreDataMember]
         public abstract bool CanEncode { get; }
+
+        [IgnoreDataMember]
         public abstract bool CanDecode { get; }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Image:
-                    return TypedData.FromStream(Encode((Bitmap) data.Data, progress), data.Name);
+                    return TypedData.FromStream(Encode((Bitmap) data.Data, progress, cancelToken), data.Name);
 
                 case TypedDataType.Stream:
-                    return TypedData.FromImage(Decode((Stream) data.Data, progress), data.Name);
+                    return TypedData.FromImage(Decode((Stream) data.Data, progress, cancelToken), data.Name);
 
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        protected virtual Stream Encode(Bitmap image, IMutableProgressTracker progress) {
+        protected virtual Stream Encode(Bitmap image, IMutableProgressTracker progress, CancellationToken cancelToken) {
             throw new NotSupportedException();
         }
 
-        protected virtual Bitmap Decode(Stream stream, IMutableProgressTracker progress) {
+        protected virtual Bitmap Decode(Stream stream, IMutableProgressTracker progress, CancellationToken cancelToken) {
             throw new NotSupportedException();
         }
 
@@ -44,6 +54,7 @@ namespace NoCap.Library.Imaging {
 
         public abstract BitmapCodecFactory GetFactory();
 
+        [IgnoreDataMember]
         public virtual ITimeEstimate ProcessTimeEstimate {
             get {
                 return TimeEstimates.ShortOperation;
@@ -52,46 +63,6 @@ namespace NoCap.Library.Imaging {
 
         public virtual bool IsValid() {
             return true;
-        }
-
-        [NonSerialized]
-        private PropertyChangedEventHandler propertyChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged {
-            add    { propertyChanged += value; }
-            remove { propertyChanged -= value; }
-        }
-
-        protected void Notify(string propertyName) {
-            var handler = this.propertyChanged;
-
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-
-    public abstract class BitmapCodecFactory : ICommandFactory {
-        public abstract string Name {
-            get;
-        }
-
-        ICommand ICommandFactory.CreateCommand() {
-            return CreateCommand();
-        }
-
-        public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
-            // Do nothing.
-        }
-
-        public abstract BitmapCodec CreateCommand();
-
-        public abstract ICommandEditor GetCommandEditor(ICommandProvider commandProvider);
-
-        public virtual CommandFeatures CommandFeatures {
-            get {
-                return 0;
-            }
         }
     }
 }

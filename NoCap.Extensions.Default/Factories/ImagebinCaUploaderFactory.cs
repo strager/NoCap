@@ -13,7 +13,7 @@ namespace NoCap.Extensions.Default.Factories {
         }
 
         public ICommand CreateCommand() {
-            return new ImagebinCaUploader(new ImageWriter(new PngBitmapCodec()));
+            return new ImagebinCaUploader(new ImageWriter { Codec = new PngBitmapCodec() });
         }
 
         public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
