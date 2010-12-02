@@ -53,6 +53,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandExtensions.cs" />
+    <Compile Include="CommandFactoryExtensions.cs" />
     <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
     <Compile Include="Controls\FramedCommandEditor.xaml.cs">
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>

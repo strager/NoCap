@@ -1,31 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace NoCap.GUI.WPF {
-    class Win32 {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool GetFileInformationByHandle(IntPtr hFile, out BY_HANDLE_FILE_INFORMATION lpFileInformation);
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    struct BY_HANDLE_FILE_INFORMATION {
-        [FieldOffset(0)]  public uint FileAttributes;
-        [FieldOffset(4)]  public FILETIME CreationTime;
-        [FieldOffset(12)] public FILETIME LastAccessTime;
-        [FieldOffset(20)] public FILETIME LastWriteTime;
-        [FieldOffset(28)] public uint VolumeSerialNumber;
-        [FieldOffset(32)] public uint FileSizeHigh;
-        [FieldOffset(36)] public uint FileSizeLow;
-        [FieldOffset(40)] public uint NumberOfLinks;
-        [FieldOffset(44)] public uint FileIndexHigh;
-        [FieldOffset(48)] public uint FileIndexLow;
-    }
-
+    // TODO Rewrite
     class ExtensionManager {
         private readonly CompositionContainer compositionContainer;
         private readonly FileSystemWatcher fileSystemWatcher;

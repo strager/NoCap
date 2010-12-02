@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using NoCap.Library.Extensions;
 using NoCap.Library.Util;
 
 namespace NoCap.Library {
     /// <summary>
-    /// Represents a possible processor of some data.
+    /// Represents a transformer of some data.
     /// </summary>
     /// <remarks>
-    /// An <see cref="ICommand"/> may also return some data, causing it to
-    /// act like a data filter.  For example, after writing the data to a file,
-    /// the <see cref="ICommand"/> could return a
-    /// <see cref="TypedData"/> of type <see cref="TypedDataType.Uri"/>
-    /// referring to the name of the file which was written.
+    /// An <see cref="ICommand"/> may return some data, causing it to act
+    /// like a data filter.  For example, after writing the data to a file,
+    /// the <see cref="ICommand"/> could return a <see cref="TypedData"/>
+    /// of type <see cref="TypedDataType.Uri"/> referring to the name of
+    /// the file which was written.
     /// </remarks>
     public interface ICommand : INamedComponent {
         /// <summary>
@@ -34,7 +33,7 @@ namespace NoCap.Library {
         /// </remarks>
         /// <param name="data">The data to process, if any.</param>
         /// <param name="progress">The progress tracker to be updated while the data is processed.</param>
-        /// <param name="cancelToken"></param>
+        /// <param name="cancelToken">The token used to detect cancellations of the operation.</param>
         /// <returns>
         /// Typed data representing the result of the operation, or
         /// null if no data could be returned.
@@ -42,32 +41,32 @@ namespace NoCap.Library {
         TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
         /// <summary>
-        /// Gets a factory which can accept this instance as a parameter to the
-        /// <see cref="ICommandFactory.GetCommandEditor"/> method.
+        /// Gets a command factory which corresponds to this instance.
         /// </summary>
-        /// <remarks>
-        /// The only method which is called on the value returned by this method
-        /// is <see cref="ICommandFactory.GetCommandEditor"/>.
-        /// </remarks>
-        /// <returns>A factory instance which can provide an editor to this instance.</returns>
+        /// <returns>A factory instance which can provide other instances of this type.</returns>
         ICommandFactory GetFactory();
 
+        /// <summary>
+        /// Gets the estimated time a call to <see cref="Process"/> will take.
+        /// </summary>
+        /// <value>The time estimate of <see cref="Process"/>.</value>
         ITimeEstimate ProcessTimeEstimate { get; }
 
+        /// <summary>
+        /// Determines whether this instance is valid and <see cref="Process"/>
+        /// can be safely called.
+        /// </summary>
+        /// <remarks>
+        /// An instance is considered invalid if calling <see cref="Process"/>
+        /// would always result in an error, typically due to invalid configuration.
+        /// An instance is not considered invalid if the environment disallows
+        /// the operation from being performed, e.g. by the network's firewall
+        /// blocking access to an external server used during the call to
+        /// <see cref="Process"/>.
+        /// </remarks>
+        /// <returns>
+        /// <c>true</c> if this instance is valid; otherwise, <c>false</c>.
+        /// </returns>
         bool IsValid();
-    }
-
-    public static class CommandExtensions {
-        public static bool HasFeatures(this ICommand command, CommandFeatures features) {
-            if (command == null) {
-                throw new ArgumentNullException("command");
-            }
-
-            return command.GetFactory().HasFeatures(features);
-        }
-
-        public static bool IsValidAndNotNull(this ICommand command) {
-            return command != null && command.IsValid();
-        }
     }
 }
