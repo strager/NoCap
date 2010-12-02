@@ -56,36 +56,43 @@ namespace NoCap.Library.Commands {
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            // ToList is needed for some strange reason
-            var progressTrackers = this.commands.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
-            var aggregateProgress = new AggregateProgressTracker(progressTrackers);
+            // ToList is needed to prevent new MPT's from being
+            // created for each loop of commandProgressTrackers
+            var commandProgressTrackers = this.commands.Select((command) => new {
+                ProgressTracker = new MutableProgressTracker(),
+                Command = command
+            }).ToList();
+
+            var aggregateProgress = new AggregateProgressTracker(commandProgressTrackers.Select(
+                (cpt) => new AggregateProgressTrackerInformation(
+                    cpt.ProgressTracker,
+                    cpt.Command.ProcessTimeEstimate.ProgressWeight
+                )
+            ));
+
             aggregateProgress.BindTo(progress);
 
             bool shouldDisposeData = false;
 
-            using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
-                foreach (var destination in this.commands) {
+            foreach (var cpt in commandProgressTrackers) {
+                cancelToken.ThrowIfCancellationRequested();
+
+                TypedData newData;
+
+                try {
                     cancelToken.ThrowIfCancellationRequested();
 
-                    TypedData newData;
+                    newData = cpt.Command.Process(data, cpt.ProgressTracker, cancelToken);
 
-                    try {
-                        trackerEnumerator.MoveNext();
-
-                        cancelToken.ThrowIfCancellationRequested();
-
-                        newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
-
-                        cancelToken.ThrowIfCancellationRequested();
-                    } finally {
-                        if (shouldDisposeData && data != null) {
-                            data.Dispose();
-                        }
+                    cancelToken.ThrowIfCancellationRequested();
+                } finally {
+                    if (shouldDisposeData && data != null) {
+                        data.Dispose();
                     }
-
-                    data = newData;
-                    shouldDisposeData = true;
                 }
+
+                data = newData;
+                shouldDisposeData = true;
             }
 
             return data;

@@ -1,5 +1,4 @@
 ﻿using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Tests.TestHelpers {
     class TestTimeEstimate : ITimeEstimate {
@@ -18,7 +17,7 @@ namespace NoCap.Library.Tests.TestHelpers {
 
         public TestTimeEstimate(double progressWeight, bool isIndeterminate = false) {
             ProgressWeight = progressWeight;
-            this.IsIndeterminate = isIndeterminate;
+            IsIndeterminate = isIndeterminate;
         }
     }
 }

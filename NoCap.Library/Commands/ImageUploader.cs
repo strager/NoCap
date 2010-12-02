@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using NoCap.Library.Imaging;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
     [Serializable]
@@ -20,9 +18,14 @@ namespace NoCap.Library.Commands {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Image:
-                    var rawImageProgress = new NotifyingProgressTracker(ImageWriter.ProcessTimeEstimate);
-                    var uploadProgress = new NotifyingProgressTracker(ProcessTimeEstimate);
-                    var aggregateProgress = new AggregateProgressTracker(rawImageProgress, uploadProgress);
+                    var rawImageProgress = new MutableProgressTracker();
+                    var uploadProgress = new MutableProgressTracker();
+
+                    var aggregateProgress = new AggregateProgressTracker(new [] {
+                        new AggregateProgressTrackerInformation(rawImageProgress, ImageWriter.ProcessTimeEstimate.ProgressWeight),
+                        new AggregateProgressTrackerInformation(uploadProgress, ProcessTimeEstimate.ProgressWeight), 
+                    });
+
                     aggregateProgress.BindTo(progress);
 
                     using (var rawImageData = ImageWriter.Process(data, rawImageProgress, cancelToken)) {

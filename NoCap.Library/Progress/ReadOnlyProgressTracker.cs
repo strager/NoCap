@@ -23,12 +23,6 @@ namespace NoCap.Library.Progress {
             }
         }
 
-        public ITimeEstimate EstimatedTimeRemaining {
-            get {
-                return this.source.EstimatedTimeRemaining;
-            }
-        }
-
         public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
 
         private void OnProgressUpdated(ProgressUpdatedEventArgs e) {

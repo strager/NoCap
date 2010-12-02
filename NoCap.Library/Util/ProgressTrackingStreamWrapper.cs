@@ -42,12 +42,6 @@ namespace NoCap.Library.Util {
             }
         }
 
-        public ITimeEstimate EstimatedTimeRemaining {
-            get {
-                throw new NotImplementedException();
-            }
-        }
-
         public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
 
         public void OnProgressUpdated(ProgressUpdatedEventArgs e) {

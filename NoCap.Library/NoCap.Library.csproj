@@ -112,7 +112,7 @@
     <Compile Include="Util\LinqHelpers.cs" />
     <Compile Include="Commands\TextUploader.cs" />
     <Compile Include="Commands\UrlShortener.cs" />
-    <Compile Include="Progress\NotifyingProgressTracker.cs" />
+    <Compile Include="Progress\MutableProgressTracker.cs" />
     <Compile Include="Progress\ProgressTrackerExtensions.cs" />
     <Compile Include="Util\ProgressTrackingStreamWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

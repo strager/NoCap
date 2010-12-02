@@ -20,10 +20,14 @@ namespace NoCap.Library.Commands {
             string requestMethod = RequestMethod;
             var parameters = GetParameters(originalData);
 
-            var requestProgress = new NotifyingProgressTracker(TimeEstimates.LongOperation);
-            var responseProgress = new NotifyingProgressTracker(TimeEstimates.ShortOperation);
+            var requestProgress = new MutableProgressTracker();
+            var responseProgress = new MutableProgressTracker();
 
-            var aggregateProgress = new AggregateProgressTracker(requestProgress, responseProgress);
+            var aggregateProgress = new AggregateProgressTracker(new[] {
+                new AggregateProgressTrackerInformation(requestProgress,  TimeEstimates.LongOperation.ProgressWeight), 
+                new AggregateProgressTrackerInformation(responseProgress, TimeEstimates.ShortOperation.ProgressWeight), 
+            });
+
             aggregateProgress.BindTo(progress);
 
             var request = BuildRequest(originalData, requestMethod, parameters, requestProgress, cancelToken);

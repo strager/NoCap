@@ -18,13 +18,6 @@ namespace NoCap.Library.Progress {
         /// <value>The progress of the operation.</value>
         double Progress { get; }
 
-        // FIXME Why is this here?
-        /// <summary>
-        /// Gets the estimated time remaining for the operation.
-        /// </summary>
-        /// <value>The estimated time remaining.</value>
-        ITimeEstimate EstimatedTimeRemaining { get; }
-
         event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
     }
 

@@ -52,7 +52,7 @@ namespace NoCap.Library.Tasks {
             this.cancellationTokenSource = cancellationTokenSource;
             this.ownsCancellationTokenSource = ownsCancellationTokenSource;
 
-            this.progressTracker = new NotifyingProgressTracker();
+            this.progressTracker = new MutableProgressTracker();
             this.publicProgressTracker = new ReadOnlyProgressTracker(this.progressTracker);
         }
 

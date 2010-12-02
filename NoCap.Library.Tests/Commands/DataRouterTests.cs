@@ -69,8 +69,8 @@ namespace NoCap.Library.Tests.Commands {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
 
-        private static NotifyingProgressTracker GetMutableProgressTracker() {
-            return new NotifyingProgressTracker();
+        private static MutableProgressTracker GetMutableProgressTracker() {
+            return new MutableProgressTracker();
         }
 
         private static TypedData GetTextData() {

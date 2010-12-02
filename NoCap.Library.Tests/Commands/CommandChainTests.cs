@@ -1,10 +1,8 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
 using NoCap.Library.Progress;
 using NoCap.Library.Tests.TestHelpers;
-using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Commands {
@@ -70,8 +68,8 @@ namespace NoCap.Library.Tests.Commands {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
 
-        private static NotifyingProgressTracker GetMutableProgressTracker() {
-            return new NotifyingProgressTracker();
+        private static MutableProgressTracker GetMutableProgressTracker() {
+            return new MutableProgressTracker();
         }
 
         private static TypedData GetTextData() {
