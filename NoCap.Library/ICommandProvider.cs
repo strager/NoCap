@@ -9,6 +9,9 @@ namespace NoCap.Library {
         /// <summary>
         /// Gets the command factories published by all loaded extensions.
         /// </summary>
+        /// <remarks>
+        /// This collection may change as extensions are loaded and unloaded.
+        /// </remarks>
         /// <value>The command factories.</value>
         IBindableCollection<ICommandFactory> CommandFactories { get; }
 
@@ -16,6 +19,9 @@ namespace NoCap.Library {
         /// <summary>
         /// Gets the stand alone commands.
         /// </summary>
+        /// <remarks>
+        /// This collection may change as extensions are loaded and unloaded.
+        /// </remarks>
         /// <value>The stand alone commands.</value>
         IBindableCollection<ICommand> StandAloneCommands { get; }
 
