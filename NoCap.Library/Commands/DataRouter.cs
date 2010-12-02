@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
     sealed class DataRouterTimeEstimate : ITimeEstimate {
@@ -30,17 +30,19 @@ namespace NoCap.Library.Commands {
         }
     }
 
-    [Serializable]
+    [DataContract(Name = "DataRouter")]
     public sealed class DataRouter : ICommand {
         private readonly ITimeEstimate timeEstimate;
         private readonly IDictionary<TypedDataType, ICommand> routes;
 
+        [DataMember(Name = "Routes")]
         internal IDictionary<TypedDataType, ICommand> Routes {
             get {
                 return this.routes;
             }
         }
 
+        [IgnoreDataMember]
         public string Name {
             get { return "Data router"; }
         }
@@ -54,7 +56,7 @@ namespace NoCap.Library.Commands {
             ICommand command;
 
             if (!Routes.TryGetValue(data.DataType, out command)) {
-                return null;
+                throw new InvalidOperationException("Data type not routed");
             }
 
             return command.Process(data, progress, cancelToken);
@@ -64,6 +66,7 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
+        [IgnoreDataMember]
         public ITimeEstimate ProcessTimeEstimate {
             get {
                 return this.timeEstimate;
@@ -74,7 +77,7 @@ namespace NoCap.Library.Commands {
             return this.routes.Values.All((command) => command.IsValidAndNotNull());
         }
 
-        public void Connect(TypedDataType key, ICommand value) {
+        public void Add(TypedDataType key, ICommand value) {
             if (value == null) {
                 throw new ArgumentNullException("value");
             }

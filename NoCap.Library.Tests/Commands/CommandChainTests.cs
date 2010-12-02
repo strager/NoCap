@@ -20,8 +20,7 @@ namespace NoCap.Library.Tests.Commands {
             commandMock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>(), CancellationToken.None)).Returns(expectedOutput);
             commandMock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
-            var chain = new CommandChain();
-            chain.Add(commandMock.Object);
+            var chain = new CommandChain(commandMock.Object);
 
             var actualData = chain.Process(inputData, inputTracker, CancellationToken.None);
             Assert.AreSame(expectedOutput, actualData);
@@ -42,9 +41,7 @@ namespace NoCap.Library.Tests.Commands {
             command2Mock.Setup((command) => command.Process(inputData, It.IsAny<IMutableProgressTracker>(), CancellationToken.None)).Returns(expectedOutput);
             command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(TimeEstimates.Instantaneous);
 
-            var chain = new CommandChain();
-            chain.Add(command1Mock.Object);
-            chain.Add(command2Mock.Object);
+            var chain = new CommandChain(command1Mock.Object, command2Mock.Object);
 
             var actualOutput = chain.Process(inputData, inputTracker, CancellationToken.None);
             Assert.AreSame(expectedOutput, actualOutput);
@@ -58,9 +55,7 @@ namespace NoCap.Library.Tests.Commands {
             var command2Mock = GetCommandMock();
             command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(20));
 
-            var chain = new CommandChain();
-            chain.Add(command1Mock.Object);
-            chain.Add(command2Mock.Object);
+            var chain = new CommandChain(command1Mock.Object, command2Mock.Object);
 
             Assert.AreEqual(29, chain.ProcessTimeEstimate.ProgressWeight);
         }
@@ -95,9 +90,7 @@ namespace NoCap.Library.Tests.Commands {
             command2Mock.Setup((command) => command.Process(null, It.IsAny<IMutableProgressTracker>(), CancellationToken.None)).Returns((TypedData) null);
             command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(10));
 
-            var chain = new CommandChain();
-            chain.Add(command1Mock.Object);
-            chain.Add(command2Mock.Object);
+            var chain = new CommandChain(command1Mock.Object, command2Mock.Object);
 
             chain.Process(null, inputTracker, CancellationToken.None);
         }

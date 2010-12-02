@@ -85,17 +85,17 @@ namespace NoCap.Extensions.Default.Commands {
         public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
             var router = new DataRouter();
 
-            router.Connect(TypedDataType.Image, new CommandChain(
+            router.Add(TypedDataType.Image, new CommandChain(
                 ImageUploader,
                 this.clipboard
             ));
 
-            router.Connect(TypedDataType.Text, new CommandChain(
+            router.Add(TypedDataType.Text, new CommandChain(
                 TextUploader,
                 this.clipboard
             ));
 
-            router.Connect(TypedDataType.Uri, new CommandChain(
+            router.Add(TypedDataType.Uri, new CommandChain(
                 UrlShortener,
                 this.clipboard
             ));

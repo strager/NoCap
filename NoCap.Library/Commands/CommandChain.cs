@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
     sealed class CommandChainTimeEstimate : ITimeEstimate {
@@ -26,23 +26,21 @@ namespace NoCap.Library.Commands {
         }
     }
 
-    [Serializable]
+    [DataContract(Name = "CommandChain")]
     public sealed class CommandChain : ICommand {
         private readonly ITimeEstimate timeEstimate;
-        private readonly IList<ICommand> commands;
+        private readonly IEnumerable<ICommand> commands;
 
+        [IgnoreDataMember]
         public string Name {
             get { return "Destination chain"; }
         }
 
+        [DataMember(Name = "Commands")]
         internal IEnumerable<ICommand> Commands {
             get {
                 return this.commands;
             }
-        }
-
-        public CommandChain() :
-            this(Enumerable.Empty<ICommand>()) {
         }
 
         public CommandChain(params ICommand[] commands) :
@@ -50,7 +48,7 @@ namespace NoCap.Library.Commands {
         }
 
         public CommandChain(IEnumerable<ICommand> commands) {
-            this.commands = commands.ToList();
+            this.commands = commands.ToArray(); // Make a copy
 
             this.timeEstimate = new CommandChainTimeEstimate(this);
         }
@@ -102,6 +100,7 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
+        [IgnoreDataMember]
         public ITimeEstimate ProcessTimeEstimate {
             get {
                 return this.timeEstimate;
@@ -110,10 +109,6 @@ namespace NoCap.Library.Commands {
 
         public bool IsValid() {
             return this.commands.All((command) => command.IsValidAndNotNull());
-        }
-
-        public void Add(ICommand item) {
-            this.commands.Add(item);
         }
     }
 }
