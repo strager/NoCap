@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
 using NoCap.Library.Progress;
@@ -62,6 +63,43 @@ namespace NoCap.Library.Tests.Commands {
             chain.Add(command2Mock.Object);
 
             Assert.AreEqual(29, chain.ProcessTimeEstimate.ProgressWeight);
+        }
+
+        [Test]
+        public void ProgressUpdatePropogates() {
+            var inputTracker = GetMutableProgressTracker();
+
+            var command1Mock = GetCommandMock();
+            command1Mock.Setup((command) => command.Process(null, It.IsAny<IMutableProgressTracker>(), CancellationToken.None))
+                .Returns((TypedData) null)
+                .Callback((TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) => {
+                    bool updateCalled = false;
+
+                    EventHandler<ProgressUpdatedEventArgs> handler = (sender, e) => {
+                        Assert.AreEqual(0.25, e.Progress, 0.001);
+
+                        updateCalled = true;
+                    };
+
+                    inputTracker.ProgressUpdated += handler;
+
+                    progress.Progress = 0.5;
+
+                    inputTracker.ProgressUpdated -= handler;
+
+                    Assert.IsTrue(updateCalled);
+                });
+            command1Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(10));
+
+            var command2Mock = GetCommandMock();
+            command2Mock.Setup((command) => command.Process(null, It.IsAny<IMutableProgressTracker>(), CancellationToken.None)).Returns((TypedData) null);
+            command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(10));
+
+            var chain = new CommandChain();
+            chain.Add(command1Mock.Object);
+            chain.Add(command2Mock.Object);
+
+            chain.Process(null, inputTracker, CancellationToken.None);
         }
 
         private static Mock<ICommand> GetCommandMock() {
