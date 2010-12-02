@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using NoCap.Library;
 using NoCap.Library.Tasks;
@@ -22,7 +24,7 @@ namespace NoCap.Extensions.Default.Helpers {
             CommandBindings.Add(new CommandBinding(
                 NoCapCommands.Cancel,
                 (sender, e) => {
-                    var task = (ICommandTask) DataContext;
+                    var task = ((TaskbarPopupViewModel) DataContext).Task;
 
                     task.Cancel();
                 }
@@ -47,6 +49,42 @@ namespace NoCap.Extensions.Default.Helpers {
 
         private void QueueHide(object sender, ExecutedRoutedEventArgs e) {
             QueueHide();
+        }
+    }
+
+    class TaskbarPopupViewModel : INotifyPropertyChanged {
+        private readonly ICommandTask task;
+
+        public double Progress {
+            get {
+                return Task.ProgressTracker.Progress;
+            }
+        }
+
+        public ICommandTask Task {
+            get {
+                return this.task;
+            }
+        }
+
+        public TaskbarPopupViewModel(ICommandTask task) {
+            if (task == null) {
+                throw new ArgumentNullException("task");
+            }
+
+            this.task = task;
+
+            Task.ProgressUpdated += (sender, e) => Notify("Progress");
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void Notify(string propertyName) {
+            var handler = PropertyChanged;
+
+            if (handler != null) {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

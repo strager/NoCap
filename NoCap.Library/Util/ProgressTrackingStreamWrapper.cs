@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using NoCap.Library.Progress;
 
@@ -21,7 +20,7 @@ namespace NoCap.Library.Util {
 
                 this.expectedLength = value;
 
-                Notify("Progress");
+                OnProgressUpdated(new ProgressUpdatedEventArgs(Progress));
             }
         }
 
@@ -33,7 +32,7 @@ namespace NoCap.Library.Util {
             private set {
                 this.writtenLength = value;
 
-                Notify("Progress");
+                OnProgressUpdated(new ProgressUpdatedEventArgs(Progress));
             }
         }
 
@@ -49,13 +48,13 @@ namespace NoCap.Library.Util {
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
 
-        private void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        public void OnProgressUpdated(ProgressUpdatedEventArgs e) {
+            var handler = ProgressUpdated;
 
             if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, e);
             }
         }
 

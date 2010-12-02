@@ -1,6 +1,5 @@
 ﻿using System;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Util {
@@ -18,10 +17,8 @@ namespace NoCap.Library.Tests.Util {
             var npt = new NotifyingProgressTracker();
             int progressChangedCallCount = 0;
 
-            npt.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress") {
-                    progressChangedCallCount += 1;
-                }
+            npt.ProgressUpdated += (sender, e) => {
+                progressChangedCallCount += 1;
             };
 
             npt.Progress = 1;

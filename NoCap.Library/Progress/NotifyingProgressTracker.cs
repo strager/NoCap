@@ -1,8 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace NoCap.Library.Progress {
-    public class NotifyingProgressTracker : IMutableProgressTracker {
+    public sealed class NotifyingProgressTracker : IMutableProgressTracker {
         private double progress;
         private readonly ITimeEstimate estimatedTimeRemaining;
 
@@ -14,7 +13,7 @@ namespace NoCap.Library.Progress {
             set {
                 this.progress = value;
 
-                Notify("Progress");
+                OnProgressUpdated(new ProgressUpdatedEventArgs(value));
             }
         }
 
@@ -36,13 +35,13 @@ namespace NoCap.Library.Progress {
             this.estimatedTimeRemaining = timeEstimate;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
 
-        protected void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        private void OnProgressUpdated(ProgressUpdatedEventArgs e) {
+            var handler = ProgressUpdated;
 
             if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, e);
             }
         }
     }

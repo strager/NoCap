@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
 
 namespace NoCap.Library.Progress {
     /// <summary>
     /// Tracks the progress of an operation.
     /// </summary>
-    public interface IProgressTracker : INotifyPropertyChanged {
+    public interface IProgressTracker {
         /// <summary>
         /// Gets the progress of the operation, from 0 to 1 inclusive.
         /// </summary>
@@ -24,5 +24,21 @@ namespace NoCap.Library.Progress {
         /// </summary>
         /// <value>The estimated time remaining.</value>
         ITimeEstimate EstimatedTimeRemaining { get; }
+
+        event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+    }
+
+    public class ProgressUpdatedEventArgs : EventArgs {
+        private readonly double progress;
+
+        public ProgressUpdatedEventArgs(double progress) {
+            this.progress = progress;
+        }
+
+        public double Progress {
+            get {
+                return this.progress;
+            }
+        }
     }
 }

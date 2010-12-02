@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using System;
 
 namespace NoCap.Library.Progress {
     /// <summary>
@@ -7,8 +7,6 @@ namespace NoCap.Library.Progress {
     public sealed class ReadOnlyProgressTracker : IProgressTracker {
         private readonly IProgressTracker source;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlyProgressTracker"/> class.
         /// </summary>
@@ -16,11 +14,7 @@ namespace NoCap.Library.Progress {
         public ReadOnlyProgressTracker(IProgressTracker source) {
             this.source = source;
 
-            source.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress" || e.PropertyName == "EstimatedTimeRemaining") {
-                    Notify(e.PropertyName);
-                }
-            };
+            source.ProgressUpdated += (sender, e) => OnProgressUpdated(e);
         }
 
         public double Progress {
@@ -35,11 +29,13 @@ namespace NoCap.Library.Progress {
             }
         }
 
-        private void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+
+        private void OnProgressUpdated(ProgressUpdatedEventArgs e) {
+            var handler = ProgressUpdated;
 
             if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, e);
             }
         }
     }

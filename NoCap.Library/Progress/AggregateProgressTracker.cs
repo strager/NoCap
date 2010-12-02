@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 
 namespace NoCap.Library.Progress {
@@ -64,8 +63,6 @@ namespace NoCap.Library.Progress {
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateProgressTracker"/> class.
         /// </summary>
@@ -87,30 +84,18 @@ namespace NoCap.Library.Progress {
             this.progressTrackers = progressTrackers.ToArray();
 
             foreach (var progressTracker in progressTrackers) {
-                progressTracker.PropertyChanged += TrackedProgressChanged;
+                progressTracker.ProgressUpdated +=
+                    (sender, e) => OnProgressUpdated(new ProgressUpdatedEventArgs(Progress));
             }
         }
 
-        private void TrackedProgressChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case "Progress":
-                    Notify("Progress");
+        public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
 
-                    break;
-
-                case "EstimatedTimeRemaining":
-                    Notify("Progress");
-                    Notify("EstimatedTimeRemaining");
-
-                    break;
-            }
-        }
-
-        public void Notify(string propertyName) {
-            var handler = PropertyChanged;
+        private void OnProgressUpdated(ProgressUpdatedEventArgs e) {
+            var handler = ProgressUpdated;
 
             if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                handler(this, e);
             }
         }
     }

@@ -134,7 +134,7 @@ namespace NoCap.Extensions.Default.Plugins {
         private void ShowTaskPopup(ICommandTask task) {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
                 var taskPopup = new TaskPopup {
-                    DataContext = task
+                    DataContext = new TaskbarPopupViewModel(task)
                 };
 
                 task.Completed += (sender, e) => {

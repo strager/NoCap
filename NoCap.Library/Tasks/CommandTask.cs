@@ -85,11 +85,7 @@ namespace NoCap.Library.Tasks {
                 ? CancellationToken.None
                 : this.cancellationTokenSource.Token;
 
-            this.progressTracker.PropertyChanged += (sender, e) => {
-                if (e.PropertyName == "Progress") {
-                    OnProgressUpdated();
-                }
-            };
+            this.progressTracker.ProgressUpdated += (sender, e) => OnProgressUpdated();
 
             State = TaskState.Running;
             OnStarted();
