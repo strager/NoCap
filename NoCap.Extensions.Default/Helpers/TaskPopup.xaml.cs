@@ -74,7 +74,7 @@ namespace NoCap.Extensions.Default.Helpers {
 
             this.task = task;
 
-            Task.ProgressUpdated += (sender, e) => Notify("Progress");
+            Task.ProgressTracker.ProgressUpdated += (sender, e) => Notify("Progress");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

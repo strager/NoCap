@@ -207,7 +207,7 @@ namespace NoCap.Library.Tests.Tasks {
         }
 
         [Test]
-        public void CancellationFiresComplete() {
+        public void CancellationFiresCanceled() {
             var runner = new CommandRunner();
 
             var cancelException = new CommandCanceledException();
