@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using NoCap.Library.Progress;
@@ -10,7 +11,12 @@ using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
-    [Serializable]
+    public enum HttpRequestMethod {
+        Get,
+        Post,
+    }
+
+    [DataContract(Name = "HttpUploader")]
     public abstract class HttpUploader : ICommand {
         private const string UserAgent = "NoCap HttpUploader";
 
@@ -136,7 +142,7 @@ namespace NoCap.Library.Commands {
 
         protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
 
-        protected string GetResponseText(HttpWebResponse response) {
+        protected static string GetResponseText(HttpWebResponse response) {
             if (response == null) {
                 throw new ArgumentNullException("response");
             }
@@ -167,6 +173,7 @@ namespace NoCap.Library.Commands {
             // Do nothing
         }
 
+        [IgnoreDataMember]
         protected virtual HttpRequestMethod RequestMethod {
             get {
                 return HttpRequestMethod.Post;
@@ -179,6 +186,7 @@ namespace NoCap.Library.Commands {
 
         public abstract ICommandFactory GetFactory();
 
+        [IgnoreDataMember]
         public ITimeEstimate ProcessTimeEstimate {
             get {
                 return TimeEstimates.LongOperation;
@@ -188,10 +196,5 @@ namespace NoCap.Library.Commands {
         public virtual bool IsValid() {
             return true;
         }
-    }
-
-    public enum HttpRequestMethod {
-        Get,
-        Post,
     }
 }

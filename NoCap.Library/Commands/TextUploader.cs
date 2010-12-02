@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Commands {
-    [Serializable]
+    [DataContract(Name = "TextUploader")]
     public abstract class TextUploader : HttpUploader {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {

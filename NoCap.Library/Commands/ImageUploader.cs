@@ -1,14 +1,15 @@
-﻿using System;
+﻿using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Imaging;
 using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
-    [Serializable]
+    [DataContract(Name = "ImageUploader")]
     public abstract class ImageUploader : HttpUploader {
+        [DataMember(Name = "ImageWriter")]
         public ImageWriter ImageWriter {
             get;
-            set;
+            protected set;
         }
 
         protected ImageUploader(ImageWriter writer) {
