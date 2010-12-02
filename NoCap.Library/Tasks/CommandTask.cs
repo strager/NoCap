@@ -3,7 +3,7 @@ using System.Threading;
 using NoCap.Library.Progress;
 
 namespace NoCap.Library.Tasks {
-    sealed class CommandTask : ICommandTask {
+    public sealed class CommandTask : ICommandTask {
         private readonly object syncRoot = new object();
 
         private readonly ICommand command;
@@ -12,6 +12,7 @@ namespace NoCap.Library.Tasks {
         private readonly IProgressTracker publicProgressTracker;
 
         private Thread thread;
+        private ManualResetEventSlim waitHandleOwner = new ManualResetEventSlim(false);
 
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly bool ownsCancellationTokenSource;
@@ -88,6 +89,8 @@ namespace NoCap.Library.Tasks {
                 } catch (OperationCanceledException e) {
                     HandleCancellation(e);
 
+                    this.waitHandleOwner.Set();
+
                     return;
                 }
             } finally {
@@ -98,6 +101,8 @@ namespace NoCap.Library.Tasks {
 
             State = TaskState.Completed;
             OnCompleted();
+
+            this.waitHandleOwner.Set();
         }
 
         private void HandleCancellation(OperationCanceledException e) {
@@ -190,19 +195,9 @@ namespace NoCap.Library.Tasks {
             }
         }
 
-        public void WaitForCompletion() {
-            switch (State) {
-                case TaskState.Canceled:
-                case TaskState.Completed:
-                    return;
-
-                case TaskState.NotStarted:
-                    throw new InvalidOperationException("Task not started");
-
-                default:
-                    this.thread.Join();
-
-                    break;
+        public WaitHandle WaitHandle {
+            get {
+                return this.waitHandleOwner.WaitHandle;
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using NoCap.Library.Progress;
 
 namespace NoCap.Library.Tasks {
@@ -73,6 +74,12 @@ namespace NoCap.Library.Tasks {
         IProgressTracker ProgressTracker { get; }
 
         /// <summary>
+        /// Gets the wait handle for competion or cancellation of the task.
+        /// </summary>
+        /// <value>The wait handle.</value>
+        WaitHandle WaitHandle { get; }
+
+        /// <summary>
         /// Requests the task to be cancelled.
         /// </summary>
         /// <remarks>
@@ -82,12 +89,6 @@ namespace NoCap.Library.Tasks {
         /// cancellation actually happens.
         /// </remarks>
         void Cancel();
-
-        // TODO WaitHandle or something?
-        /// <summary>
-        /// Waits for the completion of the task.
-        /// </summary>
-        void WaitForCompletion();
     }
 
     public class CommandTaskCancellationEventArgs : CommandTaskEventArgs {
