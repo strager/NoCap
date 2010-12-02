@@ -31,7 +31,7 @@ namespace NoCap.Library.Commands {
     }
 
     [DataContract(Name = "DataRouter")]
-    public sealed class DataRouter : ICommand {
+    public sealed class DataRouter : ICommand, IExtensibleDataObject {
         private readonly ITimeEstimate timeEstimate;
         private readonly IDictionary<TypedDataType, ICommand> routes;
 
@@ -83,6 +83,11 @@ namespace NoCap.Library.Commands {
             }
 
             Routes.Add(key, value);
+        }
+
+        public ExtensionDataObject ExtensionData {
+            get;
+            set;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -27,7 +26,7 @@ namespace NoCap.Library.Commands {
     }
 
     [DataContract(Name = "CommandChain")]
-    public sealed class CommandChain : ICommand {
+    public sealed class CommandChain : ICommand, IExtensibleDataObject {
         private readonly ITimeEstimate timeEstimate;
         private readonly IEnumerable<ICommand> commands;
 
@@ -109,6 +108,11 @@ namespace NoCap.Library.Commands {
 
         public bool IsValid() {
             return this.commands.All((command) => command.IsValidAndNotNull());
+        }
+
+        public ExtensionDataObject ExtensionData {
+            get;
+            set;
         }
     }
 }
