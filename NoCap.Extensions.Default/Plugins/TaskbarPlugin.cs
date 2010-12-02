@@ -29,7 +29,7 @@ namespace NoCap.Extensions.Default.Plugins {
         private TaskbarIcon taskbarIcon;
 
         [NonSerialized]
-        private CommandRunner commandRunner;
+        private ICommandRunner commandRunner;
 
         public TaskbarPlugin() {
         }

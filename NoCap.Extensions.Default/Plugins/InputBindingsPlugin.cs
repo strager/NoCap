@@ -31,7 +31,7 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         [NonSerialized]
-        private CommandRunner commandRunner;
+        private ICommandRunner commandRunner;
 
         public ObservableCollection<CommandBinding> Bindings {
             get;

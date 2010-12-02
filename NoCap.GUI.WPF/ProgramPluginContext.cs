@@ -19,7 +19,7 @@ namespace NoCap.GUI.WPF {
         private readonly IFeatureRegistry featureRegistry;
         private readonly ICommandProvider commandProvider;
 
-        public CommandRunner CommandRunner {
+        public ICommandRunner CommandRunner {
             get {
                 return this.commandRunner;
             }

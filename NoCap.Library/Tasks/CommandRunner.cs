@@ -2,7 +2,7 @@
 using System.Threading;
 
 namespace NoCap.Library.Tasks {
-    public class CommandRunner {
+    public class CommandRunner : ICommandRunner {
         public ICommandTask Run(ICommand command) {
             if (command == null) {
                 throw new ArgumentNullException("command");
