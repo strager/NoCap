@@ -61,11 +61,16 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
+    <Compile Include="Commands\PostImageUploader.cs" />
     <Compile Include="Commands\Renamer.cs" />
     <Compile Include="Commands\SshUploader.cs" />
+    <Compile Include="Editors\PostImageUploaderEditor.xaml.cs">
+      <DependentUpon>PostImageUploaderEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Editors\SshUploaderEditor.xaml.cs">
       <DependentUpon>SshUploaderEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Factories\PostImageUploaderFactory.cs" />
     <Compile Include="Factories\SshUploaderFactory.cs" />
     <Compile Include="Editors\RenamerEditor.xaml.cs">
       <DependentUpon>RenamerEditor.xaml</DependentUpon>
@@ -204,6 +209,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Editors\FtpUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\PostImageUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
