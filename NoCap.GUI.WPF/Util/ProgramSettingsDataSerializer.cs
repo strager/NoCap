@@ -1,60 +1,26 @@
 ﻿using System;
 using System.Collections;
-using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using Bindable.Linq;
+using System.Linq;
+using NoCap.GUI.WPF.Settings;
 using NoCap.Library.Util;
 
-namespace NoCap.GUI.WPF.Settings {
-    [SettingsManageability(SettingsManageability.Roaming)]
-    class ConfigurationManager : ApplicationSettingsBase {
+namespace NoCap.GUI.WPF.Util {
+    class ProgramSettingsDataSerializer {
         private static readonly StreamingContext StreamingContext =
             new StreamingContext(StreamingContextStates.File | StreamingContextStates.Persistence);
 
-        [UserScopedSetting]
-        [DefaultSettingValue(null)]
-        [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-        public XmlDocument ProgramSettingsData {
-            get {
-                return (XmlDocument) this["ProgramSettingsData"];
-            }
-
-            set {
-                this["ProgramSettingsData"] = value;
-            }
-        }
-
-        private static XmlDocument WriteToDocument(string data) {
+        public static XmlDocument WriteToDocument(string data) {
             var document = new XmlDocument();
             document.LoadXml(data);
 
             return document;
-        }
-
-        private static string ReadFromDocument(XmlDocument document) {
-            return document.InnerXml;
-        }
-
-        public void SaveSettingsData(ProgramSettingsData value) {
-            ProgramSettingsData = WriteToDocument(SerializeSettings(value));
-
-            Save();
-        }
-
-        public ProgramSettingsData LoadSettingsData() {
-            var data = ProgramSettingsData;
-
-            if (data == null) {
-                return null;
-            }
-
-            return DeserializeSettings(ReadFromDocument(data));
         }
 
         private static XmlObjectSerializer GetSettingsSerializer() {
@@ -125,7 +91,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
     }
 
-    internal class MySurrogateSelector : ISurrogateSelector {
+    class MySurrogateSelector : ISurrogateSelector {
         private ISurrogateSelector nextSelector;
 
         public void ChainSelector(ISurrogateSelector selector) {
@@ -139,13 +105,11 @@ namespace NoCap.GUI.WPF.Settings {
                 return new BindableCollectionSurrogate();
             }
 
-            if (this.nextSelector == null) {
-                selector = null;
+            selector = null;
 
-                return null;
-            } else {
-                return this.nextSelector.GetSurrogate(type, context, out selector);
-            }
+            return this.nextSelector == null
+                ? null
+                : this.nextSelector.GetSurrogate(type, context, out selector);
         }
 
         public ISurrogateSelector GetNextSelector() {
@@ -153,7 +117,7 @@ namespace NoCap.GUI.WPF.Settings {
         }
     }
 
-    internal class BindableCollectionSurrogate : ISerializationSurrogate {
+    class BindableCollectionSurrogate : ISerializationSurrogate {
         public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) {
             var bindableCollection = (IBindableCollection) obj;
 

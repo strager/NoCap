@@ -15,16 +15,16 @@ namespace NoCap.GUI.WPF {
     public sealed partial class App : IDisposable {
         private SettingsWindow settingsWindow;
 
-        private ConfigurationManager configurationManager;
+        private ApplicationSettings applicationSettings;
         private ProgramSettings settings;
 
         private void Load() {
             var commandRunner = new CommandRunner();
             var extensionManager = new ExtensionManager(Directory.CreateDirectory(Directory.GetCurrentDirectory()));
 
-            this.configurationManager = new ConfigurationManager();
+            this.applicationSettings = new ApplicationSettings();
 
-            var settingsData = this.configurationManager.LoadSettingsData();
+            var settingsData = this.applicationSettings.LoadSettingsData();
 
             bool loadCommandDefaults = false;
 
@@ -63,7 +63,7 @@ namespace NoCap.GUI.WPF {
         private void SettingsClosed() {
             this.settingsWindow = null;
 
-            this.configurationManager.SaveSettingsData(this.settings.SettingsData);
+            this.applicationSettings.SaveSettingsData(this.settings.SettingsData);
         }
 
         private void Start() {
