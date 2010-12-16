@@ -80,7 +80,7 @@
     </Compile>
     <Compile Include="Settings\ApplicationSettings.cs" />
     <Compile Include="Util\ProgramSettingsDataSerializer.cs" />
-    <Compile Include="TypeComparer.cs" />
+    <Compile Include="Util\TypeComparer.cs" />
     <Page Include="DefaultCommandsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

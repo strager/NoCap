@@ -5,6 +5,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Runtime.Serialization;
 using NoCap.GUI.WPF.Settings;
+using NoCap.GUI.WPF.Util;
 using NoCap.Library.Extensions;
 
 namespace NoCap.GUI.WPF.Runtime {

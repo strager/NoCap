@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NoCap.GUI.WPF {
+namespace NoCap.GUI.WPF.Util {
     public class TypeComparer<T> : EqualityComparer<T>
         where T : class {
         public override bool Equals(T x, T y) {
