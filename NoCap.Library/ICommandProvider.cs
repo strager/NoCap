@@ -1,48 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using Bindable.Linq;
+﻿using Bindable.Linq;
 
 namespace NoCap.Library {
+    /// <summary>
+    /// Provides extensions with commands published by other extensions
+    /// and commands configured by the user.
+    /// </summary>
     public interface ICommandProvider {
+        /// <summary>
+        /// Gets the command factories published by all loaded extensions.
+        /// </summary>
+        /// <remarks>
+        /// This collection may change as extensions are loaded and unloaded.
+        /// </remarks>
+        /// <value>The command factories.</value>
         IBindableCollection<ICommandFactory> CommandFactories { get; }
+
+        // TODO All commands?
+        /// <summary>
+        /// Gets the stand alone commands.
+        /// </summary>
+        /// <remarks>
+        /// This collection may change as extensions are loaded and unloaded.
+        /// </remarks>
+        /// <value>The stand alone commands.</value>
         IBindableCollection<ICommand> StandAloneCommands { get; }
 
+        /// <summary>
+        /// Gets the user-specified default command for the given features.
+        /// </summary>
+        /// <param name="features">The features.</param>
+        /// <returns>The default command for the given features.</returns>
         ICommand GetDefaultCommand(CommandFeatures features);
+
+        /// <summary>
+        /// Determines whether the specified command is a user-specified default.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns>
+        /// <c>true</c> if the specified command is a default command; otherwise, <c>false</c>.
+        /// </returns>
         bool IsDefaultCommand(ICommand command);
-    }
-
-    public static class CommandProvider {
-        public static ICommand GetPreferredCommand(this ICommandProvider commandProvider, CommandFeatures commandFeatures) {
-            var factory = commandProvider.GetPreferredCommandFactory(commandFeatures);
-
-            if (factory == null) {
-                return null;
-            }
-
-            return factory.CreateCommand();
-        }
-
-        public static ICommandFactory GetPreferredCommandFactory(this ICommandProvider commandProvider, CommandFeatures features) {
-            return GetPreferredCommandFactory(commandProvider.CommandFactories, features);
-        }
-
-        public static ICommandFactory GetPreferredCommandFactory(IEnumerable<ICommandFactory> commandFactories, CommandFeatures features) {
-            // If you have Resharper, try auto-refactoring this into a Linq expression.
-            // I dare you.
-
-            foreach (var factory in commandFactories) {
-                var attributes = factory.GetType().GetCustomAttributes(typeof(PreferredCommandFactoryAttribute), false);
-
-                foreach (var attribute in attributes.OfType<PreferredCommandFactoryAttribute>()) {
-                    if (attribute.CommandFeatures.HasFlag(features)) {
-                        return factory;
-                    }
-                }
-            }
-
-            return commandFactories.WithFeatures(features).FirstOrDefault();
-        }
     }
 }

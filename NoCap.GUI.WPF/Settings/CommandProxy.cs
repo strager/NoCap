@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using NoCap.Library;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.GUI.WPF.Settings {
     [Serializable]

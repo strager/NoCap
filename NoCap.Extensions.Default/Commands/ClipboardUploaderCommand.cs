@@ -4,7 +4,7 @@ using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Extensions.Default.Commands {
     [Serializable]
@@ -15,18 +15,8 @@ namespace NoCap.Extensions.Default.Commands {
 
         private readonly Clipboard clipboard = new Clipboard();
 
-        private string name = "Clipboard uploader";
-
         public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
+            get { return "Clipboard uploader"; }
         }
 
         public ICommand TextUploader {
@@ -84,17 +74,17 @@ namespace NoCap.Extensions.Default.Commands {
         public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
             var router = new DataRouter();
 
-            router.Connect(TypedDataType.Image, new CommandChain(
+            router.Add(TypedDataType.Image, new CommandChain(
                 ImageUploader,
                 this.clipboard
             ));
 
-            router.Connect(TypedDataType.Text, new CommandChain(
+            router.Add(TypedDataType.Text, new CommandChain(
                 TextUploader,
                 this.clipboard
             ));
 
-            router.Connect(TypedDataType.Uri, new CommandChain(
+            router.Add(TypedDataType.Uri, new CommandChain(
                 UrlShortener,
                 this.clipboard
             ));

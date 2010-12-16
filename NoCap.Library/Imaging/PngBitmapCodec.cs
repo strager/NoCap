@@ -1,48 +1,40 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Threading;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
-    [Serializable]
+    [DataContract(Name = "PngBitmapCodec")]
     public sealed class PngBitmapCodec : BitmapCodec {
         private static readonly ImageFormat EncoderFormat = ImageFormat.Png;
 
-        private string name;
-
-        public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
-        }
-
+        [IgnoreDataMember]
         public override string Extension {
             get {
                 return "png";
             }
         }
 
+        [IgnoreDataMember]
         public override string Description {
             get {
                 return "PNG";
             }
         }
 
+        [IgnoreDataMember]
         public override bool CanEncode {
             get {
                 return true;
             }
         }
 
+        [IgnoreDataMember]
         public override bool CanDecode {
             get {
                 return false;
@@ -53,7 +45,7 @@ namespace NoCap.Library.Imaging {
             return new PngBitmapCodecFactory();
         }
 
-        protected override Stream Encode(Bitmap image, IMutableProgressTracker progress) {
+        protected override Stream Encode(Bitmap image, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var stream = new MemoryStream();
             var encoder = ImageCodecInfo.GetImageEncoders().First((enc) => enc.FormatID.Equals(EncoderFormat.Guid));
             image.Save(stream, encoder, null);
@@ -63,23 +55,6 @@ namespace NoCap.Library.Imaging {
             progress.Progress = 1;
 
             return stream;
-        }
-    }
-    
-    [Export(typeof(ICommandFactory))]
-    public class PngBitmapCodecFactory : BitmapCodecFactory {
-        public override string Name {
-            get {
-                return "PNG codec";
-            }
-        }
-
-        public override BitmapCodec CreateCommand() {
-            return new PngBitmapCodec();
-        }
-
-        public override ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return null;
         }
     }
 }

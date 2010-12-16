@@ -1,4 +1,7 @@
-﻿namespace NoCap.Library {
+﻿using System.Windows;
+
+namespace NoCap.Library {
+    // TODO Should inheriting from UIElement/FrameworkElement be enforced?
     /// <summary>
     /// Represents a GUI editor of an instance of <see cref="ICommand"/>.
     /// </summary>
@@ -6,9 +9,8 @@
     /// Typically, implementors should implement this interface while
     /// inheriting <see cref="System.Windows.Controls.ContentControl"/>.
     /// The editor instance is inserted into a GUI as if it was a normal control.
-    /// Other than the insertion, no other operations are performed; setting
-    /// the appropriate data context (if necessary) is the responsibility of
-    /// implementors.
+    /// The <see cref="FrameworkElement.DataContext"/> of the editor is set
+    /// to the command to be edited.
     /// </remarks>
     public interface ICommandEditor {
     }

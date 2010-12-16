@@ -6,6 +6,7 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Imaging;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
@@ -53,7 +54,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public ImageFileUploader() {
-            this.imageWriter = new ImageWriter(new PngBitmapCodec());
+            this.imageWriter = new ImageWriter();
         }
 
         private ICommand GetCommand() {

@@ -113,7 +113,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0"
-                    Text="{Binding Name}"
+                    Text="{Binding Task.Name}"
                     VerticalAlignment="Center" />
 
                 <Button Grid.Row="0" Grid.Column="1"
@@ -126,7 +126,7 @@
 
                 <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                     MinHeight="20"
-                    Value="{Binding ProgressTracker.Progress, Mode=OneWay}"
+                    Value="{Binding Progress, Mode=OneWay}"
                     Minimum="0" Maximum="1" />
 
                 <TextBlock Grid.Row="1" />

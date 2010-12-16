@@ -7,11 +7,12 @@
         }
 
         public ICommand CreateCommand() {
-            return new ImageWriter(new PngBitmapCodec());
+            return new ImageWriter();
         }
 
         public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
-            // Do nothing.
+            var imageWriter = (ImageWriter) command;
+            imageWriter.Codec = new PngBitmapCodec();
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {

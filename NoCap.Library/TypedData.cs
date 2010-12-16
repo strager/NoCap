@@ -63,8 +63,6 @@ namespace NoCap.Library {
             private set;
         }
 
-        public static TypedData Null = new TypedData(TypedDataType.None, null, "null");
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedData"/> class.
         /// </summary>
@@ -108,7 +106,7 @@ namespace NoCap.Library {
         public static TypedData FromUri(Uri uri, string name) {
             return new TypedData(TypedDataType.Uri, uri, name);
         }
-        
+
         /// <summary>
         /// Creates a new instance of the <see cref="TypedData"/>
         /// class representing the given image.
@@ -155,7 +153,11 @@ namespace NoCap.Library {
             return string.Format("{0} ({1}: {2})", Name, DataType, Data);
         }
 
+        /// <summary>
+        /// Disposes of <see cref="Data"/> if possible and marks this instance as disposed.
+        /// </summary>
         public void Dispose() {
+            // TODO Mark this instance as disposed.  =X
             var dataAsDisposable = Data as IDisposable;
 
             if (dataAsDisposable != null) {
@@ -163,6 +165,7 @@ namespace NoCap.Library {
             }
         }
 
+        [Obsolete]
         public object CloneData() {
             // TODO Allow smart cloning or something (e.g. register a cloner?)
             switch (DataType) {
@@ -175,17 +178,6 @@ namespace NoCap.Library {
                 default:
                     return Data;
             }
-        }
-    }
-
-    public static class TypedDataExtensions {
-        /// <summary>
-        /// Gets the effective data type of the data given data.
-        /// </summary>
-        /// <param name="data">The data of which to get the type.</param>
-        /// <returns>The type describing <see cref="data"/>.</returns>
-        public static TypedDataType GetEffectiveDataType(this TypedData data) {
-            return data == null ? TypedDataType.None : data.DataType;
         }
     }
 }

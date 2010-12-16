@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Progress;
 using NoCap.Library.Tests.TestHelpers;
-using NoCap.Library.Util;
 using NUnit.Framework;
 
 namespace NoCap.Library.Tests.Commands {
@@ -18,7 +17,7 @@ namespace NoCap.Library.Tests.Commands {
             commandMock.Setup((command) => command.Process(inputData, inputTracker, CancellationToken.None)).Returns((TypedData) null);
 
             var dataRouter = new DataRouter();
-            dataRouter.Connect(TypedDataType.Text, commandMock.Object);
+            dataRouter.Add(TypedDataType.Text, commandMock.Object);
 
             dataRouter.Process(inputData, inputTracker, CancellationToken.None);
 
@@ -36,7 +35,7 @@ namespace NoCap.Library.Tests.Commands {
             commandMock.Setup((command) => command.Process(inputData, inputTracker, CancellationToken.None)).Returns(expectedOutput);
 
             var dataRouter = new DataRouter();
-            dataRouter.Connect(TypedDataType.Text, commandMock.Object);
+            dataRouter.Add(TypedDataType.Text, commandMock.Object);
 
             var actualOutput = dataRouter.Process(inputData, inputTracker, CancellationToken.None);
             Assert.AreSame(expectedOutput, actualOutput);
@@ -51,8 +50,8 @@ namespace NoCap.Library.Tests.Commands {
             command2Mock.Setup((command) => command.ProcessTimeEstimate).Returns(new TestTimeEstimate(20));
 
             var dataRouter = new DataRouter();
-            dataRouter.Connect(TypedDataType.Text, command1Mock.Object);
-            dataRouter.Connect(TypedDataType.Uri, command2Mock.Object);
+            dataRouter.Add(TypedDataType.Text, command1Mock.Object);
+            dataRouter.Add(TypedDataType.Uri, command2Mock.Object);
 
             Assert.AreEqual(20, dataRouter.ProcessTimeEstimate.ProgressWeight);
         }
@@ -68,8 +67,8 @@ namespace NoCap.Library.Tests.Commands {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
 
-        private static NotifyingProgressTracker GetMutableProgressTracker() {
-            return new NotifyingProgressTracker();
+        private static MutableProgressTracker GetMutableProgressTracker() {
+            return new MutableProgressTracker();
         }
 
         private static TypedData GetTextData() {

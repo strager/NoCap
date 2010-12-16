@@ -5,6 +5,7 @@ using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {

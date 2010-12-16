@@ -126,7 +126,7 @@ namespace NoCap.Extensions.Default.Helpers {
             var selectedImage = GetSelectedImage(region);
 
             if (selectedImage != null) {
-                Data = TypedData.FromImage(selectedImage, DataName);
+                Data = TypedData.FromImage(selectedImage, this.DataName);
 
                 Close();
             }

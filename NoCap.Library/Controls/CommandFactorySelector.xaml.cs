@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace NoCap.Library.Controls {
     /// <summary>
@@ -237,7 +236,10 @@ namespace NoCap.Library.Controls {
                 this.allowPropertyBehaviours = false;
 
                 try {
-                    Command = commandFactory.CreateCommand(CommandProvider);
+                    var command = commandFactory.CreateCommand();
+                    commandFactory.PopulateCommand(command, CommandProvider);
+
+                    Command = command;
                 } finally {
                     this.allowPropertyBehaviours = true;
                 }

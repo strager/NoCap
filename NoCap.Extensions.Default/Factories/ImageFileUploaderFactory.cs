@@ -2,6 +2,7 @@
 using NoCap.Extensions.Default.Commands;
 using NoCap.Extensions.Default.Editors;
 using NoCap.Library;
+using NoCap.Library.Imaging;
 
 namespace NoCap.Extensions.Default.Factories {
     [Export(typeof(ICommandFactory))]
@@ -19,6 +20,7 @@ namespace NoCap.Extensions.Default.Factories {
         public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             var uploader = (ImageFileUploader) command;
             uploader.FileUploader = commandProvider.GetDefaultCommand(CommandFeatures.FileUploader);
+            uploader.ImageWriter.Codec = new PngBitmapCodec();
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {

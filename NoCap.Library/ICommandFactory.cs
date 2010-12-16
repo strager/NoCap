@@ -1,5 +1,4 @@
-﻿using System;
-using NoCap.Library.Extensions;
+﻿using NoCap.Library.Extensions;
 
 namespace NoCap.Library {
     /// <summary>
@@ -13,37 +12,30 @@ namespace NoCap.Library {
         /// <returns>A new command instance.</returns>
         ICommand CreateCommand();
 
+        /// <summary>
+        /// Populates the command with defaults from the given command provider.
+        /// </summary>
+        /// <param name="command">The command to populate.</param>
+        /// <param name="commandProvider">The command provider.</param>
         void PopulateCommand(ICommand command, ICommandProvider commandProvider);
 
         /// <summary>
         /// Gets an editor which can be used to edit the given command
         /// instance, or <c>null</c> if no editor is needed or can be provided.
         /// </summary>
-        /// <param name="commandProvider"></param>
-        /// <returns>A new instance of an editor for <paramref name="command"/>, or <c>null</c>.</returns>
+        /// <param name="commandProvider">The command provider.</param>
+        /// <returns>
+        /// A new instance of an editor for commands produced by
+        /// <see cref="CreateCommand"/>, or <c>null</c> if no
+        /// editor is required.
+        /// </returns>
         ICommandEditor GetCommandEditor(ICommandProvider commandProvider);
 
+        /// <summary>
+        /// Gets the features a command created using <see cref="CreateCommand"/>
+        /// features.
+        /// </summary>
+        /// <value>The command features.</value>
         CommandFeatures CommandFeatures { get; }
-    }
-
-    public static class CommandFactoryExtensions {
-        public static bool HasFeatures(this ICommandFactory factory, CommandFeatures features) {
-            if (factory == null) {
-                throw new ArgumentNullException("factory");
-            }
-
-            return factory.CommandFeatures.HasFlag(features);
-        }
-
-        public static ICommand CreateCommand(this ICommandFactory factory, ICommandProvider commandProvider) {
-            if (factory == null) {
-                throw new ArgumentNullException("factory");
-            }
-
-            var command = factory.CreateCommand();
-            factory.PopulateCommand(command, commandProvider);
-
-            return command;
-        }
     }
 }
