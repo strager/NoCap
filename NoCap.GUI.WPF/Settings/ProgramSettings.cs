@@ -125,23 +125,24 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public void LoadCommandDefaults() {
-            // TODO Clean this up
-
-            var commandFactories = Enumerable.Where(CommandProvider.CommandFactories, (factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
-
-            var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
+            var commandFactories = CommandProvider.CommandFactories.WithFeatures(CommandFeatures.StandAlone);
 
             // We use two passes because command population often requires the
             // presence of other commands (which may not have been constructed yet).
             // We thus construct all commands, then populate them.
-            foreach (var commandFactory in commandFactories) {
-                commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
-            }
 
-            foreach (var pair in commandFactoriesToCommands) {
-                pair.Key.PopulateCommand(pair.Value, commandProvider);
+            var commandInstances = commandFactories.Select((factory) => new {
+                Factory = factory,
+                Command = factory.CreateCommand()
+            });
 
-                SettingsData.Commands.Add(pair.Value);
+            foreach (var commandInstance in commandInstances) {
+                var factory = commandInstance.Factory;
+                var command = commandInstance.Command;
+
+                factory.PopulateCommand(command, commandProvider);
+
+                SettingsData.Commands.Add(commandInstance.Command);
             }
         }
     }
