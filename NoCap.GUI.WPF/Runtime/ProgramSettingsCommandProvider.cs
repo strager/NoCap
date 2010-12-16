@@ -47,7 +47,8 @@ namespace NoCap.GUI.WPF.Runtime {
 
         public IBindableCollection<ICommand> Commands {
             get {
-                return this.programSettings.Commands;
+                // Wrap to prevent modification.
+                return this.programSettings.Commands.AsBindable();
             }
         }
 

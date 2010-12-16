@@ -5,6 +5,7 @@ using System.Windows;
 using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
+using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 
 namespace NoCap.GUI.WPF {
@@ -22,19 +23,20 @@ namespace NoCap.GUI.WPF {
             var extensionManager = new ExtensionManager(Directory.CreateDirectory(Directory.GetCurrentDirectory()));
 
             this.configurationManager = new ConfigurationManager();
-            this.settings = this.configurationManager.LoadSettings();
+
+            var settingsData = this.configurationManager.LoadSettingsData();
 
             bool loadCommandDefaults = false;
 
-            if (this.settings == null) {
-                this.settings = new ProgramSettings();
+            if (settingsData == null) {
+                settingsData = new ProgramSettingsData();
 
                 loadCommandDefaults = true;
             }
 
-            this.settings.Initialize(commandRunner, extensionManager);
+            this.settings = ProgramSettings.Create(settingsData, commandRunner, extensionManager);
 
-            var featureRegistry = this.settings.PluginContext.FeatureRegistry;
+            var featureRegistry = this.settings.FeatureRegistry;
 
             featureRegistry.Register(CommandFeatures.ImageUploader, "Image uploader");
             featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );
@@ -61,7 +63,7 @@ namespace NoCap.GUI.WPF {
         private void SettingsClosed() {
             this.settingsWindow = null;
 
-            this.configurationManager.SaveSettings(this.settings);
+            this.configurationManager.SaveSettingsData(this.settings.SettingsData);
         }
 
         private void Start() {

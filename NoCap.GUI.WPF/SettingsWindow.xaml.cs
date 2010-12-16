@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using NoCap.GUI.WPF.Settings;
+using NoCap.Library.Extensions;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -23,7 +24,7 @@ namespace NoCap.GUI.WPF {
             Resources["commandProvider"] = commandProvider;
 
             AddTab(
-                new DefaultCommandsEditor(commandProvider, settings.PluginContext.FeatureRegistry, settings.DefaultCommands),
+                new DefaultCommandsEditor(commandProvider, settings.FeatureRegistry, settings.DefaultCommands),
                 "Defaults"
             );
 

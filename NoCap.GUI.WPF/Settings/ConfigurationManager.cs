@@ -41,13 +41,13 @@ namespace NoCap.GUI.WPF.Settings {
             return document.InnerXml;
         }
 
-        public void SaveSettings(ProgramSettings value) {
+        public void SaveSettingsData(ProgramSettingsData value) {
             ProgramSettingsData = WriteToDocument(SerializeSettings(value));
 
             Save();
         }
 
-        public ProgramSettings LoadSettings() {
+        public ProgramSettingsData LoadSettingsData() {
             var data = ProgramSettingsData;
 
             if (data == null) {
@@ -67,16 +67,16 @@ namespace NoCap.GUI.WPF.Settings {
             );
         }
 
-        public static string SerializeSettings(ProgramSettings settings) {
+        public static string SerializeSettings(ProgramSettingsData settings) {
             var serializer = GetSettingsSerializer();
 
             return Serialize(settings, serializer);
         }
 
-        public static ProgramSettings DeserializeSettings(string configData) {
+        public static ProgramSettingsData DeserializeSettings(string configData) {
             var deserializer = GetSettingsSerializer();
 
-            return (ProgramSettings) Deserialize(configData, deserializer);
+            return (ProgramSettingsData) Deserialize(configData, deserializer);
         }
 
         private static string Serialize(object obj, XmlObjectSerializer serializer) {

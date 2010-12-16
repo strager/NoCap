@@ -12,7 +12,13 @@ using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "ProgramSettings")]
-    sealed class ProgramSettings : IDisposable {
+    sealed class ProgramSettingsData {
+        public ProgramSettingsData() {
+            this.plugins = new PluginCollection();
+            this.defaultCommands = new FeaturedCommandCollection();
+            this.commands = new BindableCollection<ICommand>();
+        }
+
         // Data member orders are important because they enforce "ownership" in
         // the XML.  A command may reference a default command but it does not
         // own the default command; the default command belongs to the
@@ -37,10 +43,9 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public IBindableCollection<ICommand> Commands {
+        public BindableCollection<ICommand> Commands {
             get {
-                // Wrap to prevent modification.
-                return this.commands.AsBindable();
+                return this.commands;
             }
         }
 
@@ -49,48 +54,70 @@ namespace NoCap.GUI.WPF.Settings {
                 return this.plugins;
             }
         }
+    }
 
-        [IgnoreDataMember]
-        private IPluginContext pluginContext;
+    sealed class ProgramSettings : IDisposable {
+        private readonly ProgramSettingsData settingsData;
 
-        [IgnoreDataMember]
-        private ICommandProvider commandProvider;
-
-        public IPluginContext PluginContext {
+        public FeaturedCommandCollection DefaultCommands {
             get {
-                if (this.pluginContext == null) {
-                    throw new InvalidOperationException("Call Initialize");
-                }
-
-                return this.pluginContext;
+                return SettingsData.DefaultCommands;
             }
         }
 
+        public BindableCollection<ICommand> Commands {
+            get {
+                return SettingsData.Commands;
+            }
+        }
+
+        public PluginCollection Plugins {
+            get {
+                return SettingsData.Plugins;
+            }
+        }
+
+        private IPluginContext pluginContext;
+        private ICommandProvider commandProvider;
+
         public ICommandProvider CommandProvider {
             get {
-                if (this.commandProvider == null) {
-                    throw new InvalidOperationException("Call Initialize");
-                }
-
                 return this.commandProvider;
             }
         }
 
-        public ProgramSettings() {
-            this.plugins = new PluginCollection();
-            this.defaultCommands = new FeaturedCommandCollection();
-            this.commands = new BindableCollection<ICommand>();
+        public IFeatureRegistry FeatureRegistry {
+            get {
+                return this.pluginContext.FeatureRegistry;
+            }
         }
 
-        public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
+        public ProgramSettingsData SettingsData {
+            get {
+                return this.settingsData;
+            }
+        }
+
+        private ProgramSettings(ProgramSettingsData settingsData) {
+            this.settingsData = settingsData;
+        }
+
+        public static ProgramSettings Create(ProgramSettingsData settingsData, CommandRunner commandRunner, ExtensionManager extensionManager) {
+            var settings = new ProgramSettings(settingsData);
+            settings.Initialize(commandRunner, extensionManager);
+
+            return settings;
+        }
+
+        private void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
             var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CompositionContainer);
-            var defaultRegistry = new ProgramFeatureRegistry(this.defaultCommands, commandProvider);
+            var defaultRegistry = new ProgramFeatureRegistry(DefaultCommands, commandProvider);
             var runtimeProvider = new ProgramPluginContext(commandRunner, extensionManager, defaultRegistry, commandProvider);
 
             this.commandProvider = commandProvider;
             this.pluginContext = runtimeProvider;
 
-            this.plugins.Initialize(runtimeProvider);
+            Plugins.Initialize(runtimeProvider);
         }
 
         public void Dispose() {
@@ -114,7 +141,7 @@ namespace NoCap.GUI.WPF.Settings {
             foreach (var pair in commandFactoriesToCommands) {
                 pair.Key.PopulateCommand(pair.Value, commandProvider);
 
-                this.commands.Add(pair.Value);
+                SettingsData.Commands.Add(pair.Value);
             }
         }
     }
