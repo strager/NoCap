@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
@@ -99,17 +100,22 @@ namespace NoCap.Extensions.Default.Plugins {
 
             IInputSequence inputSequence;
 
-            if (!TryGetInputSequence(out inputSequence)) {
+            if (!TryGetInputSequence(out inputSequence, binding.Command)) {
                 return;
             }
 
             binding.Input = inputSequence;
         }
 
-        private bool TryGetInputSequence(out IInputSequence inputSequence) {
+        private bool TryGetInputSequence(out IInputSequence inputSequence, ICommand command) {
             Plugin.ShutDown();
 
-            var window = new BindWindow(Plugin.InputProvider);
+            var window = new BindWindow(Plugin.InputProvider) {
+                DataContext = new {
+                    Command = command,
+                }
+            };
+
             bool success = window.ShowDialog() == true;
 
             inputSequence = success ? window.InputSequence : null;

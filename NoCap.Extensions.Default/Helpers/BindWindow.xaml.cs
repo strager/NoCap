@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 using WinputDotNet;
 
-namespace NoCap.Extensions.Default.Plugins {
+namespace NoCap.Extensions.Default.Helpers {
     /// <summary>
     /// Interaction logic for BindWindow.xaml
     /// </summary>
