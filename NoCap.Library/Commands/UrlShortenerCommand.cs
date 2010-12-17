@@ -6,7 +6,7 @@ using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
     [DataContract(Name = "UrlShortener")]
-    public abstract class UrlShortener : HttpUploader {
+    public abstract class UrlShortenerCommand : HttpUploaderCommand {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Uri:
@@ -18,7 +18,7 @@ namespace NoCap.Library.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            var urlText = GetResponseText(response);
+            var urlText = HttpUploadRequest.GetResponseText(response);
 
             return TypedData.FromUri(new Uri(urlText, UriKind.Absolute), originalData.Name);
         }

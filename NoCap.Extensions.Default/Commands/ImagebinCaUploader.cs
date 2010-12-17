@@ -12,7 +12,7 @@ using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "ImagebinCaUploader")]
-    public sealed class ImagebinCaUploader : ImageUploader, IExtensibleDataObject {
+    public sealed class ImagebinCaUploader : ImageUploaderCommand, IExtensibleDataObject {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
@@ -55,7 +55,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            string html = GetResponseText(response);
+            string html = HttpUploadRequest.GetResponseText(response);
 
             // Sorry for using regexp to parse HTML, but
             // including an HTML parsing library as a

@@ -145,11 +145,11 @@ namespace NoCap.Extensions.Default.Commands {
         [DataMember(Name = "Password")]
         public byte[] EncryptedPassword {
             get {
-                return Security.EncryptString(Password);
+                return Password == null ? null : Security.EncryptString(Password);
             }
 
             set {
-                Password = Security.DecryptString(value);
+                Password = value == null ? null : Security.DecryptString(value);
             }
         }
 

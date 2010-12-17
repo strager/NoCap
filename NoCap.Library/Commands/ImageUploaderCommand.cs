@@ -5,14 +5,14 @@ using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
     [DataContract(Name = "ImageUploader")]
-    public abstract class ImageUploader : HttpUploader {
+    public abstract class ImageUploaderCommand : HttpUploaderCommand {
         [DataMember(Name = "ImageWriter")]
         public ImageWriter ImageWriter {
             get;
             protected set;
         }
 
-        protected ImageUploader(ImageWriter writer) {
+        protected ImageUploaderCommand(ImageWriter writer) {
             ImageWriter = writer;
         }
 

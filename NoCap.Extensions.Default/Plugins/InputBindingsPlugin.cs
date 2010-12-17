@@ -172,6 +172,10 @@ namespace NoCap.Extensions.Default.Plugins {
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context) {
+            if (Bindings == null) {
+                Bindings = new ObservableCollection<CommandBinding>();
+            }
+
             Bindings.CollectionChanged += (sender, e) => UpdateBindings();
         }
 

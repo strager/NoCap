@@ -5,7 +5,7 @@ using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
     [DataContract(Name = "TextUploader")]
-    public abstract class TextUploader : HttpUploader {
+    public abstract class TextUploaderCommand : HttpUploaderCommand {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Text:

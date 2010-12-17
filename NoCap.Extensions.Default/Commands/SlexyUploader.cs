@@ -8,7 +8,7 @@ using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "SlexyUploader")]
-    public sealed class SlexyUploader : TextUploader, IExtensibleDataObject {
+    public sealed class SlexyUploader : TextUploaderCommand, IExtensibleDataObject {
         public override string Name {
             get { return "Slexy.org text uploader"; }
         }

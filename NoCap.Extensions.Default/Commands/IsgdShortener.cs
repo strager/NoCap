@@ -7,7 +7,7 @@ using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "IsgdShortener")]
-    public sealed class IsgdShortener : UrlShortener, IExtensibleDataObject {
+    public sealed class IsgdShortener : UrlShortenerCommand, IExtensibleDataObject {
         public override string Name {
             get { return "is.gd URL shortener"; }
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using NoCap.Library.Progress;
@@ -11,22 +10,42 @@ using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
-    public enum HttpRequestMethod {
-        Get,
-        Post,
-    }
-
-    [DataContract(Name = "HttpUploader")]
-    public abstract class HttpUploader : ICommand {
+    // TODO Clean up heavily
+    public sealed class HttpUploadRequest {
         private const string UserAgent = "NoCap HttpUploader";
 
-        public abstract string Name { get; }
+        public IDictionary<string, string> Parameters {
+            get;
+            set;
+        }
 
-        public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
+        public Uri Uri {
+            get;
+            set;
+        }
 
-        public TypedData Upload(TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var parameters = GetParameters(originalData);
+        // TODO Make these not events
+        // (not adhering to the convention is a reminder!)
+        public event Action<object, HttpWebRequest> PreprocessRequest;
+        public event Action<object, MultipartBuilder> PreprocessRequestData;
 
+        private void OnPreprocessRequest(HttpWebRequest request) {
+            var handler = PreprocessRequest;
+
+            if (handler != null) {
+                handler(this, request);
+            }
+        }
+
+        private void OnPreprocessRequestData(MultipartBuilder request) {
+            var handler = PreprocessRequestData;
+
+            if (handler != null) {
+                handler(this, request);
+            }
+        }
+
+        public HttpWebResponse Execute(IMutableProgressTracker progress, CancellationToken cancelToken, HttpRequestMethod requestMethod) {
             var requestProgress = new MutableProgressTracker();
             var responseProgress = new MutableProgressTracker();
 
@@ -38,7 +57,7 @@ namespace NoCap.Library.Commands {
             aggregateProgress.BindTo(progress);
 
             try {
-                var request = BuildRequest(originalData, RequestMethod, parameters, requestProgress, cancelToken);
+                var request = BuildRequest(requestMethod, Parameters, requestProgress, cancelToken);
 
                 bool canCancel = true;
 
@@ -47,31 +66,30 @@ namespace NoCap.Library.Commands {
                         request.Abort();
                     }
                 });
-                
+
                 var response = (HttpWebResponse) request.GetResponse();
-                var ret = GetResponseData(response, originalData);
 
                 responseProgress.Progress = 1; // TODO HTTP download Progress
 
                 canCancel = false;
 
-                return ret;
+                return response;
             } catch (WebException e) {
                 if (e.Status == WebExceptionStatus.RequestCanceled) {
-                    throw new CommandCanceledException(this, null, e, cancelToken);
+                    throw new OperationCanceledException(e.Message, e, cancelToken);
                 }
 
-                throw new CommandCanceledException(this, e.Message, e, cancelToken);
+                throw new OperationCanceledException(e.Message, e, cancelToken);
             }
         }
 
-        private HttpWebRequest BuildRequest(TypedData originalData, HttpRequestMethod requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
+        private HttpWebRequest BuildRequest(HttpRequestMethod requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (requestMethod) {
                 case HttpRequestMethod.Get:
                     return BuildGetRequest(parameters, progress);
 
                 case HttpRequestMethod.Post:
-                    return BuildPostRequest(parameters, originalData, progress, cancelToken);
+                    return BuildPostRequest(parameters, progress, cancelToken);
 
                 default:
                     throw new ArgumentException("Unknown request method", "requestMethod");
@@ -84,16 +102,16 @@ namespace NoCap.Library.Commands {
             };
 
             var request = GetRequest(uriBuilder.Uri, @"GET");
-            PreprocessRequest(request);
+            OnPreprocessRequest(request);
 
             progress.Progress = 1;
 
             return request;
         }
 
-        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
+        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var request = GetRequest(Uri, @"POST");
-            PreprocessRequest(request);
+            OnPreprocessRequest(request);
 
             var builder = new MultipartBuilder();
 
@@ -101,7 +119,7 @@ namespace NoCap.Library.Commands {
                 builder.KeyValuePairs(parameters);
             }
 
-            PreprocessRequestData(builder, originalData);
+            OnPreprocessRequestData(builder);
 
             WritePostData(request, builder, progress, cancelToken);
 
@@ -136,19 +154,13 @@ namespace NoCap.Library.Commands {
             System.Diagnostics.Debug.Assert(progress.Progress == 1);
         }
 
-        protected abstract Uri Uri { get; }
-
-        protected abstract IDictionary<string, string> GetParameters(TypedData data);
-
-        protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
-
-        protected static string GetResponseText(HttpWebResponse response) {
+        public static string GetResponseText(HttpWebResponse response) {
             if (response == null) {
                 throw new ArgumentNullException("response");
             }
 
             var stream = response.GetResponseStream();
-            
+
             if (stream == null) {
                 throw new ArgumentException("Response stream should not be null", "response");
             }
@@ -167,34 +179,6 @@ namespace NoCap.Library.Commands {
             using (var reader = new StreamReader(stream, encoding)) {
                 return reader.ReadToEnd();
             }
-        }
-
-        protected virtual void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            // Do nothing
-        }
-
-        [IgnoreDataMember]
-        protected virtual HttpRequestMethod RequestMethod {
-            get {
-                return HttpRequestMethod.Post;
-            }
-        }
-
-        protected virtual void PreprocessRequest(HttpWebRequest request) {
-            // Do nothing
-        }
-
-        public abstract ICommandFactory GetFactory();
-
-        [IgnoreDataMember]
-        public ITimeEstimate ProcessTimeEstimate {
-            get {
-                return TimeEstimates.LongOperation;
-            }
-        }
-
-        public virtual bool IsValid() {
-            return true;
         }
     }
 }
