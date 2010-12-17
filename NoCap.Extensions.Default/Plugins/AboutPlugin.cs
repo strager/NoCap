@@ -86,16 +86,14 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void Submit() {
-            var request = new HttpUploadRequest {
-                Parameters = new Dictionary<string, string> {
+            var builder = new MultipartDataBuilder();
+            builder.KeyValuePairs(new Dictionary<string, string> {
                     { "name", UserName ?? "" },
                     { "message", Message ?? "" },
-                },
-                Uri = Uri,
-            };
+            });
 
             ThreadPool.QueueUserWorkItem((o) => {
-                request.Execute(new MutableProgressTracker(), CancellationToken.None, HttpRequestMethod.Post);
+                HttpRequest.Execute(Uri, builder.GetData(), HttpRequestMethod.Post, new MutableProgressTracker(), CancellationToken.None);
             });
         }
 

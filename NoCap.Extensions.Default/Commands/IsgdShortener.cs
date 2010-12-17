@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
+using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "IsgdShortener")]
@@ -18,12 +19,11 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string> {
-                { "longurl", data.Data.ToString() }
-            };
+        protected override MultipartData GetRequestData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.KeyValuePair("longurl", data.Data.ToString());
 
-            return parameters;
+            return builder.GetData();
         }
 
         protected override HttpRequestMethod RequestMethod {

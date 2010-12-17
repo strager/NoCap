@@ -18,7 +18,7 @@ namespace NoCap.Library.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            var urlText = HttpUploadRequest.GetResponseText(response);
+            var urlText = HttpRequest.GetResponseText(response);
 
             return TypedData.FromUri(new Uri(urlText, UriKind.Absolute), originalData.Name);
         }

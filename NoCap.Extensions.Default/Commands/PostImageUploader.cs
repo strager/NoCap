@@ -37,15 +37,10 @@ namespace NoCap.Extensions.Default.Commands {
             IsAdult = true;
         }
 
-        protected override MultipartData GetPostData(TypedData data) {
+        protected override MultipartData GetRequestData(TypedData data) {
             var builder = new MultipartDataBuilder();
             builder.File((Stream) data.Data, "upload", data.Name);
-
-            return builder.GetData();
-        }
-
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            return new Dictionary<string, string> {
+            builder.KeyValuePairs(new Dictionary<string, string> {
                 // FIXME Remove and adjust as required.  Just copy-pasted all
                 // this from the main page.  (Don't shoot me.)
                 { "mode", "local" },
@@ -59,7 +54,9 @@ namespace NoCap.Extensions.Default.Commands {
                 { "hash", "943" },
                 { "optsize", "0" },
                 { "submit", "Upload It!" },
-            };
+            });
+
+            return builder.GetData();
         }
 
         [DataMember(Name = "IsAdultContent")]
@@ -69,7 +66,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            string html = HttpUploadRequest.GetResponseText(response);
+            string html = HttpRequest.GetResponseText(response);
 
             // Sorry for using regexp to parse HTML, but
             // including an HTML parsing library as a

@@ -7,11 +7,6 @@ using NoCap.Library.Progress;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
-    public enum HttpRequestMethod {
-        Get,
-        Post,
-    }
-
     [DataContract(Name = "HttpUploader")]
     public abstract class HttpUploaderCommand : ICommand {
         public abstract string Name { get; }
@@ -19,14 +14,8 @@ namespace NoCap.Library.Commands {
         public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
         public TypedData Upload(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var uploader = new HttpUploadRequest {
-                Parameters = GetParameters(data),
-                Uri = Uri,
-                PostData = GetPostData(data),
-            };
-
             try {
-                var response = uploader.Execute(progress, cancelToken, RequestMethod);
+                var response = HttpRequest.Execute(this.Uri, GetRequestData(data), this.RequestMethod, progress, cancelToken);
 
                 return GetResponseData(response, data);
             } catch (OperationCanceledException e) {
@@ -36,13 +25,9 @@ namespace NoCap.Library.Commands {
 
         protected abstract Uri Uri { get; }
 
-        protected virtual IDictionary<string, string> GetParameters(TypedData data) {
-            return null;
-        }
-
         protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
 
-        protected virtual MultipartData GetPostData(TypedData data) {
+        protected virtual MultipartData GetRequestData(TypedData data) {
             return null;
         }
 

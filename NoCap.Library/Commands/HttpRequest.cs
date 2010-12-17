@@ -10,26 +10,15 @@ using NoCap.Web;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {
-    // TODO Clean up heavily
-    public sealed class HttpUploadRequest {
+    public enum HttpRequestMethod {
+        Get,
+        Post,
+    }
+
+    public static class HttpRequest {
         private const string UserAgent = "NoCap HttpUploader";
 
-        public IDictionary<string, string> Parameters {
-            get;
-            set;
-        }
-
-        public Uri Uri {
-            get;
-            set;
-        }
-
-        public MultipartData PostData {
-            get;
-            set;
-        }
-
-        public HttpWebResponse Execute(IMutableProgressTracker progress, CancellationToken cancelToken, HttpRequestMethod requestMethod) {
+        public static HttpWebResponse Execute(Uri uri, MultipartData requestData, HttpRequestMethod requestMethod, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var requestProgress = new MutableProgressTracker();
             var responseProgress = new MutableProgressTracker();
 
@@ -41,7 +30,7 @@ namespace NoCap.Library.Commands {
             aggregateProgress.BindTo(progress);
 
             try {
-                var request = BuildRequest(requestMethod, Parameters, requestProgress, cancelToken);
+                var request = BuildRequest(uri, requestMethod, requestData, requestProgress, cancelToken);
 
                 bool canCancel = true;
 
@@ -67,50 +56,54 @@ namespace NoCap.Library.Commands {
             }
         }
 
-        private HttpWebRequest BuildRequest(HttpRequestMethod requestMethod, IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
+        private static HttpWebRequest BuildRequest(Uri uri, HttpRequestMethod requestMethod, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (requestMethod) {
                 case HttpRequestMethod.Get:
-                    return BuildGetRequest(parameters, progress);
+                    return BuildGetRequest(uri, data, progress, cancelToken);
 
                 case HttpRequestMethod.Post:
-                    return BuildPostRequest(parameters, progress, cancelToken);
+                    return BuildPostRequest(uri, data, progress, cancelToken);
 
                 default:
                     throw new ArgumentException("Unknown request method", "requestMethod");
             }
         }
 
-        private HttpWebRequest BuildGetRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress) {
-            var uriBuilder = new UriBuilder(Uri) {
+        private static HttpWebRequest BuildGetRequest(Uri uri, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            var parameters = new Dictionary<string, string>();
+
+            foreach (var entry in data.Entries) {
+                var formEntry = entry as FormMultipartEntry;
+
+                if (formEntry == null) {
+                    throw new ArgumentException("Data must contain only form entries", "data");
+                }
+
+                parameters[formEntry.Name] = formEntry.Value;
+            }
+
+            var uriBuilder = new UriBuilder(uri) {
                 Query = HttpUtility.ToQueryString(parameters)
             };
 
-            var request = GetRequest(uriBuilder.Uri, @"GET");
+            var request = CreateRequest(uriBuilder.Uri, @"GET");
 
             progress.Progress = 1;
 
             return request;
         }
 
-        private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var request = GetRequest(Uri, @"POST");
+        private static HttpWebRequest BuildPostRequest(Uri uri, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            var request = CreateRequest(uri, @"POST");
 
-            var builder = new MultipartDataBuilder();
-
-            if (PostData != null) {
-                builder.Data(PostData);
+            if (data != null) {
+                WritePostData(request, data, progress, cancelToken);
             }
-
-            if (parameters != null) {
-                builder.KeyValuePairs(parameters);
-            }
-
-            WritePostData(request, builder.GetData(), progress, cancelToken);
 
             return request;
         }
 
-        private static HttpWebRequest GetRequest(Uri uri, string method) {
+        private static HttpWebRequest CreateRequest(Uri uri, string method) {
             var request = (HttpWebRequest) WebRequest.Create(uri);
             request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.BypassCache);
             request.Method = method;
@@ -124,7 +117,7 @@ namespace NoCap.Library.Commands {
         private static void WritePostData(HttpWebRequest request, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var boundary = data.Boundary;
 
-            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
+            request.ContentType = string.Format(@"multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
             request.ContentLength = Utility.GetBoundaryByteCount(boundary) + data.GetByteCount();
 
             using (var requestStream = request.GetRequestStream())

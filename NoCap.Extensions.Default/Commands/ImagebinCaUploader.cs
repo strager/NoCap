@@ -37,28 +37,24 @@ namespace NoCap.Extensions.Default.Commands {
             return new ImagebinCaUploaderFactory();
         }
 
-        protected override MultipartData GetPostData(TypedData data) {
+        protected override MultipartData GetRequestData(TypedData data) {
             var builder = new MultipartDataBuilder();
             builder.File((Stream) data.Data, "f", data.Name);
+            builder.KeyValuePairs(new Dictionary<string, string> {
+                { "t", "file" },
+                { "name", data.Name ?? "" },
+                { "tags", Tags ?? "" },
+                { "description", Description ?? "" },
+                { "adult", IsPrivate ? "t" : "f" },
+                { "sfile", "Upload" },
+                { "url", "" },
+            });
 
             return builder.GetData();
         }
 
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["t"] = "file";
-            parameters["name"] = data.Name ?? "";
-            parameters["tags"] = Tags ?? "";
-            parameters["description"] = Description ?? "";
-            parameters["adult"] = IsPrivate ? "t" : "f";
-            parameters["sfile"] = "Upload";
-            parameters["url"] = "";
-
-            return parameters;
-        }
-
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            string html = HttpUploadRequest.GetResponseText(response);
+            string html = HttpRequest.GetResponseText(response);
 
             // Sorry for using regexp to parse HTML, but
             // including an HTML parsing library as a
