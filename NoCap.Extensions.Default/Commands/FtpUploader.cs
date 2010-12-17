@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -13,8 +12,8 @@ using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
+    [DataContract(Name = "FtpUploader")]
+    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, IExtensibleDataObject {
         private string name = "FTP file uploader";
 
         private string host = "example.com";
@@ -78,6 +77,7 @@ namespace NoCap.Extensions.Default.Commands {
             return OutputPath + "/" + fileName.Replace(@"\", @"\\").Replace(@"/", @"\/");
         }
 
+        [IgnoreDataMember]
         public string Name {
             get {
                 return this.name;
@@ -90,6 +90,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Host")]
         public string Host {
             get {
                 return host;
@@ -102,6 +103,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Port")]
         public int Port {
             get {
                 return port;
@@ -114,6 +116,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "UserName")]
         public string UserName {
             get {
                 return userName;
@@ -126,6 +129,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [IgnoreDataMember]
         public SecureString Password {
             get {
                 return this.password;
@@ -138,6 +142,18 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Password")]
+        public byte[] EncryptedPassword {
+            get {
+                return Security.EncryptString(Password);
+            }
+
+            set {
+                Password = Security.DecryptString(value);
+            }
+        }
+
+        [DataMember(Name = "OutputPath")]
         public string OutputPath {
             get {
                 return this.outputPath;
@@ -150,6 +166,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "ResultFormat")]
         public string ResultFormat {
             get {
                 return this.resultFormat;
@@ -178,7 +195,7 @@ namespace NoCap.Extensions.Default.Commands {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void Notify(string propertyName) {
+        private void Notify(string propertyName) {
             var handler = PropertyChanged;
 
             if (handler != null) {
@@ -186,33 +203,9 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        public FtpUploader() {
-        }
-
-        private FtpUploader(SerializationInfo info, StreamingContext context) {
-            Name = info.GetValue<string>("Name");
-
-            Host = info.GetValue<string>("Host");
-            Port = info.GetValue<int>("Port");
-            UserName = info.GetValue<string>("UserName");
-
-            var encryptedPassword = info.GetValue<byte[]>("Password encrypted");
-            Password = encryptedPassword == null ? null : Security.DecryptString(encryptedPassword);
-
-            OutputPath = info.GetValue<string>("OutputPath");
-            ResultFormat = info.GetValue<string>("ResultFormat");
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("Name", Name);
-
-            info.AddValue("Host", Host);
-            info.AddValue("Port", Port);
-            info.AddValue("UserName", UserName);
-            info.AddValue("Password encrypted", Password == null ? null : Security.EncryptString(Password));
-
-            info.AddValue("OutputPath", OutputPath);
-            info.AddValue("ResultFormat", ResultFormat);
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

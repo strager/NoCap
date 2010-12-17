@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class FileSystem : ICommand {
+    [DataContract(Name = "FileSystem")]
+    public sealed class FileSystem : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "File system"; }
         }
 
+        [DataMember(Name = "RootPath")]
         public string RootPath {
             get;
             set;
@@ -94,6 +94,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

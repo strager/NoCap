@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
@@ -10,8 +11,8 @@ using NoCap.Library.Progress;
 using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class ImageFileUploader : ICommand, INotifyPropertyChanged {
+    [DataContract(Name = "ImageFileUploader")]
+    public sealed class ImageFileUploader : ICommand, INotifyPropertyChanged, IExtensibleDataObject {
         private string name = "Image file uploader";
 
         private ImageWriter imageWriter;
@@ -29,6 +30,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "ImageWriter")]
         public ImageWriter ImageWriter {
             get {
                 return this.imageWriter;
@@ -41,6 +43,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "FileUploader")]
         public ICommand FileUploader {
             get {
                 return this.fileUploader;
@@ -93,6 +96,11 @@ namespace NoCap.Extensions.Default.Commands {
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

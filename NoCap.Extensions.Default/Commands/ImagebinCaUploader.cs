@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
@@ -10,8 +11,8 @@ using NoCap.Library.Imaging;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class ImagebinCaUploader : ImageUploader {
+    [DataContract(Name = "ImagebinCaUploader")]
+    public sealed class ImagebinCaUploader : ImageUploader, IExtensibleDataObject {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
@@ -73,17 +74,25 @@ namespace NoCap.Extensions.Default.Commands {
             return new Uri(string.Format(@"http://imagebin.ca/img/{0}", code));
         }
 
+        [DataMember(Name = "TagsString")]
         public string Tags {
             get;
             set;
         }
 
+        [DataMember(Name = "Description")]
         public string Description {
             get;
             set;
         }
 
+        [DataMember(Name = "IsPrivate")]
         public bool IsPrivate {
+            get;
+            set;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

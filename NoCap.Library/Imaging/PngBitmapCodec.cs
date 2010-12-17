@@ -1,16 +1,14 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Library.Imaging {
     [DataContract(Name = "PngBitmapCodec")]
-    public sealed class PngBitmapCodec : BitmapCodec {
+    public sealed class PngBitmapCodec : BitmapCodec, IExtensibleDataObject {
         private static readonly ImageFormat EncoderFormat = ImageFormat.Png;
 
         [IgnoreDataMember]
@@ -55,6 +53,11 @@ namespace NoCap.Library.Imaging {
             progress.Progress = 1;
 
             return stream;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

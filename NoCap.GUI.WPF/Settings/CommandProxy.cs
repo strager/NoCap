@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library;
 using NoCap.Library.Progress;
 
 namespace NoCap.GUI.WPF.Settings {
-    [Serializable]
-    public class CommandProxy : ICommand {
+    [DataContract(Name = "CommandProxy")]
+    public class CommandProxy : ICommand, IExtensibleDataObject {
         public virtual ICommand InnerCommand {
             get;
             set;
@@ -33,6 +34,11 @@ namespace NoCap.GUI.WPF.Settings {
 
         public bool IsValid() {
             return InnerCommand.IsValidAndNotNull();
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

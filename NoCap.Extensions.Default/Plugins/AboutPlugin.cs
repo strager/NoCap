@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web;
+using System.Runtime.Serialization;
 using System.Windows;
 using NoCap.Library;
 using NoCap.Library.Extensions;
@@ -13,8 +11,8 @@ using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
-    [Serializable]
-    class AboutPlugin : IPlugin {
+    [DataContract(Name = "AboutPlugin")]
+    sealed class AboutPlugin : IPlugin, IExtensibleDataObject {
         public void Dispose() {
             // Do nothing.
         }
@@ -25,6 +23,7 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        [DataMember(Name = "FeedbackUserName")]
         public string FeedbackUserName {
             get;
             set;
@@ -40,6 +39,11 @@ namespace NoCap.Extensions.Default.Plugins {
 
         public void Initialize(IPluginContext pluginContext) {
             // Do nothing.
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Serialization;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class SlexyUploader : TextUploader {
+    [DataContract(Name = "SlexyUploader")]
+    public sealed class SlexyUploader : TextUploader, IExtensibleDataObject {
         public override string Name {
             get { return "Slexy.org text uploader"; }
         }
@@ -43,27 +44,37 @@ namespace NoCap.Extensions.Default.Commands {
             return new SlexyUploaderFactory();
         }
 
+        [DataMember(Name = "ExpirationDate")]
         public TimeSpan Expiration {
             get;
             set;
         }
 
+        [DataMember(Name = "ShowLineNumbers")]
         public bool ShowLineNumbers {
             get;
             set;
         }
 
+        [DataMember(Name = "IsPrivate")]
         public bool IsPrivate {
             get;
             set;
         }
 
+        [DataMember(Name = "Language")]
         public string Language {
             get;
             set;
         }
 
+        [DataMember(Name = "Author")]
         public string Author {
+            get;
+            set;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

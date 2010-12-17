@@ -110,7 +110,7 @@ namespace NoCap.Library.Commands {
             return this.commands.All((command) => command.IsValidAndNotNull());
         }
 
-        public ExtensionDataObject ExtensionData {
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

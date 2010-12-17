@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class CropShot : ICommand {
+    [DataContract(Name = "CropShot")]
+    public sealed class CropShot : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "Crop shot"; }
         }
@@ -54,6 +52,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

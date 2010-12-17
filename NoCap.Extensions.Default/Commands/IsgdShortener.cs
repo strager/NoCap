@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class IsgdShortener : UrlShortener {
+    [DataContract(Name = "IsgdShortener")]
+    public sealed class IsgdShortener : UrlShortener, IExtensibleDataObject {
         public override string Name {
             get { return "is.gd URL shortener"; }
         }
@@ -31,6 +32,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public override ICommandFactory GetFactory() {
             return new IsgdShortenerFactory();
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

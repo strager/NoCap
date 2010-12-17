@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using NoCap.Extensions.Default.Factories;
@@ -12,8 +13,8 @@ using NoCap.Library.Imaging;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    class PostImageUploader : ImageUploader {
+    [DataContract(Name = "PostImageUploader")]
+    class PostImageUploader : ImageUploader, IExtensibleDataObject {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://postimage.org/image/.*?/",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
@@ -58,6 +59,7 @@ namespace NoCap.Extensions.Default.Commands {
             };
         }
 
+        [DataMember(Name = "IsAdultContent")]
         public bool IsAdult {
             get;
             set;
@@ -81,6 +83,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public override ICommandFactory GetFactory() {
             return new PostImageUploaderFactory();
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }
