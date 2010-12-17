@@ -1,11 +1,12 @@
-﻿<UserControl x:Class="NoCap.Extensions.Default.Editors.SlexyUploaderEditor"
+﻿<ContentControl x:Class="NoCap.Extensions.Default.Editors.SlexyUploaderEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     mc:Ignorable="d" 
-    d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
+    d:DesignHeight="300" d:DesignWidth="300"
+    Focusable="False">
+    <ContentControl.Resources>
         <XmlDataProvider x:Key="SlexyLanguagesData" XPath="Languages">
             <x:XData>
                 <Languages xmlns="">
@@ -149,7 +150,7 @@
                 </Languages>
             </x:XData>
         </XmlDataProvider>
-    </UserControl.Resources>
+    </ContentControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -186,4 +187,4 @@
             _Private or adult content
         </CheckBox>
     </Grid>
-</UserControl>
+</ContentControl>

@@ -42,7 +42,7 @@ namespace NoCap.GUI.WPF {
         private void AddTab(UIElement content, string header) {
             var tabItem = new TabItem {
                 Content = content,
-                Header = header
+                Header = header,
             };
 
             tabItem.SetBinding(VisibilityProperty, new Binding {
