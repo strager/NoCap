@@ -29,18 +29,6 @@ namespace NoCap.Library.Commands {
             set;
         }
 
-        // TODO Make these not events
-        // (not adhering to the convention is a reminder!)
-        public event Action<object, HttpWebRequest> PreprocessRequest;
-
-        private void OnPreprocessRequest(HttpWebRequest request) {
-            var handler = PreprocessRequest;
-
-            if (handler != null) {
-                handler(this, request);
-            }
-        }
-
         public HttpWebResponse Execute(IMutableProgressTracker progress, CancellationToken cancelToken, HttpRequestMethod requestMethod) {
             var requestProgress = new MutableProgressTracker();
             var responseProgress = new MutableProgressTracker();
@@ -98,7 +86,6 @@ namespace NoCap.Library.Commands {
             };
 
             var request = GetRequest(uriBuilder.Uri, @"GET");
-            OnPreprocessRequest(request);
 
             progress.Progress = 1;
 
@@ -107,7 +94,6 @@ namespace NoCap.Library.Commands {
 
         private HttpWebRequest BuildPostRequest(IDictionary<string, string> parameters, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var request = GetRequest(Uri, @"POST");
-            OnPreprocessRequest(request);
 
             var builder = new MultipartDataBuilder();
 

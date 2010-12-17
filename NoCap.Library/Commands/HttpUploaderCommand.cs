@@ -25,8 +25,6 @@ namespace NoCap.Library.Commands {
                 PostData = GetPostData(data),
             };
 
-            uploader.PreprocessRequest += (sender, request) => PreprocessRequest(request);
-
             try {
                 var response = uploader.Execute(progress, cancelToken, RequestMethod);
 
@@ -52,10 +50,6 @@ namespace NoCap.Library.Commands {
             get {
                 return HttpRequestMethod.Post;
             }
-        }
-
-        protected virtual void PreprocessRequest(HttpWebRequest request) {
-            // Do nothing
         }
 
         public abstract ICommandFactory GetFactory();
