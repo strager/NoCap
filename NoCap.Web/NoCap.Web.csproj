@@ -53,7 +53,6 @@
     <Compile Include="Multipart\IMultipartEntry.cs" />
     <Compile Include="Multipart\IMultipartHeader.cs" />
     <Compile Include="Multipart\MultipartBuilder.cs" />
-    <Compile Include="Multipart\MultipartEntry.cs" />
     <Compile Include="Multipart\MultipartEntryBase.cs" />
     <Compile Include="Multipart\MultipartHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
