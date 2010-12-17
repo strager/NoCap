@@ -9,7 +9,7 @@ using NoCap.Library.Progress;
 using NoCap.Web;
 using NoCap.Web.Multipart;
 
-namespace NoCap.Library.Commands {
+namespace NoCap.Library.Util {
     public enum HttpRequestMethod {
         Get,
         Post,

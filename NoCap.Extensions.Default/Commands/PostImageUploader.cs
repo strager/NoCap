@@ -10,6 +10,7 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Imaging;
+using NoCap.Library.Util;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {

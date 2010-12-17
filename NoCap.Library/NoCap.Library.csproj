@@ -58,7 +58,7 @@
     <Compile Include="CommandExtensions.cs" />
     <Compile Include="CommandFactoryExtensions.cs" />
     <Compile Include="CommandProvider.cs" />
-    <Compile Include="Commands\HttpRequest.cs" />
+    <Compile Include="Util\HttpRequest.cs" />
     <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
     <Compile Include="Controls\FramedCommandEditor.xaml.cs">
       <DependentUpon>FramedCommandEditor.xaml</DependentUpon>

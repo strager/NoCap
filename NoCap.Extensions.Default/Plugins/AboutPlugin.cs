@@ -10,6 +10,7 @@ using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Extensions;
 using NoCap.Library.Progress;
+using NoCap.Library.Util;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Plugins {

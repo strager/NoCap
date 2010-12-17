@@ -4,6 +4,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
+using NoCap.Library.Util;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Library.Commands {

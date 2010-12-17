@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Multipart\FormMultipartEntry.cs" />
     <Compile Include="HttpUtility.cs" />
+    <Compile Include="Multipart\FormMultipartEntry.cs" />
     <Compile Include="Multipart\IMultipartEntry.cs" />
     <Compile Include="Multipart\IMultipartHeader.cs" />
     <Compile Include="Multipart\MultipartDataBuilder.cs" />
