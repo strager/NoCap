@@ -20,27 +20,12 @@ using ICommand = NoCap.Library.ICommand;
 using Separator = System.Windows.Controls.Separator;
 
 namespace NoCap.Extensions.Default.Plugins {
-    [Export(typeof(IPlugin)), Serializable]
-    class TaskbarPlugin : IPlugin, ISerializable {
-        [NonSerialized]
+    [Export(typeof(IPlugin))]
+    [DataContract(Name = "TaskbarPlugin")]
+    sealed class TaskbarPlugin : IPlugin, IExtensibleDataObject {
         private NoCapLogo logo;
-
-        [NonSerialized]
         private TaskbarIcon taskbarIcon;
-
-        [NonSerialized]
         private ICommandRunner commandRunner;
-
-        public TaskbarPlugin() {
-        }
-
-        public TaskbarPlugin(SerializationInfo info, StreamingContext context) {
-            // Do nothing.
-        }
-
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
-            // Do nothing.
-        }
 
         private void AddBindings() {
             var app = Application.Current;
@@ -219,6 +204,11 @@ namespace NoCap.Extensions.Default.Plugins {
 
         public void Dispose() {
             this.taskbarIcon.Dispose();
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

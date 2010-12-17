@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Imaging;
+using NoCap.Library.Util;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class ImagebinCaUploader : ImageUploader {
+    [DataContract(Name = "ImagebinCaUploader")]
+    public sealed class ImagebinCaUploader : ImageUploaderCommand, IExtensibleDataObject {
         private static readonly Regex LinkInHtml = new Regex(
             @"http://imagebin.ca/view/(?<Code>.*?).html",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
@@ -32,29 +34,28 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            helper.File((Stream) originalData.Data, "f", originalData.Name);
-        }
-
         public override ICommandFactory GetFactory() {
             return new ImagebinCaUploaderFactory();
         }
 
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["t"] = "file";
-            parameters["name"] = data.Name ?? "";
-            parameters["tags"] = Tags ?? "";
-            parameters["description"] = Description ?? "";
-            parameters["adult"] = IsPrivate ? "t" : "f";
-            parameters["sfile"] = "Upload";
-            parameters["url"] = "";
+        protected override MultipartData GetRequestData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.File((Stream) data.Data, "f", data.Name);
+            builder.KeyValuePairs(new Dictionary<string, string> {
+                { "t", "file" },
+                { "name", data.Name ?? "" },
+                { "tags", Tags ?? "" },
+                { "description", Description ?? "" },
+                { "adult", IsPrivate ? "t" : "f" },
+                { "sfile", "Upload" },
+                { "url", "" },
+            });
 
-            return parameters;
+            return builder.GetData();
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            string html = GetResponseText(response);
+            string html = HttpRequest.GetResponseText(response);
 
             // Sorry for using regexp to parse HTML, but
             // including an HTML parsing library as a
@@ -73,17 +74,25 @@ namespace NoCap.Extensions.Default.Commands {
             return new Uri(string.Format(@"http://imagebin.ca/img/{0}", code));
         }
 
+        [DataMember(Name = "TagsString")]
         public string Tags {
             get;
             set;
         }
 
+        [DataMember(Name = "Description")]
         public string Description {
             get;
             set;
         }
 
+        [DataMember(Name = "IsPrivate")]
         public bool IsPrivate {
+            get;
+            set;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

@@ -1,10 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Runtime {
     [DataContract]
-    public class FeaturedCommandProxy : CommandProxy {
+    public class FeaturedCommandProxy : CommandProxy, IExtensibleDataObject {
         [DataMember]
         private readonly FeaturedCommandCollection commandCollection;
 
@@ -24,6 +25,11 @@ namespace NoCap.GUI.WPF.Runtime {
         public FeaturedCommandProxy(FeaturedCommandCollection commandCollection, CommandFeatures features) {
             this.commandCollection = commandCollection;
             this.features = features;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

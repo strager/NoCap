@@ -13,15 +13,12 @@ using NoCap.Library.Util;
 using WinputDotNet;
 
 namespace NoCap.Extensions.Default.Plugins {
-    [Export(typeof(IPlugin)), Serializable]
-    public class InputBindingsPlugin : IPlugin, ISerializable {
-        [NonSerialized]
+    [Export(typeof(IPlugin))]
+    [DataContract(Name = "InputBindingsPlugin")]
+    public class InputBindingsPlugin : IPlugin, IExtensibleDataObject {
         private bool isSetUp = false;
-
-        [NonSerialized]
         private bool isDisposed = false;
 
-        [NonSerialized]
         private IEnumerable<IInputProvider> inputProviders;
 
         public string Name {
@@ -30,9 +27,9 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
-        [NonSerialized]
         private ICommandRunner commandRunner;
 
+        [DataMember(Name = "CommandBindings")]
         public ObservableCollection<CommandBinding> Bindings {
             get;
             set;
@@ -47,6 +44,20 @@ namespace NoCap.Extensions.Default.Plugins {
         public IInputProvider InputProvider {
             get;
             set;
+        }
+
+        [DataMember(Name = "InputProviderType")]
+        private Type InputProviderType {
+            get {
+                var inputProvider = InputProvider;
+
+                return inputProvider == null ? null : inputProvider.GetType();
+            }
+
+            set {
+                // TODO Use instance in inputProviders collection
+                InputProvider = (IInputProvider) Activator.CreateInstance(value);
+            }
         }
 
         public UIElement GetEditor(ICommandProvider commandProvider) {
@@ -157,13 +168,20 @@ namespace NoCap.Extensions.Default.Plugins {
             InputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
 
             Bindings = info.GetValue<ObservableCollection<CommandBinding>>("Bindings");
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context) {
+            if (Bindings == null) {
+                Bindings = new ObservableCollection<CommandBinding>();
+            }
 
             Bindings.CollectionChanged += (sender, e) => UpdateBindings();
         }
 
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("InputProvider type", InputProvider == null ? null : InputProvider.GetType());
-            info.AddValue("Bindings", Bindings);
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

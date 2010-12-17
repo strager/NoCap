@@ -1,50 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 
 namespace NoCap.Web.Multipart {
-    public class MultipartBuilder {
-        public ICollection<IMultipartEntry> Entries {
-            get;
-            private set;
+    public class MultipartData {
+        private readonly IEnumerable<IMultipartEntry> entries;
+        private readonly string boundary;
+
+        public IEnumerable<IMultipartEntry> Entries {
+            get {
+                return this.entries;
+            }
         }
 
         public string Boundary {
-            get;
-            set;
+            get {
+                return this.boundary;
+            }
         }
 
-        public MultipartBuilder() {
-            Entries = new List<IMultipartEntry>();
-            Boundary = Utility.GetRandomBoundary();
-        }
-        
-        public MultipartBuilder(IEnumerable<IMultipartEntry> entries) {
-            Entries = entries.ToList();
-            Boundary = Utility.GetRandomBoundary();
+        public MultipartData(IEnumerable<IMultipartEntry> entries) :
+            this(entries, Utility.GetRandomBoundary()) {
         }
 
-        public MultipartBuilder KeyValuePair(string name, string value) {
-            Entries.Add(new FormMultipartEntry(name, value));
-
-            return this;
-        }
-
-        public MultipartBuilder KeyValuePairs(IDictionary<string, string> pairs) {
-            return pairs.Aggregate(
-                this,
-                (current, pair) => current.KeyValuePair(pair.Key, pair.Value)
-            );
-        }
-
-        public MultipartBuilder File(Stream stream, string name = null, string fileName = null) {
-            Entries.Add(new FileMultipartEntry(stream, name) {
-                FileName = fileName
-            });
-
-            return this;
+        public MultipartData(IEnumerable<IMultipartEntry> entries, string boundary) {
+            this.entries = new ReadOnlyCollection<IMultipartEntry>(entries.ToList());
+            this.boundary = boundary;
         }
 
         public long GetByteCount() {

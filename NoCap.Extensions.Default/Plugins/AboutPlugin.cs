@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web;
+using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows;
 using NoCap.Library;
+using NoCap.Library.Commands;
 using NoCap.Library.Extensions;
+using NoCap.Library.Progress;
+using NoCap.Library.Util;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
-    [Serializable]
-    class AboutPlugin : IPlugin {
+    [DataContract(Name = "AboutPlugin")]
+    sealed class AboutPlugin : IPlugin, IExtensibleDataObject {
         public void Dispose() {
             // Do nothing.
         }
@@ -25,6 +27,7 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        [DataMember(Name = "FeedbackUserName")]
         public string FeedbackUserName {
             get;
             set;
@@ -40,6 +43,11 @@ namespace NoCap.Extensions.Default.Plugins {
 
         public void Initialize(IPluginContext pluginContext) {
             // Do nothing.
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 
@@ -79,32 +87,15 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void Submit() {
-            // FIXME SORRY; COPYPASTED FROM NoCap.Library.Commands.HttpUploader
+            var builder = new MultipartDataBuilder();
+            builder.KeyValuePairs(new Dictionary<string, string> {
+                    { "name", UserName ?? "" },
+                    { "message", Message ?? "" },
+            });
 
-            var parameters = new Dictionary<string, string> {
-                { "name", UserName ?? "" },
-                { "message", Message ?? "" },
-            };
-
-            var builder = new MultipartBuilder();
-            builder.KeyValuePairs(parameters);
-
-            var boundary = builder.Boundary;
-
-            var request = (HttpWebRequest) WebRequest.Create(Uri);
-            request.Method = @"POST";
-            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-
-            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
-
-            request.BeginGetRequestStream((ar) => {
-                var requestStream = request.EndGetRequestStream(ar);
-
-                Utility.WriteBoundary(requestStream, boundary);
-                builder.Write(requestStream);
-
-                request.BeginGetResponse((ar2) => request.EndGetResponse(ar2), null);
-            }, null);
+            ThreadPool.QueueUserWorkItem((o) => {
+                HttpRequest.Execute(Uri, builder.GetData(), HttpRequestMethod.Post, new MutableProgressTracker(), CancellationToken.None);
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

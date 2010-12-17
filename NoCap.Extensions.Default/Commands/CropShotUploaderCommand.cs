@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
@@ -7,8 +8,8 @@ using NoCap.Library.Progress;
 using NoCap.Library.Commands;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
+    [DataContract(Name = "CropShotUploader")]
+    public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged, IExtensibleDataObject {
         private ICommand imageUploader;
         private ICommand renamer;
 
@@ -16,6 +17,7 @@ namespace NoCap.Extensions.Default.Commands {
             get { return "Crop shot uploader"; }
         }
 
+        [DataMember(Name = "ImageUploader")]
         public ICommand ImageUploader {
             get {
                 return this.imageUploader;
@@ -28,6 +30,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Renamer")]
         public ICommand Renamer {
             get {
                 return this.renamer;
@@ -76,12 +79,17 @@ namespace NoCap.Extensions.Default.Commands {
             remove { this.propertyChanged -= value; }
         }
 
-        protected void Notify(string propertyName) {
+        private void Notify(string propertyName) {
             var handler = this.propertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

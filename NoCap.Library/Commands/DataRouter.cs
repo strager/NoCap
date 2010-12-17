@@ -85,7 +85,7 @@ namespace NoCap.Library.Commands {
             Routes.Add(key, value);
         }
 
-        public ExtensionDataObject ExtensionData {
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

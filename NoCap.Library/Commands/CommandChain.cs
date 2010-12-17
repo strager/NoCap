@@ -61,7 +61,7 @@ namespace NoCap.Library.Commands {
             }).ToList();
 
             var aggregateProgress = new AggregateProgressTracker(commandProgressTrackers.Select(
-                (cpt) => new AggregateProgressTrackerInformation(
+                (cpt) => new ProgressTrackerCollectionItem(
                     cpt.ProgressTracker,
                     cpt.Command.ProcessTimeEstimate.ProgressWeight
                 )
@@ -110,7 +110,7 @@ namespace NoCap.Library.Commands {
             return this.commands.All((command) => command.IsValidAndNotNull());
         }
 
-        public ExtensionDataObject ExtensionData {
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

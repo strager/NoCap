@@ -1,15 +1,14 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
-    [DataContract(Name = "UrlShortener")]
-    public abstract class UrlShortener : HttpUploader {
+    [DataContract(Name = "TextUploader")]
+    public abstract class TextUploaderCommand : HttpUploaderCommand {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
-                case TypedDataType.Uri:
+                case TypedDataType.Text:
                     return Upload(data, progress, cancelToken);
 
                 default:
@@ -18,9 +17,7 @@ namespace NoCap.Library.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            var urlText = GetResponseText(response);
-
-            return TypedData.FromUri(new Uri(urlText, UriKind.Absolute), originalData.Name);
+            return TypedData.FromUri(response.ResponseUri, originalData.Name);
         }
     }
 }

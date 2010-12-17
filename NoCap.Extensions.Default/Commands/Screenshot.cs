@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class Screenshot : ICommand {
+    [DataContract(Name = "Screenshot")]
+    public sealed class Screenshot : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "Screenshot"; }
         }
 
+        [DataMember(Name = "Source")]
         public ScreenshotSourceType SourceType {
             get;
             set;
@@ -49,6 +48,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
     

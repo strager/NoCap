@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 
 namespace NoCap.Library {
-    // TODO Should inheriting from UIElement/FrameworkElement be enforced?
     /// <summary>
     /// Represents a GUI editor of an instance of <see cref="ICommand"/>.
     /// </summary>

@@ -11,7 +11,7 @@ using NoCap.Library.Extensions;
 namespace NoCap.GUI.WPF.Runtime {
     // TODO Observable
     [DataContract]
-    public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable {
+    public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable, IExtensibleDataObject {
         [DataMember(Name = "Plugins")]
         private readonly IList<IPlugin> plugins = new List<IPlugin>();
 
@@ -75,6 +75,11 @@ namespace NoCap.GUI.WPF.Runtime {
             foreach (var plugin in this.plugins) {
                 plugin.Dispose();
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

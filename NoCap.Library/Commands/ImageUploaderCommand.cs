@@ -5,14 +5,14 @@ using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
     [DataContract(Name = "ImageUploader")]
-    public abstract class ImageUploader : HttpUploader {
+    public abstract class ImageUploaderCommand : HttpUploaderCommand {
         [DataMember(Name = "ImageWriter")]
         public ImageWriter ImageWriter {
             get;
             protected set;
         }
 
-        protected ImageUploader(ImageWriter writer) {
+        protected ImageUploaderCommand(ImageWriter writer) {
             ImageWriter = writer;
         }
 
@@ -22,9 +22,9 @@ namespace NoCap.Library.Commands {
                     var rawImageProgress = new MutableProgressTracker();
                     var uploadProgress = new MutableProgressTracker();
 
-                    var aggregateProgress = new AggregateProgressTracker(new [] {
-                        new AggregateProgressTrackerInformation(rawImageProgress, ImageWriter.ProcessTimeEstimate.ProgressWeight),
-                        new AggregateProgressTrackerInformation(uploadProgress, ProcessTimeEstimate.ProgressWeight), 
+                    var aggregateProgress = new AggregateProgressTracker(new ProgressTrackerCollection {
+                        { rawImageProgress, ImageWriter.ProcessTimeEstimate.ProgressWeight },
+                        { uploadProgress, ProcessTimeEstimate.ProgressWeight }, 
                     });
 
                     aggregateProgress.BindTo(progress);

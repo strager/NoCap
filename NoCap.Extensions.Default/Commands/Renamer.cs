@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public class Renamer : ICommand, INotifyPropertyChanged {
+    [DataContract(Name = "Renamer")]
+    public sealed class Renamer : ICommand, INotifyPropertyChanged, IExtensibleDataObject {
         public string Name {
             get {
                 return "Renamer";
@@ -20,6 +16,7 @@ namespace NoCap.Extensions.Default.Commands {
 
         private string nameFormat;
 
+        [DataMember(Name = "Format")]
         public string NameFormat {
             get {
                 return this.nameFormat;
@@ -64,15 +61,19 @@ namespace NoCap.Extensions.Default.Commands {
             return true;
         }
 
-        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void Notify(string propertyName) {
+        private void Notify(string propertyName) {
             var handler = PropertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

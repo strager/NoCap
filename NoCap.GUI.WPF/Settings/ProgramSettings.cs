@@ -12,7 +12,7 @@ using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "ProgramSettings")]
-    sealed class ProgramSettingsData {
+    sealed class ProgramSettingsData : IExtensibleDataObject {
         public ProgramSettingsData() {
             this.plugins = new PluginCollection();
             this.defaultCommands = new FeaturedCommandCollection();
@@ -53,6 +53,11 @@ namespace NoCap.GUI.WPF.Settings {
             get {
                 return this.plugins;
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 

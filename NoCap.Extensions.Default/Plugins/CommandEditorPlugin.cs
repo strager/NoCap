@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Runtime.Serialization;
 using System.Windows;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 
 namespace NoCap.Extensions.Default.Plugins {
-    [Export(typeof(IPlugin)), Serializable]
-    class CommandEditorPlugin : IPlugin {
+    [Export(typeof(IPlugin))]
+    [DataContract(Name = "CommandEditorPlugin")]
+    class CommandEditorPlugin : IPlugin, IExtensibleDataObject {
         public string Name {
             get {
                 return "Commands";
@@ -23,6 +25,11 @@ namespace NoCap.Extensions.Default.Plugins {
 
         void IDisposable.Dispose() {
             // Do nothing.
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

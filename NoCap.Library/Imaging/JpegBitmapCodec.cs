@@ -9,7 +9,7 @@ using NoCap.Library.Progress;
 
 namespace NoCap.Library.Imaging {
     [DataContract(Name = "JpegBitmapCodec")]
-    public sealed class JpegBitmapCodec : BitmapCodec {
+    public sealed class JpegBitmapCodec : BitmapCodec, IExtensibleDataObject {
         private static readonly ImageFormat EncoderFormat = ImageFormat.Jpeg;
 
         private int quality = 80;
@@ -75,6 +75,11 @@ namespace NoCap.Library.Imaging {
             progress.Progress = 1;
 
             return stream;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

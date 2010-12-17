@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Forms;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
-using NoCap.Library.Util;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class Clipboard : ICommand {
+    [DataContract(Name = "Clipboard")]
+    public sealed class Clipboard : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "Clipboard"; }
         }
@@ -102,6 +101,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }
