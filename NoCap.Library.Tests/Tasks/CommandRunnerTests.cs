@@ -111,15 +111,18 @@ namespace NoCap.Library.Tests.Tasks {
 
             ICommandTask task = null;
             TaskState? taskStateInCommand = null;
+            var taskReadySync = new AutoResetEvent(false);
 
             var mockCommand = GetCommandMock();
             mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
+                    taskReadySync.WaitOne();
                     taskStateInCommand = task.State;
                 });
 
             task = runner.Run(mockCommand.Object);
+            taskReadySync.Set();
             task.WaitHandle.WaitOne();
 
             Assert.IsNotNull(taskStateInCommand);
@@ -257,7 +260,7 @@ namespace NoCap.Library.Tests.Tasks {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
 
-        private void AssertCanceledExceptionsSame(CommandCanceledException expected, Exception actual) {
+        private static void AssertCanceledExceptionsSame(CommandCanceledException expected, Exception actual) {
             if (expected == null && actual == null) {
                 return;
             }
