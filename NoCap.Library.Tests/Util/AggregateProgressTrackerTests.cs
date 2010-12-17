@@ -7,10 +7,10 @@ namespace NoCap.Library.Tests.Util {
         [Test]
         public void ProgressAverage() {
             var npts = new[] {
-                GetTracker(1, 0),
-                GetTracker(1, 0),
-                GetTracker(1, 0),
-                GetTracker(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
             };
 
             var apt = new AggregateProgressTracker(npts);
@@ -18,10 +18,10 @@ namespace NoCap.Library.Tests.Util {
             Assert.AreEqual(0, apt.Progress);
             
             npts = new[] {
-                GetTracker(1, 1),
-                GetTracker(1, 0.5),
-                GetTracker(1, 0.5),
-                GetTracker(1, 0),
+                GetTrackerItem(1, 1),
+                GetTrackerItem(1, 0.5),
+                GetTrackerItem(1, 0.5),
+                GetTrackerItem(1, 0),
             };
 
             apt = new AggregateProgressTracker(npts);
@@ -29,10 +29,10 @@ namespace NoCap.Library.Tests.Util {
             Assert.AreEqual((1 + 0.5 + 0.5 + 0) / 4, apt.Progress);
 
             npts = new[] {
-                GetTracker(1, 1),
-                GetTracker(1, 1),
-                GetTracker(1, 1),
-                GetTracker(1, 1),
+                GetTrackerItem(1, 1),
+                GetTrackerItem(1, 1),
+                GetTrackerItem(1, 1),
+                GetTrackerItem(1, 1),
             };
 
             apt = new AggregateProgressTracker(npts);
@@ -43,9 +43,9 @@ namespace NoCap.Library.Tests.Util {
         [Test]
         public void ProgressUsesWeights() {
             var npts = new[] {
-                GetTracker(1, 0.5),
-                GetTracker(2, 0.25),
-                GetTracker(4, 1),
+                GetTrackerItem(1, 0.5),
+                GetTrackerItem(2, 0.25),
+                GetTrackerItem(4, 1),
             };
 
             var apt = new AggregateProgressTracker(npts);
@@ -56,10 +56,10 @@ namespace NoCap.Library.Tests.Util {
         [Test]
         public void ProgressChangesWhenChildChanges() {
             var npts = new[] {
-                GetTracker(1, 0),
-                GetTracker(1, 0),
-                GetTracker(1, 0),
-                GetTracker(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
+                GetTrackerItem(1, 0),
             };
 
             var apt = new AggregateProgressTracker(npts);
@@ -82,8 +82,8 @@ namespace NoCap.Library.Tests.Util {
             Assert.AreEqual(7 / 8.0, apt.Progress);
         }
 
-        private static AggregateProgressTrackerInformation GetTracker(double weight, double progress) {
-            return new AggregateProgressTrackerInformation(
+        private static ProgressTrackerCollectionItem GetTrackerItem(double weight, double progress) {
+            return new ProgressTrackerCollectionItem(
                 new MutableProgressTracker { Progress = progress },
                 weight
             );

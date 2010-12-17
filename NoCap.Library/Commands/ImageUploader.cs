@@ -22,9 +22,9 @@ namespace NoCap.Library.Commands {
                     var rawImageProgress = new MutableProgressTracker();
                     var uploadProgress = new MutableProgressTracker();
 
-                    var aggregateProgress = new AggregateProgressTracker(new [] {
-                        new AggregateProgressTrackerInformation(rawImageProgress, ImageWriter.ProcessTimeEstimate.ProgressWeight),
-                        new AggregateProgressTrackerInformation(uploadProgress, ProcessTimeEstimate.ProgressWeight), 
+                    var aggregateProgress = new AggregateProgressTracker(new ProgressTrackerCollection {
+                        { rawImageProgress, ImageWriter.ProcessTimeEstimate.ProgressWeight },
+                        { uploadProgress, ProcessTimeEstimate.ProgressWeight }, 
                     });
 
                     aggregateProgress.BindTo(progress);

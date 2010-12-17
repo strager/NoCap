@@ -61,7 +61,7 @@ namespace NoCap.Library.Commands {
             }).ToList();
 
             var aggregateProgress = new AggregateProgressTracker(commandProgressTrackers.Select(
-                (cpt) => new AggregateProgressTrackerInformation(
+                (cpt) => new ProgressTrackerCollectionItem(
                     cpt.ProgressTracker,
                     cpt.Command.ProcessTimeEstimate.ProgressWeight
                 )

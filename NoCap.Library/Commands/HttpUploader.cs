@@ -30,9 +30,9 @@ namespace NoCap.Library.Commands {
             var requestProgress = new MutableProgressTracker();
             var responseProgress = new MutableProgressTracker();
 
-            var aggregateProgress = new AggregateProgressTracker(new[] {
-                new AggregateProgressTrackerInformation(requestProgress,  TimeEstimates.LongOperation.ProgressWeight), 
-                new AggregateProgressTrackerInformation(responseProgress, TimeEstimates.ShortOperation.ProgressWeight), 
+            var aggregateProgress = new AggregateProgressTracker(new ProgressTrackerCollection {
+                { requestProgress,  TimeEstimates.LongOperation.ProgressWeight },
+                { responseProgress, TimeEstimates.ShortOperation.ProgressWeight }, 
             });
 
             aggregateProgress.BindTo(progress);
