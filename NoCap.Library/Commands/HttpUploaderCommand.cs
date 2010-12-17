@@ -18,19 +18,19 @@ namespace NoCap.Library.Commands {
 
         public abstract TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken);
 
-        public TypedData Upload(TypedData originalData, IMutableProgressTracker progress, CancellationToken cancelToken) {
+        public TypedData Upload(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var uploader = new HttpUploadRequest {
-                Parameters = GetParameters(originalData),
+                Parameters = GetParameters(data),
                 Uri = Uri,
+                PostData = GetPostData(data),
             };
 
             uploader.PreprocessRequest += (sender, request) => PreprocessRequest(request);
-            uploader.PreprocessRequestData += (sender, builder) => PreprocessRequestData(builder, originalData);
 
             try {
                 var response = uploader.Execute(progress, cancelToken, RequestMethod);
 
-                return GetResponseData(response, originalData);
+                return GetResponseData(response, data);
             } catch (OperationCanceledException e) {
                 throw CommandCanceledException.Wrap(e, this);
             }
@@ -38,12 +38,14 @@ namespace NoCap.Library.Commands {
 
         protected abstract Uri Uri { get; }
 
-        protected abstract IDictionary<string, string> GetParameters(TypedData data);
+        protected virtual IDictionary<string, string> GetParameters(TypedData data) {
+            return null;
+        }
 
         protected abstract TypedData GetResponseData(HttpWebResponse response, TypedData originalData);
 
-        protected virtual void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            // Do nothing
+        protected virtual MultipartData GetPostData(TypedData data) {
+            return null;
         }
 
         protected virtual HttpRequestMethod RequestMethod {

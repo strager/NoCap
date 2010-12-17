@@ -33,12 +33,15 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            helper.File((Stream) originalData.Data, "f", originalData.Name);
-        }
-
         public override ICommandFactory GetFactory() {
             return new ImagebinCaUploaderFactory();
+        }
+
+        protected override MultipartData GetPostData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.File((Stream) data.Data, "f", data.Name);
+
+            return builder.GetData();
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {

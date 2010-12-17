@@ -32,13 +32,16 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        protected override void PreprocessRequestData(MultipartBuilder helper, TypedData originalData) {
-            helper.File((Stream) originalData.Data, "upload", originalData.Name);
-        }
-
         public PostImageUploader(ImageWriter writer)
             : base(writer) {
             IsAdult = true;
+        }
+
+        protected override MultipartData GetPostData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.File((Stream) data.Data, "upload", data.Name);
+
+            return builder.GetData();
         }
 
         protected override IDictionary<string, string> GetParameters(TypedData data) {

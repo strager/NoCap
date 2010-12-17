@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Net;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows;
 using NoCap.Library;
+using NoCap.Library.Commands;
 using NoCap.Library.Extensions;
+using NoCap.Library.Progress;
 using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Plugins {
@@ -83,32 +86,17 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void Submit() {
-            // FIXME SORRY; COPYPASTED FROM NoCap.Library.Commands.HttpUploader
-
-            var parameters = new Dictionary<string, string> {
-                { "name", UserName ?? "" },
-                { "message", Message ?? "" },
+            var request = new HttpUploadRequest {
+                Parameters = new Dictionary<string, string> {
+                    { "name", UserName ?? "" },
+                    { "message", Message ?? "" },
+                },
+                Uri = Uri,
             };
 
-            var builder = new MultipartBuilder();
-            builder.KeyValuePairs(parameters);
-
-            var boundary = builder.Boundary;
-
-            var request = (HttpWebRequest) WebRequest.Create(Uri);
-            request.Method = @"POST";
-            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-
-            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
-
-            request.BeginGetRequestStream((ar) => {
-                var requestStream = request.EndGetRequestStream(ar);
-
-                Utility.WriteBoundary(requestStream, boundary);
-                builder.Write(requestStream);
-
-                request.BeginGetResponse((ar2) => request.EndGetResponse(ar2), null);
-            }, null);
+            ThreadPool.QueueUserWorkItem((o) => {
+                request.Execute(new MutableProgressTracker(), CancellationToken.None, HttpRequestMethod.Post);
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

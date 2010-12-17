@@ -24,21 +24,17 @@ namespace NoCap.Library.Commands {
             set;
         }
 
+        public MultipartData PostData {
+            get;
+            set;
+        }
+
         // TODO Make these not events
         // (not adhering to the convention is a reminder!)
         public event Action<object, HttpWebRequest> PreprocessRequest;
-        public event Action<object, MultipartBuilder> PreprocessRequestData;
 
         private void OnPreprocessRequest(HttpWebRequest request) {
             var handler = PreprocessRequest;
-
-            if (handler != null) {
-                handler(this, request);
-            }
-        }
-
-        private void OnPreprocessRequestData(MultipartBuilder request) {
-            var handler = PreprocessRequestData;
 
             if (handler != null) {
                 handler(this, request);
@@ -113,15 +109,17 @@ namespace NoCap.Library.Commands {
             var request = GetRequest(Uri, @"POST");
             OnPreprocessRequest(request);
 
-            var builder = new MultipartBuilder();
+            var builder = new MultipartDataBuilder();
+
+            if (PostData != null) {
+                builder.Data(PostData);
+            }
 
             if (parameters != null) {
                 builder.KeyValuePairs(parameters);
             }
 
-            OnPreprocessRequestData(builder);
-
-            WritePostData(request, builder, progress, cancelToken);
+            WritePostData(request, builder.GetData(), progress, cancelToken);
 
             return request;
         }
@@ -137,18 +135,18 @@ namespace NoCap.Library.Commands {
             return request;
         }
 
-        private static void WritePostData(HttpWebRequest request, MultipartBuilder builder, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var boundary = builder.Boundary;
+        private static void WritePostData(HttpWebRequest request, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            var boundary = data.Boundary;
 
             request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
+            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + data.GetByteCount();
 
             using (var requestStream = request.GetRequestStream())
             using (var progressStream = new ProgressTrackingStreamWrapper(requestStream, request.ContentLength)) {
                 progressStream.BindTo(progress);
 
                 Utility.WriteBoundary(progressStream, boundary);
-                builder.Write(progressStream, cancelToken);
+                data.Write(progressStream, cancelToken);
             }
 
             System.Diagnostics.Debug.Assert(progress.Progress == 1);

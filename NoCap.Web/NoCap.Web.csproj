@@ -52,7 +52,8 @@
     <Compile Include="HttpUtility.cs" />
     <Compile Include="Multipart\IMultipartEntry.cs" />
     <Compile Include="Multipart\IMultipartHeader.cs" />
-    <Compile Include="Multipart\MultipartBuilder.cs" />
+    <Compile Include="Multipart\MultipartDataBuilder.cs" />
+    <Compile Include="Multipart\MultipartData.cs" />
     <Compile Include="Multipart\MultipartEntryBase.cs" />
     <Compile Include="Multipart\MultipartHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
