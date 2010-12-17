@@ -26,7 +26,7 @@
             SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ItemsControl>
+                    <ItemsControl Focusable="False">
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="{Binding Name}"
                                 Margin="0,3,3,0"
