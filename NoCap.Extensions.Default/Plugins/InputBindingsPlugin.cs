@@ -109,12 +109,10 @@ namespace NoCap.Extensions.Default.Plugins {
             if (InputProvider == null) {
                 return;
             }
-
-            var handle = IntPtr.Zero;
             
             InputProvider.CommandStateChanged += CommandStateChanged;
             UpdateBindings();
-            InputProvider.Attach(handle);
+            InputProvider.Attach();
         }
 
         private void ShutDownInput() {

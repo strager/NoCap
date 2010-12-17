@@ -34,7 +34,7 @@ namespace NoCap.Extensions.Default.Helpers {
 
             var handle = new WindowInteropHelper(this).Handle;
 
-            this.provider.AttachRecorder(handle, RecordingMade);
+            this.provider.AttachRecorder(RecordingMade);
         }
 
         private void RecordingMade(IInputSequence input) {
