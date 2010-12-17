@@ -5,7 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:library="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
     mc:Ignorable="d" d:DesignHeight="282" d:DesignWidth="357"
-    Name="editor">
+    Name="editor"
+    Focusable="False">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

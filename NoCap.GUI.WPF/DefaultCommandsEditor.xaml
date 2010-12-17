@@ -6,7 +6,8 @@
     xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
-    Name="editor">
+    Name="editor"
+    Focusable="False">
     <ContentControl.Resources>
         <Controls:CommandFeatureFilterConverter x:Key="FeatureFilterConverter" />
     </ContentControl.Resources>
