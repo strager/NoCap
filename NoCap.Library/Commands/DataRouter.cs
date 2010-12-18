@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -31,7 +32,7 @@ namespace NoCap.Library.Commands {
     }
 
     [DataContract(Name = "DataRouter")]
-    public sealed class DataRouter : ICommand, IExtensibleDataObject {
+    public sealed class DataRouter : IEnumerable, ICommand, IExtensibleDataObject {
         private readonly ITimeEstimate timeEstimate;
         private readonly IDictionary<TypedDataType, ICommand> routes;
 
@@ -88,6 +89,10 @@ namespace NoCap.Library.Commands {
         ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
+        }
+
+        public IEnumerator GetEnumerator() {
+            return this.routes.GetEnumerator();
         }
     }
 }

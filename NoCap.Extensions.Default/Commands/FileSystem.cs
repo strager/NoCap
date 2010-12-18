@@ -29,7 +29,7 @@ namespace NoCap.Extensions.Default.Commands {
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Stream:
-                    string path = Path.Combine(RootPath, data.Name);
+                    string path = Path.Combine(RootPath ?? "", data.Name);
 
                     using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {
                         var inputStream = (Stream) data.Data;
