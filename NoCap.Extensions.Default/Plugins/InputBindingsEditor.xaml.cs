@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using WinputDotNet;
@@ -81,6 +82,30 @@ namespace NoCap.Extensions.Default.Plugins {
             CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Delete, UnsetBinding, CanUnsetBinding));
         }
 
+        private void ResizeColumnsHack() {
+            // HACK Clearly a hack, taken from http://stackoverflow.com/questions/845269/force-resize-of-gridview-columns-inside-listview/1007643#1007643
+            // We use BeginInvoke to allow binding to occur to hide/show
+            // "(Remove)" and stuff which affects the column size.
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                var gridView = bindingsList.View as GridView;
+
+                if (gridView == null) {
+                    return;
+                }
+
+                foreach (var column in gridView.Columns) {
+                    // Code below was found in GridViewColumnHeader.OnGripperDoubleClicked() event handler (using Reflector)
+                    // i.e. it is the same code that is executed when the gripper is double clicked
+                    if (double.IsNaN(column.Width)) {
+                        column.Width = column.ActualWidth;
+                    }
+
+                    column.Width = double.NaN; // Auto
+                }
+            }));
+        }
+
         private void CanEditBinding(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = (SelectedBinding != null) || (e.Parameter is MutableCommandBinding);
             e.Handled = true;
@@ -113,6 +138,8 @@ namespace NoCap.Extensions.Default.Plugins {
             }
 
             binding.Input = inputSequence;
+
+            ResizeColumnsHack();
         }
 
         private void UnsetBinding(object sender, ExecutedRoutedEventArgs e) {
@@ -129,6 +156,8 @@ namespace NoCap.Extensions.Default.Plugins {
             }
 
             binding.Input = null;
+
+            ResizeColumnsHack();
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence, ICommand command) {
