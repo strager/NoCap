@@ -27,6 +27,21 @@ namespace NoCap.Extensions.Default.Plugins {
         private TaskbarIcon taskbarIcon;
         private ICommandRunner commandRunner;
 
+        private bool showNotificationOnStart = true;
+        private bool showNotificationOnComplete = true;
+
+        [DataMember(Name = "ShowNotificationOnCommandStart")]
+        public bool ShowNotificationOnStart {
+            get { return this.showNotificationOnStart; }
+            set { this.showNotificationOnStart = value; }
+        }
+
+        [DataMember(Name = "ShowNotificationOnCommandEnd")]
+        public bool ShowNotificationOnComplete {
+            get { return this.showNotificationOnComplete; }
+            set { this.showNotificationOnComplete = value; }
+        }
+
         private void AddBindings() {
             var app = Application.Current;
 
@@ -122,21 +137,27 @@ namespace NoCap.Extensions.Default.Plugins {
                     DataContext = new TaskbarPopupViewModel(task)
                 };
 
-                task.Completed += (sender, e) => {
-                    taskPopup.QueueShow();
-                    taskPopup.QueueHide();
-                };
-
-                task.Canceled += (sender, e) => taskPopup.QueueHide();
+                task.Completed += (sender, e) => OnTaskEnded(taskPopup);
+                task.Canceled += (sender, e) => OnTaskEnded(taskPopup);
 
                 this.taskbarIcon.ShowCustomBalloon(taskPopup, PopupAnimation.None, null);
 
-                taskPopup.QueueShow();
+                if (ShowNotificationOnStart) {
+                    taskPopup.QueueShow();
+                }
 
                 if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
                     taskPopup.QueueHide();
                 }
             }));
+        }
+
+        private void OnTaskEnded(TaskPopup taskPopup) {
+            if (ShowNotificationOnComplete) {
+                taskPopup.QueueShow();
+            }
+
+            taskPopup.QueueHide();
         }
 
         public string Name {
@@ -146,7 +167,9 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public UIElement GetEditor(ICommandProvider commandProvider) {
-            return null;
+            return new TaskbarEditor {
+                DataContext = this
+            };
         }
 
         public void Initialize(IPluginContext pluginContext) {
