@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 using WinputDotNet;
 
-namespace NoCap.Extensions.Default.Plugins {
+namespace NoCap.Extensions.Default.Helpers {
     /// <summary>
     /// Interaction logic for BindWindow.xaml
     /// </summary>
@@ -34,7 +34,7 @@ namespace NoCap.Extensions.Default.Plugins {
 
             var handle = new WindowInteropHelper(this).Handle;
 
-            this.provider.AttachRecorder(handle, RecordingMade);
+            this.provider.AttachRecorder(RecordingMade);
         }
 
         private void RecordingMade(IInputSequence input) {

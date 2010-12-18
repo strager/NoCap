@@ -52,6 +52,10 @@
                                     <Hyperlink Command="Open" CommandParameter="{Binding}">
                                         <TextBlock Text="{Binding Input.HumanString, FallbackValue=None}" />
                                     </Hyperlink>
+                                    
+                                    <TextBlock Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=removeButton}">
+                                        <Hyperlink Name="removeButton" Command="Delete" CommandParameter="{Binding}">(Remove)</Hyperlink>
+                                    </TextBlock>
                                 </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

@@ -123,7 +123,7 @@
       <DependentUpon>AboutEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\AboutPlugin.cs" />
-    <Compile Include="Plugins\BindWindow.xaml.cs">
+    <Compile Include="Helpers\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\BoundCommand.cs" />
@@ -235,7 +235,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Plugins\BindWindow.xaml">
+    <Page Include="Helpers\BindWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

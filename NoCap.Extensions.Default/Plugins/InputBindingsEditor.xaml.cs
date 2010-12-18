@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
+using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
@@ -77,10 +79,42 @@ namespace NoCap.Extensions.Default.Plugins {
             DataContext = this;
 
             CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Open, EditBinding, CanEditBinding));
+            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Delete, UnsetBinding, CanUnsetBinding));
+        }
+
+        private void ResizeColumnsHack() {
+            // HACK Clearly a hack, taken from http://stackoverflow.com/questions/845269/force-resize-of-gridview-columns-inside-listview/1007643#1007643
+            // We use BeginInvoke to allow binding to occur to hide/show
+            // "(Remove)" and stuff which affects the column size.
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                var gridView = bindingsList.View as GridView;
+
+                if (gridView == null) {
+                    return;
+                }
+
+                foreach (var column in gridView.Columns) {
+                    // Code below was found in GridViewColumnHeader.OnGripperDoubleClicked() event handler (using Reflector)
+                    // i.e. it is the same code that is executed when the gripper is double clicked
+                    if (double.IsNaN(column.Width)) {
+                        column.Width = column.ActualWidth;
+                    }
+
+                    column.Width = double.NaN; // Auto
+                }
+            }));
         }
 
         private void CanEditBinding(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = (SelectedBinding != null) || (e.Parameter is MutableCommandBinding);
+            e.Handled = true;
+        }
+
+        private void CanUnsetBinding(object sender, CanExecuteRoutedEventArgs e) {
+            var binding = e.Parameter as MutableCommandBinding ?? SelectedBinding;
+
+            e.CanExecute = binding != null && binding.Input != null;
             e.Handled = true;
         }
 
@@ -99,17 +133,42 @@ namespace NoCap.Extensions.Default.Plugins {
 
             IInputSequence inputSequence;
 
-            if (!TryGetInputSequence(out inputSequence)) {
+            if (!TryGetInputSequence(out inputSequence, binding.Command)) {
                 return;
             }
 
             binding.Input = inputSequence;
+
+            ResizeColumnsHack();
         }
 
-        private bool TryGetInputSequence(out IInputSequence inputSequence) {
+        private void UnsetBinding(object sender, ExecutedRoutedEventArgs e) {
+            var binding = e.Parameter as MutableCommandBinding ?? SelectedBinding;
+
+            if (binding != null) {
+                UnsetBinding(binding);
+            }
+        }
+
+        private void UnsetBinding(MutableCommandBinding binding) {
+            if (binding == null) {
+                throw new ArgumentNullException("binding");
+            }
+
+            binding.Input = null;
+
+            ResizeColumnsHack();
+        }
+
+        private bool TryGetInputSequence(out IInputSequence inputSequence, ICommand command) {
             Plugin.ShutDown();
 
-            var window = new BindWindow(Plugin.InputProvider);
+            var window = new BindWindow(Plugin.InputProvider) {
+                DataContext = new {
+                    Command = command,
+                }
+            };
+
             bool success = window.ShowDialog() == true;
 
             inputSequence = success ? window.InputSequence : null;
