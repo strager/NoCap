@@ -21,6 +21,7 @@ namespace NoCap.Extensions.Default.Factories {
             uploader.ImageUploader = commandProvider.GetDefaultCommand(CommandFeatures.ImageUploader);
             uploader.UrlShortener = commandProvider.GetDefaultCommand(CommandFeatures.UrlShortener);
             uploader.TextUploader = commandProvider.GetDefaultCommand(CommandFeatures.TextUploader);
+            uploader.FileUploader = commandProvider.GetDefaultCommand(CommandFeatures.FileUploader);
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {

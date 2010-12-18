@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Forms;
@@ -54,7 +55,17 @@ namespace NoCap.Extensions.Default.Commands {
             if (clipboardData.GetDataPresent(DataFormats.Bitmap)) {
                 return TypedData.FromImage((Bitmap) clipboardData.GetData(DataFormats.Bitmap), clipboardText ?? "clipboard image");
             }
+
+            // File(s)
+            if (clipboardData.GetDataPresent(DataFormats.FileDrop)) {
+                string[] filenames = (string[]) clipboardData.GetData(DataFormats.FileDrop);
                 
+                // TODO support multiple files
+                if (filenames.Length == 1) {
+                    return TypedData.FromStream(File.Open(filenames[0], FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete), Path.GetFileName(filenames[0]));
+                }
+            }
+
             // TODO Handle more clipboard data types
 
             // No text?

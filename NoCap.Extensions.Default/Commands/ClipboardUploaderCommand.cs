@@ -13,8 +13,7 @@ namespace NoCap.Extensions.Default.Commands {
         private ICommand textUploader;
         private ICommand urlShortener;
         private ICommand imageUploader;
-
-        private readonly Clipboard clipboard = new Clipboard();
+        private ICommand fileUploader;
 
         public override string Name {
             get { return "Clipboard uploader"; }
@@ -59,6 +58,19 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "FileUploader")]
+        public ICommand FileUploader {
+            get {
+                return this.fileUploader;
+            }
+
+            set {
+                this.fileUploader = value;
+
+                Notify("FileUploader");
+            }
+        }
+
         public override ICommandFactory GetFactory() {
             return new ClipboardUploaderCommandFactory();
         }
@@ -76,26 +88,18 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var router = new DataRouter();
-
-            router.Add(TypedDataType.Image, new CommandChain(
-                ImageUploader,
-                this.clipboard
-            ));
-
-            router.Add(TypedDataType.Text, new CommandChain(
-                TextUploader,
-                this.clipboard
-            ));
-
-            router.Add(TypedDataType.Uri, new CommandChain(
-                UrlShortener,
-                this.clipboard
-            ));
+            var clipboard = new Clipboard();
+            var router = new DataRouter {
+                { TypedDataType.Image, ImageUploader },
+                { TypedDataType.Text, TextUploader },
+                { TypedDataType.Uri, UrlShortener },
+                { TypedDataType.Stream, FileUploader },
+            };
 
             var commandChain = new CommandChain(
-                this.clipboard,
-                router
+                clipboard,
+                router,
+                clipboard
             );
 
             using (commandChain.Process(null, progress, cancelToken)) {
@@ -103,16 +107,10 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        [NonSerialized]
-        private PropertyChangedEventHandler propertyChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged {
-            add    { this.propertyChanged += value; }
-            remove { this.propertyChanged -= value; }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void Notify(string propertyName) {
-            var handler = this.propertyChanged;
+            var handler = PropertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
