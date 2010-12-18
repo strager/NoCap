@@ -78,10 +78,18 @@ namespace NoCap.Extensions.Default.Plugins {
             DataContext = this;
 
             CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Open, EditBinding, CanEditBinding));
+            CommandBindings.Add(new System.Windows.Input.CommandBinding(ApplicationCommands.Delete, UnsetBinding, CanUnsetBinding));
         }
 
         private void CanEditBinding(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = (SelectedBinding != null) || (e.Parameter is MutableCommandBinding);
+            e.Handled = true;
+        }
+
+        private void CanUnsetBinding(object sender, CanExecuteRoutedEventArgs e) {
+            var binding = e.Parameter as MutableCommandBinding ?? SelectedBinding;
+
+            e.CanExecute = binding != null && binding.Input != null;
             e.Handled = true;
         }
 
@@ -105,6 +113,22 @@ namespace NoCap.Extensions.Default.Plugins {
             }
 
             binding.Input = inputSequence;
+        }
+
+        private void UnsetBinding(object sender, ExecutedRoutedEventArgs e) {
+            var binding = e.Parameter as MutableCommandBinding ?? SelectedBinding;
+
+            if (binding != null) {
+                UnsetBinding(binding);
+            }
+        }
+
+        private void UnsetBinding(MutableCommandBinding binding) {
+            if (binding == null) {
+                throw new ArgumentNullException("binding");
+            }
+
+            binding.Input = null;
         }
 
         private bool TryGetInputSequence(out IInputSequence inputSequence, ICommand command) {
