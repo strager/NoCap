@@ -15,6 +15,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -38,5 +40,9 @@
 
         <Label Grid.Row="5" Grid.Column="0" Content="_Result format" />
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ResultFormat}" />
+        
+        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{DynamicResource PaddedCommandButtonStyle}" Click="TestFtp">_Test</Button>
+        </StackPanel>
     </Grid>
 </ContentControl>
