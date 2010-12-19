@@ -77,7 +77,7 @@ namespace NoCap.Extensions.Default.Commands {
             return OutputPath + "/" + fileName.Replace(@"\", @"\\").Replace(@"/", @"\/");
         }
 
-        [IgnoreDataMember]
+        [DataMember(Name = "Name")]
         public string Name {
             get {
                 return this.name;
