@@ -1,0 +1,29 @@
+﻿<Window x:Class="NoCap.Extensions.Default.Helpers.ConnectionTester"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d"
+    Title="Testing Connection" Height="207" Width="188">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" Margin="6" Name="statusTextBlock" TextWrapping="Wrap" />
+        
+        <ProgressBar Grid.Row="1" Name="progressBar"
+            IsIndeterminate="True" MinHeight="20"
+            Minimum="0" Maximum="1"
+            Margin="6"/>
+        
+        <Button Grid.Row="2"
+            Style="{DynamicResource PaddedCommandButtonStyle}"
+            HorizontalAlignment="Right"
+            IsCancel="True"
+            Command="Close"
+            Content="_Close" />
+    </Grid>
+</Window>

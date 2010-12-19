@@ -106,6 +106,9 @@
     <Compile Include="Commands\CropShot.cs" />
     <Compile Include="Helpers\BitmapElement.cs" />
     <Compile Include="Commands\Clipboard.cs" />
+    <Compile Include="Helpers\ConnectionTester.xaml.cs">
+      <DependentUpon>ConnectionTester.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\CropShotWindow.xaml.cs">
       <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
@@ -224,6 +227,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\SlexyUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Helpers\ConnectionTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
