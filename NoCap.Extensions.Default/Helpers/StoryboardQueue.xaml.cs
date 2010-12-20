@@ -13,12 +13,20 @@ namespace NoCap.Extensions.Default.Helpers {
             Enqueue(storyboard, element, true);
         }
 
+        public void Enqueue(Storyboard storyboard, FrameworkElement element, Action completedCallback) {
+            Enqueue(storyboard, element, completedCallback, true);
+        }
+
         public void Enqueue(Storyboard storyboard, FrameworkElement element, bool allowSame) {
+            Enqueue(storyboard, element, null, allowSame);
+        }
+
+        public void Enqueue(Storyboard storyboard, FrameworkElement element, Action completedCallback, bool allowSame) {
             if (!allowSame && this.runningStoryboard == storyboard) {
                 return;
             }
 
-            queue.Enqueue(new StoryboardQueueItem(storyboard, element));
+            queue.Enqueue(new StoryboardQueueItem(storyboard, element, completedCallback));
 
             if (this.runningStoryboard == null) {
                 StartNextItem();
@@ -26,6 +34,14 @@ namespace NoCap.Extensions.Default.Helpers {
         }
 
         private void ItemCompleted(object sender, EventArgs e) {
+            var item = (StoryboardQueueItem) sender;
+
+            var callback = item.CompletedCallback;
+
+            if (callback != null) {
+                callback();
+            }
+
             if (queue.Any()) {
                 StartNextItem();
             } else {
@@ -44,7 +60,7 @@ namespace NoCap.Extensions.Default.Helpers {
                 completedCallback = (sender, e) => {
                     item.Storyboard.Completed -= completedCallback;
 
-                    ItemCompleted(sender, e);
+                    ItemCompleted(item, e);
                 };
 
                 item.Storyboard.Completed += completedCallback;
