@@ -68,6 +68,7 @@
             <BeginStoryboard Name="HideButtonInAnimation">
                 <Storyboard TargetName="hideButton">
                     <DoubleAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Height" From="0" To="19" Duration="0:00:00.1" />
+                    <ThicknessAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Margin" From="0,19,13,0" To="0,0,13,0" Duration="0:00:00.1" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -77,23 +78,26 @@
             <BeginStoryboard Name="HideButtonOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Height" From="19" To="0" Duration="0:00:00.1" BeginTime="0:00:00.3" />
+                    <ThicknessAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Margin" From="0,0,13,0" To="0,19,13,0" Duration="0:00:00.1" BeginTime="0:00:00.3" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
 
     <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-        <Button Name="hideButton"
-            Command="Close"
-            Content="Hide"
-            HorizontalAlignment="Right"
-            Margin="0,0,13,0"
-            FontSize="13"
-            Padding="5,1,5,0"
-            Foreground="{StaticResource ForegroundBrush}"
-            Background="#99000000"
-            Template="{StaticResource HideButtonTemplate}" />
-        
+        <ContentControl Height="19">
+            <Button Name="hideButton"
+                HorizontalAlignment="Right"
+                Command="Close"
+                Content="Hide"
+                Margin="0,0,13,0"
+                FontSize="13"
+                Padding="5,1,5,0"
+                Foreground="{StaticResource ForegroundBrush}"
+                Background="#99000000"
+                Template="{StaticResource HideButtonTemplate}" />
+        </ContentControl>
+
         <Border BorderThickness="13,10" CornerRadius="3"
             BorderBrush="{StaticResource BackgroundBrush}"
             Background="{StaticResource BackgroundBrush}"
