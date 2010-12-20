@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Forms;
@@ -11,6 +12,9 @@ using NoCap.Library.Progress;
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "Clipboard")]
     public sealed class Clipboard : ICommand, IExtensibleDataObject {
+        private const int RetryTimes = 40;
+        private const int RetryDelay = 50;
+
         public string Name {
             get { return "Clipboard"; }
         }
@@ -38,7 +42,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         private static TypedData GetClipboardData() {
-            var clipboardData = System.Windows.Forms.Clipboard.GetDataObject();
+            var clipboardData = GetRawClipboardData();
 
             if (clipboardData == null) {
                 throw new InvalidOperationException("No data in clipboard");
@@ -86,17 +90,43 @@ namespace NoCap.Extensions.Default.Commands {
             switch (data.DataType) {
                 case TypedDataType.Text:
                 case TypedDataType.Uri:
-                    System.Windows.Forms.Clipboard.SetText(data.Data.ToString(), TextDataFormat.UnicodeText);
+                    SetRawClipboardData(data.Data.ToString());
 
                     break;
 
                 case TypedDataType.Image:
-                    System.Windows.Forms.Clipboard.SetImage((Image) data.Data);
+                    SetRawClipboardData(data.Data);
 
                     break;
 
                 default:
+                    // Do nothing
+
                     break;
+            }
+        }
+
+        private static IDataObject GetRawClipboardData() {
+            retry:
+
+            try {
+                return System.Windows.Forms.Clipboard.GetDataObject();
+            } catch (ExternalException) {
+                WaitForFreeClipboard();
+
+                goto retry;
+            }
+        }
+
+        private static void SetRawClipboardData(object data) {
+            retry:
+
+            try {
+                System.Windows.Forms.Clipboard.SetDataObject(data, true, RetryTimes, RetryDelay);
+            } catch (ExternalException) {
+                WaitForFreeClipboard();
+
+                goto retry;
             }
         }
 
@@ -117,6 +147,13 @@ namespace NoCap.Extensions.Default.Commands {
         ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetOpenClipboardWindow();
+
+        private static void WaitForFreeClipboard() {
+            SpinWait.SpinUntil(() => GetOpenClipboardWindow() == IntPtr.Zero);
         }
     }
 }
