@@ -24,7 +24,7 @@ namespace NoCap.Extensions.Default.Commands {
         private string outputPath = "";
         private string resultFormat = "http://example.com/{0}";
 
-        private int timeout = 20000;
+        private const int Timeout = 20000; // Milliseconds
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             string fileName = data.Name;
@@ -43,7 +43,7 @@ namespace NoCap.Extensions.Default.Commands {
         private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
             using (var client = new FTPSClient()) {
                 try {
-                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, this.timeout);
+                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, Timeout);
                 } catch (TimeoutException e) {
                     throw new CommandCanceledException(this, "Connection to FTP server timed out", e);
                 } catch (IOException e) {
