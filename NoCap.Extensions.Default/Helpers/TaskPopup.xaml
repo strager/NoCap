@@ -7,8 +7,7 @@
     Name="taskPopup"
     Foreground="White"
     Background="Transparent"
-    Padding="10"
-    Height="106">
+    Padding="10">
 
     <UserControl.CommandBindings>
         <CommandBinding Command="Close" Executed="QueueHide" />
@@ -94,43 +93,51 @@
             Foreground="{StaticResource ForegroundBrush}"
             Background="#99000000"
             Template="{StaticResource HideButtonTemplate}" />
-
+        
         <Border BorderThickness="13,10" CornerRadius="3"
             BorderBrush="{StaticResource BackgroundBrush}"
             Background="{StaticResource BackgroundBrush}"
             TextBlock.Foreground="{StaticResource ForegroundBrush}"
-            TextBlock.FontSize="13"
-            Height="67" Width="249">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            TextBlock.FontSize="13" Width="249" MinHeight="67">
+            <ItemsControl ItemsSource="{Binding}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ItemsControl Height="67">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                    Text="{Binding Task.Name}"
-                    VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                    Text="{Binding Task.Name}"
+                                    VerticalAlignment="Center" />
 
-                <Button Grid.Row="0" Grid.Column="1"
-    		        Command="Library:NoCapCommands.Cancel"
-                    Content="_Cancel"
-                    Padding="1,0,3,0"
-                    Background="#5CF10A0A"
-                    Foreground="{StaticResource ForegroundBrush}"
-                    Template="{StaticResource ArrowButtonTemplate}" />
+                                <Button Grid.Row="0" Grid.Column="1"
+    		                        Command="Library:NoCapCommands.Cancel"
+                                    CommandParameter="{Binding Task}"
+                                    Content="_Cancel"
+                                    Padding="1,0,3,0"
+                                    Background="#5CF10A0A"
+                                    Foreground="{StaticResource ForegroundBrush}"
+                                    Template="{StaticResource ArrowButtonTemplate}" />
 
-                <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                    MinHeight="20"
-                    Value="{Binding Progress, Mode=OneWay}"
-                    Minimum="0" Maximum="1" />
+                                <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    MinHeight="20"
+                                    Value="{Binding Progress, Mode=OneWay}"
+                                    Minimum="0" Maximum="1" />
 
-                <TextBlock Grid.Row="1" />
-            </Grid>
+                                <TextBlock Grid.Row="1" />
+                            </Grid>
+                        </ItemsControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Border>
     </StackPanel>
 </UserControl>

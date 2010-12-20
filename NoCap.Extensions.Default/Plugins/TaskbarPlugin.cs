@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Bindable.Linq;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
@@ -26,6 +27,8 @@ namespace NoCap.Extensions.Default.Plugins {
         private NoCapLogo logo;
         private TaskbarIcon taskbarIcon;
         private ICommandRunner commandRunner;
+        private TaskCollection taskCollection;
+        private TaskPopup taskPopup;
 
         private bool showNotificationOnStart = true;
         private bool showNotificationOnComplete = true;
@@ -133,31 +136,25 @@ namespace NoCap.Extensions.Default.Plugins {
 
         private void ShowTaskPopup(ICommandTask task) {
             this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                var taskPopup = new TaskPopup {
-                    DataContext = new TaskbarPopupViewModel(task)
-                };
-
-                task.Completed += (sender, e) => OnTaskEnded(taskPopup);
-                task.Canceled += (sender, e) => OnTaskEnded(taskPopup);
-
-                this.taskbarIcon.ShowCustomBalloon(taskPopup, PopupAnimation.None, null);
+                task.Completed += (sender, e) => OnTaskEnded();
+                task.Canceled += (sender, e) => OnTaskEnded();
 
                 if (ShowNotificationOnStart) {
-                    taskPopup.QueueShow();
+                    this.taskPopup.QueueShow();
                 }
 
                 if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
-                    taskPopup.QueueHide();
+                    this.taskPopup.QueueHide();
                 }
             }));
         }
 
-        private void OnTaskEnded(TaskPopup taskPopup) {
+        private void OnTaskEnded() {
             if (ShowNotificationOnComplete) {
-                taskPopup.QueueShow();
+                this.taskPopup.QueueShow();
             }
 
-            taskPopup.QueueHide();
+            this.taskPopup.QueueHide();
         }
 
         public string Name {
@@ -187,6 +184,22 @@ namespace NoCap.Extensions.Default.Plugins {
             this.commandRunner.TaskCompleted   += EndTask;
             this.commandRunner.ProgressUpdated += UpdateProgress;
             this.commandRunner.TaskCanceled    += CancelTask;
+
+            this.taskCollection = new TaskCollection();
+
+            this.commandRunner.TaskStarted += (sender, e) => {
+                this.taskCollection.AddTask(e.Task);
+            };
+
+            this.taskPopup = new TaskPopup {
+                DataContext = this.taskCollection.Select((t) => new TaskViewModel(t))
+            };
+
+            this.taskPopup.Hidden += (sender, e) => this.taskCollection.RemoveFinishedTasks();
+
+            this.taskPopup.QueueHide();
+
+            this.taskbarIcon.ShowCustomBalloon(this.taskPopup, PopupAnimation.None, null);
 
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
