@@ -21,6 +21,14 @@ using ICommand = NoCap.Library.ICommand;
 using Separator = System.Windows.Controls.Separator;
 
 namespace NoCap.Extensions.Default.Plugins {
+    class TaskbarCommands {
+        public static System.Windows.Input.ICommand ShowTasks;
+
+        static TaskbarCommands() {
+            ShowTasks = new RoutedUICommand("_Show Tasks", "ShowTasks", typeof(TaskbarCommands));
+        }
+    }
+
     [Export(typeof(IPlugin))]
     [DataContract(Name = "TaskbarPlugin")]
     sealed class TaskbarPlugin : IPlugin, IExtensibleDataObject {
@@ -66,6 +74,14 @@ namespace NoCap.Extensions.Default.Plugins {
                 new System.Windows.Input.CommandBinding(
                     NoCapCommands.Execute,
                     (sender, e) => this.commandRunner.Run((ICommand) e.Parameter)
+                ),
+                new System.Windows.Input.CommandBinding(
+                    TaskbarCommands.ShowTasks,
+                    (sender, e) => this.taskPopup.QueueShow(),
+                    (sender, e) => {
+                        e.CanExecute = this.taskCollection.Count != 0;
+                        e.Handled = true;
+                    }
                 )
             });
         }
@@ -218,6 +234,8 @@ namespace NoCap.Extensions.Default.Plugins {
 
             return new ContextMenu {
                 ItemsSource = new CompositeCollection {
+                    new MenuItem { Command = TaskbarCommands.ShowTasks, Header = "_Show Running Tasks" },
+                    new Separator(),
                     new CollectionContainer { Collection = commandMenuItems },
                     new Separator(),
                     new MenuItem { Command = ApplicationCommands.Properties, Header = "_Settings" },
