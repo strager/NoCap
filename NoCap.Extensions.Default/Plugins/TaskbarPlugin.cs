@@ -190,6 +190,7 @@ namespace NoCap.Extensions.Default.Plugins {
                 Visibility = Visibility.Visible,
                 DoubleClickCommand = ApplicationCommands.Properties,
                 ContextMenu = BuildContextMenu(pluginContext),
+                LeftClickCommand = TaskbarCommands.ShowTasks,
             };
 
             this.logo = new NoCapLogo();
