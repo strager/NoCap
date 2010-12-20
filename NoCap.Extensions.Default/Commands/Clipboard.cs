@@ -12,6 +12,7 @@ using NoCap.Library.Progress;
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "Clipboard")]
     public sealed class Clipboard : ICommand, IExtensibleDataObject {
+        private readonly static TimeSpan SpinTimeout = TimeSpan.FromMilliseconds(500);
         private const int RetryTimes = 40;
         private const int RetryDelay = 50;
 
@@ -106,25 +107,39 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [STAThread]
         private static IDataObject GetRawClipboardData() {
             retry:
 
             try {
                 return System.Windows.Forms.Clipboard.GetDataObject();
-            } catch (ExternalException) {
-                WaitForFreeClipboard();
+            } catch (ExternalException e) {
+                bool success;
+
+                WaitForFreeClipboard(out success);
+
+                if (!success) {
+                    throw new OperationCanceledException("Could not read data from clipboard", e);
+                }
 
                 goto retry;
             }
         }
 
+        [STAThread]
         private static void SetRawClipboardData(object data) {
             retry:
 
             try {
                 System.Windows.Forms.Clipboard.SetDataObject(data, true, RetryTimes, RetryDelay);
-            } catch (ExternalException) {
-                WaitForFreeClipboard();
+            } catch (ExternalException e) {
+                bool success;
+
+                WaitForFreeClipboard(out success);
+
+                if (!success) {
+                    throw new OperationCanceledException("Could not store data into clipboard", e);
+                }
 
                 goto retry;
             }
@@ -152,8 +167,8 @@ namespace NoCap.Extensions.Default.Commands {
         [DllImport("user32.dll")]
         private static extern IntPtr GetOpenClipboardWindow();
 
-        private static void WaitForFreeClipboard() {
-            SpinWait.SpinUntil(() => GetOpenClipboardWindow() == IntPtr.Zero);
+        private static void WaitForFreeClipboard(out bool success) {
+            success = SpinWait.SpinUntil(() => GetOpenClipboardWindow() == IntPtr.Zero, SpinTimeout);
         }
     }
 }
