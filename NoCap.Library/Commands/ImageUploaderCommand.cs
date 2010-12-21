@@ -29,7 +29,11 @@ namespace NoCap.Library.Commands {
 
                     aggregateProgress.BindTo(progress);
 
+                    progress.Status = "Converting image";
+
                     using (var rawImageData = ImageWriter.Process(data, rawImageProgress, cancelToken)) {
+                        progress.Status = "Uploading image";
+
                         return Upload(rawImageData, uploadProgress, cancelToken);
                     }
 

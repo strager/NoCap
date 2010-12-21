@@ -114,6 +114,8 @@ namespace NoCap.Library.Tasks {
                 this.cancelReason = cancelReason;
             }
 
+            this.progressTracker.Status = cancelReason.Message;
+
             OnCanceled(cancelReason);
         }
 

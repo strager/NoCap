@@ -78,6 +78,12 @@ namespace NoCap.Extensions.Default.Helpers {
             }
         }
 
+        public string Status {
+            get {
+                return Task.ProgressTracker.Status;
+            }
+        }
+
         public ICommandTask Task {
             get {
                 return this.task;
@@ -92,6 +98,7 @@ namespace NoCap.Extensions.Default.Helpers {
             this.task = task;
 
             Task.ProgressTracker.ProgressUpdated += (sender, e) => Notify("Progress");
+            Task.ProgressTracker.StatusUpdated   += (sender, e) => Notify("Status");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

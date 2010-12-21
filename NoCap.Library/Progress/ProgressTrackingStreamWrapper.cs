@@ -41,7 +41,14 @@ namespace NoCap.Library.Progress {
             }
         }
 
+        public string Status {
+            get {
+                return null;
+            }
+        }
+
         public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+        public event EventHandler<StatusUpdatedEventArgs> StatusUpdated;
 
         public void OnProgressUpdated(ProgressUpdatedEventArgs e) {
             var handler = ProgressUpdated;

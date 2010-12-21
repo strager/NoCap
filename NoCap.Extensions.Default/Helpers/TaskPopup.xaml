@@ -131,10 +131,13 @@
                                     Foreground="{StaticResource ForegroundBrush}"
                                     Template="{StaticResource ArrowButtonTemplate}" />
 
-                                <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                    MinHeight="20"
-                                    Value="{Binding Progress, Mode=OneWay}"
-                                    Minimum="0" Maximum="1" />
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="20">
+                                    <ProgressBar HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Value="{Binding Progress, Mode=OneWay}"
+                                        Minimum="0" Maximum="1" />
+                                    
+                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Status, Mode=OneWay}" />
+                                </Grid>
 
                                 <TextBlock Grid.Row="1" />
                             </Grid>

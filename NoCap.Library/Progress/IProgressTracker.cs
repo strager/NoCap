@@ -18,7 +18,24 @@ namespace NoCap.Library.Progress {
         /// <value>The progress of the operation.</value>
         double Progress { get; }
 
+        string Status { get; }
+
         event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+        event EventHandler<StatusUpdatedEventArgs> StatusUpdated;
+    }
+
+    public class StatusUpdatedEventArgs : EventArgs {
+        private readonly string status;
+
+        public StatusUpdatedEventArgs(string status) {
+            this.status = status;
+        }
+
+        public string Status {
+            get {
+                return this.status;
+            }
+        }
     }
 
     public class ProgressUpdatedEventArgs : EventArgs {

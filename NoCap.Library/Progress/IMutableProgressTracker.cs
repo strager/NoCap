@@ -15,5 +15,7 @@
         /// </remarks>
         /// <value>The progress of the operation.</value>
         new double Progress { get; set; }
+
+        new string Status { get; set; }
     }
 }

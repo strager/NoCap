@@ -99,6 +99,11 @@ namespace NoCap.Library.Progress {
             }
         }
 
+        public string Status {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Gets the progress trackers which this instance aggregates.
         /// </summary>
@@ -121,15 +126,34 @@ namespace NoCap.Library.Progress {
             this.progressTrackers = progressTrackers.ToArray(); // Make a copy just in case
 
             foreach (var kvp in this.progressTrackers) {
-                kvp.ProgressTracker.ProgressUpdated +=
-                    (sender, e) => OnProgressUpdated(new ProgressUpdatedEventArgs(Progress));
+                kvp.ProgressTracker.ProgressUpdated += ChildProgressUpdated;
+                kvp.ProgressTracker.StatusUpdated   += ChildStatusUpdated;
             }
         }
 
+        private void ChildProgressUpdated(object sender, EventArgs e) {
+            OnProgressUpdated(new ProgressUpdatedEventArgs(Progress));
+        }
+
+        private void ChildStatusUpdated(object sender, StatusUpdatedEventArgs e) {
+            Status = e.Status;
+
+            OnStatusUpdated(new StatusUpdatedEventArgs(Status));
+        }
+
         public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+        public event EventHandler<StatusUpdatedEventArgs> StatusUpdated;
 
         private void OnProgressUpdated(ProgressUpdatedEventArgs e) {
             var handler = ProgressUpdated;
+
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        private void OnStatusUpdated(StatusUpdatedEventArgs e) {
+            var handler = StatusUpdated;
 
             if (handler != null) {
                 handler(this, e);

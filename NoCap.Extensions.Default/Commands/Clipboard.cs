@@ -24,8 +24,12 @@ namespace NoCap.Extensions.Default.Commands {
             Action operation;
 
             if (data == null) {
+                progress.Status = "Reading clipboard";
+
                 operation = () => data = GetClipboardData();
             } else {
+                progress.Status = "Saving to clipboard";
+
                 operation = () => SetClipboardData(data);
             }
 
