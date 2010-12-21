@@ -11,6 +11,8 @@ namespace NoCap.Library.Commands {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Uri:
+                    progress.Status = "Shortening URL";
+
                     return Upload(data, progress, cancelToken);
 
                 default:

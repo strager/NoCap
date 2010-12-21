@@ -9,6 +9,8 @@ namespace NoCap.Library.Commands {
         public override TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Text:
+                    progress.Status = "Uploading text";
+
                     return Upload(data, progress, cancelToken);
 
                 default:

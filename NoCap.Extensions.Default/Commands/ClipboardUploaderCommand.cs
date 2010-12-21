@@ -105,6 +105,8 @@ namespace NoCap.Extensions.Default.Commands {
             using (commandChain.Process(null, progress, cancelToken)) {
                 // Auto-dispose
             }
+
+            progress.Status = "URL saved to clipboard";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

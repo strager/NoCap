@@ -14,6 +14,8 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            progress.Status = "Taking a crop shot";
+
             CropShotWindow cropShotWindow = null;
 
             var thread = new Thread(() => {
