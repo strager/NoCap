@@ -35,7 +35,7 @@ namespace NoCap.Library {
         /// The command which was running when the operation was cancelled.
         /// </param>
         /// <returns>The wrapped exception.</returns>
-        public static CommandCanceledException Wrap(OperationCanceledException e, ICommand commandSuggestion) {
+        public static CommandCanceledException Wrap(Exception e, ICommand commandSuggestion) {
             var commandCanceledException = e as CommandCanceledException;
 
             if (commandCanceledException != null) {
@@ -47,11 +47,21 @@ namespace NoCap.Library {
                 );
             }
 
+            var operationCanceledException = e as OperationCanceledException;
+
+            if (operationCanceledException != null) {
+                return new CommandCanceledException(
+                    commandSuggestion,
+                    operationCanceledException.Message,
+                    operationCanceledException,
+                    operationCanceledException.CancellationToken
+                );
+            }
+
             return new CommandCanceledException(
                 commandSuggestion,
                 e.Message,
-                e,
-                e.CancellationToken
+                e
             );
         }
 
