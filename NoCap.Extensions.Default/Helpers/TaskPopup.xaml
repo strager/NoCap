@@ -168,7 +168,10 @@
                                         Foreground="#009900"
                                         Minimum="0" Maximum="1" />
 
-                                    <TextBlock HorizontalAlignment="Center" Text="{Binding Status, Mode=OneWay}" />
+                                    <TextBlock HorizontalAlignment="Center"
+                                        Text="{Binding Status, Mode=OneWay}"
+                                        Foreground="Black"
+                                        FontWeight="Bold" />
                                 </Grid>
 
                                 <TextBlock Grid.Row="1" />
