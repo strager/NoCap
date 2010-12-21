@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
@@ -11,9 +12,12 @@ namespace NoCap.Extensions.Default.Helpers {
     /// Interaction logic for TaskPopup.xaml
     /// </summary>
     public partial class TaskPopup {
-        private readonly StoryboardQueue storyboardQueue = new StoryboardQueue();
+        public static readonly TimeSpan CloseHideDelay = TimeSpan.FromMilliseconds(0);
+
         private readonly Storyboard showStoryboard;
         private readonly Storyboard hideStoryboard;
+
+        private bool isAppearing = false;
 
         public TaskPopup() {
             InitializeComponent();
@@ -22,43 +26,85 @@ namespace NoCap.Extensions.Default.Helpers {
             this.hideButton.Height = 0;
             Opacity = 0;
 
-            CommandBindings.Add(new CommandBinding(
-                NoCapCommands.Cancel,
-                (sender, e) => {
-                    var task = e.Parameter as ICommandTask;
-
-                    if (task != null) {
-                        task.Cancel();
-                    }
-                }
-            ));
-
-            CommandBindings.Add(new CommandBinding(
-                ApplicationCommands.Close,
-                (sender, e) => QueueHide()
-            ));
-
             this.showStoryboard = (Storyboard) Resources["ShowAnimation"];
             this.hideStoryboard = (Storyboard) Resources["HideAnimation"];
+
+            this.showStoryboard.Completed += (sender, e) => { this.isAppearing = false; };
+            this.hideStoryboard.Completed += (sender, e) => OnHidden(new EventArgs());
         }
 
-        public void QueueShow() {
-            this.storyboardQueue.Enqueue(this.showStoryboard, this);
+        private void CancelTask(object sender, ExecutedRoutedEventArgs e) {
+            var task = e.Parameter as ICommandTask;
+
+            if (task != null) {
+                task.Cancel();
+            }
         }
 
-        public void QueueHide() {
-            this.storyboardQueue.Enqueue(this.hideStoryboard, this, OnHidden, false);
+        public void Show() {
+            this.isAppearing = true;
+
+            var dispatcher = this.showStoryboard.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action(Show));
+
+                return;
+            }
+
+            this.hideStoryboard.Stop(this);
+            this.showStoryboard.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
+            this.hideStoryboard.Remove(this);
         }
 
-        private void QueueHide(object sender, ExecutedRoutedEventArgs e) {
-            QueueHide();
+        public void Hide(TimeSpan delay) {
+            var dispatcher = this.showStoryboard.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action<TimeSpan>(Hide), delay);
+
+                return;
+            }
+            
+            if (this.isAppearing) {
+                // This mess is my effort to prevent race conditions
+
+                EventHandler callback = null;
+                int called = 0;
+
+                callback = new EventHandler((sender, e) => {
+                    if (Interlocked.CompareExchange(ref called, 1, 0) == 1) {
+                        // Ensure only one call.
+                        return;
+                    }
+
+                    Hide(delay);
+
+                    this.showStoryboard.Completed -= callback;
+                });
+
+                this.showStoryboard.Completed += callback;
+
+                if (!this.isAppearing) {
+                    callback(null, null);
+                }
+
+                return;
+            }
+
+            var hide = this.hideStoryboard;
+            hide.BeginTime = delay;
+
+            this.showStoryboard.Stop(this);
+            hide.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
+            this.showStoryboard.Remove(this);
+        }
+
+        private void Hide(object sender, ExecutedRoutedEventArgs e) {
+            Hide(CloseHideDelay);
         }
 
         public event EventHandler Hidden;
-
-        private void OnHidden() {
-            OnHidden(new EventArgs());
-        }
 
         protected void OnHidden(EventArgs e) {
             var handler = Hidden;
