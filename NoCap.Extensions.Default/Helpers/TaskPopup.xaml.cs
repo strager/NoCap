@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using NoCap.Library;
 using NoCap.Library.Tasks;
 
 namespace NoCap.Extensions.Default.Helpers {
@@ -16,6 +14,8 @@ namespace NoCap.Extensions.Default.Helpers {
 
         private readonly Storyboard showStoryboard;
         private readonly Storyboard hideStoryboard;
+
+        private readonly object storyboardSync = new object();
 
         private bool isAppearing = false;
 
@@ -52,9 +52,11 @@ namespace NoCap.Extensions.Default.Helpers {
                 return;
             }
 
-            this.hideStoryboard.Stop(this);
-            this.showStoryboard.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
-            this.hideStoryboard.Remove(this);
+            lock (this.storyboardSync) {
+                this.hideStoryboard.Stop(this);
+                this.showStoryboard.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
+                this.hideStoryboard.Remove(this);
+            }
         }
 
         public void Hide(TimeSpan delay) {
@@ -92,12 +94,14 @@ namespace NoCap.Extensions.Default.Helpers {
                 return;
             }
 
-            var hide = this.hideStoryboard;
-            hide.BeginTime = delay;
+            lock (this.storyboardSync) {
+                var hide = this.hideStoryboard;
+                hide.BeginTime = delay;
 
-            this.showStoryboard.Stop(this);
-            hide.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
-            this.showStoryboard.Remove(this);
+                this.showStoryboard.Stop(this);
+                hide.Begin(this, HandoffBehavior.SnapshotAndReplace, true);
+                this.showStoryboard.Remove(this);
+            }
         }
 
         private void Hide(object sender, ExecutedRoutedEventArgs e) {
