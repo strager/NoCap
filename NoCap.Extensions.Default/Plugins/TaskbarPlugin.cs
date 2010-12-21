@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reflection;
@@ -12,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Bindable.Linq;
+using Bindable.Linq.Collections;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
@@ -264,18 +264,13 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private static ContextMenu BuildContextMenu(IPluginContext pluginContext) {
-            var commands = pluginContext.CommandProvider.StandAloneCommands;
-            var commandMenuItems = new ObservableCollection<MenuItem>();
-
-            BuildCommandMenuItems(commands, commandMenuItems);
-
-            commands.CollectionChanged += (sender, e) => BuildCommandMenuItems(commands, commandMenuItems);
+            var commands = pluginContext.CommandProvider.StandAloneCommands.AsBindable();
 
             return new ContextMenu {
                 ItemsSource = new CompositeCollection {
                     new MenuItem { Command = TaskbarCommands.ShowTasks, Header = "_Show Running Tasks" },
                     new Separator(),
-                    new CollectionContainer { Collection = commandMenuItems },
+                    new CollectionContainer { Collection = commands.Select((command) => BuildCommandMenuItem(command)) },
                     new Separator(),
                     new MenuItem { Command = ApplicationCommands.Properties, Header = "_Settings" },
                     new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
@@ -283,16 +278,12 @@ namespace NoCap.Extensions.Default.Plugins {
             };
         }
 
-        private static void BuildCommandMenuItems(IEnumerable<ICommand> commands, ICollection<MenuItem> commandMenuItems) {
-            commandMenuItems.Clear();
-
-            foreach (var command in commands) {
-                commandMenuItems.Add(new MenuItem {
-                    Command = NoCapCommands.Execute,
-                    CommandParameter = command,
-                    Header = command.Name,
-                });
-            }
+        private static MenuItem BuildCommandMenuItem(ICommand command) {
+            return new MenuItem {
+                Command = NoCapCommands.Execute,
+                CommandParameter = command,
+                Header = command.Name,
+            };
         }
 
         public void Dispose() {
