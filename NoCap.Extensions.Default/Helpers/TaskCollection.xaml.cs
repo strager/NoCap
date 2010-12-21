@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Threading;
 using Bindable.Linq;
 using Bindable.Linq.Collections;
+using NoCap.Library.Progress;
 using NoCap.Library.Tasks;
 
 namespace NoCap.Extensions.Default.Helpers {
@@ -23,6 +24,18 @@ namespace NoCap.Extensions.Default.Helpers {
             this.collection.CollectionChanged += (sender, e) => OnCollectionChanged(e);
         }
 
+        private void AttachTaskHandlers(ICommandTask task) {
+            task.ProgressTracker.ProgressUpdated += TaskProgressUpdated;
+        }
+
+        private void DetachTaskHandlers(ICommandTask task) {
+            task.ProgressTracker.ProgressUpdated -= TaskProgressUpdated;
+        }
+
+        private void TaskProgressUpdated(object sender, ProgressUpdatedEventArgs e) {
+            OnProgressUpdated(new EventArgs());
+        }
+
         public void AddTask(ICommandTask task) {
             if (!this.collectionDispatcher.CheckAccess()) {
                 this.collectionDispatcher.BeginInvoke(new Action<ICommandTask>(AddTask), task);
@@ -33,6 +46,9 @@ namespace NoCap.Extensions.Default.Helpers {
             lock (this.syncRoot) {
                 this.collection.Add(task);
             }
+
+            AttachTaskHandlers(task);
+            OnProgressUpdated(new EventArgs());
         }
 
         public void RemoveTask(ICommandTask task) {
@@ -45,6 +61,9 @@ namespace NoCap.Extensions.Default.Helpers {
             lock (this.syncRoot) {
                 this.collection.Remove(task);
             }
+
+            DetachTaskHandlers(task);
+            OnProgressUpdated(new EventArgs());
         }
 
         public void RemoveFinishedTasks() {
@@ -54,9 +73,11 @@ namespace NoCap.Extensions.Default.Helpers {
                 return;
             }
 
+            ICommandTask[] finished;
+
             lock (this.syncRoot) {
                 // Convert to array to prevent modifying the collection while reading from it
-                var finished = this.collection.Where((task) => task.State == TaskState.Canceled || task.State == TaskState.Completed).ToArray();
+                finished = this.collection.Where((task) => task.State == TaskState.Canceled || task.State == TaskState.Completed).ToArray();
 
                 // Weird bug prevents us from using a transaction or RemoveRange.
                 // Binding.Linq extension methds don't seem to support a "remove range" operation,
@@ -67,6 +88,12 @@ namespace NoCap.Extensions.Default.Helpers {
                     this.collection.Remove(task);
                 }
             }
+
+            foreach (var task in finished) {
+                DetachTaskHandlers(task);
+            }
+
+            OnProgressUpdated(new EventArgs());
         }
 
         public IEnumerator<ICommandTask> GetEnumerator() {
@@ -136,6 +163,24 @@ namespace NoCap.Extensions.Default.Helpers {
                 lock (this.syncRoot) {
                     return this.collection.Count;
                 }
+            }
+        }
+
+        public double Progress {
+            get {
+                lock (this.syncRoot) {
+                    return this.collection.Average((task) => task.ProgressTracker.Progress).Current;
+                }
+            }
+        }
+
+        public event EventHandler ProgressUpdated;
+
+        private void OnProgressUpdated(EventArgs e) {
+            var handler = ProgressUpdated;
+
+            if (handler != null) {
+                handler(this, e);
             }
         }
     }
