@@ -29,6 +29,8 @@ namespace NoCap.Extensions.Default.Commands {
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Stream:
+                    progress.Status = "Saving to file";
+
                     string path = Path.Combine(RootPath ?? "", data.Name);
 
                     using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {

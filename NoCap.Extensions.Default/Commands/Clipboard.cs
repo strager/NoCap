@@ -22,11 +22,31 @@ namespace NoCap.Extensions.Default.Commands {
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             Action operation;
+            bool success = false;
+            Exception exception = null;
 
             if (data == null) {
-                operation = () => data = GetClipboardData();
+                operation = new Action(() => {
+                    progress.Status = "Reading clipboard";
+
+                    try {
+                        data = GetClipboardData();
+                        success = true;
+                    } catch (Exception e) {
+                        exception = e;
+                    }
+                });
             } else {
-                operation = () => SetClipboardData(data);
+                operation = new Action(() => {
+                    progress.Status = "Saving to clipboard";
+
+                    try {
+                        SetClipboardData(data);
+                        success = true;
+                    } catch (Exception e) {
+                        exception = e;
+                    }
+                });
             }
 
             var thread = new Thread(new ThreadStart(operation));
@@ -36,6 +56,14 @@ namespace NoCap.Extensions.Default.Commands {
 
             thread.Start();
             thread.Join();
+
+            if (!success) {
+                if (exception == null) {
+                    throw new CommandCanceledException(this);
+                }
+
+                throw exception;
+            }
 
             progress.Progress = 1;
 

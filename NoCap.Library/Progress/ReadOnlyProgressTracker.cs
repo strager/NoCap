@@ -15,6 +15,7 @@ namespace NoCap.Library.Progress {
             this.source = source;
 
             source.ProgressUpdated += (sender, e) => OnProgressUpdated(e);
+            source.StatusUpdated   += (sender, e) => OnStatusUpdated(e);
         }
 
         public double Progress {
@@ -23,10 +24,25 @@ namespace NoCap.Library.Progress {
             }
         }
 
+        public string Status {
+            get {
+                return this.source.Status;
+            }
+        }
+
         public event EventHandler<ProgressUpdatedEventArgs> ProgressUpdated;
+        public event EventHandler<StatusUpdatedEventArgs> StatusUpdated;
 
         private void OnProgressUpdated(ProgressUpdatedEventArgs e) {
             var handler = ProgressUpdated;
+
+            if (handler != null) {
+                handler(this, e);
+            }
+        }
+
+        private void OnStatusUpdated(StatusUpdatedEventArgs e) {
+            var handler = StatusUpdated;
 
             if (handler != null) {
                 handler(this, e);

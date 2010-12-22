@@ -86,7 +86,7 @@ namespace NoCap.Library.Tasks {
                     using (command.Process(null, this.progressTracker, cancelToken)) {
                         // Auto-dispose
                     }
-                } catch (OperationCanceledException e) {
+                } catch (Exception e) {
                     HandleCancellation(e);
 
                     this.waitHandleOwner.Set();
@@ -105,16 +105,18 @@ namespace NoCap.Library.Tasks {
             this.waitHandleOwner.Set();
         }
 
-        private void HandleCancellation(OperationCanceledException e) {
+        private void HandleCancellation(Exception e) {
             State = TaskState.Canceled;
 
-            var cancelReason = CommandCanceledException.Wrap(e, this.command);
+            var reason = CommandCanceledException.Wrap(e, this.command);
 
             lock (this.syncRoot) {
-                this.cancelReason = cancelReason;
+                this.cancelReason = reason;
             }
 
-            OnCanceled(cancelReason);
+            this.progressTracker.Status = reason.Message;
+
+            OnCanceled(reason);
         }
 
         private void OnStarted() {

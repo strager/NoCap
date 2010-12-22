@@ -69,6 +69,8 @@ namespace NoCap.Extensions.Default.Commands {
             using (commandChain.Process(null, progress, cancelToken)) {
                 // Auto-dispose
             }
+
+            progress.Status = "Image URL saved to clipboard";
         }
 
         [NonSerialized]

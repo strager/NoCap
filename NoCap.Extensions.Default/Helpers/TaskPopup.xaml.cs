@@ -78,6 +78,24 @@ namespace NoCap.Extensions.Default.Helpers {
             }
         }
 
+        public string Status {
+            get {
+                return Task.ProgressTracker.Status;
+            }
+        }
+
+        public string Name {
+            get {
+                return Task.Name;
+            }
+        }
+
+        public TaskState State {
+            get {
+                return Task.State;
+            }
+        }
+
         public ICommandTask Task {
             get {
                 return this.task;
@@ -92,6 +110,11 @@ namespace NoCap.Extensions.Default.Helpers {
             this.task = task;
 
             Task.ProgressTracker.ProgressUpdated += (sender, e) => Notify("Progress");
+            Task.ProgressTracker.StatusUpdated   += (sender, e) => Notify("Status");
+
+            Task.Started   += (sender, e) => Notify("State");
+            Task.Completed += (sender, e) => Notify("State");
+            task.Canceled  += (sender, e) => Notify("State");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

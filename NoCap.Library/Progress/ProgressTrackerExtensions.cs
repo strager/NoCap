@@ -4,6 +4,10 @@
             from.ProgressUpdated += (sender, e) => {
                 to.Progress = e.Progress;
             };
+
+            from.StatusUpdated += (sender, e) => {
+                to.Status = e.Status;
+            };
         }
     }
 }

@@ -43,16 +43,20 @@ namespace NoCap.Extensions.Default.Commands {
         private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
             using (var client = new FTPSClient()) {
                 try {
+                    progress.Status = "Connecting to FTP";
+
                     client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, Timeout);
                 } catch (TimeoutException e) {
                     throw new CommandCanceledException(this, "Connection to FTP server timed out", e);
                 } catch (IOException e) {
                     throw new CommandCanceledException(this, "Connection to FTP server failed", e);
                 }
-
+                
                 using (var outStream = client.PutFile(GetRemotePathName(fileName)))
                 using (var outStreamWrapper = new ProgressTrackingStreamWrapper(outStream, stream.Length)) {
                     outStreamWrapper.BindTo(progress);
+
+                    progress.Status = "Uploading file to FTP";
 
                     stream.CopyTo(outStreamWrapper);
                 }

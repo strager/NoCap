@@ -16,7 +16,7 @@ namespace NoCap.Library.Commands {
 
         public TypedData Upload(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             try {
-                var response = HttpRequest.Execute(this.Uri, GetRequestData(data), this.RequestMethod, progress, cancelToken);
+                var response = HttpRequest.Execute(Uri, GetRequestData(data), RequestMethod, progress, cancelToken);
 
                 return GetResponseData(response, data);
             } catch (OperationCanceledException e) {
