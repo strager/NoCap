@@ -11,10 +11,26 @@
     <RootNamespace>NoCap.Installer</RootNamespace>
     <AssemblyName>NoCap.Installer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -63,6 +79,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Chiron\Zip.cs" />
+    <Compile Include="Chiron\Crc32.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -86,18 +104,66 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="InstallFiles.zip" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+  <PropertyGroup>
+    <InstallFilesDirectory>$(MSBuildProjectDirectory)\InstallFiles</InstallFilesDirectory>
+  </PropertyGroup>
+  <Target Name="Subprojects">
+    <ItemGroup>
+      <ProjectReference Include="..\NoCap.GUI.WPF\NoCap.GUI.WPF.csproj">
+        <Project>{B2BBCA6D-B466-4834-A0B8-BE8E3417132E}</Project>
+        <Name>NoCap.GUI.WPF</Name>
+        <Private>False</Private>
+      </ProjectReference>
+    </ItemGroup>
+    <MSBuild Projects="@(ProjectReference)" Targets="Build" BuildInParallel="true" />
+  </Target>
+  <Target Name="InstallFiles" DependsOnTargets="Subprojects">
+    <ItemGroup>
+      <Assemblies Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.dll" />
+      <Assemblies Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.exe" Exclude="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.vshost.exe" />
+    </ItemGroup>
+    <RemoveDir Directories="$(InstallFilesDirectory)" />
+    <MakeDir Directories="$(InstallFilesDirectory)" />
+    <Copy SourceFiles="@(Assemblies)" DestinationFolder="$(InstallFilesDirectory)\%(RecursiveDir)" />
+  </Target>
+  <Target Name="BeforeBuild" DependsOnTargets="InstallFiles">
+    <ItemGroup>
+      <ZipFiles Include="$(InstallFilesDirectory)\**\*.*" />
+    </ItemGroup>
+    <Zip Files="@(ZipFiles)" WorkingDirectory="$(InstallFilesDirectory)" ZipFileName="$(MSBuildProjectDirectory)\InstallFiles.zip" ZipLevel="9" />
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
 </Project>
