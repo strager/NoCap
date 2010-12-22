@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Style="{StaticResource CommandButtonStyle}" IsDefault="True" FontWeight="Bold" Click="Install">_Install &amp; Run</Button>
+            <Button Grid.Column="1" Style="{StaticResource CommandButtonStyle}" IsDefault="True" FontWeight="Bold" Click="InstallAndRun">_Install &amp; Run</Button>
             <Button Grid.Column="2" Style="{StaticResource CommandButtonStyle}" IsCancel="True" Click="Cancel">_Cancel</Button>
         </Grid>
     </Grid>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using vbAccelerator.Components.Shell;
 
@@ -107,8 +108,16 @@ namespace NoCap.Installer {
             }
         }
 
-        private void Install(object sender, System.Windows.RoutedEventArgs e) {
-            Install(DefaultInstallPath);
+        private void InstallAndRun(object sender, System.Windows.RoutedEventArgs e) {
+            string installPath = DefaultInstallPath;
+
+            Install(installPath);
+
+            Process.Start(new ProcessStartInfo(Path.Combine(installPath, "NoCap.exe")) {
+                WorkingDirectory = installPath,
+            });
+
+            Close();
         }
 
         private void Cancel(object sender, System.Windows.RoutedEventArgs e) {
