@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reflection;
@@ -10,7 +9,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using Bindable.Linq;
+using Bindable.Linq.Collections;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
@@ -53,7 +54,145 @@ namespace NoCap.Extensions.Default.Plugins {
             set { this.showNotificationOnComplete = value; }
         }
 
-        private void AddBindings() {
+        public void BeginTask(object sender, CommandTaskEventArgs e) {
+            ShowTaskPopup(e.Task);
+        }
+
+        public void EndTask(object sender, CommandTaskEventArgs e) {
+            // Do nothing
+        }
+
+        private void CancelTask(object sender, CommandTaskCancellationEventArgs e) {
+            UpdateProgress(1);
+        }
+
+        public void UpdateProgress(object sender, EventArgs e) {
+            UpdateProgress(this.taskCollection.Progress);
+        }
+
+        private void UpdateProgress(double progress) {
+            UpdateWindows(progress);
+            UpdateIcon(progress);
+            UpdateIconToolTip(progress);
+        }
+
+        private void UpdateWindows(double progress) {
+            var dispatcher = Application.Current.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action<double>(UpdateWindows), progress);
+
+                return;
+            }
+
+            foreach (var window in Application.Current.Windows) {
+                SetWindowProgress((Window) window, progress);
+            }
+        }
+
+        private void UpdateIcon(double progress) {
+            var dispatcher = this.logo.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action<double>(UpdateIcon), progress);
+
+                return;
+            }
+
+            this.logo.Progress = progress;
+
+            this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
+                this.taskbarIcon.IconSource = this.logo.MakeIcon(128);
+            }));
+        }
+
+        private void UpdateIconToolTip(double progress) {
+            this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
+                this.taskbarIcon.ToolTipText = string.Format("Progress: {0}%", progress * 100);
+            }));
+        }
+
+        private static void SetWindowProgress(Window window, double progress) {
+            var dispatcher = window.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action<Window, double>(SetWindowProgress), window, progress);
+
+                return;
+            }
+
+            var handle = new WindowInteropHelper(window).Handle;
+
+            if (progress >= 1) {
+                Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
+            } else {
+                Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
+
+                const ulong max = 9001;
+
+                Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
+            }
+        }
+
+        private void ShowTaskPopup(ICommandTask task) {
+            var dispatcher = this.taskbarIcon.Dispatcher;
+
+            if (!dispatcher.CheckAccess()) {
+                dispatcher.BeginInvoke(new Action<ICommandTask>(ShowTaskPopup), task);
+
+                return;
+            }
+
+            task.Completed += (sender, e) => OnTaskEnded();
+            task.Canceled += (sender, e) => OnTaskEnded();
+
+            if (ShowNotificationOnStart) {
+                this.taskPopup.QueueShow();
+            }
+
+            if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
+                this.taskPopup.QueueHide();
+            }
+        }
+
+        private void OnTaskEnded() {
+            if (ShowNotificationOnComplete) {
+                this.taskPopup.QueueShow();
+            }
+
+            this.taskPopup.QueueHide();
+        }
+
+        public string Name {
+            get {
+                return "Taskbar";
+            }
+        }
+
+        public UIElement GetEditor(ICommandProvider commandProvider) {
+            return new TaskbarEditor {
+                DataContext = this
+            };
+        }
+
+        public void Initialize(IPluginContext pluginContext) {
+            this.logo = new NoCapLogo();
+
+            this.taskbarIcon = InitTaskbarIcon(BuildContextMenu(pluginContext));
+            this.commandRunner = InitCommandRunner(pluginContext.CommandRunner);
+            this.taskCollection = InitTaskCollection(pluginContext.CommandRunner);
+            this.taskPopup = InitTaskPopup(this.taskCollection);
+
+            this.taskbarIcon.ShowCustomBalloon(this.taskPopup, PopupAnimation.None, null);
+
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            InitCommandBindings();
+
+            UpdateIcon(1);
+        }
+
+        private void InitCommandBindings() {
             var app = Application.Current;
 
             this.taskbarIcon.CommandBindings.AddRange(new [] {
@@ -86,158 +225,52 @@ namespace NoCap.Extensions.Default.Plugins {
             });
         }
 
-        public void BeginTask(object sender, CommandTaskEventArgs e) {
-            ShowTaskPopup(e.Task);
-        }
-
-        public void EndTask(object sender, CommandTaskEventArgs e) {
-            // Do nothing
-        }
-
-        private void CancelTask(object sender, CommandTaskCancellationEventArgs e) {
-            UpdateProgress(1);
-        }
-
-        public void UpdateProgress(object sender, CommandTaskProgressEventArgs e) {
-            double progress = e.Progress;
-
-            UpdateProgress(progress);
-        }
-
-        private void UpdateProgress(double progress) {
-            UpdateWindows(progress);
-            UpdateIcon(progress);
-            UpdateIconToolTip(progress);
-        }
-
-        private void UpdateWindows(double progress) {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => {
-                foreach (var window in Application.Current.Windows) {
-                    SetWindowProgress((Window) window, progress);
-                }
-            }));
-        }
-
-        private void UpdateIcon(double progress) {
-            this.logo.Dispatcher.BeginInvoke(new Action(() => {
-                this.logo.Progress = progress;
-
-                this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                    this.taskbarIcon.IconSource = this.logo.MakeIcon(128);
-                }));
-            }));
-        }
-
-        private void UpdateIconToolTip(double progress) {
-            this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                this.taskbarIcon.ToolTipText = string.Format("Progress: {0}%", progress * 100);
-            }));
-        }
-
-        private static void SetWindowProgress(Window window, double progress) {
-            window.Dispatcher.BeginInvoke(new Action(() => {
-                var handle = new WindowInteropHelper(window).Handle;
-
-                if (progress >= 1) {
-                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
-                } else {
-                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
-
-                    const ulong max = 9001;
-
-                    Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
-                }
-            }));
-        }
-
-        private void ShowTaskPopup(ICommandTask task) {
-            this.taskbarIcon.Dispatcher.BeginInvoke(new Action(() => {
-                task.Completed += (sender, e) => OnTaskEnded();
-                task.Canceled += (sender, e) => OnTaskEnded();
-
-                if (ShowNotificationOnStart) {
-                    this.taskPopup.QueueShow();
-                }
-
-                if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
-                    this.taskPopup.QueueHide();
-                }
-            }));
-        }
-
-        private void OnTaskEnded() {
-            if (ShowNotificationOnComplete) {
-                this.taskPopup.QueueShow();
-            }
-
-            this.taskPopup.QueueHide();
-        }
-
-        public string Name {
-            get {
-                return "Taskbar";
-            }
-        }
-
-        public UIElement GetEditor(ICommandProvider commandProvider) {
-            return new TaskbarEditor {
-                DataContext = this
-            };
-        }
-
-        public void Initialize(IPluginContext pluginContext) {
-            this.taskbarIcon = new TaskbarIcon {
+        private static TaskbarIcon InitTaskbarIcon(ContextMenu contextMenu) {
+            return new TaskbarIcon {
                 Visibility = Visibility.Visible,
                 DoubleClickCommand = ApplicationCommands.Properties,
-                ContextMenu = BuildContextMenu(pluginContext),
+                ContextMenu = contextMenu,
                 LeftClickCommand = TaskbarCommands.ShowTasks,
             };
+        }
 
-            this.logo = new NoCapLogo();
-            
-            this.commandRunner = pluginContext.CommandRunner;
-
-            this.commandRunner.TaskStarted     += BeginTask;
-            this.commandRunner.TaskCompleted   += EndTask;
-            this.commandRunner.ProgressUpdated += UpdateProgress;
-            this.commandRunner.TaskCanceled    += CancelTask;
-
-            this.taskCollection = new TaskCollection();
-
-            this.commandRunner.TaskStarted += (sender, e) => {
-                this.taskCollection.AddTask(e.Task);
+        private static TaskPopup InitTaskPopup(TaskCollection taskCollection) {
+            var taskPopup = new TaskPopup {
+                DataContext = taskCollection.Select((t) => new TaskViewModel(t))
             };
 
-            this.taskPopup = new TaskPopup {
-                DataContext = this.taskCollection.Select((t) => new TaskViewModel(t))
-            };
+            taskPopup.Hidden += (sender, e) => taskCollection.RemoveFinishedTasks();
 
-            this.taskPopup.Hidden += (sender, e) => this.taskCollection.RemoveFinishedTasks();
+            taskPopup.QueueHide();
 
-            this.taskPopup.QueueHide();
+            return taskPopup;
+        }
 
-            this.taskbarIcon.ShowCustomBalloon(this.taskPopup, PopupAnimation.None, null);
+        private ICommandRunner InitCommandRunner(ICommandRunner runner) {
+            runner.TaskStarted   += BeginTask;
+            runner.TaskCompleted += EndTask;
+            runner.TaskCanceled  += CancelTask;
 
-            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            return runner;
+        }
 
-            AddBindings();
+        private TaskCollection InitTaskCollection(ICommandRunner runner) {
+            var taskCollection = new TaskCollection();
+            taskCollection.ProgressUpdated += UpdateProgress;
 
-            UpdateIcon(1);
+            runner.TaskStarted += (sender, e) => taskCollection.AddTask(e.Task);
+
+            return taskCollection;
         }
 
         private static ContextMenu BuildContextMenu(IPluginContext pluginContext) {
-            var commands = pluginContext.CommandProvider.StandAloneCommands;
-            var commandMenuItems = new ObservableCollection<MenuItem>();
-
-            BuildCommandMenuItems(commands, commandMenuItems);
-
-            commands.CollectionChanged += (sender, e) => BuildCommandMenuItems(commands, commandMenuItems);
+            var commands = pluginContext.CommandProvider.StandAloneCommands.AsBindable();
 
             return new ContextMenu {
                 ItemsSource = new CompositeCollection {
                     new MenuItem { Command = TaskbarCommands.ShowTasks, Header = "_Show Running Tasks" },
                     new Separator(),
-                    new CollectionContainer { Collection = commandMenuItems },
+                    new CollectionContainer { Collection = commands.Select((command) => BuildCommandMenuItem(command)) },
                     new Separator(),
                     new MenuItem { Command = ApplicationCommands.Properties, Header = "_Settings" },
                     new MenuItem { Command = ApplicationCommands.Close, Header = "E_xit" },
@@ -245,16 +278,12 @@ namespace NoCap.Extensions.Default.Plugins {
             };
         }
 
-        private static void BuildCommandMenuItems(IEnumerable<ICommand> commands, ICollection<MenuItem> commandMenuItems) {
-            commandMenuItems.Clear();
-
-            foreach (var command in commands) {
-                commandMenuItems.Add(new MenuItem {
-                    Command = NoCapCommands.Execute,
-                    CommandParameter = command,
-                    Header = command.Name,
-                });
-            }
+        private static MenuItem BuildCommandMenuItem(ICommand command) {
+            return new MenuItem {
+                Command = NoCapCommands.Execute,
+                CommandParameter = command,
+                Header = command.Name,
+            };
         }
 
         public void Dispose() {
