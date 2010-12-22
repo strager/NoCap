@@ -57,13 +57,28 @@ namespace NoCap.Installer {
 
             string shortcutPath = Path.Combine(noCapMenuPath, "NoCap.lnk");
 
-            using (var shortcut = new ShellLink()) {
-                shortcut.Target = Path.Combine(installPath, "NoCap.exe");
-                shortcut.WorkingDirectory = installPath;
-                shortcut.Description = "NoCap";
-                shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+            using (var shortcut = CreateShortcut(installPath)) {
                 shortcut.Save(shortcutPath);
             }
+        }
+
+        private static void InstallDesktopIcon(string installPath) {
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+            string shortcutPath = Path.Combine(desktopPath, "NoCap.lnk");
+
+            using (var shortcut = CreateShortcut(installPath)) {
+                shortcut.Save(shortcutPath);
+            }
+        }
+
+        private static ShellLink CreateShortcut(string installPath) {
+            return new ShellLink {
+                Target = Path.Combine(installPath, "NoCap.exe"),
+                WorkingDirectory = installPath,
+                Description = "NoCap",
+                DisplayMode = ShellLink.LinkDisplayMode.edmNormal,
+            };
         }
 
         private void Install(string installPath) {
@@ -71,6 +86,10 @@ namespace NoCap.Installer {
 
             if (this.startMenuEntry.IsChecked == true) {
                 InstallStartMenuEntries(installPath);
+            }
+
+            if (this.desktopIcon.IsChecked == true) {
+                InstallDesktopIcon(installPath);
             }
         }
 
