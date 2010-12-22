@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -9,9 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using Bindable.Linq;
-using Bindable.Linq.Collections;
 using Hardcodet.Wpf.TaskbarNotification;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
@@ -33,6 +30,9 @@ namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
     [DataContract(Name = "TaskbarPlugin")]
     sealed class TaskbarPlugin : IPlugin, IExtensibleDataObject {
+        public static readonly TimeSpan CompleteHideDelay = TimeSpan.FromSeconds(2);
+        public static readonly TimeSpan CancelHideDelay = TimeSpan.FromSeconds(5);
+
         private NoCapLogo logo;
         private TaskbarIcon taskbarIcon;
         private ICommandRunner commandRunner;
@@ -143,24 +143,34 @@ namespace NoCap.Extensions.Default.Plugins {
                 return;
             }
 
-            task.Completed += (sender, e) => OnTaskEnded();
-            task.Canceled += (sender, e) => OnTaskEnded();
+            task.Completed += (sender, e) => OnTaskCompleted();
+            task.Canceled += (sender, e) => OnTaskCanceled();
 
             if (ShowNotificationOnStart) {
-                this.taskPopup.QueueShow();
+                this.taskPopup.Show();
             }
 
-            if (task.State == TaskState.Completed || task.State == TaskState.Canceled) {
-                this.taskPopup.QueueHide();
+            if (task.State == TaskState.Completed) {
+                this.taskPopup.Hide(CompleteHideDelay);
+            } else if (task.State == TaskState.Canceled) {
+                this.taskPopup.Hide(CancelHideDelay);
             }
         }
 
-        private void OnTaskEnded() {
+        private void OnTaskCompleted() {
             if (ShowNotificationOnComplete) {
-                this.taskPopup.QueueShow();
+                this.taskPopup.Show();
             }
 
-            this.taskPopup.QueueHide();
+            this.taskPopup.Hide(CompleteHideDelay);
+        }
+
+        private void OnTaskCanceled() {
+            if (ShowNotificationOnComplete) {
+                this.taskPopup.Show();
+            }
+
+            this.taskPopup.Hide(CancelHideDelay);
         }
 
         public string Name {
@@ -216,7 +226,7 @@ namespace NoCap.Extensions.Default.Plugins {
                 ),
                 new System.Windows.Input.CommandBinding(
                     TaskbarCommands.ShowTasks,
-                    (sender, e) => this.taskPopup.QueueShow(),
+                    (sender, e) => this.taskPopup.Show(),
                     (sender, e) => {
                         e.CanExecute = this.taskCollection.Count != 0;
                         e.Handled = true;
@@ -240,8 +250,6 @@ namespace NoCap.Extensions.Default.Plugins {
             };
 
             taskPopup.Hidden += (sender, e) => taskCollection.RemoveFinishedTasks();
-
-            taskPopup.QueueHide();
 
             return taskPopup;
         }

@@ -120,8 +120,6 @@
     <Compile Include="Helpers\ImageExtensions.cs" />
     <Compile Include="Commands\ImagebinCaUploader.cs" />
     <Compile Include="Commands\IsgdShortener.cs" />
-    <Compile Include="Helpers\StoryboardQueue.xaml.cs" />
-    <Compile Include="Helpers\StoryboardQueueItem.xaml.cs" />
     <Compile Include="Helpers\TaskCollection.xaml.cs" />
     <Compile Include="NoCapLogo.xaml.cs">
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
