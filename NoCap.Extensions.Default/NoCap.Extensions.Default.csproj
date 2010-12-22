@@ -141,6 +141,7 @@
       <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\InputBindingsPlugin.cs" />
+    <Compile Include="Plugins\ProxyCacher.cs" />
     <Compile Include="Plugins\TaskbarEditor.xaml.cs">
       <DependentUpon>TaskbarEditor.xaml</DependentUpon>
     </Compile>
