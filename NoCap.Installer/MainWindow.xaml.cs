@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using vbAccelerator.Components.Shell;
 
 namespace NoCap.Installer {
     /// <summary>
@@ -31,8 +32,8 @@ namespace NoCap.Installer {
             Directory.CreateDirectory(directory);
         }
 
-        private static void InstallTo(string outputPath) {
-            EnsureDirectoryExists(outputPath);
+        private static void InstallBinaries(string installPath) {
+            EnsureDirectoryExists(installPath);
 
             var zipData = Properties.Resources.InstallFiles;
 
@@ -40,7 +41,7 @@ namespace NoCap.Installer {
                 var zip = new Chiron.ZipArchive(zipStream, FileAccess.Read);
 
                 foreach (var file in zip.Files) {
-                    string outputFileName = Path.Combine(outputPath, file.Name);
+                    string outputFileName = Path.Combine(installPath, file.Name);
                     EnsureDirectoryExists(Path.GetDirectoryName(outputFileName));
 
                     file.CopyToFile(outputFileName);
@@ -48,8 +49,33 @@ namespace NoCap.Installer {
             }
         }
 
+        private static void InstallStartMenuEntries(string installPath) {
+            string startMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.StartMenu);
+            string noCapMenuPath = Path.Combine(startMenuPath, "NoCap");
+
+            EnsureDirectoryExists(noCapMenuPath);
+
+            string shortcutPath = Path.Combine(noCapMenuPath, "NoCap.lnk");
+
+            using (var shortcut = new ShellLink()) {
+                shortcut.Target = Path.Combine(installPath, "NoCap.exe");
+                shortcut.WorkingDirectory = installPath;
+                shortcut.Description = "NoCap";
+                shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+                shortcut.Save(shortcutPath);
+            }
+        }
+
+        private void Install(string installPath) {
+            InstallBinaries(installPath);
+
+            if (this.startMenuEntry.IsChecked == true) {
+                InstallStartMenuEntries(installPath);
+            }
+        }
+
         private void Install(object sender, System.Windows.RoutedEventArgs e) {
-            InstallTo(DefaultInstallPath);
+            Install(DefaultInstallPath);
         }
 
         private void Cancel(object sender, System.Windows.RoutedEventArgs e) {

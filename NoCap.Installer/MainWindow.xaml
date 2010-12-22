@@ -31,9 +31,9 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Row="0">_Start menu entry</CheckBox>
-            <CheckBox Grid.Row="1">_Desktop icon</CheckBox>
-            <CheckBox Grid.Row="3">Start NoCap with _Windows</CheckBox>
+            <CheckBox Grid.Row="0" Name="startMenuEntry">_Start menu entry</CheckBox>
+            <CheckBox Grid.Row="1" Name="desktopIcon">_Desktop icon</CheckBox>
+            <CheckBox Grid.Row="3" Name="startWithWindows">Start NoCap with _Windows</CheckBox>
         </Grid>
         
         <Grid Grid.Row="2">
