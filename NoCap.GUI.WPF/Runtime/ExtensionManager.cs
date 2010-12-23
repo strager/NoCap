@@ -46,10 +46,12 @@ namespace NoCap.GUI.WPF.Runtime {
         }
 
         private Extension LoadExtension(string extensionFileName) {
-            var extension = Extension.Load(extensionFileName);
-            var catelog = new AggregateCatalog(extension.Assemblies.Select((assembly) => new AssemblyCatalog(assembly)));
+            var extension = Extension.ReadFromArchive(extensionFileName);
+            extension.LoadAssemblies();
 
-            this.aggregateCatalog.Catalogs.Add(catelog);
+            var catalog = new AggregateCatalog(extension.Assemblies.Select((assembly) => new AssemblyCatalog(assembly)));
+
+            this.aggregateCatalog.Catalogs.Add(catalog);
 
             this.loadedExtensions.Add(extension);
 

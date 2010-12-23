@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Xml;
 using Ionic.Zip;
 
 namespace NoCap.GUI.WPF {
     class Extension : IDisposable {
-        public string Name { get; set; }
-        public IEnumerable<string> Authors { get; set; }
-        public string Namespace { get; set; }
-        public IEnumerable<Assembly> Assemblies { get; set; }
+        public string Name { get; private set; }
+        public IEnumerable<string> Authors { get; private set; }
+        public string Namespace { get; private set; }
+        public IEnumerable<Assembly> Assemblies { get; private set; }
+        public IDictionary<string, string> Licenses { get; private set; }
 
-        private string directory;
+        private readonly string dataDirectoryPath;
+
+        private IEnumerable<string> assemblyFileNames;
 
         private static string GetTempDirectory() {
             string directoryName = Path.GetRandomFileName();
@@ -24,55 +29,84 @@ namespace NoCap.GUI.WPF {
             return directoryPath;
         }
 
-        private static Assembly LoadAssemblyFromFile(string assemblyFileName) {
-            string assemblyDirectory = Path.GetDirectoryName(assemblyFileName);
-
+        private Assembly LoadAssemblyFromFile(string assemblyFilePath) {
             // FIXME Is there a cleaner way to do this?
 
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) => {
                 if (e.RequestingAssembly == null
-                || !AreDirectoriesSame(Path.GetDirectoryName(e.RequestingAssembly.Location), assemblyDirectory)) {
+                || !AreDirectoriesSame(Path.GetDirectoryName(e.RequestingAssembly.Location), this.dataDirectoryPath)) {
                     return null;
                 }
 
-			    string assemblyFile = Path.Combine(assemblyDirectory, e.Name.Substring(0, e.Name.IndexOf(",")) + ".dll");
+			    string assemblyFile = Path.Combine(this.dataDirectoryPath, e.Name.Substring(0, e.Name.IndexOf(",")) + ".dll");
 
                 return File.Exists(assemblyFile) ? Assembly.LoadFrom(assemblyFile) : null;
             };
 
-            return Assembly.LoadFile(assemblyFileName);
+            return Assembly.LoadFile(assemblyFilePath);
         }
 
         private static bool AreDirectoriesSame(string directoryA, string directoryB) {
             return directoryA == directoryB;
         }
 
-        private Extension() {
+        private Extension(string dataDirectoryPath) {
+            this.dataDirectoryPath = dataDirectoryPath;
         }
 
-        public static Extension Load(string extensionFileName) {
-            string extensionDirectory = GetTempDirectory();
+        public static Extension ReadFromArchive(string archiveFileName) {
+            string dataDirectoryPath = GetTempDirectory();
 
-            using (var file = File.Open(extensionFileName, FileMode.Open, FileAccess.Read))
+            using (var file = File.Open(archiveFileName, FileMode.Open, FileAccess.Read))
             using (var zipFile = ZipFile.Read(file)) {
-                zipFile.ExtractAll(extensionDirectory, ExtractExistingFileAction.OverwriteSilently);
+                zipFile.ExtractAll(dataDirectoryPath, ExtractExistingFileAction.OverwriteSilently);
             }
 
+            var extension = new Extension(dataDirectoryPath);
+            extension.LoadConfiguration();
+
+            return extension;
+        }
+
+        private void LoadConfiguration() {
             var config = new XmlDocument();
-            config.Load(Path.Combine(extensionDirectory, "nocap.xml"));
+            config.Load(Path.Combine(this.dataDirectoryPath, "nocap.xml"));
 
-            var assemblyFileNames = config.SelectNodes("//Assembly").OfType<XmlNode>().Select((node) => node.InnerText).ToArray();
+            var extension = config.DocumentElement;
 
-            return new Extension {
-                Assemblies = assemblyFileNames.Select(
-                    (fileName) => LoadAssemblyFromFile(Path.Combine(extensionDirectory, fileName))
-                ),
-                directory = extensionDirectory,
-            };
+            this.assemblyFileNames = extension.SelectNodes("Assembly").OfType<XmlNode>().Select((node) => node.InnerText).ToArray();
+
+            Name      = extension.SelectNodes("Name"     ).OfType<XmlNode>().Select((node) => node.InnerText).FirstOrDefault();
+            Namespace = extension.SelectNodes("Namespace").OfType<XmlNode>().Select((node) => node.InnerText).FirstOrDefault();
+
+            Authors = new ReadOnlyCollection<string>(
+                extension.SelectNodes("Author").OfType<XmlNode>().Select((node) => node.InnerText).ToArray()
+            );
+
+            Licenses = new Dictionary<string, string>();
+
+            foreach (var node in extension.SelectNodes("License").OfType<XmlNode>()) {
+                const string termAttributeName = "Term";
+                string term = null;
+
+                if (node.Attributes != null && node.Attributes[termAttributeName] != null) {
+                    term = node.Attributes[termAttributeName].Value;
+                }
+
+                string licenseText = node.InnerText;
+
+                Licenses[term ?? ""] = licenseText;
+            }
+        }
+
+        public void LoadAssemblies() {
+            var assemblies = this.assemblyFileNames.Select((fileName) => LoadAssemblyFromFile(Path.Combine(this.dataDirectoryPath, fileName)));
+
+            Assemblies = new ReadOnlyCollection<Assembly>(assemblies.ToArray());
         }
 
         public void Dispose() {
-            if (this.directory != null) {
+            if (this.dataDirectoryPath != null) {
                 // TODO Delete directory
                 // Currently, we can't delete the directory, because
                 // there are references to files inside the directory.

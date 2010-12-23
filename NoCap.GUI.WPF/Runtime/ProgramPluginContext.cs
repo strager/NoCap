@@ -7,9 +7,9 @@ namespace NoCap.GUI.WPF.Runtime {
     internal class ProgramPluginContext : IPluginContext {
         public ProgramPluginContext(CommandRunner commandRunner, ExtensionManager extensionManager, IFeatureRegistry featureRegistry, ICommandProvider commandProvider) {
             this.commandRunner = commandRunner;
-            this.commandProvider = commandProvider;
             this.extensionManager = extensionManager;
             this.featureRegistry = featureRegistry;
+            this.commandProvider = commandProvider;
         }
 
         private readonly CommandRunner commandRunner;
