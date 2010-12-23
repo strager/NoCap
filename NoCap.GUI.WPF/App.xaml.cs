@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
-using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 
 namespace NoCap.GUI.WPF {
@@ -17,10 +15,11 @@ namespace NoCap.GUI.WPF {
 
         private ApplicationSettings applicationSettings;
         private ProgramSettings settings;
+        private ExtensionManager extensionManager;
 
         private void Load() {
             var commandRunner = new CommandRunner();
-            var extensionManager = new ExtensionManager(Directory.CreateDirectory(Directory.GetCurrentDirectory()));
+            this.extensionManager = new ExtensionManager(Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Extensions")));
 
             this.applicationSettings = new ApplicationSettings();
 
@@ -34,7 +33,7 @@ namespace NoCap.GUI.WPF {
                 loadCommandDefaults = true;
             }
 
-            this.settings = ProgramSettings.Create(settingsData, commandRunner, extensionManager);
+            this.settings = ProgramSettings.Create(settingsData, commandRunner, this.extensionManager);
 
             var featureRegistry = this.settings.FeatureRegistry;
 
@@ -81,6 +80,7 @@ namespace NoCap.GUI.WPF {
 
         public void Dispose() {
             this.settings.Dispose();
+            this.extensionManager.Dispose();
         }
     }
 }

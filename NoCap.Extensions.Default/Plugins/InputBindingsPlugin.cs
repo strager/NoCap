@@ -157,7 +157,9 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private void UpdateBindings() {
-            InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
+            if (InputProvider != null) {
+                InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
+            }
         }
 
         protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {

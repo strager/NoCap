@@ -6,5 +6,7 @@
     <Description>Description here</Description>
 
     <Namespace>http://strager.net/nocap/extensions/default</Namespace>
+
+    <Assembly>NoCap.Extensions.Default.dll</Assembly>
   </Extension>
 </NoCap>
