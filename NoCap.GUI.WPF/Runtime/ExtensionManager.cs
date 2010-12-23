@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace NoCap.GUI.WPF.Runtime {
     class ExtensionManager : IDisposable {
+        private static readonly string ExtensionFilter = "*.nocap";
+
         private readonly CompositionContainer compositionContainer;
         private readonly FileSystemWatcher fileSystemWatcher;
 
@@ -24,7 +26,7 @@ namespace NoCap.GUI.WPF.Runtime {
 
             this.compositionContainer = new CompositionContainer(this.aggregateCatalog);
 
-            this.fileSystemWatcher = new FileSystemWatcher(rootDirectory.FullName) {
+            this.fileSystemWatcher = new FileSystemWatcher(rootDirectory.FullName, ExtensionFilter) {
                 IncludeSubdirectories = false,
             };
 
@@ -34,7 +36,7 @@ namespace NoCap.GUI.WPF.Runtime {
             this.fileSystemWatcher.Renamed += CheckExtension;
             this.fileSystemWatcher.Created += CheckNewExtension;
 
-            foreach (var file in rootDirectory.EnumerateFiles()) {
+            foreach (var file in rootDirectory.EnumerateFiles(ExtensionFilter, SearchOption.TopDirectoryOnly)) {
                 LoadExtension(file.FullName);
             }
         }
