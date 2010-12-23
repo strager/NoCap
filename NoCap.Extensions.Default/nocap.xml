@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<NoCap>
+  <Extension>
+    <Name>Default extension</Name>
+    <Author>Strager Neds</Author>
+    <Description>Description here</Description>
+
+    <Namespace>http://strager.net/nocap/extensions/default</Namespace>
+  </Extension>
+</NoCap>

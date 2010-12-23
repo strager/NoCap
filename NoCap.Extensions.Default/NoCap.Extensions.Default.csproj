@@ -277,6 +277,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="nocap.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /I /Y $(TargetDir)\. $(SolutionDir)NoCap.GUI.WPF\bin\$(ConfigurationName)\NoCap.Extensions.Default</PostBuildEvent>
