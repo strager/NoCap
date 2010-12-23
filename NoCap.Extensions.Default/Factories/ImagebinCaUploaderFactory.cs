@@ -6,7 +6,6 @@ using NoCap.Library.Imaging;
 
 namespace NoCap.Extensions.Default.Factories {
     [Export(typeof(ICommandFactory))]
-    [PreferredCommandFactory(CommandFeatures.ImageUploader)]
     class ImagebinCaUploaderFactory : ICommandFactory {
         public string Name {
             get { return "Imagebin.ca uploader"; }

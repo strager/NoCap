@@ -5,6 +5,7 @@ using NoCap.Library.Imaging;
 
 namespace NoCap.Extensions.Default.Factories {
     [Export(typeof(ICommandFactory))]
+    [PreferredCommandFactory(CommandFeatures.ImageUploader)]
     sealed class ImgurUploaderFactory : ICommandFactory {
         public string Name {
             get {
