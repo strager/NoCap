@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -29,21 +30,17 @@ namespace NoCap.GUI.WPF {
             return directoryPath;
         }
 
-        private Assembly LoadAssemblyFromFile(string assemblyFilePath) {
+        private Assembly ResolveAssembly(object sender, ResolveEventArgs e) {
             // FIXME Is there a cleaner way to do this?
 
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, e) => {
-                if (e.RequestingAssembly == null
+            if (e.RequestingAssembly == null
                 || !AreDirectoriesSame(Path.GetDirectoryName(e.RequestingAssembly.Location), this.dataDirectoryPath)) {
-                    return null;
-                }
+                return null;
+            }
 
-			    string assemblyFile = Path.Combine(this.dataDirectoryPath, e.Name.Substring(0, e.Name.IndexOf(",")) + ".dll");
+            string assemblyFile = Path.Combine(this.dataDirectoryPath, e.Name.Substring(0, e.Name.IndexOf(",")) + ".dll");
 
-                return File.Exists(assemblyFile) ? Assembly.LoadFrom(assemblyFile) : null;
-            };
-
-            return Assembly.LoadFile(assemblyFilePath);
+            return File.Exists(assemblyFile) ? Assembly.LoadFrom(assemblyFile) : null;
         }
 
         private static bool AreDirectoriesSame(string directoryA, string directoryB) {
@@ -51,6 +48,8 @@ namespace NoCap.GUI.WPF {
         }
 
         private Extension(string dataDirectoryPath) {
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
             this.dataDirectoryPath = dataDirectoryPath;
         }
 
@@ -100,7 +99,7 @@ namespace NoCap.GUI.WPF {
         }
 
         public void LoadAssemblies() {
-            var assemblies = this.assemblyFileNames.Select((fileName) => LoadAssemblyFromFile(Path.Combine(this.dataDirectoryPath, fileName)));
+            var assemblies = this.assemblyFileNames.Select((fileName) => Assembly.LoadFile(Path.Combine(this.dataDirectoryPath, fileName)));
 
             Assemblies = new ReadOnlyCollection<Assembly>(assemblies.ToArray());
         }

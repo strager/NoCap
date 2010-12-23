@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows;
 using NoCap.Library;
@@ -67,7 +69,9 @@ namespace NoCap.Extensions.Default.Plugins {
         public void Initialize(IPluginContext pluginContext) {
             this.commandRunner = pluginContext.CommandRunner;
 
-            var compositionContainer = pluginContext.CompositionContainer;
+            string extensionPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var compositionContainer = new CompositionContainer(new DirectoryCatalog(extensionPath));
 
             Recompose(compositionContainer);
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);

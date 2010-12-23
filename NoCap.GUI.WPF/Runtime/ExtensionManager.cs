@@ -8,23 +8,23 @@ namespace NoCap.GUI.WPF.Runtime {
     class ExtensionManager : IDisposable {
         private static readonly string ExtensionFilter = "*.nocap";
 
-        private readonly CompositionContainer compositionContainer;
+        private readonly CompositionContainer commandCompositionContainer;
         private readonly FileSystemWatcher fileSystemWatcher;
 
         private readonly AggregateCatalog aggregateCatalog;
 
         private readonly ICollection<Extension> loadedExtensions = new List<Extension>();
 
-        public CompositionContainer CompositionContainer {
+        public CompositionContainer CommandCompositionContainer {
             get {
-                return this.compositionContainer;
+                return this.commandCompositionContainer;
             }
         }
 
         public ExtensionManager(DirectoryInfo rootDirectory) {
-            this.aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(typeof(ExtensionManager).Assembly));
+            this.aggregateCatalog = new AggregateCatalog();
 
-            this.compositionContainer = new CompositionContainer(this.aggregateCatalog);
+            this.commandCompositionContainer = new CompositionContainer(this.aggregateCatalog);
 
             this.fileSystemWatcher = new FileSystemWatcher(rootDirectory.FullName, ExtensionFilter) {
                 IncludeSubdirectories = false,
