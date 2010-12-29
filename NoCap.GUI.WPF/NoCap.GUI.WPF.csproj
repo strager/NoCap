@@ -86,6 +86,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Settings\ApplicationSettings.cs" />
+    <Compile Include="Util\ExtensionDataContractResolver.cs" />
+    <Compile Include="Util\SafeRoundTripSurrogate.cs" />
     <Compile Include="Util\ProgramSettingsDataSerializer.cs" />
     <Compile Include="Util\TypeComparer.cs" />
     <Page Include="DefaultCommandsEditor.xaml">
