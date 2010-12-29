@@ -114,14 +114,18 @@ namespace NoCap.GUI.WPF {
 
         public void Dispose() {
             if (this.dataDirectoryPath != null) {
-                Process.Start(new ProcessStartInfo {
-                    FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DOPE.exe"), // FIXME Better way to get EXE path
-                    Arguments = string.Format("\"{0}\"", this.dataDirectoryPath), // FIXME SECURITY !!!
-                    ErrorDialog = false,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                });
+                DeleteLater(this.dataDirectoryPath);
             }
+        }
+
+        private static void DeleteLater(string path) {
+            Process.Start(new ProcessStartInfo {
+                FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DOPE.exe"), // FIXME Better way to get EXE path
+                Arguments = string.Format("\"{0}\"", path), // FIXME SECURITY !!!
+                ErrorDialog = false,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
         }
     }
 }
