@@ -17,6 +17,12 @@ namespace NoCap.GUI.WPF {
         public IEnumerable<Assembly> Assemblies { get; private set; }
         public IDictionary<string, string> Licenses { get; private set; }
 
+        public string RootDirectory {
+            get {
+                return dataDirectoryPath;
+            }
+        }
+
         private readonly string dataDirectoryPath;
 
         private IEnumerable<string> assemblyFileNames;

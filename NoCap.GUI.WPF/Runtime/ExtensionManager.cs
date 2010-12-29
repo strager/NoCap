@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
@@ -13,11 +14,17 @@ namespace NoCap.GUI.WPF.Runtime {
 
         private readonly AggregateCatalog aggregateCatalog;
 
-        private readonly ICollection<Extension> loadedExtensions = new List<Extension>();
+        private readonly IList<Extension> loadedExtensions = new List<Extension>();
 
         public CompositionContainer CommandCompositionContainer {
             get {
                 return this.commandCompositionContainer;
+            }
+        }
+
+        public IEnumerable<Extension> Extensions {
+            get {
+                return new ReadOnlyCollection<Extension>(this.loadedExtensions);
             }
         }
 

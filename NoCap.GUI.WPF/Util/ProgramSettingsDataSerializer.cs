@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
-using Bindable.Linq;
 using System.Linq;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
-using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF.Util {
     class ProgramSettingsDataSerializer {
-        private static readonly StreamingContext StreamingContext =
-            new StreamingContext(StreamingContextStates.File | StreamingContextStates.Persistence);
+        private readonly ExtensionManager extensionManager;
+
+        public ProgramSettingsDataSerializer(ExtensionManager extensionManager) {
+            this.extensionManager = extensionManager;
+        }
 
         public static XmlDocument WriteToDocument(string data) {
             var document = new XmlDocument();
@@ -23,33 +23,36 @@ namespace NoCap.GUI.WPF.Util {
             return document;
         }
 
-        private static XmlObjectSerializer GetSettingsSerializer() {
-            return new NetDataContractSerializer(
-                StreamingContext,
+        private XmlObjectSerializer GetSettingsSerializer() {
+            return new DataContractSerializer(
+                typeof(ProgramSettingsData),
+                Enumerable.Empty<Type>(),
                 int.MaxValue,
                 false,
-                FormatterAssemblyStyle.Simple,
-                new MySurrogateSelector()
+                true,
+                new SafeRoundTripSurrogate(),
+                new ExtensionDataContractResolver(this.extensionManager)
             );
         }
 
-        public static string SerializeSettings(ProgramSettingsData settings) {
+        public string SerializeSettings(ProgramSettingsData settings) {
             var serializer = GetSettingsSerializer();
 
             return Serialize(settings, serializer);
         }
 
-        public static ProgramSettingsData DeserializeSettings(string configData) {
+        public ProgramSettingsData DeserializeSettings(string configData) {
             var deserializer = GetSettingsSerializer();
 
             return (ProgramSettingsData) Deserialize(configData, deserializer);
         }
 
-        private static string Serialize(object obj, XmlObjectSerializer serializer) {
+        private string Serialize(object obj, XmlObjectSerializer serializer) {
             var output = new StringBuilder();
 
             var xmlSettings = new XmlWriterSettings {
-                Indent = true
+                Indent = true,
+                CheckCharacters = false,
             };
 
             using (var writer = XmlWriter.Create(output, xmlSettings)) {
@@ -64,7 +67,7 @@ namespace NoCap.GUI.WPF.Util {
             return output.ToString();
         }
 
-        private static object Deserialize(string data, XmlObjectSerializer serializer) {
+        private object Deserialize(string data, XmlObjectSerializer serializer) {
             using (var stringReader = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             using (var xmlReader = XmlDictionaryReader.CreateTextReader(stringReader, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null)) {
                 try {
@@ -88,60 +91,6 @@ namespace NoCap.GUI.WPF.Util {
 
                 return (T) cloner.Deserialize(stream);
             }
-        }
-    }
-
-    class MySurrogateSelector : ISurrogateSelector {
-        private ISurrogateSelector nextSelector;
-
-        public void ChainSelector(ISurrogateSelector selector) {
-            this.nextSelector = selector;
-        }
-
-        public ISerializationSurrogate GetSurrogate(Type type, StreamingContext context, out ISurrogateSelector selector) {
-            if (type.IsGenericType && type.GetInterfaces().Contains(typeof(IBindableCollection))) {
-                selector = this;
-
-                return new BindableCollectionSurrogate();
-            }
-
-            selector = null;
-
-            return this.nextSelector == null
-                ? null
-                : this.nextSelector.GetSurrogate(type, context, out selector);
-        }
-
-        public ISurrogateSelector GetNextSelector() {
-            return this.nextSelector;
-        }
-    }
-
-    class BindableCollectionSurrogate : ISerializationSurrogate {
-        public void GetObjectData(object obj, SerializationInfo info, StreamingContext context) {
-            var bindableCollection = (IBindableCollection) obj;
-
-            var items = new ArrayList(bindableCollection.Count);
-
-            foreach (var item in bindableCollection) {
-                items.Add(item);
-            }
-
-            info.AddValue("Items", items);
-            info.AddValue("ItemType", obj.GetType());
-        }
-
-        public object SetObjectData(object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) {
-            var items = info.GetValue<IEnumerable>("Items");
-            var type = info.GetValue<Type>("ItemType");
-
-            dynamic bindableCollection = Activator.CreateInstance(type, new object[] { });
-
-            foreach (var item in items) {
-                bindableCollection.Add(item);
-            }
-
-            return bindableCollection;
         }
     }
 }
