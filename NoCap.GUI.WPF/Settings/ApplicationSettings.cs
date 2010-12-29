@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Xml;
 using NoCap.GUI.WPF.Util;
 
 namespace NoCap.GUI.WPF.Settings {
-    class ApplicationSettings : ApplicationSettingsBase {
+    class ApplicationSettings {
         private static readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private static readonly string SettingsPath = Path.Combine(AppDataPath, "NoCap");
