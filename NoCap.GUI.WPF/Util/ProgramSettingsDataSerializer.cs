@@ -110,56 +110,56 @@ namespace NoCap.GUI.WPF.Util {
         public override bool TryResolveType(Type type, Type declaredType, DataContractResolver knownTypeResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace) {
             var dictionary = new XmlDictionary();
 
+            string typeNameString = GetDataContractName(type);
+            string typeNamespaceString = GetDataContractNamespace(type);
+
+            if (typeNameString == null || typeNamespaceString == null) {
+                return knownTypeResolver.TryResolveType(type, declaredType, knownTypeResolver, out typeName, out typeNamespace);
+            }
+
+            typeName = dictionary.Add(typeNameString);
+            typeNamespace = dictionary.Add(typeNamespaceString);
+
+            return true;
+        }
+
+        private static string GetDataContractNamespace(Type type) {
+            var dataContractAttributes = type.GetCustomAttributes(typeof(DataContractAttribute), true).OfType<DataContractAttribute>();
+            var namespaceAttr = dataContractAttributes.FirstOrDefault((attr) => attr.Namespace != null);
+
+            if (namespaceAttr != null) {
+                return namespaceAttr.Namespace;
+            }
+
+            var namespaceAttributes = type.Assembly.GetCustomAttributes(typeof(ContractNamespaceAttribute), false).OfType<ContractNamespaceAttribute>();
+            var namespaceAttr2 = namespaceAttributes.FirstOrDefault((attr) => attr.ClrNamespace == type.Namespace);
+
+            return namespaceAttr2 == null ? null : namespaceAttr2.ContractNamespace;
+        }
+
+        private static string GetDataContractName(Type type) {
             var dataContractAttributes = type.GetCustomAttributes(typeof(DataContractAttribute), true).OfType<DataContractAttribute>();
             var nameAttr = dataContractAttributes.FirstOrDefault((attr) => attr.Name != null);
 
-            if (nameAttr == null) {
-                goto defaultLookup;
-            }
-
-            typeName = dictionary.Add(nameAttr.Name);
-
-            var namespaceAttr = dataContractAttributes.FirstOrDefault((attr) => attr.Namespace != null);
-
-            if (namespaceAttr == null) {
-                var namespaceAttributes = type.Assembly.GetCustomAttributes(typeof(ContractNamespaceAttribute), false).OfType<ContractNamespaceAttribute>();
-
-                var namespaceAttr2 = namespaceAttributes.FirstOrDefault((attr) => attr.ClrNamespace == type.Namespace);
-
-                if (namespaceAttr2 == null) {
-                    goto defaultLookup;;
-                }
-
-                typeNamespace = dictionary.Add(namespaceAttr2.ContractNamespace);
-            } else {
-                typeNamespace = dictionary.Add(namespaceAttr.Namespace);
-            }
-
-            return true;
-
-            defaultLookup:
-
-            return knownTypeResolver.TryResolveType(type, declaredType, knownTypeResolver, out typeName, out typeNamespace);
+            return nameAttr == null ? null : nameAttr.Name;
         }
 
         public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver knownTypeResolver) {
             var assemblies = GetNamespaceAssemblies(typeNamespace);
 
-            if (assemblies == null) {
-                goto defaultLookup;
-            }
-
             foreach (var assembly in assemblies) {
-                var type = assembly.GetTypes().Where((t) => t.Name == typeName).SingleOrDefault();
+                var type = assembly.GetTypes().Where((t) => IsTypeContractMatch(t, typeName, typeNamespace)).SingleOrDefault();
 
                 if (type != null) {
                     return type;
                 }
             }
 
-            defaultLookup:
-
             return knownTypeResolver.ResolveName(typeName, typeNamespace, declaredType, knownTypeResolver);
+        }
+
+        private static bool IsTypeContractMatch(Type type, string typeName, string typeNamespace) {
+            return GetDataContractName(type) == typeName && GetDataContractNamespace(type) == typeNamespace;
         }
 
         private IEnumerable<Assembly> GetNamespaceAssemblies(string typeNamespace) {
@@ -191,12 +191,6 @@ namespace NoCap.GUI.WPF.Util {
 
         public object GetObjectToSerialize(object obj, Type targetType) {
             // TODO Round-trip dummy
-
-            if (obj is Type) {
-                var type = (Type) obj;
-
-                return type.AssemblyQualifiedName;
-            }
 
             return obj;
         }

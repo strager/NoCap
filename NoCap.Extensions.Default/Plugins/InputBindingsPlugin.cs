@@ -11,7 +11,6 @@ using System.Windows;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
-using NoCap.Library.Util;
 using WinputDotNet;
 
 namespace NoCap.Extensions.Default.Plugins {
@@ -43,24 +42,22 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        private IInputProvider inputProvider;
+
         public IInputProvider InputProvider {
-            get;
-            set;
-        }
-
-        [DataMember(Name = "InputProviderType")]
-        private Type InputProviderType {
             get {
-                var inputProvider = InputProvider;
-
-                return inputProvider == null ? null : inputProvider.GetType();
+                return this.inputProvider;
             }
 
             set {
-                // TODO Use instance in inputProviders collection
-                InputProvider = (IInputProvider) Activator.CreateInstance(value);
+                this.inputProvider = value;
+
+                this.inputProviderTypeName = value == null ? null : value.GetType().AssemblyQualifiedName;
             }
         }
+
+        [DataMember(Name = "InputProviderTypeName")]
+        private string inputProviderTypeName;
 
         public UIElement GetEditor(ICommandProvider commandProvider) {
             return new InputBindingsEditor(this, commandProvider);
@@ -76,13 +73,24 @@ namespace NoCap.Extensions.Default.Plugins {
             Recompose(compositionContainer);
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);
 
-            InputProvider = this.inputProviders.FirstOrDefault();
-
             SetUp();
         }
 
         private void Recompose(CompositionContainer compositionContainer) {
+            // Take care when touching this.
+
             this.inputProviders = compositionContainer.GetExportedValues<IInputProvider>();
+
+            var defaultProvider = this.inputProviders.FirstOrDefault();
+            var newProvider = InputProvider ?? defaultProvider;
+
+            if (this.inputProviderTypeName != null && InputProvider == null) {
+                newProvider = this.inputProviders.FirstOrDefault(
+                    (provider) => provider.GetType().AssemblyQualifiedName == this.inputProviderTypeName
+                ) ?? newProvider;
+            }
+
+            InputProvider = newProvider;
         }
 
         internal void SetUp() {
@@ -164,14 +172,6 @@ namespace NoCap.Extensions.Default.Plugins {
             if (InputProvider != null) {
                 InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
             }
-        }
-
-        protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
-            // TODO Use instance in inputProviders collection
-            var inputProviderType = info.GetValue<Type>("InputProvider type");
-            InputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
-
-            Bindings = info.GetValue<ObservableCollection<CommandBinding>>("Bindings");
         }
 
         [OnDeserialized]

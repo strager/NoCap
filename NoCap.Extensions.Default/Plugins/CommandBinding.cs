@@ -6,7 +6,10 @@ using ICommand = NoCap.Library.ICommand;
 namespace NoCap.Extensions.Default.Plugins {
     [DataContract(Name = "Binding")]
     public sealed class CommandBinding : ICommandBinding {
+        [DataMember(Name = "Input", IsRequired = true)]
         private readonly IInputSequence input;
+
+        [DataMember(Name = "Command", IsRequired = true)]
         private readonly ICommand command;
 
         public IInputSequence Input {
