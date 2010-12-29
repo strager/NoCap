@@ -174,5 +174,14 @@
     <Zip Files="@(ZipFiles)" WorkingDirectory="$(InstallFilesDirectory)" ZipFileName="$(MSBuildProjectDirectory)\InstallFiles.zip" ZipLevel="9" />
   </Target>
   <Target Name="AfterBuild">
+    <PropertyGroup>
+      <dotNetInstallPath>$(MSBuildProjectDirectory)\..\vendor\dotNetInstaller</dotNetInstallPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <EmbeddedFiles Include="$(TargetDir)\NoCap.Installer.exe" />
+    </ItemGroup>
+    <Copy DestinationFolder="$(MSBuildProjectDirectory)" SourceFiles="@(EmbeddedFiles)" />
+    <Exec Command="$(dotNetInstallPath)\InstallerLinker.exe /Output:NoCapSetup.exe /Template:$(dotNetInstallPath)\dotNetInstaller.exe /Configuration:bootstrapper.xml /Manifest:app.manifest /Embed+"
+        WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 </Project>
