@@ -18,14 +18,14 @@ namespace NoCap.GUI.WPF.Runtime {
         private IPluginContext pluginContext;
         private bool isInitialized;
 
-        public void Initialize(IPluginContext pluginContext) {
+        public void Initialize(IPluginContext pluginContext, CompositionContainer commandCompositionContainer) {
             if (this.isInitialized) {
                 throw new InvalidOperationException("Already initialized");
             }
 
             this.pluginContext = pluginContext;
 
-            Recompose(pluginContext.CompositionContainer);
+            Recompose(commandCompositionContainer);
 
             foreach (var plugin in this.plugins) {
                 plugin.Initialize(pluginContext);
@@ -34,8 +34,8 @@ namespace NoCap.GUI.WPF.Runtime {
             this.isInitialized = true;
         }
 
-        private void Recompose(CompositionContainer compositionContainer) {
-            var composedPlugins = compositionContainer.GetExportedValues<IPlugin>();
+        private void Recompose(ExportProvider commandCompositionContainer) {
+            var composedPlugins = commandCompositionContainer.GetExportedValues<IPlugin>();
             var newPlugins = composedPlugins.Except(this.plugins, new TypeComparer<IPlugin>());
 
             AddRange(newPlugins);

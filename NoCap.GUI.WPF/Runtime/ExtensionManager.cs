@@ -2,80 +2,70 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using System.Linq;
 
 namespace NoCap.GUI.WPF.Runtime {
-    class ExtensionManager {
-        private readonly CompositionContainer compositionContainer;
+    class ExtensionManager : IDisposable {
+        private static readonly string ExtensionFilter = "*.nocap";
+
+        private readonly CompositionContainer commandCompositionContainer;
         private readonly FileSystemWatcher fileSystemWatcher;
 
         private readonly AggregateCatalog aggregateCatalog;
-        private readonly ICollection<DirectoryCatalog> directoryCatalogs = new List<DirectoryCatalog>();
 
-        public CompositionContainer CompositionContainer {
+        private readonly ICollection<Extension> loadedExtensions = new List<Extension>();
+
+        public CompositionContainer CommandCompositionContainer {
             get {
-                return this.compositionContainer;
+                return this.commandCompositionContainer;
             }
         }
 
         public ExtensionManager(DirectoryInfo rootDirectory) {
-            this.aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(typeof(ExtensionManager).Assembly));
+            this.aggregateCatalog = new AggregateCatalog();
 
-            this.compositionContainer = new CompositionContainer(this.aggregateCatalog);
+            this.commandCompositionContainer = new CompositionContainer(this.aggregateCatalog);
 
-            this.fileSystemWatcher = new FileSystemWatcher(".");
+            this.fileSystemWatcher = new FileSystemWatcher(rootDirectory.FullName, ExtensionFilter) {
+                IncludeSubdirectories = false,
+            };
+
             this.fileSystemWatcher.Changed += CheckExtension;
             this.fileSystemWatcher.Created += CheckExtension;
             this.fileSystemWatcher.Deleted += CheckExtension;
             this.fileSystemWatcher.Renamed += CheckExtension;
             this.fileSystemWatcher.Created += CheckNewExtension;
 
-            AddDirectoryCatalog(rootDirectory.FullName);
-
-            foreach (var subDirectory in rootDirectory.EnumerateDirectories("*", SearchOption.AllDirectories)) {
-                AddDirectoryCatalog(subDirectory.FullName);
+            foreach (var file in rootDirectory.EnumerateFiles(ExtensionFilter, SearchOption.TopDirectoryOnly)) {
+                LoadExtension(file.FullName);
             }
         }
 
         private void CheckNewExtension(object sender, FileSystemEventArgs e) {
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory)) {
-                AddDirectoryCatalog(e.FullPath);
-            }
+            LoadExtension(e.FullPath);
         }
 
-        private void AddDirectoryCatalog(string fullPath) {
-            using (new ExtensionCompositionScope(fullPath)) {
-                var catalog = new DirectoryCatalog(fullPath);
-                this.directoryCatalogs.Add(catalog);
-                this.aggregateCatalog.Catalogs.Add(catalog);
-            }
+        private Extension LoadExtension(string extensionFileName) {
+            var extension = Extension.ReadFromArchive(extensionFileName);
+            extension.LoadAssemblies();
+
+            var catalog = new AggregateCatalog(extension.Assemblies.Select((assembly) => new AssemblyCatalog(assembly)));
+
+            this.aggregateCatalog.Catalogs.Add(catalog);
+
+            this.loadedExtensions.Add(extension);
+
+            return extension;
         }
 
-        private void CheckExtension(object sender, FileSystemEventArgs e) {
-            // TODO Only check affected extensions
-            foreach (var catalog in this.directoryCatalogs) {
-                using (new ExtensionCompositionScope(catalog.FullPath)) {
-                    catalog.Refresh();
-                }
-            }
-        }
-    }
-
-    sealed class ExtensionCompositionScope : IDisposable {
-        private bool disposed = false;
-
-        public ExtensionCompositionScope(string fullPath) {
-            // FIXME Any non-deprecated way to deal with this?
-            AppDomain.CurrentDomain.AppendPrivatePath(fullPath);
+        private static void CheckExtension(object sender, FileSystemEventArgs e) {
+            // TODO
         }
 
         public void Dispose() {
-            if (disposed) {
-                throw new ObjectDisposedException("ExtensionCompositionScope");
+            foreach (var extension in this.loadedExtensions) {
+                extension.Dispose();
             }
-
-            AppDomain.CurrentDomain.ClearPrivatePath();
-
-            disposed = true;
         }
     }
 }
