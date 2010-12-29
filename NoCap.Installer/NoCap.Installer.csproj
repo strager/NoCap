@@ -143,9 +143,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
-  <PropertyGroup>
-    <InstallFilesDirectory>$(MSBuildProjectDirectory)\InstallFiles</InstallFilesDirectory>
-  </PropertyGroup>
   <Target Name="Subprojects">
     <ItemGroup>
       <ProjectReference Include="..\NoCap.GUI.WPF\NoCap.GUI.WPF.csproj">
@@ -157,6 +154,9 @@
     <MSBuild Projects="@(ProjectReference)" Targets="Build" BuildInParallel="true" />
   </Target>
   <Target Name="InstallFiles" DependsOnTargets="Subprojects">
+    <PropertyGroup>
+      <InstallFilesDirectory>$(TargetDir)\InstallFiles</InstallFilesDirectory>
+    </PropertyGroup>
     <ItemGroup>
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.dll" />
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.nocap" />
@@ -176,12 +176,9 @@
   <Target Name="AfterBuild">
     <PropertyGroup>
       <dotNetInstallPath>$(MSBuildProjectDirectory)\..\vendor\dotNetInstaller</dotNetInstallPath>
+      <BootstrapperConfig>$(MSBuildProjectDirectory)\bootstrapper.xml</BootstrapperConfig>
     </PropertyGroup>
-    <ItemGroup>
-      <EmbeddedFiles Include="$(TargetDir)\NoCap.Installer.exe" />
-    </ItemGroup>
-    <Copy DestinationFolder="$(MSBuildProjectDirectory)" SourceFiles="@(EmbeddedFiles)" />
-    <Exec Command="$(dotNetInstallPath)\InstallerLinker.exe /Output:NoCapSetup.exe /Template:$(dotNetInstallPath)\dotNetInstaller.exe /Configuration:bootstrapper.xml /Manifest:app.manifest /Embed+"
-        WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <Exec Command='$(dotNetInstallPath)\InstallerLinker.exe /Output:$(TargetDir)\NoCapSetup.exe /Template:$(dotNetInstallPath)\dotNetInstaller.exe "/Configuration:$(BootstrapperConfig)" /Manifest:$(MSBuildProjectDirectory)\app.manifest /Embed+'
+        WorkingDirectory="$(TargetDir)" />
   </Target>
 </Project>

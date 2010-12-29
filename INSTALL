@@ -39,9 +39,7 @@ The NoCap GUI will be built into the /NoCap.GUI.WPF/bin/$$$/ directory.
 
 The core NoCap installer will be built into the /NoCap.Installer/bin/$$$/
 directory.  The bootstrapping installer is located at
-/NoCap.Installer/NoCapSetup.exe.
-
-TODO Move NoCapSetup.exe to the bin directory.  (Same with InstallFiles/,.zip.)
+/NoCap.Installer/bin/$$$/NoCapSetup.exe.
 
 = Testing =
 
