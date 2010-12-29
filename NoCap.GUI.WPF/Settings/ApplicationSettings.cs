@@ -1,34 +1,30 @@
-﻿using System.Configuration;
+﻿using System;
+using System.IO;
+using System.Text;
 using System.Xml;
 using NoCap.GUI.WPF.Util;
 
 namespace NoCap.GUI.WPF.Settings {
-    [SettingsManageability(SettingsManageability.Roaming)]
-    class ApplicationSettings : ApplicationSettingsBase {
-        private ProgramSettingsDataSerializer serializer;
+    class ApplicationSettings {
+        private static readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-        [UserScopedSetting]
-        [DefaultSettingValue(null)]
-        [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-        public XmlDocument ProgramSettingsData {
-            get {
-                return (XmlDocument) this["ProgramSettingsData"];
-            }
+        private static readonly string SettingsPath = Path.Combine(AppDataPath, "NoCap");
 
-            set {
-                this["ProgramSettingsData"] = value;
-            }
+        private static readonly string MainSettingsFileName = "settings.xml";
+        private static readonly string TimedSettingsFileName = "settings-{0:yyMMdd_HHmmss_ffff}.xml";
+
+        private readonly ProgramSettingsDataSerializer serializer;
+
+        private static void EnsureSettingsPathExists() {
+            Directory.CreateDirectory(SettingsPath);
         }
 
-        private static XmlDocument WriteToDocument(string data) {
-            var document = new XmlDocument();
-            document.LoadXml(data);
-
-            return document;
+        private static string GetMainSettingsFilePath() {
+            return Path.Combine(SettingsPath, MainSettingsFileName);
         }
 
-        private static string ReadFromDocument(XmlDocument document) {
-            return document.InnerXml;
+        private static string GetTimedSettingsFilePath(DateTime date) {
+            return Path.Combine(SettingsPath, string.Format(TimedSettingsFileName, date.ToUniversalTime()));
         }
 
         public ApplicationSettings(ProgramSettingsDataSerializer serializer) {
@@ -36,19 +32,40 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public void SaveSettingsData(ProgramSettingsData value) {
-            ProgramSettingsData = WriteToDocument(this.serializer.SerializeSettings(value));
+            EnsureSettingsPathExists();
 
-            Save();
+            var fileName = GetTimedSettingsFilePath(DateTime.Now);
+            
+            var xmlSettings = new XmlWriterSettings {
+                Indent = true,
+                IndentChars = "  ",
+                Encoding = Encoding.UTF8,
+                CloseOutput = true,
+                ConformanceLevel = ConformanceLevel.Document,
+            };
+
+            using (var xmlWriter = XmlWriter.Create(fileName, xmlSettings)) {
+                this.serializer.SerializeSettings(value, xmlWriter);
+            }
+
+            File.Copy(fileName, GetMainSettingsFilePath(), true);
         }
 
         public ProgramSettingsData LoadSettingsData() {
-            var data = ProgramSettingsData;
+            EnsureSettingsPathExists();
 
-            if (data == null) {
+            var fileName = GetMainSettingsFilePath();
+
+            if (!File.Exists(fileName)) {
                 return null;
             }
 
-            return this.serializer.DeserializeSettings(ReadFromDocument(data));
+            using (var file = File.Open(fileName, FileMode.Open, FileAccess.Read)) {
+                var settingsDocument = new XmlDocument();
+                settingsDocument.Load(file);
+
+                return this.serializer.DeserializeSettings(settingsDocument.DocumentElement);
+            }
         }
     }
 }

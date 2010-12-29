@@ -35,41 +35,29 @@ namespace NoCap.GUI.WPF.Util {
             );
         }
 
-        public string SerializeSettings(ProgramSettingsData settings) {
+        public void SerializeSettings(ProgramSettingsData settings, XmlWriter writer) {
             var serializer = GetSettingsSerializer();
 
-            return Serialize(settings, serializer);
+            Serialize(settings, writer, serializer);
         }
 
-        public ProgramSettingsData DeserializeSettings(string configData) {
+        public ProgramSettingsData DeserializeSettings(XmlElement configData) {
             var deserializer = GetSettingsSerializer();
 
             return (ProgramSettingsData) Deserialize(configData, deserializer);
         }
 
-        private string Serialize(object obj, XmlObjectSerializer serializer) {
-            var output = new StringBuilder();
-
-            var xmlSettings = new XmlWriterSettings {
-                Indent = true,
-                CheckCharacters = false,
-            };
-
-            using (var writer = XmlWriter.Create(output, xmlSettings)) {
-                try {
-                    serializer.WriteObject(writer, obj);
-                } catch (SerializationException e) {
-                    // TODO Error handling
-                    throw;
-                }
+        private static void Serialize(object obj, XmlWriter writer, XmlObjectSerializer serializer) {
+            try {
+                serializer.WriteObject(writer, obj);
+            } catch (SerializationException e) {
+                // TODO Error handling
+                throw;
             }
-
-            return output.ToString();
         }
 
-        private object Deserialize(string data, XmlObjectSerializer serializer) {
-            using (var stringReader = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-            using (var xmlReader = XmlDictionaryReader.CreateTextReader(stringReader, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null)) {
+        private static object Deserialize(XmlElement node, XmlObjectSerializer serializer) {
+            using (var xmlReader = new XmlNodeReader(node)) {
                 try {
                     return serializer.ReadObject(xmlReader);
                 } catch (SerializationException e) {
