@@ -181,7 +181,7 @@
       <EmbeddedFiles Include="$(TargetDir)\NoCap.Installer.exe" />
     </ItemGroup>
     <Copy DestinationFolder="$(MSBuildProjectDirectory)" SourceFiles="@(EmbeddedFiles)" />
-    <Exec Command="$(dotNetInstallPath)\InstallerLinker.exe /Output:NoCapSetup.exe /Template:$(dotNetInstallPath)\dotNetInstaller.exe /Configuration:bootstrapper.xml /Embed+"
+    <Exec Command="$(dotNetInstallPath)\InstallerLinker.exe /Output:NoCapSetup.exe /Template:$(dotNetInstallPath)\dotNetInstaller.exe /Configuration:bootstrapper.xml /Manifest:app.manifest /Embed+"
         WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 </Project>
