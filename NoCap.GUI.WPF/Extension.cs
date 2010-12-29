@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Ionic.Zip;
 
@@ -112,12 +114,18 @@ namespace NoCap.GUI.WPF {
 
         public void Dispose() {
             if (this.dataDirectoryPath != null) {
-                // TODO Delete directory
-                // Currently, we can't delete the directory, because
-                // there are references to files inside the directory.
-
-                // Directory.Delete(this.directory, true);
+                DeleteLater(this.dataDirectoryPath);
             }
+        }
+
+        private static void DeleteLater(string path) {
+            Process.Start(new ProcessStartInfo {
+                FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DOPE.exe"), // FIXME Better way to get EXE path
+                Arguments = string.Format("\"{0}\"", path), // FIXME SECURITY !!!
+                ErrorDialog = false,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
         }
     }
 }
