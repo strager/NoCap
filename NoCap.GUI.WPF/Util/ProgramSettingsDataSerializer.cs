@@ -51,7 +51,8 @@ namespace NoCap.GUI.WPF.Util {
             var output = new StringBuilder();
 
             var xmlSettings = new XmlWriterSettings {
-                Indent = true
+                Indent = true,
+                CheckCharacters = false,
             };
 
             using (var writer = XmlWriter.Create(output, xmlSettings)) {

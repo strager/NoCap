@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -8,6 +9,9 @@ using NoCap.GUI.WPF.Runtime;
 
 namespace NoCap.GUI.WPF.Util {
     class ExtensionDataContractResolver : DataContractResolver {
+        private const string ClrNamespacePrefix = @"http://schemas.datacontract.org/2004/07/";
+
+        private readonly XmlDictionary dictionary = new XmlDictionary();
         private readonly ExtensionManager extensionManager;
 
         public ExtensionDataContractResolver(ExtensionManager extensionManager) {
@@ -15,17 +19,38 @@ namespace NoCap.GUI.WPF.Util {
         }
 
         public override bool TryResolveType(Type type, Type declaredType, DataContractResolver knownTypeResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace) {
-            var dictionary = new XmlDictionary();
+            return TryResolveDataContractType(type, declaredType, out typeName, out typeNamespace)
+                || knownTypeResolver.TryResolveType(type, declaredType, knownTypeResolver, out typeName, out typeNamespace)
+                || TryResolveClrType(type, declaredType, out typeName, out typeNamespace);
+        }
 
+        private bool TryResolveClrType(Type type, Type declaredType, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace) {
+            if (type.FullName == null) {
+                typeName = null;
+                typeNamespace = null;
+
+                return false;
+            }
+
+            typeName = this.dictionary.Add(type.FullName);
+            typeNamespace = this.dictionary.Add(ClrNamespacePrefix + type.Assembly.GetName().Name);
+
+            return true;
+        }
+
+        private bool TryResolveDataContractType(Type type, Type declaredType, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace) {
             string typeNameString = GetDataContractName(type);
             string typeNamespaceString = GetDataContractNamespace(type);
 
             if (typeNameString == null || typeNamespaceString == null) {
-                return knownTypeResolver.TryResolveType(type, declaredType, knownTypeResolver, out typeName, out typeNamespace);
+                typeName = null;
+                typeNamespace = null;
+
+                return false;
             }
 
-            typeName = dictionary.Add(typeNameString);
-            typeNamespace = dictionary.Add(typeNamespaceString);
+            typeName = this.dictionary.Add(typeNameString);
+            typeNamespace = this.dictionary.Add(typeNamespaceString);
 
             return true;
         }
@@ -52,6 +77,47 @@ namespace NoCap.GUI.WPF.Util {
         }
 
         public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver knownTypeResolver) {
+            return ResolveRegisteredNamespaceName(typeName, typeNamespace, declaredType)
+                ?? knownTypeResolver.ResolveName(typeName, typeNamespace, declaredType, knownTypeResolver)
+                ?? ResolveClrName(typeName, typeNamespace, declaredType);
+        }
+
+        private Type ResolveClrName(string typeName, string typeNamespace, Type declaredType) {
+            // This is quite the piece of code...
+            // Hopefully this won't break stuff.
+            // TODO FIXME
+
+            if (!typeNamespace.StartsWith(ClrNamespacePrefix)) {
+                return null;
+            }
+
+            string assemblyName = typeNamespace.Substring(ClrNamespacePrefix.Length);
+
+            var goodAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where((assembly) => assembly.GetName().Name == assemblyName);
+
+            // HACK
+            goodAssemblies = goodAssemblies.Union(this.extensionManager.Extensions.Select(
+                (extension) => {
+                    var assemblyFileName = Path.Combine(extension.RootDirectory, string.Format("{0}.dll", assemblyName));
+
+                    return File.Exists(assemblyFileName) ? Assembly.LoadFile(assemblyFileName) : null;
+                }
+            ).Where((assembly) => assembly != null));
+
+            var types = goodAssemblies.Select((assembly) => assembly.GetType(typeName, false)).Where((type) => type != null);
+
+            if (types.Count() > 1) {
+                throw new Exception(string.Format(
+                    "Could not load deserialize object of type '{0}' from assembly '{1}' because multiple loaded assemblies have that name'",
+                    typeName,
+                    typeNamespace
+                ));
+            }
+
+            return types.SingleOrDefault();
+        }
+
+        private Type ResolveRegisteredNamespaceName(string typeName, string typeNamespace, Type declaredType) {
             var assemblies = GetNamespaceAssemblies(typeNamespace);
 
             foreach (var assembly in assemblies) {
@@ -62,7 +128,7 @@ namespace NoCap.GUI.WPF.Util {
                 }
             }
 
-            return knownTypeResolver.ResolveName(typeName, typeNamespace, declaredType, knownTypeResolver);
+            return null;
         }
 
         private static bool IsTypeContractMatch(Type type, string typeName, string typeNamespace) {
