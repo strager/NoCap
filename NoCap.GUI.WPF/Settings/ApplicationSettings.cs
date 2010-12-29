@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Xml;
 using NoCap.GUI.WPF.Util;
 
@@ -13,17 +14,6 @@ namespace NoCap.GUI.WPF.Settings {
         private static readonly string TimedSettingsFileName = "settings-{0:yyMMdd_HHmmss_ffff}.xml";
 
         private readonly ProgramSettingsDataSerializer serializer;
-
-        private static XmlDocument WriteToDocument(string data) {
-            var document = new XmlDocument();
-            document.LoadXml(data);
-
-            return document;
-        }
-
-        private static string ReadFromDocument(XmlDocument document) {
-            return document.InnerXml;
-        }
 
         private static void EnsureSettingsPathExists() {
             Directory.CreateDirectory(SettingsPath);
@@ -44,13 +34,18 @@ namespace NoCap.GUI.WPF.Settings {
         public void SaveSettingsData(ProgramSettingsData value) {
             EnsureSettingsPathExists();
 
-            var settingsString = this.serializer.SerializeSettings(value);
-            var settingsDocument = WriteToDocument(settingsString);
-
             var fileName = GetTimedSettingsFilePath(DateTime.Now);
+            
+            var xmlSettings = new XmlWriterSettings {
+                Indent = true,
+                IndentChars = "  ",
+                Encoding = Encoding.UTF8,
+                CloseOutput = true,
+                ConformanceLevel = ConformanceLevel.Document,
+            };
 
-            using (var file = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.Write)) {
-                settingsDocument.Save(file);
+            using (var xmlWriter = XmlWriter.Create(fileName, xmlSettings)) {
+                this.serializer.SerializeSettings(value, xmlWriter);
             }
 
             File.Copy(fileName, GetMainSettingsFilePath(), true);
@@ -69,7 +64,7 @@ namespace NoCap.GUI.WPF.Settings {
                 var settingsDocument = new XmlDocument();
                 settingsDocument.Load(file);
 
-                return this.serializer.DeserializeSettings(ReadFromDocument(settingsDocument));
+                return this.serializer.DeserializeSettings(settingsDocument.DocumentElement);
             }
         }
     }
