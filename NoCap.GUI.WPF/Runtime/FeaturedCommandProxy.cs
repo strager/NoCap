@@ -4,7 +4,7 @@ using NoCap.GUI.WPF.Settings;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Runtime {
-    [DataContract]
+    [DataContract(Name = "FeaturedCommandProxy")]
     public class FeaturedCommandProxy : CommandProxy, IExtensibleDataObject {
         [DataMember]
         private readonly FeaturedCommandCollection commandCollection;

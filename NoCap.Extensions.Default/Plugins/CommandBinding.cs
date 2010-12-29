@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using WinputDotNet;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.Extensions.Default.Plugins {
-    [Serializable]
+    [DataContract(Name = "Binding")]
     public sealed class CommandBinding : ICommandBinding {
         private readonly IInputSequence input;
         private readonly ICommand command;

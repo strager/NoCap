@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
+using NoCap.GUI.WPF.Util;
 using NoCap.Library;
 using NoCap.Library.Tasks;
 
@@ -21,7 +22,7 @@ namespace NoCap.GUI.WPF {
             var commandRunner = new CommandRunner();
             this.extensionManager = new ExtensionManager(Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Extensions")));
 
-            this.applicationSettings = new ApplicationSettings();
+            this.applicationSettings = new ApplicationSettings(new ProgramSettingsDataSerializer(this.extensionManager));
 
             var settingsData = this.applicationSettings.LoadSettingsData();
 

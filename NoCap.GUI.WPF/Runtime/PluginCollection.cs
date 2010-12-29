@@ -10,7 +10,7 @@ using NoCap.Library.Extensions;
 
 namespace NoCap.GUI.WPF.Runtime {
     // TODO Observable
-    [DataContract]
+    [DataContract(Name = "PluginCollection", Namespace = "http://strager.net/nocap/gui")]
     public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable, IExtensibleDataObject {
         [DataMember(Name = "Plugins")]
         private readonly IList<IPlugin> plugins = new List<IPlugin>();

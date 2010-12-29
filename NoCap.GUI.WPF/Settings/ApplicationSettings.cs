@@ -5,6 +5,8 @@ using NoCap.GUI.WPF.Util;
 namespace NoCap.GUI.WPF.Settings {
     [SettingsManageability(SettingsManageability.Roaming)]
     class ApplicationSettings : ApplicationSettingsBase {
+        private ProgramSettingsDataSerializer serializer;
+
         [UserScopedSetting]
         [DefaultSettingValue(null)]
         [SettingsSerializeAs(SettingsSerializeAs.Xml)]
@@ -29,8 +31,12 @@ namespace NoCap.GUI.WPF.Settings {
             return document.InnerXml;
         }
 
+        public ApplicationSettings(ProgramSettingsDataSerializer serializer) {
+            this.serializer = serializer;
+        }
+
         public void SaveSettingsData(ProgramSettingsData value) {
-            ProgramSettingsData = WriteToDocument(ProgramSettingsDataSerializer.SerializeSettings(value));
+            ProgramSettingsData = WriteToDocument(this.serializer.SerializeSettings(value));
 
             Save();
         }
@@ -42,7 +48,7 @@ namespace NoCap.GUI.WPF.Settings {
                 return null;
             }
 
-            return ProgramSettingsDataSerializer.DeserializeSettings(ReadFromDocument(data));
+            return this.serializer.DeserializeSettings(ReadFromDocument(data));
         }
     }
 }

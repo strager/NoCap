@@ -38,4 +38,5 @@ using System.Runtime.Serialization;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: ContractNamespace("http://strager.net/nocap/extensions/default")]
+[assembly: ContractNamespace("http://strager.net/nocap/extensions/default", ClrNamespace = "NoCap.Extensions.Default.Commands")]
+[assembly: ContractNamespace("http://strager.net/nocap/extensions/default", ClrNamespace = "NoCap.Extensions.Default.Plugins")]

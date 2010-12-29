@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Windows;
 
 [assembly: CLSCompliant(true)]
@@ -54,3 +55,6 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: ContractNamespace("http://strager.net/nocap/gui", ClrNamespace = "NoCap.GUI.WPF.Settings")]
+[assembly: ContractNamespace("http://strager.net/nocap/gui", ClrNamespace = "NoCap.GUI.WPF.Runtime")]
