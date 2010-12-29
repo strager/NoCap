@@ -6,7 +6,7 @@ namespace NoCap.DeleteOnParentExit {
     class Program {
         static void Main(string[] args) {
             try {
-                var parentProcess = ProcessExtensions.ParentOf(Process.GetCurrentProcess());
+                var parentProcess = Process.GetCurrentProcess().GetParent();
 
                 parentProcess.WaitForExit(5000); // Wait some reasonable amount of time.
             } catch (Exception e) {

@@ -27,7 +27,7 @@ namespace NoCap.DeleteOnParentExit {
             return Process.GetProcessById((int) parentId.NextValue());
         }
 
-        public static Process ParentOf(Process process) {
+        public static Process GetParent(this Process process) {
             return FindPidFromIndexedProcessName(FindIndexedProcessName(process.Id));
         }
     }
