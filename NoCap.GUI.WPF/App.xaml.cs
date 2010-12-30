@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using Mono.Options;
 using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Util;
@@ -17,6 +19,8 @@ namespace NoCap.GUI.WPF {
         private ApplicationSettings applicationSettings;
         private ProgramSettings settings;
         private ExtensionManager extensionManager;
+
+        private bool showSettingsOnStart = true;
 
         private void Load() {
             var commandRunner = new CommandRunner();
@@ -48,6 +52,45 @@ namespace NoCap.GUI.WPF {
             }
         }
 
+        private bool TryParseArguments(IEnumerable<string> args, out int exitCode) {
+            bool showHelp = false;
+
+            var optionSet = new OptionSet {
+                { "x|hide", "do not show the settings window on startup", (v) => this.showSettingsOnStart = v == null },
+                { "h|help", "show this message and exit", (v) => showHelp = v != null },
+            };
+
+            try {
+                optionSet.Parse(args);
+            } catch (OptionException e) {
+                Console.WriteLine("NoCap: {0}", e.Message);
+                Console.WriteLine("Try `NoCap --help' for more information.");
+
+                exitCode = 1;
+
+                return false;
+            }
+
+            if (showHelp) {
+                ShowHelp(optionSet);
+
+                exitCode = 0;
+
+                return false;
+            }
+
+            exitCode = 0;
+
+            return true;
+        }
+
+        private static void ShowHelp(OptionSet optionSet) {
+            Console.WriteLine("Usage: NoCap [options]");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            optionSet.WriteOptionDescriptions(Console.Out);
+        }
+
         public void ShowSettings() {
             if (this.settingsWindow != null) {
                 this.settingsWindow.Activate();
@@ -67,10 +110,20 @@ namespace NoCap.GUI.WPF {
         }
 
         private void Start() {
-            ShowSettings();
+            if (this.showSettingsOnStart) {
+                ShowSettings();
+            }
         }
 
         private void StartUpApplication(object sender, StartupEventArgs e) {
+            int exitCode;
+
+            if (!TryParseArguments(e.Args, out exitCode)) {
+                Shutdown(exitCode);
+
+                return;
+            }
+
             Load();
             Start();
         }

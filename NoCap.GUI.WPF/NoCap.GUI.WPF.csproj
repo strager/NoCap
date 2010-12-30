@@ -67,6 +67,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Extension.cs" />
+    <Compile Include="Mono.Options\Options.cs" />
     <Compile Include="Runtime\ExtensionManager.cs" />
     <Compile Include="Runtime\ProgramPluginContext.cs" />
     <Compile Include="Settings\CommandProxy.cs" />
