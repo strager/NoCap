@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
+using StringLib;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "Renamer")]
@@ -19,7 +21,7 @@ namespace NoCap.Extensions.Default.Commands {
         [DataMember(Name = "Format")]
         public string NameFormat {
             get {
-                return this.nameFormat;
+                return this.nameFormat ?? "{name}-{sequenceId}";
             }
 
             set {
@@ -29,6 +31,14 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        private readonly static HartFormatter.FormatterOptions NameFormatterOptions;
+
+        static Renamer() {
+            NameFormatterOptions = HartFormatter.FormatterOptions.HumaneOptions;
+            NameFormatterOptions.FormatProvider = CultureInfo.InvariantCulture;
+        }
+
+        [DataMember(Name = "SequenceID", EmitDefaultValue = true)]
         private int sequenceId = 1;
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
@@ -42,8 +52,11 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         private string FormatName(string oldName) {
-            // TODO More robust parser
-            return this.nameFormat.Replace("%sequence%", this.sequenceId.ToString());
+            return NameFormat.HartFormat(new {
+                name = oldName,
+                sequence = this.sequenceId,
+                sequenceId = this.sequenceId,
+            }, NameFormatterOptions);
         }
 
         public ICommandFactory GetFactory() {
