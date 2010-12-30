@@ -11,6 +11,7 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
 using NoCap.Library.Util;
+using NoCap.Web;
 using StringLib;
 
 namespace NoCap.Extensions.Default.Commands {
@@ -39,7 +40,7 @@ namespace NoCap.Extensions.Default.Commands {
             string fileName = data.Name;
             var stream = (Stream) data.Data;
 
-            UploadData(stream, fileName, progress);
+            UploadData(stream, fileName, progress, cancelToken);
 
             progress.Progress = 1;
 
@@ -49,7 +50,7 @@ namespace NoCap.Extensions.Default.Commands {
             return TypedData.FromUri(new Uri(success && !string.IsNullOrWhiteSpace(result) ? result : data.Name, UriKind.Absolute), fileName);
         }
 
-        private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
+        private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress, CancellationToken cancelToken) {
             using (var client = new FTPSClient()) {
                 try {
                     progress.Status = "Connecting to FTP";
@@ -67,7 +68,7 @@ namespace NoCap.Extensions.Default.Commands {
 
                     progress.Status = "Uploading file to FTP";
 
-                    stream.CopyTo(outStreamWrapper);
+                    stream.CopyTo(outStreamWrapper, cancelToken);
                 }
             }
         }
