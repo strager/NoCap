@@ -182,6 +182,10 @@
       <Project>{8271707D-0C08-460D-A332-6FDB8D0BB6D1}</Project>
       <Name>FTPSClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\StringLib\StringLib.csproj">
+      <Project>{893F9AF0-4AC2-47D3-9C9E-5730B579498B}</Project>
+      <Name>StringLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
       <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
       <Name>Windows7.DesktopIntegration</Name>

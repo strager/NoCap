@@ -4,9 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Editors="clr-namespace:NoCap.Extensions.Default.Editors"
     mc:Ignorable="d" 
     d:DesignHeight="271" d:DesignWidth="284"
     Focusable="False">
+    <ContentControl.Resources>
+        <Editors:NamedStringFormatterConverter x:Key="ResultFormatExampleConverter" />
+    </ContentControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,8 +44,26 @@
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding OutputPath}" />
 
         <Label Grid.Row="5" Grid.Column="0" Content="_Result format" />
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ResultFormat}" />
-        
+        <Grid Grid.Row="5" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding ResultFormat}" Name="resultFormatTextBox" />
+            <TextBlock Grid.Row="1" Grid.Column="0">
+                Example:
+                <Hyperlink><TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ResultFormatExampleConverter}">
+                            <Binding Path="Text" ElementName="resultFormatTextBox" />
+                            <Binding Source="{StaticResource SampleResultFormatData}" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock></Hyperlink>
+            </TextBlock>
+        </Grid>
+
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{DynamicResource PaddedCommandButtonStyle}" Click="TestFtp">_Test</Button>
         </StackPanel>
