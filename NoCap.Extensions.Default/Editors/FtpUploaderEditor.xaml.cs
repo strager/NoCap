@@ -1,12 +1,14 @@
 ﻿using System;
-using System.IO;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Windows;
+using System.Windows.Data;
 using AlexPilotti.FTPS.Client;
 using NoCap.Extensions.Default.Commands;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
+using StringLib;
 
 namespace NoCap.Extensions.Default.Editors {
     /// <summary>
@@ -14,6 +16,10 @@ namespace NoCap.Extensions.Default.Editors {
     /// </summary>
     public partial class FtpUploaderEditor : ICommandEditor {
         public FtpUploaderEditor() {
+            Resources["SampleResultFormatData"] = new {
+                fileName = "myFile.jpg",
+            };
+
             InitializeComponent();
         }
 
@@ -65,6 +71,38 @@ namespace NoCap.Extensions.Default.Editors {
                 connectionTesterWindow.StatusText = "Connection successful";
                 connectionTesterWindow.TryStatus = TryStatus.Success;
             }
+        }
+    }
+
+    public class NamedStringFormatterConverter : IMultiValueConverter {
+        public HartFormatter.FormatterOptions DefaultFormatterOptions { get; set; }
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            if (values.Length < 2 || values.Length > 3) {
+                return null;
+            }
+
+            string format = values[0] as string;
+            object parameters = values[1];
+            var options = values.Length > 2 ? values[2] as HartFormatter.FormatterOptions : null;
+
+            if (format == null || parameters == null) {
+                return null;
+            }
+
+            try {
+                return format.HartFormat(parameters, options ?? DefaultFormatterOptions ?? HartFormatter.FormatterOptions.HumaneOptions);
+            } catch (FormatException) {
+                // TODO
+            } catch (NotSupportedException) {
+                // TODO
+            }
+
+            return null;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
         }
     }
 }

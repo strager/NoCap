@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization;
@@ -24,6 +25,13 @@ namespace NoCap.Extensions.Default.Commands {
 
         private string outputPath = "";
         private string resultFormat = "http://example.com/{filename}";
+
+        private readonly static HartFormatter.FormatterOptions ResultStringFormatterOptions;
+
+        static FtpUploader() {
+            ResultStringFormatterOptions = HartFormatter.FormatterOptions.HumaneOptions;
+            ResultStringFormatterOptions.FormatProvider = CultureInfo.InvariantCulture;
+        }
 
         private const int Timeout = 20000; // Milliseconds
 
@@ -68,7 +76,7 @@ namespace NoCap.Extensions.Default.Commands {
             try {
                 result = this.resultFormat.HartFormat(new {
                     filename = fileName
-                });
+                }, ResultStringFormatterOptions);
 
                 return true;
             } catch (FormatException) {
