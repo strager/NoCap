@@ -10,6 +10,7 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
 using NoCap.Library.Util;
+using StringLib;
 
 namespace NoCap.Extensions.Default.Commands {
     [DataContract(Name = "FtpUploader")]
@@ -22,7 +23,7 @@ namespace NoCap.Extensions.Default.Commands {
         private SecureString password;
 
         private string outputPath = "";
-        private string resultFormat = "http://example.com/{0}";
+        private string resultFormat = "http://example.com/{filename}";
 
         private const int Timeout = 20000; // Milliseconds
 
@@ -65,7 +66,9 @@ namespace NoCap.Extensions.Default.Commands {
 
         private bool TryGetResultString(string fileName, out string result) {
             try {
-                result = string.Format(resultFormat, fileName);
+                result = this.resultFormat.HartFormat(new {
+                    filename = fileName
+                });
 
                 return true;
             } catch (FormatException) {
