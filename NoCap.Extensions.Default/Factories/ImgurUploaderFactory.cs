@@ -9,7 +9,7 @@ namespace NoCap.Extensions.Default.Factories {
     sealed class ImgurUploaderFactory : ICommandFactory {
         public string Name {
             get {
-                return "img.ur uploader";
+                return "imgur uploader";
             }
         }
 

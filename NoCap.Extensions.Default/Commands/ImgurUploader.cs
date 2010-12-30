@@ -17,7 +17,7 @@ namespace NoCap.Extensions.Default.Commands {
     sealed class ImgurUploader : ImageUploaderCommand {
         public override string Name {
             get {
-                return "img.ur uploader";
+                return "imgur uploader";
             }
         }
 
