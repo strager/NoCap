@@ -79,6 +79,8 @@ namespace NoCap.Installer {
             string shortcutPath = Path.Combine(desktopPath, "NoCap.lnk");
 
             using (var shortcut = CreateShortcut(installPath)) {
+                shortcut.Arguments = "--hide";
+
                 shortcut.Save(shortcutPath);
             }
         }
