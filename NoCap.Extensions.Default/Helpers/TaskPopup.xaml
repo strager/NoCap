@@ -163,7 +163,11 @@
                                     Template="{StaticResource ArrowButtonTemplate}" />
 
                                 <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="20">
+                                    <Grid.Resources>
+                                        <ResourceDictionary Source="/NoCap.Extensions.Default;component/Styles/VistaProgressBar.xaml" />
+                                    </Grid.Resources>
                                     <ProgressBar HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Style="{StaticResource VistaProgressBarStyle}"
                                         Name="progressBar"
                                         Value="{Binding Progress, Mode=OneWay}"
                                         Foreground="#009900"
