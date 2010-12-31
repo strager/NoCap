@@ -12,8 +12,10 @@ namespace NoCap.GUI.WPF.Runtime {
     // TODO Observable
     [DataContract(Name = "PluginCollection", Namespace = "http://strager.net/nocap/gui")]
     public sealed class PluginCollection : IEnumerable<IPlugin>, IDisposable, IExtensibleDataObject {
+        // Must be declared as List<IPlugin>; see bug:
+        // https://www.pivotaltracker.com/story/show/8073575
         [DataMember(Name = "Plugins")]
-        private readonly IList<IPlugin> plugins = new List<IPlugin>();
+        private readonly List<IPlugin> plugins = new List<IPlugin>();
 
         private IPluginContext pluginContext;
         private bool isInitialized;
