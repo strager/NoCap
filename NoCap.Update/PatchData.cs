@@ -28,8 +28,8 @@ namespace NoCap.Update {
 
             Process.StartOnProcessExit(new ProcessStartInfo {
                 FileName = Path.Combine(applicationRoot, "NoCap.exe"), // FIXME Better way to get EXE path
-                Arguments = Process.Quote("--patch", applicationRoot, "--", PatchQueue.Select((patch) => patch.patchDataRoot)),
-            }, true);
+                Arguments = Process.Quote("--patch", tempDirectory, "--clone", applicationRoot, "--", PatchQueue.Select((patch) => patch.patchDataRoot)),
+            }.Silence());
         }
 
         private PatchData(string patchDataRoot) {

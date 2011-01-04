@@ -6,19 +6,16 @@ using System.Linq;
 namespace NoCap.Library.Util {
     public static class Process {
         public static void StartOnProcessExit(ProcessStartInfo startInfo) {
-            StartOnProcessExit(startInfo, false);
+            System.Diagnostics.Process.GetCurrentProcess().Exited +=
+                (sender, e) => System.Diagnostics.Process.Start(startInfo);
         }
 
-        public static void StartOnProcessExit(ProcessStartInfo startInfo, bool isSilent) {
-            System.Diagnostics.Process.GetCurrentProcess().Exited += (sender, e) => {
-                if (isSilent) {
-                    startInfo.ErrorDialog = false;
-                    startInfo.UseShellExecute = false;
-                    startInfo.CreateNoWindow = true;
-                }
+        public static ProcessStartInfo Silence(this ProcessStartInfo startInfo) {
+            startInfo.ErrorDialog = false;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
 
-                System.Diagnostics.Process.Start(startInfo);
-            };
+            return startInfo;
         }
 
         public static string Quote(string argument) {

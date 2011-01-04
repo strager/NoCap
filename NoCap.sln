@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bindable.Linq", "vendor\Bin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.Installer", "NoCap.Installer\NoCap.Installer.csproj", "{356E2223-5754-4233-A0C4-65CA58EA68AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.DeleteOnParentExit", "NoCap.DeleteOnParentExit\NoCap.DeleteOnParentExit.csproj", "{6A45921D-BABB-49AE-BC53-D25D421C4B8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCap.OnParentExit", "NoCap.OnParentExit\NoCap.OnParentExit.csproj", "{6A45921D-BABB-49AE-BC53-D25D421C4B8B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringLib", "vendor\StringLib\StringLib.csproj", "{893F9AF0-4AC2-47D3-9C9E-5730B579498B}"
 EndProject
