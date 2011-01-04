@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace NoCap.Library.Util {
     public static class Process {
@@ -18,6 +21,16 @@ namespace NoCap.Library.Util {
             return startInfo;
         }
 
+        public static void DOPE(string arguments) {
+            // FIXME Better way to get EXE path
+            string dopePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "DOPE.exe");
+
+            System.Diagnostics.Process.Start(new ProcessStartInfo {
+                FileName = dopePath,
+                Arguments = arguments,
+            }.Silence());
+        }
+
         public static string Quote(string argument) {
             // M$ arguments allow anything but " between quotes.
             // " is escaped by doubling: "fo"obar"" => """fo""obar"""""
@@ -31,29 +44,31 @@ namespace NoCap.Library.Util {
         }
 
         public static string Quote(params object[] arguments) {
-            var argumentStrings = new List<string>();
+            return Quote(FlattenArguments(arguments));
+        }
 
-            foreach (var arg in arguments) {
+        private static IEnumerable<string> FlattenArguments(IEnumerable args) {
+            foreach (var arg in args) {
                 var argString = arg as string;
 
                 if (argString != null) {
-                    argumentStrings.Add(argString);
+                    yield return argString;
 
                     continue;
                 }
 
-                var argEnumerable = arg as IEnumerable<string>;
+                var argEnumerable = arg as IEnumerable;
 
                 if (argEnumerable != null) {
-                    argumentStrings.AddRange(argEnumerable);
+                    foreach (var subarg in FlattenArguments(argEnumerable)) {
+                        yield return subarg;
+                    }
 
                     continue;
                 }
 
-                throw new ArgumentException("Arguments must be of type string or IEnumerable<string>");
+                throw new ArgumentException("Arguments must be of type string or an IEnumerable of string");
             }
-
-            return Quote(argumentStrings);
         }
 
         public static string Quote(IEnumerable<string> arguments) {

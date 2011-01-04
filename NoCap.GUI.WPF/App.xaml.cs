@@ -8,6 +8,7 @@ using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Util;
 using NoCap.Library;
 using NoCap.Library.Tasks;
+using NoCap.Update;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -21,6 +22,8 @@ namespace NoCap.GUI.WPF {
         private ExtensionManager extensionManager;
 
         private bool showSettingsOnStart = true;
+
+        private PatchQueue patchQueue = new PatchQueue();
 
         private void Load() {
             var commandRunner = new CommandRunner();
@@ -130,6 +133,8 @@ namespace NoCap.GUI.WPF {
 
         private void ExitApplication(object sender, ExitEventArgs e) {
             Dispose();
+
+            this.patchQueue.ApplyQueuedPatches(false);
         }
 
         public void Dispose() {

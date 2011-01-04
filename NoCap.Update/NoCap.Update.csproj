@@ -52,6 +52,7 @@
     <Compile Include="Patch.cs" />
     <Compile Include="PatchData.cs" />
     <Compile Include="PatchInfo.cs" />
+    <Compile Include="PatchQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
