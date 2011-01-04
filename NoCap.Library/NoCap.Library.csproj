@@ -58,6 +58,7 @@
     <Compile Include="CommandExtensions.cs" />
     <Compile Include="CommandFactoryExtensions.cs" />
     <Compile Include="CommandProvider.cs" />
+    <Compile Include="Util\FileSystem.cs" />
     <Compile Include="Util\HttpRequest.cs" />
     <Compile Include="Controls\CommandFeatureFilterConverter.cs" />
     <Compile Include="Controls\FramedCommandEditor.xaml.cs">
@@ -111,6 +112,7 @@
     <Compile Include="Commands\ImageUploaderCommand.cs" />
     <Compile Include="Imaging\ImageWriter.cs" />
     <Compile Include="Extensions\INamedComponent.cs" />
+    <Compile Include="Util\Process.cs" />
     <Compile Include="Util\Security.cs" />
     <Compile Include="Progress\AggregateProgressTracker.cs" />
     <Compile Include="Progress\IMutableProgressTracker.cs" />
