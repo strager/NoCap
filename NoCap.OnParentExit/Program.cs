@@ -20,8 +20,6 @@ namespace NoCap.DeleteOnParentExit {
                 // We don't care about no exceptions!
                 Console.WriteLine(e);
 
-                Console.ReadLine();
-
                 if (exitCode == 0) {
                     exitCode = 1;
                 }
