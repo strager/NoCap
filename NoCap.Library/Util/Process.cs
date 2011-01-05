@@ -9,9 +9,9 @@ using System.Reflection;
 namespace NoCap.Library.Util {
     public static class Process {
         public static ProcessStartInfo Silence(this ProcessStartInfo startInfo) {
-            /*startInfo.ErrorDialog = false;
+            startInfo.ErrorDialog = false;
             startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;*/
+            startInfo.CreateNoWindow = true;
 
             return startInfo;
         }
