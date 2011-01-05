@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 
 namespace NoCap.Library.Util {
     public static class FileSystem {
@@ -19,10 +17,7 @@ namespace NoCap.Library.Util {
         }
 
         public static void DeleteLater(string path) {
-            Process.StartOnProcessExit(new ProcessStartInfo {
-                FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DOPE.exe"), // FIXME Better way to get EXE path
-                Arguments = Process.Quote("--delete", "--", path),
-            }.Silence());
+            Process.QueueDOPE(Process.Quote("--delete", path));
         }
 
         public static bool IsSafePath(string path) {

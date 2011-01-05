@@ -50,9 +50,7 @@
   <ItemGroup>
     <Compile Include="IPatchInstruction.cs" />
     <Compile Include="Patch.cs" />
-    <Compile Include="PatchData.cs" />
-    <Compile Include="PatchInfo.cs" />
-    <Compile Include="PatchQueue.cs" />
+    <Compile Include="PatchingEnvironment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

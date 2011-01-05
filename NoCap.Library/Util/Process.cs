@@ -8,26 +8,33 @@ using System.Reflection;
 
 namespace NoCap.Library.Util {
     public static class Process {
-        public static void StartOnProcessExit(ProcessStartInfo startInfo) {
-            System.Diagnostics.Process.GetCurrentProcess().Exited +=
-                (sender, e) => System.Diagnostics.Process.Start(startInfo);
-        }
-
         public static ProcessStartInfo Silence(this ProcessStartInfo startInfo) {
-            startInfo.ErrorDialog = false;
+            /*startInfo.ErrorDialog = false;
             startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
+            startInfo.CreateNoWindow = true;*/
 
             return startInfo;
         }
 
-        public static void DOPE(string arguments) {
+        private readonly static ICollection<string> dopeArguments = new List<string>();
+
+        public static void QueueDOPE(string arguments) {
+            // TODO DOPE interface is a hack.  Create operations/instructions
+            // (kinda like in the update system).
+
+            dopeArguments.Add(arguments);
+        }
+
+        public static void FlushDOPE() {
             // FIXME Better way to get EXE path
-            string dopePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "DOPE.exe");
+            string dopeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string dopePath = Path.Combine(dopeDirectory, "DOPE.exe");
 
             System.Diagnostics.Process.Start(new ProcessStartInfo {
                 FileName = dopePath,
-                Arguments = arguments,
+                WorkingDirectory = dopeDirectory,
+                Arguments = Quote("--wait", System.Diagnostics.Process.GetCurrentProcess().Id.ToString())
+                    + " " + string.Join(" ", dopeArguments),
             }.Silence());
         }
 
