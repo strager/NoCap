@@ -20,6 +20,16 @@ namespace NoCap.Update {
             get { return this.patchDataRoot; }
         }
 
+        public string FromVersion {
+            get;
+            private set;
+        }
+
+        public string ToVersion {
+            get;
+            private set;
+        }
+
         private Patch(string patchDataRoot) {
             this.patchDataRoot = patchDataRoot;
         }
@@ -30,12 +40,22 @@ namespace NoCap.Update {
             }
         }
 
+        public static Patch LoadFromArchive(byte[] data) {
+            using (var zipFile = ZipFile.Read(data)) {
+                return LoadFromArchive(zipFile);
+            }
+        }
+
         public static Patch LoadFromArchive(Stream stream) {
+            using (var zipFile = ZipFile.Read(stream)) {
+                return LoadFromArchive(zipFile);
+            }
+        }
+
+        private static Patch LoadFromArchive(ZipFile zipFile) {
             string patchDataRoot = FileSystem.GetTempDirectory();
 
-            using (var zip = ZipFile.Read(stream)) {
-                zip.ExtractAll(patchDataRoot, ExtractExistingFileAction.Throw);
-            }
+            zipFile.ExtractAll(patchDataRoot, ExtractExistingFileAction.Throw);
 
             return InitializeFrom(patchDataRoot);
         }
@@ -44,13 +64,21 @@ namespace NoCap.Update {
             var config = new XmlDocument();
             config.Load(Path.Combine(patchDataRoot, "nocap.xml"));
 
-            var patch = config.DocumentElement;
+            var patch = new Patch(patchDataRoot);
+            ParsePatchConfig(patch, config);
+            
+            return patch;
+        }
 
-            return new Patch(patchDataRoot) {
-                Instructions = new ReadOnlyCollection<IPatchInstruction>(
-                    patch.SelectNodes("Instructions/*").OfType<XmlElement>().Select(ParseInstruction).ToArray()
-                ),
-            };
+        private static void ParsePatchConfig(Patch patch, XmlDocument config) {
+            var configRoot = config.DocumentElement;
+
+            patch.Instructions = new ReadOnlyCollection<IPatchInstruction>(
+                configRoot.SelectNodes("Instructions/*").OfType<XmlElement>().Select(ParseInstruction).ToArray()
+            );
+
+            patch.FromVersion = configRoot.SelectSingleNode("From").InnerText;
+            patch.ToVersion = configRoot.SelectSingleNode("To").InnerText;
         }
 
         private static IPatchInstruction ParseInstruction(XmlElement root) {

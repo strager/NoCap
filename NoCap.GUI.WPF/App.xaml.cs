@@ -21,13 +21,9 @@ namespace NoCap.GUI.WPF {
         private ProgramSettings settings;
         private ExtensionManager extensionManager;
 
-        private readonly Updater updater = new Updater();
-
         private bool showSettingsOnStart = true;
 
         private void Load() {
-            this.updater.CheckForUpdates();
-
             var commandRunner = new CommandRunner();
             this.extensionManager = new ExtensionManager(Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Extensions")));
 
@@ -135,8 +131,6 @@ namespace NoCap.GUI.WPF {
 
         private void ExitApplication(object sender, ExitEventArgs e) {
             Dispose();
-
-            updater.Commit();
 
             Process.FlushDOPE();
         }

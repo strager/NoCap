@@ -41,10 +41,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         protected override TypedData GetResponseData(HttpWebResponse response, TypedData originalData) {
-            // TODO Make GetResponseXml
-            var text = HttpRequest.GetResponseText(response);
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(text);
+            var xmlDoc = HttpRequest.GetResponseXml(response);
 
             var nodes = xmlDoc.SelectNodes("/upload/links/original");
 

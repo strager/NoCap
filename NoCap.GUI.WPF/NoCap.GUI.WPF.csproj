@@ -87,7 +87,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Settings\ApplicationSettings.cs" />
-    <Compile Include="Updater.xaml.cs" />
     <Compile Include="Util\ExtensionDataContractResolver.cs" />
     <Compile Include="Util\SafeRoundTripSurrogate.cs" />
     <Compile Include="Util\ProgramSettingsDataSerializer.cs" />
@@ -139,6 +138,10 @@
       <Project>{36D57807-F86C-40A6-B538-ABBA4CBE2B01}</Project>
       <Name>NoCap.Update</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NoCap.Web\NoCap.Web.csproj">
+      <Project>{48EAB6A5-2882-4DF7-9846-FD06581B33B5}</Project>
+      <Name>NoCap.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\AttachedCommandBehavior\AttachedCommandBehavior.csproj">
       <Project>{BA852758-6682-4878-906A-917A1E75DE16}</Project>
       <Name>AttachedCommandBehavior</Name>
@@ -147,6 +150,11 @@
       <Project>{1BD32C0F-5FDE-4913-AEED-13840ACBF4E0}</Project>
       <Name>Bindable.Linq</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="version">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

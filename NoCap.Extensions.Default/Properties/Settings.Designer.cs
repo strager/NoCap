@@ -31,5 +31,14 @@ namespace NoCap.Extensions.Default.Properties {
                 return ((string)(this["imgurApiKey"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dev.liranuna.com/strager/nocap/site/update/")]
+        public global::System.Uri updateUri {
+            get {
+                return ((global::System.Uri)(this["updateUri"]));
+            }
+        }
     }
 }

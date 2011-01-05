@@ -1,12 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using Microsoft.VisualBasic.Devices;
+using System.Text;
 using NoCap.Library.Util;
 
 namespace NoCap.Update {
     public class PatchingEnvironment {
         private static readonly Microsoft.VisualBasic.Devices.Computer Computer = new Microsoft.VisualBasic.Devices.Computer();
+
+        private const string DefaultVersion = "0.0.0";
+        private const string VersionFileName = "version";
+        private static readonly Encoding VersionFileEncoding = Encoding.UTF8;
+
+        private readonly object fileSystemSync = new object();
 
         private readonly string applicationRoot;
 
@@ -15,6 +22,11 @@ namespace NoCap.Update {
         }
 
         public bool IsModified {
+            get;
+            private set;
+        }
+
+        public string Version {
             get;
             private set;
         }
@@ -32,7 +44,10 @@ namespace NoCap.Update {
         }
 
         public static PatchingEnvironment FromExisting(string path) {
-            return new PatchingEnvironment(path);
+            var patchingEnvironment = new PatchingEnvironment(path);
+            patchingEnvironment.Version = patchingEnvironment.ReadVersion() ?? DefaultVersion;
+
+            return patchingEnvironment;
         }
 
         public static PatchingEnvironment GetCurrent() {
@@ -40,11 +55,35 @@ namespace NoCap.Update {
         }
 
         public void ApplyPatch(Patch patch) {
-            IsModified = true;
+            lock (fileSystemSync) {
+                if (Version != patch.FromVersion) {
+                    throw new ArgumentException(string.Format("Cannot upgrade from version '{0}' using patch for version '{1}'", Version, patch.FromVersion));
+                }
 
-            foreach (var instruction in patch.Instructions) {
-                instruction.Apply(patch.PatchDataRoot, ApplicationRoot);
+                IsModified = true;
+
+                foreach (var instruction in patch.Instructions) {
+                    instruction.Apply(patch.PatchDataRoot, ApplicationRoot);
+                }
+
+                WriteVersion(patch.ToVersion);
+
+                Version = patch.ToVersion;
             }
+        }
+
+        private string ReadVersion() {
+            var versionFileName = Path.Combine(ApplicationRoot, VersionFileName);
+
+            if (!File.Exists(versionFileName)) {
+                return null;
+            }
+
+            return File.ReadAllLines(versionFileName, VersionFileEncoding).FirstOrDefault();
+        }
+
+        private void WriteVersion(string version) {
+            File.WriteAllText(Path.Combine(ApplicationRoot, VersionFileName), version, VersionFileEncoding);
         }
 
         private static void MoveDirectory(string source, string destination) {

@@ -159,6 +159,7 @@
     </PropertyGroup>
     <ItemGroup>
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.dll" />
+      <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\version" />
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.nocap" />
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.exe" Exclude="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.vshost.exe" />
       <InstallFiles Include="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.config" Exclude="..\NoCap.GUI.WPF\bin\$(Configuration)\**\*.vshost.exe.config" />
