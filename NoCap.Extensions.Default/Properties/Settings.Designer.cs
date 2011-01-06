@@ -31,5 +31,14 @@ namespace NoCap.Extensions.Default.Properties {
                 return ((string)(this["imgurApiKey"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0CTJJTTH76")]
+        public string sendSpaceApiKey {
+            get {
+                return ((string)(this["sendSpaceApiKey"]));
+            }
+        }
     }
 }

@@ -70,23 +70,27 @@ namespace NoCap.Library.Util {
         }
 
         private static HttpWebRequest BuildGetRequest(Uri uri, MultipartData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            var parameters = new Dictionary<string, string>();
+            if (data != null) {
+                var parameters = new Dictionary<string, string>();
 
-            foreach (var entry in data.Entries) {
-                var formEntry = entry as FormMultipartEntry;
+                foreach (var entry in data.Entries) {
+                    var formEntry = entry as FormMultipartEntry;
 
-                if (formEntry == null) {
-                    throw new ArgumentException("Data must contain only form entries", "data");
+                    if (formEntry == null) {
+                        throw new ArgumentException("Data must contain only form entries", "data");
+                    }
+
+                    parameters[formEntry.Name] = formEntry.Value;
                 }
 
-                parameters[formEntry.Name] = formEntry.Value;
+                var uriBuilder = new UriBuilder(uri) {
+                    Query = HttpUtility.ToQueryString(parameters)
+                };
+
+                uri = uriBuilder.Uri;
             }
 
-            var uriBuilder = new UriBuilder(uri) {
-                Query = HttpUtility.ToQueryString(parameters)
-            };
-
-            var request = CreateRequest(uriBuilder.Uri, @"GET");
+            var request = CreateRequest(uri, @"GET");
 
             progress.Progress = 1;
 
