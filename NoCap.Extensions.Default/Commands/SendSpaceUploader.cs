@@ -19,7 +19,6 @@ namespace NoCap.Extensions.Default.Commands {
     class SendSpaceUploader : ICommand, IExtensibleDataObject {
         private static readonly Uri ApiUri = new Uri("http://api.sendspace.com/rest/", UriKind.Absolute);
         private const string OutputFileUriFormat = "http://www.sendspace.com/file/{0}";
-        private static readonly string ApiKey = "0CTJJTTH76";
 
         public string Name {
             get { return "SendSpace uploader"; }
@@ -109,7 +108,7 @@ namespace NoCap.Extensions.Default.Commands {
             var response = HttpRequest.Execute(new UriBuilder(ApiUri) {
                 Query = HttpUtility.ToQueryString(new Dictionary<string, string> {
                     { "method", "auth.createtoken" },
-                    { "api_key", ApiKey },
+                    { "api_key", Properties.Settings.Default.sendSpaceApiKey },
                     { "api_version", "1.0" },
                     { "response_format", "XML" },
                     { "app_version", "NoCap" },
