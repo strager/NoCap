@@ -65,6 +65,11 @@
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
     <Compile Include="Commands\ImgurUploader.cs" />
+    <Compile Include="Commands\SendSpaceUploader.cs" />
+    <Compile Include="Editors\SendSpaceUploaderEditor.xaml.cs">
+      <DependentUpon>SendSpaceUploaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\SendSpaceUploaderFactory.cs" />
     <Compile Include="Factories\ImgurUploaderFactory.cs" />
     <Compile Include="Commands\PostImageUploader.cs" />
     <Compile Include="Commands\Renamer.cs" />
@@ -229,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\RenamerEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\SendSpaceUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
