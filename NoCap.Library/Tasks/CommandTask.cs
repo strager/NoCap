@@ -83,6 +83,10 @@ namespace NoCap.Library.Tasks {
 
             try {
                 try {
+                    if (!command.IsValidAndNotNull()) {
+                        throw new CommandInvalidException(command);
+                    }
+
                     using (command.Process(null, this.progressTracker, cancelToken)) {
                         // Auto-dispose
                     }

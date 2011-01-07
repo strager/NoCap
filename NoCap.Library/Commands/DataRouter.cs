@@ -75,7 +75,7 @@ namespace NoCap.Library.Commands {
         }
 
         public bool IsValid() {
-            return this.routes.Values.All((command) => command.IsValidAndNotNull());
+            return true;
         }
 
         public void Add(TypedDataType key, ICommand value) {

@@ -140,7 +140,7 @@ namespace NoCap.Extensions.Default.Plugins {
             if (e.State == InputState.On) {
                 var command = (BoundCommand) e.Command;
 
-                if (this.commandRunner != null && command.Command.IsValidAndNotNull()) {
+                if (this.commandRunner != null) {
                     this.commandRunner.Run(command.Command);
                 }
             }

@@ -187,7 +187,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public bool IsValid() {
-            return true;
+            return !string.IsNullOrEmpty(UserName) && Password != null;
         }
 
         ExtensionDataObject IExtensibleDataObject.ExtensionData { get; set; }

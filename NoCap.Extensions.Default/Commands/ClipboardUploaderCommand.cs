@@ -82,9 +82,7 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public override bool IsValid() {
-            return ImageUploader.IsValidAndNotNull()
-                && TextUploader.IsValidAndNotNull()
-                && UrlShortener.IsValidAndNotNull();
+            return true;
         }
 
         public override void Execute(IMutableProgressTracker progress, CancellationToken cancelToken) {

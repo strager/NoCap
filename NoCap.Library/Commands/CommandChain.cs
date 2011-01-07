@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -78,6 +79,10 @@ namespace NoCap.Library.Commands {
 
                 try {
                     cancelToken.ThrowIfCancellationRequested();
+
+                    if (!cpt.Command.IsValid()) {
+                        throw new CommandInvalidException(cpt.Command);
+                    }
 
                     newData = cpt.Command.Process(data, cpt.ProgressTracker, cancelToken);
 
