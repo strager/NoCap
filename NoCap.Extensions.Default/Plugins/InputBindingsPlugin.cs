@@ -8,10 +8,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows;
+using Bindable.Linq;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
 using WinputDotNet;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
@@ -56,6 +58,18 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        private IEnumerable<CommandBinding> GetDefaultBindings(IInputProvider inputProvider, ICommand command) {
+            if (command == null) {
+                yield break;
+            }
+
+            var attributes = command.GetType().GetCustomAttributes(typeof(DefaultBindingAttribute), false).OfType<DefaultBindingAttribute>();
+
+            foreach (var defaultBinding in attributes.Where((attr) => attr.ProviderType == inputProvider.GetType())) {
+                yield return new CommandBinding(defaultBinding.InputSequence, command);
+            }
+        }
+
         [DataMember(Name = "InputProviderTypeName")]
         private string inputProviderTypeName;
 
@@ -66,6 +80,18 @@ namespace NoCap.Extensions.Default.Plugins {
         public void Initialize(IPluginContext pluginContext) {
             this.commandRunner = pluginContext.CommandRunner;
 
+            var commands = pluginContext.CommandProvider.StandAloneCommands;
+
+            foreach (var command in commands) {
+                IncludeDefaultBindings(command);
+            }
+
+            commands.CollectionChanged += (sender, e) => {
+                foreach (var command in e.NewItems.OfType<ICommand>()) {
+                    IncludeDefaultBindings(command);
+                }
+            };
+
             string extensionPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             var compositionContainer = new CompositionContainer(new DirectoryCatalog(extensionPath));
@@ -74,6 +100,16 @@ namespace NoCap.Extensions.Default.Plugins {
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);
 
             SetUp();
+        }
+
+        private void IncludeDefaultBindings(ICommand command) {
+            if (this.Bindings.Any((binding) => binding.Command == command)) {
+                return;
+            }
+
+            foreach (var defaultBinding in GetDefaultBindings(this.InputProvider, command)) {
+                this.Bindings.Add(defaultBinding);
+            }
         }
 
         private void Recompose(CompositionContainer compositionContainer) {

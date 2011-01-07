@@ -66,6 +66,7 @@
     <Compile Include="Commands\ImageFileUploader.cs" />
     <Compile Include="Commands\ImgurUploader.cs" />
     <Compile Include="Commands\SendSpaceUploader.cs" />
+    <Compile Include="DefaultBindingAttribute.cs" />
     <Compile Include="Editors\SendSpaceUploaderEditor.xaml.cs">
       <DependentUpon>SendSpaceUploaderEditor.xaml</DependentUpon>
     </Compile>
