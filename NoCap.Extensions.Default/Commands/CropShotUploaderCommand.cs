@@ -6,8 +6,10 @@ using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
 using NoCap.Library.Commands;
+using WinputDotNet.Providers;
 
 namespace NoCap.Extensions.Default.Commands {
+    [DefaultBinding(typeof(DirectInputProvider), typeof(DirectInputSequence), "6f1d2b61-d5a0-11cf-bfc7-444553540000|LeftControl+SYSRQ")]
     [DataContract(Name = "CropShotUploader")]
     public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged, IExtensibleDataObject {
         private ICommand imageUploader;

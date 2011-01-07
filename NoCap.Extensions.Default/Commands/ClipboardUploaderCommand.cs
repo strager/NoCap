@@ -1,13 +1,14 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
 using NoCap.Library.Progress;
+using WinputDotNet.Providers;
 
 namespace NoCap.Extensions.Default.Commands {
+    [DefaultBinding(typeof(DirectInputProvider), typeof(DirectInputSequence), "6f1d2b61-d5a0-11cf-bfc7-444553540000|LeftMenu+GRAVE")]
     [DataContract(Name = "ClipboardUploader")]
     public sealed class ClipboardUploaderCommand : HighLevelCommand, INotifyPropertyChanged, IExtensibleDataObject {
         private ICommand textUploader;
