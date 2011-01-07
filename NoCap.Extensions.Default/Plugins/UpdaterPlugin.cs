@@ -17,12 +17,21 @@ namespace NoCap.GUI.WPF {
     [Export(typeof(IPlugin))]
     [DataContract(Name = "AutoUpdaterPlugin")]
     public class UpdaterPlugin : IPlugin {
-        private readonly PatchingEnvironment patchingEnvironment;
+        private PatchingEnvironment patchingEnvironment;
 
         private Thread updateThread;
         private CancellationTokenSource updateCancelTokenSource;
 
         public UpdaterPlugin() {
+            CreateNewPatchingEnvironment();
+        }
+
+        [OnDeserialized]
+        private void CreateNewPatchingEnvironment(StreamingContext context) {
+            CreateNewPatchingEnvironment();
+        }
+
+        private void CreateNewPatchingEnvironment() {
             this.patchingEnvironment = PatchingEnvironment.Create(PatchingEnvironment.GetCurrent());
         }
 
