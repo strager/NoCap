@@ -40,5 +40,23 @@ namespace NoCap.Extensions.Default.Properties {
                 return ((string)(this["sendSpaceApiKey"]));
             }
         }
+
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://nocapapp.com/api/update/")]
+        public global::System.Uri updateUri {
+            get {
+                return ((global::System.Uri)(this["updateUri"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:10:00")]
+        public global::System.TimeSpan updateFrequency {
+            get {
+                return ((global::System.TimeSpan)(this["updateFrequency"]));
+            }
+        }
     }
 }

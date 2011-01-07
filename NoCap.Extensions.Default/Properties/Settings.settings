@@ -8,5 +8,11 @@
     <Setting Name="sendSpaceApiKey" Type="System.String" Scope="Application">
       <Value Profile="(Default)">0CTJJTTH76</Value>
     </Setting>
+    <Setting Name="updateUri" Type="System.Uri" Scope="Application">
+      <Value Profile="(Default)">http://nocapapp.com/api/update/</Value>
+    </Setting>
+    <Setting Name="updateFrequency" Type="System.TimeSpan" Scope="Application">
+      <Value Profile="(Default)">00:10:00</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

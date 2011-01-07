@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using NoCap.Library.Progress;
 using NoCap.Web;
 using NoCap.Web.Multipart;
@@ -160,6 +161,15 @@ namespace NoCap.Library.Util {
             using (var reader = new StreamReader(stream, encoding)) {
                 return reader.ReadToEnd();
             }
+        }
+
+        public static XmlDocument GetResponseXml(HttpWebResponse response) {
+            string responseText = GetResponseText(response);
+
+            var document = new XmlDocument();
+            document.LoadXml(responseText);
+
+            return document;
         }
     }
 }

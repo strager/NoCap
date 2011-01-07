@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using System.Xml;
 using Ionic.Zip;
+using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF {
     class Extension : IDisposable {
@@ -29,30 +26,17 @@ namespace NoCap.GUI.WPF {
 
         private IEnumerable<string> assemblyFileNames;
 
-        private static string GetTempDirectory() {
-            string directoryName = Path.GetRandomFileName();
-            string directoryPath = Path.Combine(Path.GetTempPath(), directoryName);
-
-            Directory.CreateDirectory(directoryPath);
-
-            return directoryPath;
-        }
-
         private Assembly ResolveAssembly(object sender, ResolveEventArgs e) {
             // FIXME Is there a cleaner way to do this?
 
             if (e.RequestingAssembly == null
-                || !AreDirectoriesSame(Path.GetDirectoryName(e.RequestingAssembly.Location), this.dataDirectoryPath)) {
+                || !FileSystem.AreDirectoriesSame(Path.GetDirectoryName(e.RequestingAssembly.Location), this.dataDirectoryPath)) {
                 return null;
             }
 
             string assemblyFile = Path.Combine(this.dataDirectoryPath, e.Name.Substring(0, e.Name.IndexOf(",")) + ".dll");
 
             return File.Exists(assemblyFile) ? Assembly.LoadFrom(assemblyFile) : null;
-        }
-
-        private static bool AreDirectoriesSame(string directoryA, string directoryB) {
-            return directoryA == directoryB;
         }
 
         private Extension(string dataDirectoryPath) {
@@ -62,7 +46,7 @@ namespace NoCap.GUI.WPF {
         }
 
         public static Extension ReadFromArchive(string archiveFileName) {
-            string dataDirectoryPath = GetTempDirectory();
+            string dataDirectoryPath = FileSystem.GetTempDirectory();
 
             using (var file = File.Open(archiveFileName, FileMode.Open, FileAccess.Read))
             using (var zipFile = ZipFile.Read(file)) {
@@ -114,18 +98,8 @@ namespace NoCap.GUI.WPF {
 
         public void Dispose() {
             if (this.dataDirectoryPath != null) {
-                DeleteLater(this.dataDirectoryPath);
+                FileSystem.DeleteLater(this.dataDirectoryPath);
             }
-        }
-
-        private static void DeleteLater(string path) {
-            Process.Start(new ProcessStartInfo {
-                FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DOPE.exe"), // FIXME Better way to get EXE path
-                Arguments = string.Format("\"{0}\"", path), // FIXME SECURITY !!!
-                ErrorDialog = false,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            });
         }
     }
 }

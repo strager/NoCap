@@ -8,6 +8,7 @@ using NoCap.GUI.WPF.Settings;
 using NoCap.GUI.WPF.Util;
 using NoCap.Library;
 using NoCap.Library.Tasks;
+using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -130,6 +131,8 @@ namespace NoCap.GUI.WPF {
 
         private void ExitApplication(object sender, ExitEventArgs e) {
             Dispose();
+
+            Process.FlushDOPE();
         }
 
         public void Dispose() {
