@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.Composition;
+using NoCap.Extensions.Default.Commands;
 using NoCap.Extensions.Default.Editors;
 using NoCap.Library;
 
-namespace NoCap.Extensions.Default.Commands {
+namespace NoCap.Extensions.Default.Factories {
+    [PreferredCommandFactory(CommandFeatures.FileUploader)]
     [Export(typeof(ICommandFactory))]
     class SendSpaceUploaderFactory : ICommandFactory {
         public string Name {

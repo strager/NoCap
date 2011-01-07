@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
+using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Progress;
 using NoCap.Library.Util;
