@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
@@ -42,6 +43,14 @@ namespace NoCap.Extensions.Default.Commands {
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            if (string.IsNullOrEmpty(UserName)) {
+                throw new InvalidOperationException("User name must be set");
+            }
+
+            if (Password == null) {
+                throw new InvalidOperationException("Password must be set");
+            }
+
             var progressTrackerCollection = new ProgressTrackerCollection {
                 { new MutableProgressTracker(), 1 },
                 { new MutableProgressTracker(), 1 },
@@ -73,11 +82,8 @@ namespace NoCap.Extensions.Default.Commands {
                     { "session_key", sessionKey },
                 }),
             }.Uri, null, HttpRequestMethod.Get, progress, cancelToken);
-            
-            // TODO Make GetResponseXml
-            var text = HttpRequest.GetResponseText(response);
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(text);
+
+            var xmlDoc = GetXml(response);
 
             uploadId = xmlDoc.SelectSingleNode("/result/upload/@upload_identifier").InnerText;
             uploadInfo = xmlDoc.SelectSingleNode("/result/upload/@extra_info").InnerText;
@@ -95,10 +101,8 @@ namespace NoCap.Extensions.Default.Commands {
                 .GetData();
 
             var response = HttpRequest.Execute(uri, postData, HttpRequestMethod.Post, progress, cancelToken);
-            
-            // TODO Make GetResponseXml
-            string text = HttpRequest.GetResponseText(response);
 
+            string text = HttpRequest.GetResponseText(response);
             var match = new Regex(@"\bfile_id=(?<FileId>\S+)\b").Match(text);
 
             return new Uri(string.Format(OutputFileUriFormat, match.Groups["FileId"].Value), UriKind.Absolute);
@@ -114,11 +118,8 @@ namespace NoCap.Extensions.Default.Commands {
                     { "app_version", "NoCap" },
                 }),
             }.Uri, null, HttpRequestMethod.Get, progress, cancelToken);
-            
-            // TODO Make GetResponseXml
-            var text = HttpRequest.GetResponseText(response);
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(text);
+
+            var xmlDoc = GetXml(response);
 
             return xmlDoc.SelectSingleNode("/result/token").InnerText;
         }
@@ -132,13 +133,32 @@ namespace NoCap.Extensions.Default.Commands {
                     { "tokened_password", GetTokenedPassword(token, Password) },
                 }),
             }.Uri, null, HttpRequestMethod.Get, progress, cancelToken);
-            
-            // TODO Make GetResponseXml
+
+            var xmlDoc = GetXml(response);
+
+            return xmlDoc.SelectSingleNode("/result/session_key").InnerText;
+        }
+
+        private static XmlDocument GetXml(HttpWebResponse response) {
             var text = HttpRequest.GetResponseText(response);
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(text);
 
-            return xmlDoc.SelectSingleNode("/result/session_key").InnerText;
+            switch (xmlDoc.SelectSingleNode("/result/@status").InnerText) {
+                case "ok":
+                    return xmlDoc;
+
+                case "fail":
+                default:
+                    string error = xmlDoc.SelectNodes("/result/error/@text").OfType<XmlAttribute>()
+                        .Select((attr) => attr.InnerText).FirstOrDefault();
+
+                    if (error == null) {
+                        error = xmlDoc.InnerText;
+                    }
+
+                    throw new Exception(error);
+            }
         }
 
         private static string GetTokenedPassword(string token, SecureString password) {
