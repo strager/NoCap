@@ -17,8 +17,6 @@ namespace NoCap.GUI.WPF {
     [Export(typeof(IPlugin))]
     [DataContract(Name = "AutoUpdaterPlugin")]
     public class UpdaterPlugin : IPlugin {
-        private readonly static TimeSpan CheckInterval = TimeSpan.FromMinutes(1);
-
         private readonly PatchingEnvironment patchingEnvironment;
 
         private Thread updateThread;
@@ -36,7 +34,7 @@ namespace NoCap.GUI.WPF {
                     // TODO Exception logging
                 }
 
-                cancelToken.WaitHandle.WaitOne(CheckInterval);
+                cancelToken.WaitHandle.WaitOne(Extensions.Default.Properties.Settings.Default.updateFrequency);
             }
         }
 
