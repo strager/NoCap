@@ -1,7 +1,10 @@
 ﻿<Window x:Class="NoCap.GUI.WPF.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library" Title="NoCap Settings" Height="384" Width="541"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
+    Title="NoCap Settings"
+    Height="384" Width="541"
     Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
+    Icon="nocap-icon.png"
     Name="settingsWindow">
     <Grid Margin="3,0">
         <Grid.RowDefinitions>
