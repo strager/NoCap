@@ -4,6 +4,7 @@
     Title="NoCap Installer"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
+    Icon="nocap-icon.ico"
     Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
     
     <Window.Resources>
