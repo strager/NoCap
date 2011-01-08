@@ -5,31 +5,26 @@
     Name="about"
     Focusable="False">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="128" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
+        <Default:NoCapLogo Margin="6" Grid.Row="0" />
+        
+        <TextBlock Margin="6" Grid.Row="1" TextWrapping="Wrap" TextAlignment="Center">
+            NoCap &#169; 2010-2011<LineBreak />
+            Version <TextBlock Text="{Binding PatchingEnvironment.Version}" />
+        </TextBlock>
 
-        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Top">
-            <Default:NoCapLogo />
-            <TextBlock Margin="6" TextAlignment="Center">
-                <Hyperlink NavigateUri="http://nocapapp.com/feedback" RequestNavigate="NavigateBrowser">Feedback</Hyperlink>
-            </TextBlock>
-        </StackPanel>
-
-        <TextBlock Margin="6" Grid.Column="1" Grid.Row="0" TextWrapping="Wrap">NoCap &#169; 2010-2011</TextBlock>
-        <TextBlock Margin="6" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap">Version <TextBlock Text="{Binding PatchingEnvironment.Version}" /></TextBlock>
-
-        <TextBlock Margin="6" Grid.Column="1" Grid.Row="3" TextWrapping="Wrap">
+        <TextBlock Margin="6" Grid.Row="2" TextWrapping="Wrap" TextAlignment="Center">
+            Thanks for using NoCap; we hope you like it!<LineBreak />
+            Feel free to give us <Hyperlink NavigateUri="http://nocapapp.com/feedback" RequestNavigate="NavigateBrowser">feedback</Hyperlink> on your NoCap experience.<LineBreak />
             If you enjoy NoCap, please
-            <Hyperlink NavigateUri="http://nocapapp.com/donate" RequestNavigate="NavigateBrowser">donate</Hyperlink>
-            to keep the developers alive!
+            <Hyperlink NavigateUri="http://nocapapp.com/donate" RequestNavigate="NavigateBrowser">donate</Hyperlink>.
+            It helps keep the developers alive!
+            
         </TextBlock>
     </Grid>
 </ContentControl>
