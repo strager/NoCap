@@ -4,7 +4,7 @@
     Title="NoCap Settings"
     Height="384" Width="541"
     Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
-    Icon="nocap-icon.png"
+    Icon="nocap-icon.ico"
     Name="settingsWindow">
     <Grid Margin="3,0">
         <Grid.RowDefinitions>

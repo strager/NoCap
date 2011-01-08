@@ -160,9 +160,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="nocap-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="nocap-icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
