@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Library.Imaging {
-    [Serializable]
+    [DataContract(Name = "ImageWriter")]
     public sealed class ImageWriter : ICommand, INotifyPropertyChanged {
-        private string name;
         private BitmapCodec codec;
 
         public string Name {
             get {
-                if (this.name == null) {
-                    return Codec == null ? "Image writer" : string.Format("{0} writer", Codec.Description);
-                }
-
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
+                return Codec == null ? "Image writer" : string.Format("{0} writer", Codec.Description);
             }
         }
 
@@ -32,6 +21,7 @@ namespace NoCap.Library.Imaging {
             }
         }
 
+        [DataMember(Name = "Codec")]
         public BitmapCodec Codec {
             get {
                 return this.codec;
@@ -41,14 +31,8 @@ namespace NoCap.Library.Imaging {
                 this.codec = value;
 
                 Notify("Codec");
-
-                if (Name == null) {
-                    Notify("Name");
-                }
-
-                if (Extension == null) {
-                    Notify("Extension");
-                }
+                Notify("Name");
+                Notify("Extension");
             }
         }
 
@@ -82,24 +66,10 @@ namespace NoCap.Library.Imaging {
             return this.codec.IsValidAndNotNull();
         }
 
-        public ImageWriter(BitmapCodec codec) {
-            if (codec == null) {
-                throw new ArgumentNullException("codec");
-            }
-
-            Codec = codec;
-        }
-
-        [NonSerialized]
-        private PropertyChangedEventHandler propertyChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged {
-            add    { this.propertyChanged += value; }
-            remove { this.propertyChanged -= value; }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected void Notify(string propertyName) {
-            var handler = this.propertyChanged;
+            var handler = PropertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));

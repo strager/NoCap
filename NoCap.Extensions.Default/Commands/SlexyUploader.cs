@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.Serialization;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
+using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class SlexyUploader : TextUploader {
+    [DataContract(Name = "SlexyUploader")]
+    public sealed class SlexyUploader : TextUploaderCommand, IExtensibleDataObject {
         public override string Name {
             get { return "Slexy.org text uploader"; }
         }
@@ -22,48 +24,60 @@ namespace NoCap.Extensions.Default.Commands {
             Language = "text";
         }
 
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["raw_paste"] = data.Data.ToString();
-            parameters["comment"] = "";
-            parameters["author"] = Author ?? "";
-            parameters["language"] = Language ?? "text";
-            parameters["permissions"] = IsPrivate ? "1" : "0";
-            parameters["desc"] = data.Name ?? "";
-            parameters["linenumbers"] = ShowLineNumbers ? "0" : "1";
-            parameters["expire"] = Expiration.TotalSeconds.ToString(NumberFormatInfo.InvariantInfo);
-            parameters["submit"] = "Submit Paste";
-            parameters["tabbing"] = "true";
-            parameters["tabtype"] = "real";
+        protected override MultipartData GetRequestData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.KeyValuePairs(new Dictionary<string, string> {
+                { "raw_paste", data.Data.ToString() },
+                { "comment", "" },
+                { "author", Author ?? "" },
+                { "language", Language ?? "text" },
+                { "permissions", IsPrivate ? "1" : "0" },
+                { "desc", data.Name ?? "" },
+                { "linenumbers", ShowLineNumbers ? "0" : "1" },
+                { "expire", Expiration.TotalSeconds.ToString(NumberFormatInfo.InvariantInfo) },
+                { "submit", "Submit Paste" },
+                { "tabbing", "true" },
+                { "tabtype", "real" },
+            });
 
-            return parameters;
+            return builder.GetData();
         }
 
         public override ICommandFactory GetFactory() {
             return new SlexyUploaderFactory();
         }
 
+        [DataMember(Name = "ExpirationDate")]
         public TimeSpan Expiration {
             get;
             set;
         }
 
+        [DataMember(Name = "ShowLineNumbers")]
         public bool ShowLineNumbers {
             get;
             set;
         }
 
+        [DataMember(Name = "IsPrivate")]
         public bool IsPrivate {
             get;
             set;
         }
 
+        [DataMember(Name = "Language")]
         public string Language {
             get;
             set;
         }
 
+        [DataMember(Name = "Author")]
         public string Author {
+            get;
+            set;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
             get;
             set;
         }

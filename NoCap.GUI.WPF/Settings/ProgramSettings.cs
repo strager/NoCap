@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Bindable.Linq;
 using Bindable.Linq.Collections;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
-using NoCap.Library.Util;
 using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "ProgramSettings")]
-    sealed class ProgramSettings : IDisposable {
+    sealed class ProgramSettingsData : IExtensibleDataObject {
+        public ProgramSettingsData() {
+            this.plugins = new PluginCollection();
+            this.defaultCommands = new FeaturedCommandCollection();
+            this.commands = new BindableCollection<ICommand>();
+        }
+
         // Data member orders are important because they enforce "ownership" in
         // the XML.  A command may reference a default command but it does not
         // own the default command; the default command belongs to the
@@ -38,10 +43,9 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        public IBindableCollection<ICommand> Commands {
+        public BindableCollection<ICommand> Commands {
             get {
-                // Wrap to prevent modification.
-                return this.commands.AsBindable();
+                return this.commands;
             }
         }
 
@@ -51,47 +55,74 @@ namespace NoCap.GUI.WPF.Settings {
             }
         }
 
-        [IgnoreDataMember]
-        private IPluginContext pluginContext;
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
+        }
+    }
 
-        [IgnoreDataMember]
-        private ICommandProvider commandProvider;
+    sealed class ProgramSettings : IDisposable {
+        private readonly ProgramSettingsData settingsData;
 
-        public IPluginContext PluginContext {
+        public FeaturedCommandCollection DefaultCommands {
             get {
-                if (this.pluginContext == null) {
-                    throw new InvalidOperationException("Call Initialize");
-                }
-
-                return this.pluginContext;
+                return SettingsData.DefaultCommands;
             }
         }
 
+        public BindableCollection<ICommand> Commands {
+            get {
+                return SettingsData.Commands;
+            }
+        }
+
+        public PluginCollection Plugins {
+            get {
+                return SettingsData.Plugins;
+            }
+        }
+
+        private IPluginContext pluginContext;
+        private ICommandProvider commandProvider;
+
         public ICommandProvider CommandProvider {
             get {
-                if (this.commandProvider == null) {
-                    throw new InvalidOperationException("Call Initialize");
-                }
-
                 return this.commandProvider;
             }
         }
 
-        public ProgramSettings() {
-            this.plugins = new PluginCollection();
-            this.defaultCommands = new FeaturedCommandCollection();
-            this.commands = new BindableCollection<ICommand>();
+        public IFeatureRegistry FeatureRegistry {
+            get {
+                return this.pluginContext.FeatureRegistry;
+            }
         }
 
-        public void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
-            var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CompositionContainer);
-            var defaultRegistry = new ProgramFeatureRegistry(this.defaultCommands, commandProvider);
-            var runtimeProvider = new ProgramPluginContext(commandRunner, extensionManager, defaultRegistry, commandProvider);
+        public ProgramSettingsData SettingsData {
+            get {
+                return this.settingsData;
+            }
+        }
+
+        private ProgramSettings(ProgramSettingsData settingsData) {
+            this.settingsData = settingsData;
+        }
+
+        public static ProgramSettings Create(ProgramSettingsData settingsData, CommandRunner commandRunner, ExtensionManager extensionManager) {
+            var settings = new ProgramSettings(settingsData);
+            settings.Initialize(commandRunner, extensionManager);
+
+            return settings;
+        }
+
+        private void Initialize(CommandRunner commandRunner, ExtensionManager extensionManager) {
+            var commandProvider = new ProgramSettingsCommandProvider(this, extensionManager.CommandCompositionContainer);
+            var defaultRegistry = new ProgramFeatureRegistry(DefaultCommands, commandProvider);
+            var pluginContext = new ProgramPluginContext(commandRunner, defaultRegistry, commandProvider);
 
             this.commandProvider = commandProvider;
-            this.pluginContext = runtimeProvider;
+            this.pluginContext = pluginContext;
 
-            this.plugins.Initialize(runtimeProvider);
+            Plugins.Initialize(pluginContext, extensionManager.CommandCompositionContainer);
         }
 
         public void Dispose() {
@@ -99,23 +130,24 @@ namespace NoCap.GUI.WPF.Settings {
         }
 
         public void LoadCommandDefaults() {
-            // TODO Clean this up
-
-            var commandFactories = Enumerable.Where(CommandProvider.CommandFactories, (factory) => factory.CommandFeatures.HasFlag(CommandFeatures.StandAlone));
-
-            var commandFactoriesToCommands = new Dictionary<ICommandFactory, ICommand>();
+            var commandFactories = CommandProvider.CommandFactories.WithFeatures(CommandFeatures.StandAlone);
 
             // We use two passes because command population often requires the
             // presence of other commands (which may not have been constructed yet).
             // We thus construct all commands, then populate them.
-            foreach (var commandFactory in commandFactories) {
-                commandFactoriesToCommands[commandFactory] = commandFactory.CreateCommand();
-            }
 
-            foreach (var pair in commandFactoriesToCommands) {
-                pair.Key.PopulateCommand(pair.Value, commandProvider);
+            var commandInstances = commandFactories.Select((factory) => new {
+                Factory = factory,
+                Command = factory.CreateCommand()
+            });
 
-                this.commands.Add(pair.Value);
+            foreach (var commandInstance in commandInstances) {
+                var factory = commandInstance.Factory;
+                var command = commandInstance.Command;
+
+                factory.PopulateCommand(command, commandProvider);
+
+                SettingsData.Commands.Add(commandInstance.Command);
             }
         }
     }

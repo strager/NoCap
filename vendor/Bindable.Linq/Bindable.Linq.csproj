@@ -12,8 +12,9 @@
     <AssemblyName>Bindable.Linq</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>PrivateKey.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -172,7 +173,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\Everything.cd" />
-    <None Include="PrivateKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

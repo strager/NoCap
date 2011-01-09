@@ -7,7 +7,8 @@
     Name="self"
     d:DesignHeight="300" d:DesignWidth="300"
     xmlns:Controls="clr-namespace:NoCap.Library.Controls;assembly=NoCap.Library"
-    xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior">
+    xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+    Focusable="False">
 
     <ContentControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -51,6 +52,10 @@
                                     <Hyperlink Command="Open" CommandParameter="{Binding}">
                                         <TextBlock Text="{Binding Input.HumanString, FallbackValue=None}" />
                                     </Hyperlink>
+                                    
+                                    <TextBlock Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=removeButton}">
+                                        <Hyperlink Name="removeButton" Command="Delete" CommandParameter="{Binding}">(Remove)</Hyperlink>
+                                    </TextBlock>
                                 </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

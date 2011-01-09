@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization;
@@ -9,11 +9,14 @@ using System.Threading;
 using AlexPilotti.FTPS.Client;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
+using NoCap.Library.Progress;
 using NoCap.Library.Util;
+using NoCap.Web;
+using StringLib;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, ISerializable {
+    [DataContract(Name = "FtpUploader")]
+    public sealed class FtpUploader : ICommand, INotifyPropertyChanged, IExtensibleDataObject {
         private string name = "FTP file uploader";
 
         private string host = "example.com";
@@ -22,15 +25,22 @@ namespace NoCap.Extensions.Default.Commands {
         private SecureString password;
 
         private string outputPath = "";
-        private string resultFormat = "http://example.com/{0}";
+        private string resultFormat = "http://example.com/{filename}";
 
-        private int timeout = 20000;
+        private readonly static HartFormatter.FormatterOptions ResultStringFormatterOptions;
+
+        static FtpUploader() {
+            ResultStringFormatterOptions = HartFormatter.FormatterOptions.HumaneOptions;
+            ResultStringFormatterOptions.FormatProvider = CultureInfo.InvariantCulture;
+        }
+
+        private const int Timeout = 20000; // Milliseconds
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             string fileName = data.Name;
             var stream = (Stream) data.Data;
 
-            UploadData(stream, fileName, progress);
+            UploadData(stream, fileName, progress, cancelToken);
 
             progress.Progress = 1;
 
@@ -40,28 +50,34 @@ namespace NoCap.Extensions.Default.Commands {
             return TypedData.FromUri(new Uri(success && !string.IsNullOrWhiteSpace(result) ? result : data.Name, UriKind.Absolute), fileName);
         }
 
-        private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress) {
+        private void UploadData(Stream stream, string fileName, IMutableProgressTracker progress, CancellationToken cancelToken) {
             using (var client = new FTPSClient()) {
                 try {
-                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, this.timeout);
+                    progress.Status = "Connecting to FTP";
+
+                    client.Connect(Host, Port, new NetworkCredential(UserName, Password), 0, null, null, 0, 0, 0, Timeout);
                 } catch (TimeoutException e) {
                     throw new CommandCanceledException(this, "Connection to FTP server timed out", e);
                 } catch (IOException e) {
                     throw new CommandCanceledException(this, "Connection to FTP server failed", e);
                 }
-
+                
                 using (var outStream = client.PutFile(GetRemotePathName(fileName)))
                 using (var outStreamWrapper = new ProgressTrackingStreamWrapper(outStream, stream.Length)) {
                     outStreamWrapper.BindTo(progress);
 
-                    stream.CopyTo(outStreamWrapper);
+                    progress.Status = "Uploading file to FTP";
+
+                    stream.CopyTo(outStreamWrapper, cancelToken);
                 }
             }
         }
 
         private bool TryGetResultString(string fileName, out string result) {
             try {
-                result = string.Format(resultFormat, fileName);
+                result = this.resultFormat.HartFormat(new {
+                    filename = fileName
+                }, ResultStringFormatterOptions);
 
                 return true;
             } catch (FormatException) {
@@ -77,6 +93,7 @@ namespace NoCap.Extensions.Default.Commands {
             return OutputPath + "/" + fileName.Replace(@"\", @"\\").Replace(@"/", @"\/");
         }
 
+        [DataMember(Name = "Name")]
         public string Name {
             get {
                 return this.name;
@@ -89,6 +106,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Host")]
         public string Host {
             get {
                 return host;
@@ -101,6 +119,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Port")]
         public int Port {
             get {
                 return port;
@@ -113,6 +132,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "UserName")]
         public string UserName {
             get {
                 return userName;
@@ -125,6 +145,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [IgnoreDataMember]
         public SecureString Password {
             get {
                 return this.password;
@@ -137,6 +158,18 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Password")]
+        public byte[] EncryptedPassword {
+            get {
+                return Password == null ? null : Security.EncryptString(Password);
+            }
+
+            set {
+                Password = value == null ? null : Security.DecryptString(value);
+            }
+        }
+
+        [DataMember(Name = "OutputPath")]
         public string OutputPath {
             get {
                 return this.outputPath;
@@ -149,6 +182,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "ResultFormat")]
         public string ResultFormat {
             get {
                 return this.resultFormat;
@@ -177,7 +211,7 @@ namespace NoCap.Extensions.Default.Commands {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void Notify(string propertyName) {
+        private void Notify(string propertyName) {
             var handler = PropertyChanged;
 
             if (handler != null) {
@@ -185,33 +219,9 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        public FtpUploader() {
-        }
-
-        private FtpUploader(SerializationInfo info, StreamingContext context) {
-            Name = info.GetValue<string>("Name");
-
-            Host = info.GetValue<string>("Host");
-            Port = info.GetValue<int>("Port");
-            UserName = info.GetValue<string>("UserName");
-
-            var encryptedPassword = info.GetValue<byte[]>("Password encrypted");
-            Password = encryptedPassword == null ? null : Security.DecryptString(encryptedPassword);
-
-            OutputPath = info.GetValue<string>("OutputPath");
-            ResultFormat = info.GetValue<string>("ResultFormat");
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("Name", Name);
-
-            info.AddValue("Host", Host);
-            info.AddValue("Port", Port);
-            info.AddValue("UserName", UserName);
-            info.AddValue("Password encrypted", Password == null ? null : Security.EncryptString(Password));
-
-            info.AddValue("OutputPath", OutputPath);
-            info.AddValue("ResultFormat", ResultFormat);
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

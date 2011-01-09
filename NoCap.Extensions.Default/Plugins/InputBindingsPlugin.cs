@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Windows;
+using Bindable.Linq;
 using NoCap.Library;
 using NoCap.Library.Extensions;
 using NoCap.Library.Tasks;
-using NoCap.Library.Util;
 using WinputDotNet;
+using ICommand = NoCap.Library.ICommand;
 
 namespace NoCap.Extensions.Default.Plugins {
-    [Export(typeof(IPlugin)), Serializable]
-    public class InputBindingsPlugin : IPlugin, ISerializable {
-        [NonSerialized]
+    [Export(typeof(IPlugin))]
+    [DataContract(Name = "InputBindingsPlugin")]
+    public class InputBindingsPlugin : IPlugin, IExtensibleDataObject {
         private bool isSetUp = false;
-
-        [NonSerialized]
         private bool isDisposed = false;
 
-        [NonSerialized]
         private IEnumerable<IInputProvider> inputProviders;
 
         public string Name {
@@ -30,9 +30,9 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
-        [NonSerialized]
-        private CommandRunner commandRunner;
+        private ICommandRunner commandRunner;
 
+        [DataMember(Name = "CommandBindings")]
         public ObservableCollection<CommandBinding> Bindings {
             get;
             set;
@@ -44,10 +44,36 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
+        private IInputProvider inputProvider;
+
         public IInputProvider InputProvider {
-            get;
-            set;
+            get {
+                return this.inputProvider;
+            }
+
+            set {
+                this.inputProvider = value;
+
+                this.inputProviderTypeName = value == null ? null : value.GetType().AssemblyQualifiedName;
+            }
         }
+
+        private IEnumerable<CommandBinding> GetDefaultBindings(IInputProvider inputProvider, ICommand command) {
+            if (command == null) {
+                yield break;
+            }
+
+            var attributes = command.GetType().GetCustomAttributes(typeof(DefaultBindingAttribute), false).OfType<DefaultBindingAttribute>();
+
+            foreach (var defaultBinding in attributes.Where((attr) => attr.ProviderType == inputProvider.GetType())) {
+                yield return new CommandBinding(defaultBinding.InputSequence, command);
+            }
+        }
+
+        [DataMember(Name = "InputProviderTypeName")]
+        private string inputProviderTypeName;
+
+        private IBindableCollection<ICommand> standAloneCommands;
 
         public UIElement GetEditor(ICommandProvider commandProvider) {
             return new InputBindingsEditor(this, commandProvider);
@@ -56,18 +82,53 @@ namespace NoCap.Extensions.Default.Plugins {
         public void Initialize(IPluginContext pluginContext) {
             this.commandRunner = pluginContext.CommandRunner;
 
-            var compositionContainer = pluginContext.CompositionContainer;
+            this.standAloneCommands = pluginContext.CommandProvider.StandAloneCommands;
+
+            this.standAloneCommands.CollectionChanged += (sender, e) => {
+                foreach (var command in e.NewItems.OfType<ICommand>()) {
+                    IncludeDefaultBindings(command);
+                }
+            };
+
+            string extensionPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var compositionContainer = new CompositionContainer(new DirectoryCatalog(extensionPath));
 
             Recompose(compositionContainer);
             compositionContainer.ExportsChanged += (sender, e) => Recompose(compositionContainer);
 
-            InputProvider = this.inputProviders.FirstOrDefault();
-
             SetUp();
         }
 
+        private void IncludeDefaultBindings(ICommand command) {
+            if (Bindings.Any((binding) => binding.Command == command)) {
+                return;
+            }
+
+            foreach (var defaultBinding in GetDefaultBindings(InputProvider, command)) {
+                Bindings.Add(defaultBinding);
+            }
+        }
+
         private void Recompose(CompositionContainer compositionContainer) {
+            // Take care when touching this.
+
             this.inputProviders = compositionContainer.GetExportedValues<IInputProvider>();
+
+            var defaultProvider = this.inputProviders.FirstOrDefault();
+            var newProvider = InputProvider ?? defaultProvider;
+
+            if (this.inputProviderTypeName != null && InputProvider == null) {
+                newProvider = this.inputProviders.FirstOrDefault(
+                    (provider) => provider.GetType().AssemblyQualifiedName == this.inputProviderTypeName
+                ) ?? newProvider;
+            }
+
+            InputProvider = newProvider;
+
+            foreach (var command in this.standAloneCommands) {
+                IncludeDefaultBindings(command);
+            }
         }
 
         internal void SetUp() {
@@ -98,12 +159,10 @@ namespace NoCap.Extensions.Default.Plugins {
             if (InputProvider == null) {
                 return;
             }
-
-            var handle = IntPtr.Zero;
             
             InputProvider.CommandStateChanged += CommandStateChanged;
             UpdateBindings();
-            InputProvider.Attach(handle);
+            InputProvider.Attach();
         }
 
         private void ShutDownInput() {
@@ -119,7 +178,7 @@ namespace NoCap.Extensions.Default.Plugins {
             if (e.State == InputState.On) {
                 var command = (BoundCommand) e.Command;
 
-                if (this.commandRunner != null && command.Command.IsValidAndNotNull()) {
+                if (this.commandRunner != null) {
                     this.commandRunner.Run(command.Command);
                 }
             }
@@ -148,22 +207,23 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private void UpdateBindings() {
-            InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
+            if (InputProvider != null) {
+                InputProvider.SetBindings(Bindings.Where((binding) => binding.Input != null));
+            }
         }
 
-        protected InputBindingsPlugin(SerializationInfo info, StreamingContext context) {
-            // TODO Use instance in inputProviders collection
-            var inputProviderType = info.GetValue<Type>("InputProvider type");
-            InputProvider = (IInputProvider) Activator.CreateInstance(inputProviderType);
-
-            Bindings = info.GetValue<ObservableCollection<CommandBinding>>("Bindings");
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context) {
+            if (Bindings == null) {
+                Bindings = new ObservableCollection<CommandBinding>();
+            }
 
             Bindings.CollectionChanged += (sender, e) => UpdateBindings();
         }
 
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("InputProvider type", InputProvider == null ? null : InputProvider.GetType());
-            info.AddValue("Bindings", Bindings);
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

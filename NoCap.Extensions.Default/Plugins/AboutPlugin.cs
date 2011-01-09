@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web;
+﻿using System.ComponentModel.Composition;
+using System.Runtime.Serialization;
 using System.Windows;
 using NoCap.Library;
 using NoCap.Library.Extensions;
-using NoCap.Web.Multipart;
+using NoCap.Update;
 
 namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
-    [Serializable]
-    class AboutPlugin : IPlugin {
+    [DataContract(Name = "AboutPlugin")]
+    sealed class AboutPlugin : IPlugin, IExtensibleDataObject {
         public void Dispose() {
             // Do nothing.
         }
@@ -25,15 +19,10 @@ namespace NoCap.Extensions.Default.Plugins {
             }
         }
 
-        public string FeedbackUserName {
-            get;
-            set;
-        }
-
         public UIElement GetEditor(ICommandProvider commandProvider) {
             return new AboutEditor {
                 DataContext = new {
-                    Feedback = new Feedback(this)
+                    PatchingEnvironment = PatchingEnvironment.GetCurrent(),
                 }
             };
         }
@@ -41,80 +30,10 @@ namespace NoCap.Extensions.Default.Plugins {
         public void Initialize(IPluginContext pluginContext) {
             // Do nothing.
         }
-    }
 
-    public class Feedback : INotifyPropertyChanged {
-        private readonly static Uri Uri = new Uri(@"http://strager.net/nocap/feedback");
-
-        private readonly AboutPlugin plugin;
-
-        private string message;
-
-        public string UserName {
-            get {
-                return this.plugin.FeedbackUserName;
-            }
-
-            set {
-                this.plugin.FeedbackUserName = value;
-
-                Notify("UserName");
-            }
-        }
-
-        public string Message {
-            get {
-                return this.message;
-            }
-
-            set {
-                this.message = value;
-
-                Notify("Message");
-            }
-        }
-
-        internal Feedback(AboutPlugin plugin) {
-            this.plugin = plugin;
-        }
-
-        public void Submit() {
-            // FIXME SORRY; COPYPASTED FROM NoCap.Library.Commands.HttpUploader
-
-            var parameters = new Dictionary<string, string> {
-                { "name", UserName ?? "" },
-                { "message", Message ?? "" },
-            };
-
-            var builder = new MultipartBuilder();
-            builder.KeyValuePairs(parameters);
-
-            var boundary = builder.Boundary;
-
-            var request = (HttpWebRequest) WebRequest.Create(Uri);
-            request.Method = @"POST";
-            request.ContentType = string.Format("multipart/form-data; {0}", MultipartHeader.KeyValuePair("boundary", boundary));
-
-            request.ContentLength = Utility.GetBoundaryByteCount(boundary) + builder.GetByteCount();
-
-            request.BeginGetRequestStream((ar) => {
-                var requestStream = request.EndGetRequestStream(ar);
-
-                Utility.WriteBoundary(requestStream, boundary);
-                builder.Write(requestStream);
-
-                request.BeginGetResponse((ar2) => request.EndGetResponse(ar2), null);
-            }, null);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void Notify(string propertyName) {
-            var handler = PropertyChanged;
-
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

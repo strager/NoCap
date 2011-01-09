@@ -3,8 +3,8 @@ using NoCap.Library.Tasks;
 
 namespace NoCap.Library.Extensions {
     public interface IPluginContext {
-        CommandRunner CommandRunner { get; }
-        CompositionContainer CompositionContainer { get; }
+        ICommandRunner CommandRunner { get; }
+
         IFeatureRegistry FeatureRegistry { get; }
         ICommandProvider CommandProvider { get; }
     }

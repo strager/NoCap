@@ -39,6 +39,9 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
@@ -49,6 +52,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
@@ -60,12 +64,20 @@
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
-    <Compile Include="Commands\Renamer.cs" />
-    <Compile Include="Commands\SshUploader.cs" />
-    <Compile Include="Editors\SshUploaderEditor.xaml.cs">
-      <DependentUpon>SshUploaderEditor.xaml</DependentUpon>
+    <Compile Include="Commands\ImgurUploader.cs" />
+    <Compile Include="Commands\SendSpaceUploader.cs" />
+    <Compile Include="DefaultBindingAttribute.cs" />
+    <Compile Include="Editors\SendSpaceUploaderEditor.xaml.cs">
+      <DependentUpon>SendSpaceUploaderEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Factories\SshUploaderFactory.cs" />
+    <Compile Include="Factories\SendSpaceUploaderFactory.cs" />
+    <Compile Include="Factories\ImgurUploaderFactory.cs" />
+    <Compile Include="Commands\PostImageUploader.cs" />
+    <Compile Include="Commands\Renamer.cs" />
+    <Compile Include="Editors\PostImageUploaderEditor.xaml.cs">
+      <DependentUpon>PostImageUploaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Factories\PostImageUploaderFactory.cs" />
     <Compile Include="Editors\RenamerEditor.xaml.cs">
       <DependentUpon>RenamerEditor.xaml</DependentUpon>
     </Compile>
@@ -102,6 +114,9 @@
     <Compile Include="Commands\CropShot.cs" />
     <Compile Include="Helpers\BitmapElement.cs" />
     <Compile Include="Commands\Clipboard.cs" />
+    <Compile Include="Helpers\ConnectionTester.xaml.cs">
+      <DependentUpon>ConnectionTester.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\CropShotWindow.xaml.cs">
       <DependentUpon>CropShotWindow.xaml</DependentUpon>
     </Compile>
@@ -110,8 +125,7 @@
     <Compile Include="Helpers\ImageExtensions.cs" />
     <Compile Include="Commands\ImagebinCaUploader.cs" />
     <Compile Include="Commands\IsgdShortener.cs" />
-    <Compile Include="Helpers\StoryboardQueue.xaml.cs" />
-    <Compile Include="Helpers\StoryboardQueueItem.xaml.cs" />
+    <Compile Include="Helpers\TaskCollection.xaml.cs" />
     <Compile Include="NoCapLogo.xaml.cs">
       <DependentUpon>NoCapLogo.xaml</DependentUpon>
     </Compile>
@@ -119,16 +133,25 @@
       <DependentUpon>AboutEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\AboutPlugin.cs" />
-    <Compile Include="Plugins\BindWindow.xaml.cs">
+    <Compile Include="Helpers\BindWindow.xaml.cs">
       <DependentUpon>BindWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\BoundCommand.cs" />
     <Compile Include="Plugins\CommandBinding.cs" />
+    <Compile Include="Plugins\CommandEditorPlugin.cs" />
+    <Compile Include="Plugins\CommandSettingsEditor.xaml.cs">
+      <DependentUpon>CommandSettingsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\InputBindingsEditor.xaml.cs">
       <DependentUpon>InputBindingsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\InputBindingsPlugin.cs" />
+    <Compile Include="Plugins\ProxyCacher.cs" />
+    <Compile Include="Plugins\TaskbarEditor.xaml.cs">
+      <DependentUpon>TaskbarEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\TaskbarPlugin.cs" />
+    <Compile Include="Plugins\UpdaterPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\ScreenCapturer.cs" />
     <Compile Include="Commands\Screenshot.cs" />
@@ -136,11 +159,22 @@
     <Compile Include="Helpers\TaskPopup.xaml.cs">
       <DependentUpon>TaskPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NoCap.Library\NoCap.Library.csproj">
       <Project>{F8575C27-A6A0-4D6F-A9C8-C93A4DB20C4E}</Project>
       <Name>NoCap.Library</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\NoCap.Update\NoCap.Update.csproj">
+      <Project>{36D57807-F86C-40A6-B538-ABBA4CBE2B01}</Project>
+      <Name>NoCap.Update</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\NoCap.Web\NoCap.Web.csproj">
@@ -160,9 +194,9 @@
       <Project>{8271707D-0C08-460D-A332-6FDB8D0BB6D1}</Project>
       <Name>FTPSClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\vendor\Granados\Granados.csproj">
-      <Project>{9D114B8B-E62C-4FBF-B281-0227755C8091}</Project>
-      <Name>Granados</Name>
+    <ProjectReference Include="..\vendor\StringLib\StringLib.csproj">
+      <Project>{893F9AF0-4AC2-47D3-9C9E-5730B579498B}</Project>
+      <Name>StringLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\vendor\Windows7.DesktopIntegration\Windows7.DesktopIntegration.csproj">
       <Project>{E3F064A7-ECEF-46B8-83BD-299E4E8BDF82}</Project>
@@ -202,7 +236,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Editors\PostImageUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Editors\RenamerEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editors\SendSpaceUploaderEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,7 +252,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Editors\SshUploaderEditor.xaml">
+    <Page Include="Helpers\ConnectionTester.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,7 +264,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Plugins\BindWindow.xaml">
+    <Page Include="Helpers\BindWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plugins\CommandSettingsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -238,13 +284,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Plugins\TaskbarEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\VistaProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="nocap.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+    <PropertyGroup>
+      <ExtensionsDirectory>$(SolutionDir)NoCap.GUI.WPF\bin\$(ConfigurationName)\Extensions</ExtensionsDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <ZipFiles Include="$(TargetDir)\**\*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(ExtensionsDirectory)" />
+    <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(ExtensionsDirectory)\NoCap.Extensions.Default.nocap" ZipLevel="9" />
   </Target>
-  -->
 </Project>

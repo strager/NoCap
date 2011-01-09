@@ -59,23 +59,7 @@ namespace NoCap.Web.Multipart {
         }
 
         public override void WriteContents(Stream stream, CancellationToken cancelToken) {
-            const int bufferSize = 1024;
-
-            byte[] buffer = new byte[bufferSize];
-
-            while (true) {
-                cancelToken.ThrowIfCancellationRequested();
-
-                int readBytes = InputStream.Read(buffer, 0, bufferSize);
-
-                if (readBytes == 0) {
-                    break;
-                }
-
-                cancelToken.ThrowIfCancellationRequested();
-
-                stream.Write(buffer, 0, readBytes);
-            }
+            InputStream.CopyTo(stream, cancelToken);
         }
 
         public override long GetContentsByteCount() {

@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class CropShot : ICommand {
+    [DataContract(Name = "CropShot")]
+    public sealed class CropShot : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "Crop shot"; }
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            progress.Status = "Taking a crop shot";
+
             CropShotWindow cropShotWindow = null;
 
             var thread = new Thread(() => {
@@ -53,6 +54,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

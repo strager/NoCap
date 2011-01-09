@@ -3,15 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
-    xmlns:Library="clr-namespace:NoCap.Library;assembly=NoCap.Library"
-    Name="taskPopup"
+    xmlns:Library="clr-namespace:NoCap.Library;assembly=NoCap.Library" xmlns:Tasks="clr-namespace:NoCap.Library.Tasks;assembly=NoCap.Library" Name="taskPopup"
     Foreground="White"
     Background="Transparent"
-    Padding="10"
-    Height="106">
+    Padding="10">
 
     <UserControl.CommandBindings>
-        <CommandBinding Command="Close" Executed="QueueHide" />
+        <CommandBinding Command="Close" Executed="Hide" />
+        <CommandBinding Command="Library:NoCapCommands.Cancel" Executed="CancelTask" />
     </UserControl.CommandBindings>
 
     <UserControl.Resources>
@@ -54,11 +53,23 @@
         </ControlTemplate>
 
         <Storyboard x:Key="HideAnimation" TargetName="taskPopup">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:00:00.3" BeginTime="0:00:02.3" />
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:00:00.3" />
         </Storyboard>
 
         <Storyboard x:Key="ShowAnimation" TargetName="taskPopup">
             <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:00:00.3" />
+        </Storyboard>
+
+        <Color x:Key="CompletedProgressColor">#00FF00</Color>
+        <Color x:Key="CanceledProgressColor">#FF3333</Color>
+
+        <Storyboard x:Key="TaskCompletedAnimation">
+            <ColorAnimation Storyboard.TargetName="progressBar" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource CompletedProgressColor}" Duration="0:00:00.7" />
+        </Storyboard>
+
+        <Storyboard x:Key="TaskCanceledAnimation">
+            <ColorAnimation Storyboard.TargetName="progressBar" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource CanceledProgressColor}" Duration="0:00:00.7" />
+            <DoubleAnimation Storyboard.TargetName="progressBar" Storyboard.TargetProperty="Value" To="1" Duration="0:00:00.3" />
         </Storyboard>
     </UserControl.Resources>
 
@@ -69,6 +80,7 @@
             <BeginStoryboard Name="HideButtonInAnimation">
                 <Storyboard TargetName="hideButton">
                     <DoubleAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Height" From="0" To="19" Duration="0:00:00.1" />
+                    <ThicknessAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Margin" From="0,19,13,0" To="0,0,13,0" Duration="0:00:00.1" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -78,59 +90,101 @@
             <BeginStoryboard Name="HideButtonOutAnimation">
                 <Storyboard>
                     <DoubleAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Height" From="19" To="0" Duration="0:00:00.1" BeginTime="0:00:00.3" />
+                    <ThicknessAnimation Storyboard.TargetName="hideButton" Storyboard.TargetProperty="Margin" From="0,0,13,0" To="0,19,13,0" Duration="0:00:00.1" BeginTime="0:00:00.3" />
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
     </UserControl.Triggers>
 
     <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-        <Button Name="hideButton"
-            Command="Close"
-            Content="Hide"
-            HorizontalAlignment="Right"
-            Margin="0,0,13,0"
-            FontSize="13"
-            Padding="5,1,5,0"
-            Foreground="{StaticResource ForegroundBrush}"
-            Background="#99000000"
-            Template="{StaticResource HideButtonTemplate}" />
+        <ContentControl Height="19">
+            <Button Name="hideButton"
+                HorizontalAlignment="Right"
+                Command="Close"
+                Content="Hide"
+                Margin="0,0,13,0"
+                FontSize="13"
+                Padding="5,1,5,0"
+                Foreground="{StaticResource ForegroundBrush}"
+                Background="#99000000"
+                Template="{StaticResource HideButtonTemplate}" />
+        </ContentControl>
 
         <Border BorderThickness="13,10" CornerRadius="3"
             BorderBrush="{StaticResource BackgroundBrush}"
             Background="{StaticResource BackgroundBrush}"
             TextBlock.Foreground="{StaticResource ForegroundBrush}"
-            TextBlock.FontSize="13"
-            Height="67" Width="249">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            TextBlock.FontSize="13" Width="249" MinHeight="67">
+            <ItemsControl ItemsSource="{Binding}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding State}">
+                                <DataTrigger.Value>
+                                    <Tasks:TaskState>Canceled</Tasks:TaskState>
+                                </DataTrigger.Value>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource TaskCanceledAnimation}" />
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding State}">
+                                <DataTrigger.Value>
+                                    <Tasks:TaskState>Completed</Tasks:TaskState>
+                                </DataTrigger.Value>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource TaskCompletedAnimation}" />
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                        
+                        <ItemsControl Height="67">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                    Text="{Binding Name}"
-                    VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                    Text="{Binding Name}"
+                                    VerticalAlignment="Center" />
 
-                <Button Grid.Row="0" Grid.Column="1"
-    		        Command="Library:NoCapCommands.Cancel"
-                    Content="_Cancel"
-                    Padding="1,0,3,0"
-                    Background="#5CF10A0A"
-                    Foreground="{StaticResource ForegroundBrush}"
-                    Template="{StaticResource ArrowButtonTemplate}" />
+                                <Button Grid.Row="0" Grid.Column="1"
+    		                        Command="Library:NoCapCommands.Cancel"
+                                    CommandParameter="{Binding Task}"
+                                    Content="_Cancel"
+                                    Padding="1,0,3,0"
+                                    Background="#5CF10A0A"
+                                    Foreground="{StaticResource ForegroundBrush}"
+                                    Template="{StaticResource ArrowButtonTemplate}" />
 
-                <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                    MinHeight="20"
-                    Value="{Binding ProgressTracker.Progress, Mode=OneWay}"
-                    Minimum="0" Maximum="1" />
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="20">
+                                    <Grid.Resources>
+                                        <ResourceDictionary Source="/NoCap.Extensions.Default;component/Styles/VistaProgressBar.xaml" />
+                                    </Grid.Resources>
+                                    <ProgressBar HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Style="{StaticResource VistaProgressBarStyle}"
+                                        Name="progressBar"
+                                        Value="{Binding Progress, Mode=OneWay}"
+                                        Foreground="#009900"
+                                        Minimum="0" Maximum="1" />
 
-                <TextBlock Grid.Row="1" />
-            </Grid>
+                                    <TextBlock HorizontalAlignment="Center"
+                                        Text="{Binding Status, Mode=OneWay}"
+                                        Foreground="Black"
+                                        FontWeight="Bold" />
+                                </Grid>
+
+                                <TextBlock Grid.Row="1" />
+                            </Grid>
+                        </ItemsControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Border>
     </StackPanel>
 </UserControl>

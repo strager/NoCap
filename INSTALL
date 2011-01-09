@@ -1,0 +1,54 @@
+= Prerequisites =
+
+== Execution requirements ==
+
+NoCap requires the full profile of the .NET 4.0 framework.
+
+NoCap depends upon WPF, MEF (built into .NET 4.0), WinForms, some Windows
+P/Invoke API's, and GDI.NET.
+
+All other binary dependencies should be included in NoCap.
+
+== Building requirements ==
+
+NoCap is developed with MSVS2010.  It is known to compile with the following
+software:
+
+ * Microsoft Visual Studio 2010 Professional
+
+NoCap *may* compile with the following software:
+
+ * MSBuild (vanilla)
+ * Microsoft Visual Studio 2010 (other versions)
+ * Microsoft Visual Studio 2008
+
+NoCap's MSBuild scripts use the <Zip> command from MSBuild Community Tasks.
+That task can be downloaded at: http://msbuildtasks.tigris.org/.
+
+dotNetInstaller is used to create the bootstrapper to install dependencies
+needed for NoCap when installing for an end-user.  The binaries needed for
+dotNetInstaller are included in /vendor/dotNetInstaller, and dotNetInstaller
+does not need to be installed separately.
+
+= Building =
+
+NoCap should build out of the box.  (If you have any problems, file a ticket or
+otherwise contact the NoCap development team.)
+
+The NoCap GUI will be built into the /NoCap.GUI.WPF/bin/$$$/ directory.
+
+The core NoCap installer will be built into the /NoCap.Installer/bin/$$$/
+directory.  The bootstrapping installer is located at
+/NoCap.Installer/bin/$$$/NoCapSetup.exe.
+
+= Testing =
+
+NUnit unit tests are available in the Test subnamespaces of several projects.
+These unit tests should not fail on any commit; if some do, file a ticket or
+contact the development team.
+
+= Creating extensions =
+
+See /NoCap.Extensions.Default/ for an example.
+
+TODO Document this further.

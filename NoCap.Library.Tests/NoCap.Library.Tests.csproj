@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -59,8 +60,7 @@
     <Compile Include="TestHelpers\TestTimeEstimate.cs" />
     <Compile Include="TypedDataTests.cs" />
     <Compile Include="Util\AggregateProgressTrackerTests.cs" />
-    <Compile Include="Util\LinqHelpersTests.cs" />
-    <Compile Include="Util\NotifyingProgressTrackerTests.cs" />
+    <Compile Include="Util\MutableProgressTrackerTests.cs" />
     <Compile Include="Util\TimeEstimateTests.cs" />
   </ItemGroup>
   <ItemGroup>

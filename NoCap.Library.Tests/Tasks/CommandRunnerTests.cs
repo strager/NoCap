@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Moq;
 using NoCap.Library.Commands;
+using NoCap.Library.Progress;
 using NoCap.Library.Tasks;
 using NoCap.Library.Util;
 using NUnit.Framework;
@@ -28,7 +29,7 @@ namespace NoCap.Library.Tests.Tasks {
             };
 
             var task = runner.Run(new CommandChain());
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(1, fireCount);
         }
@@ -44,7 +45,7 @@ namespace NoCap.Library.Tests.Tasks {
             };
 
             var task = runner.Run(new CommandChain());
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(1, fireCount);
         }
@@ -58,7 +59,7 @@ namespace NoCap.Library.Tests.Tasks {
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             mockCommand.Verify((command) => command.Process(null, It.IsAny<IMutableProgressTracker>(), It.IsAny<CancellationToken>()), Times.Once());
         }
@@ -76,7 +77,7 @@ namespace NoCap.Library.Tests.Tasks {
                 });
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreNotEqual(Thread.CurrentThread, commandThread);
         }
@@ -99,7 +100,7 @@ namespace NoCap.Library.Tests.Tasks {
                 });
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             CollectionAssert.AreEqual(new[] { 0.5, 0.6, 1 }, progressUpdates);
         }
@@ -110,16 +111,19 @@ namespace NoCap.Library.Tests.Tasks {
 
             ICommandTask task = null;
             TaskState? taskStateInCommand = null;
+            var taskReadySync = new AutoResetEvent(false);
 
             var mockCommand = GetCommandMock();
             mockCommand.Setup((command) => command.Process(null, It.Is<IMutableProgressTracker>((mpt) => mpt != null), It.IsAny<CancellationToken>()))
                 .Returns((TypedData) null)
                 .Callback(() => {
+                    taskReadySync.WaitOne();
                     taskStateInCommand = task.State;
                 });
 
             task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            taskReadySync.Set();
+            task.WaitHandle.WaitOne();
 
             Assert.IsNotNull(taskStateInCommand);
             Assert.AreEqual(TaskState.Running, (TaskState) taskStateInCommand);
@@ -134,7 +138,7 @@ namespace NoCap.Library.Tests.Tasks {
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreNotEqual(TaskState.Running, task.State);
         }
@@ -148,7 +152,7 @@ namespace NoCap.Library.Tests.Tasks {
                 .Returns((TypedData) null);
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(TaskState.Completed, task.State);
         }
@@ -164,7 +168,7 @@ namespace NoCap.Library.Tests.Tasks {
 
             var runner = new CommandRunner();
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             mockDisposable.Verify((typedData) => typedData.Dispose(), Times.Once());
         }
@@ -181,7 +185,7 @@ namespace NoCap.Library.Tests.Tasks {
                 });
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(TaskState.Canceled, task.State);
         }
@@ -200,13 +204,13 @@ namespace NoCap.Library.Tests.Tasks {
                 });
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             AssertCanceledExceptionsSame(cancelException, task.CancelReason);
         }
 
         [Test]
-        public void CancellationFiresComplete() {
+        public void CancellationFiresCanceled() {
             var runner = new CommandRunner();
 
             var cancelException = new CommandCanceledException();
@@ -228,7 +232,7 @@ namespace NoCap.Library.Tests.Tasks {
                 });
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(1, fireCount);
             AssertCanceledExceptionsSame(cancelException, firedReason);
@@ -247,7 +251,7 @@ namespace NoCap.Library.Tests.Tasks {
                 .Returns(commandName);
 
             var task = runner.Run(mockCommand.Object);
-            task.WaitForCompletion();
+            task.WaitHandle.WaitOne();
 
             Assert.AreEqual(commandName, task.Name);
         }
@@ -256,7 +260,7 @@ namespace NoCap.Library.Tests.Tasks {
             return new Mock<ICommand>(MockBehavior.Strict);
         }
 
-        private void AssertCanceledExceptionsSame(CommandCanceledException expected, Exception actual) {
+        private static void AssertCanceledExceptionsSame(CommandCanceledException expected, Exception actual) {
             if (expected == null && actual == null) {
                 return;
             }

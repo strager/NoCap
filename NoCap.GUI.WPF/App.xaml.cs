@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows;
+using Mono.Options;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
-using NoCap.GUI.WPF.Settings.Editors;
+using NoCap.GUI.WPF.Util;
 using NoCap.Library;
 using NoCap.Library.Tasks;
+using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF {
     /// <summary>
@@ -14,27 +17,31 @@ namespace NoCap.GUI.WPF {
     public sealed partial class App : IDisposable {
         private SettingsWindow settingsWindow;
 
-        private ConfigurationManager configurationManager;
+        private ApplicationSettings applicationSettings;
         private ProgramSettings settings;
+        private ExtensionManager extensionManager;
+
+        private bool showSettingsOnStart = true;
 
         private void Load() {
             var commandRunner = new CommandRunner();
-            var extensionManager = new ExtensionManager(Directory.CreateDirectory(Directory.GetCurrentDirectory()));
+            this.extensionManager = new ExtensionManager(Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Extensions")));
 
-            this.configurationManager = new ConfigurationManager();
-            this.settings = this.configurationManager.LoadSettings();
+            this.applicationSettings = new ApplicationSettings(new ProgramSettingsDataSerializer(this.extensionManager));
+
+            var settingsData = this.applicationSettings.LoadSettingsData();
 
             bool loadCommandDefaults = false;
 
-            if (this.settings == null) {
-                this.settings = new ProgramSettings();
+            if (settingsData == null) {
+                settingsData = new ProgramSettingsData();
 
                 loadCommandDefaults = true;
             }
 
-            this.settings.Initialize(commandRunner, extensionManager);
+            this.settings = ProgramSettings.Create(settingsData, commandRunner, this.extensionManager);
 
-            var featureRegistry = this.settings.PluginContext.FeatureRegistry;
+            var featureRegistry = this.settings.FeatureRegistry;
 
             featureRegistry.Register(CommandFeatures.ImageUploader, "Image uploader");
             featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );
@@ -44,6 +51,45 @@ namespace NoCap.GUI.WPF {
             if (loadCommandDefaults) {
                 this.settings.LoadCommandDefaults();
             }
+        }
+
+        private bool TryParseArguments(IEnumerable<string> args, out int exitCode) {
+            bool showHelp = false;
+
+            var optionSet = new OptionSet {
+                { "x|hide", "do not show the settings window on startup", (v) => this.showSettingsOnStart = v == null },
+                { "h|help", "show this message and exit", (v) => showHelp = v != null },
+            };
+
+            try {
+                optionSet.Parse(args);
+            } catch (OptionException e) {
+                Console.WriteLine("NoCap: {0}", e.Message);
+                Console.WriteLine("Try `NoCap --help' for more information.");
+
+                exitCode = 1;
+
+                return false;
+            }
+
+            if (showHelp) {
+                ShowHelp(optionSet);
+
+                exitCode = 0;
+
+                return false;
+            }
+
+            exitCode = 0;
+
+            return true;
+        }
+
+        private static void ShowHelp(OptionSet optionSet) {
+            Console.WriteLine("Usage: NoCap [options]");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            optionSet.WriteOptionDescriptions(Console.Out);
         }
 
         public void ShowSettings() {
@@ -61,24 +107,37 @@ namespace NoCap.GUI.WPF {
         private void SettingsClosed() {
             this.settingsWindow = null;
 
-            this.configurationManager.SaveSettings(this.settings);
+            this.applicationSettings.SaveSettingsData(this.settings.SettingsData);
         }
 
         private void Start() {
-            ShowSettings();
+            if (this.showSettingsOnStart) {
+                ShowSettings();
+            }
         }
 
         private void StartUpApplication(object sender, StartupEventArgs e) {
+            int exitCode;
+
+            if (!TryParseArguments(e.Args, out exitCode)) {
+                Shutdown(exitCode);
+
+                return;
+            }
+
             Load();
             Start();
         }
 
         private void ExitApplication(object sender, ExitEventArgs e) {
             Dispose();
+
+            Process.FlushDOPE();
         }
 
         public void Dispose() {
             this.settings.Dispose();
+            this.extensionManager.Dispose();
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
 using NoCap.Library.Commands;
+using NoCap.Library.Util;
+using NoCap.Web.Multipart;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class IsgdShortener : UrlShortener {
+    [DataContract(Name = "IsgdShortener")]
+    public sealed class IsgdShortener : UrlShortenerCommand, IExtensibleDataObject {
         public override string Name {
             get { return "is.gd URL shortener"; }
         }
@@ -17,21 +20,24 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
-        protected override IDictionary<string, string> GetParameters(TypedData data) {
-            IDictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["longurl"] = data.Data.ToString();
+        protected override MultipartData GetRequestData(TypedData data) {
+            var builder = new MultipartDataBuilder();
+            builder.KeyValuePair("longurl", data.Data.ToString());
 
-            return parameters;
+            return builder.GetData();
         }
 
-        protected override string RequestMethod {
-            get {
-                return @"GET";
-            }
+        protected override HttpRequestMethod RequestMethod {
+            get { return HttpRequestMethod.Get; }
         }
 
         public override ICommandFactory GetFactory() {
             return new IsgdShortenerFactory();
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

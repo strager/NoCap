@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class FileSystem : ICommand {
+    [DataContract(Name = "FileSystem")]
+    public sealed class FileSystem : ICommand, IExtensibleDataObject {
         public string Name {
             get { return "File system"; }
         }
 
+        [DataMember(Name = "RootPath")]
         public string RootPath {
             get;
             set;
@@ -28,7 +29,9 @@ namespace NoCap.Extensions.Default.Commands {
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             switch (data.DataType) {
                 case TypedDataType.Stream:
-                    string path = Path.Combine(RootPath, data.Name);
+                    progress.Status = "Saving to file";
+
+                    string path = Path.Combine(RootPath ?? "", data.Name);
 
                     using (var file = File.Open(path, FileMode.Create, FileAccess.Write)) {
                         var inputStream = (Stream) data.Data;
@@ -93,6 +96,11 @@ namespace NoCap.Extensions.Default.Commands {
 
         public bool IsValid() {
             return true;
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

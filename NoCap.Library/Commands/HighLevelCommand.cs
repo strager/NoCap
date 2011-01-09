@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Runtime.Serialization;
 using System.Threading;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
-    [Serializable]
+    [DataContract(Name = "HighLevelCommand")]
     public abstract class HighLevelCommand : ICommand {
-        public abstract string Name {
-            get;
-            set;
-        }
+        public abstract string Name { get; }
 
         TypedData ICommand.Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
             Execute(progress, cancelToken);
@@ -19,9 +15,7 @@ namespace NoCap.Library.Commands {
 
         public abstract ICommandFactory GetFactory();
 
-        public abstract ITimeEstimate ProcessTimeEstimate {
-            get;
-        }
+        public abstract ITimeEstimate ProcessTimeEstimate { get; }
 
         public abstract bool IsValid();
 

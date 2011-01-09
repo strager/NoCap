@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using NoCap.GUI.WPF.Runtime;
 using NoCap.Library;
 
 namespace NoCap.GUI.WPF.Settings {
     [DataContract(Name = "FeaturedCommands")]
-    public class FeaturedCommandCollection {
+    public class FeaturedCommandCollection : IExtensibleDataObject {
         [DataMember]
         private readonly IDictionary<CommandFeatures, ICommand> commands = new Dictionary<CommandFeatures, ICommand>();
 
@@ -55,6 +57,11 @@ namespace NoCap.GUI.WPF.Settings {
 
         public bool ContainsKey(CommandFeatures features) {
             return this.commands.ContainsKey(features);
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 
 namespace NoCap.Library.Commands {
     sealed class CommandChainTimeEstimate : ITimeEstimate {
@@ -25,23 +26,21 @@ namespace NoCap.Library.Commands {
         }
     }
 
-    [Serializable]
-    public sealed class CommandChain : ICommand {
+    [DataContract(Name = "CommandChain")]
+    public sealed class CommandChain : ICommand, IExtensibleDataObject {
         private readonly ITimeEstimate timeEstimate;
-        private readonly IList<ICommand> commands;
+        private readonly IEnumerable<ICommand> commands;
 
+        [IgnoreDataMember]
         public string Name {
             get { return "Destination chain"; }
         }
 
+        [DataMember(Name = "Commands")]
         internal IEnumerable<ICommand> Commands {
             get {
                 return this.commands;
             }
-        }
-
-        public CommandChain() :
-            this(Enumerable.Empty<ICommand>()) {
         }
 
         public CommandChain(params ICommand[] commands) :
@@ -49,42 +48,53 @@ namespace NoCap.Library.Commands {
         }
 
         public CommandChain(IEnumerable<ICommand> commands) {
-            this.commands = commands.ToList();
+            this.commands = commands.ToArray(); // Make a copy
 
             this.timeEstimate = new CommandChainTimeEstimate(this);
         }
 
         public TypedData Process(TypedData data, IMutableProgressTracker progress, CancellationToken cancelToken) {
-            // ToList is needed for some strange reason
-            var progressTrackers = this.commands.Select((destination) => new NotifyingProgressTracker(destination.ProcessTimeEstimate)).ToList();
-            var aggregateProgress = new AggregateProgressTracker(progressTrackers);
+            // ToList is needed to prevent new MPT's from being
+            // created for each loop of commandProgressTrackers
+            var commandProgressTrackers = this.commands.Select((command) => new {
+                ProgressTracker = new MutableProgressTracker(),
+                Command = command
+            }).ToList();
+
+            var aggregateProgress = new AggregateProgressTracker(commandProgressTrackers.Select(
+                (cpt) => new ProgressTrackerCollectionItem(
+                    cpt.ProgressTracker,
+                    cpt.Command.ProcessTimeEstimate.ProgressWeight
+                )
+            ));
+
             aggregateProgress.BindTo(progress);
 
             bool shouldDisposeData = false;
 
-            using (var trackerEnumerator = progressTrackers.GetEnumerator()) {
-                foreach (var destination in this.commands) {
+            foreach (var cpt in commandProgressTrackers) {
+                cancelToken.ThrowIfCancellationRequested();
+
+                TypedData newData;
+
+                try {
                     cancelToken.ThrowIfCancellationRequested();
 
-                    TypedData newData;
-
-                    try {
-                        trackerEnumerator.MoveNext();
-
-                        cancelToken.ThrowIfCancellationRequested();
-
-                        newData = destination.Process(data, trackerEnumerator.Current, cancelToken);
-
-                        cancelToken.ThrowIfCancellationRequested();
-                    } finally {
-                        if (shouldDisposeData && data != null) {
-                            data.Dispose();
-                        }
+                    if (!cpt.Command.IsValid()) {
+                        throw new CommandInvalidException(cpt.Command);
                     }
 
-                    data = newData;
-                    shouldDisposeData = true;
+                    newData = cpt.Command.Process(data, cpt.ProgressTracker, cancelToken);
+
+                    cancelToken.ThrowIfCancellationRequested();
+                } finally {
+                    if (shouldDisposeData && data != null) {
+                        data.Dispose();
+                    }
                 }
+
+                data = newData;
+                shouldDisposeData = true;
             }
 
             return data;
@@ -94,6 +104,7 @@ namespace NoCap.Library.Commands {
             return null;
         }
 
+        [IgnoreDataMember]
         public ITimeEstimate ProcessTimeEstimate {
             get {
                 return this.timeEstimate;
@@ -104,8 +115,9 @@ namespace NoCap.Library.Commands {
             return this.commands.All((command) => command.IsValidAndNotNull());
         }
 
-        public void Add(ICommand item) {
-            this.commands.Add(item);
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }

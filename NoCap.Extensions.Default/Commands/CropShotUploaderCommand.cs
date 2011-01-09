@@ -1,31 +1,25 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
 using NoCap.Extensions.Default.Factories;
 using NoCap.Library;
-using NoCap.Library.Util;
+using NoCap.Library.Progress;
 using NoCap.Library.Commands;
+using WinputDotNet.Providers;
 
 namespace NoCap.Extensions.Default.Commands {
-    [Serializable]
-    public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged {
+    [DefaultBinding(typeof(DirectInputProvider), typeof(DirectInputSequence), "6f1d2b61-d5a0-11cf-bfc7-444553540000|LeftControl+SYSRQ")]
+    [DataContract(Name = "CropShotUploader")]
+    public sealed class CropShotUploaderCommand : HighLevelCommand, INotifyPropertyChanged, IExtensibleDataObject {
         private ICommand imageUploader;
         private ICommand renamer;
 
-        private string name = "Crop shot uploader";
-
         public override string Name {
-            get {
-                return this.name;
-            }
-
-            set {
-                this.name = value;
-
-                Notify("Name");
-            }
+            get { return "Crop shot uploader"; }
         }
 
+        [DataMember(Name = "ImageUploader")]
         public ICommand ImageUploader {
             get {
                 return this.imageUploader;
@@ -38,6 +32,7 @@ namespace NoCap.Extensions.Default.Commands {
             }
         }
 
+        [DataMember(Name = "Renamer")]
         public ICommand Renamer {
             get {
                 return this.renamer;
@@ -76,6 +71,8 @@ namespace NoCap.Extensions.Default.Commands {
             using (commandChain.Process(null, progress, cancelToken)) {
                 // Auto-dispose
             }
+
+            progress.Status = "Image URL saved to clipboard";
         }
 
         [NonSerialized]
@@ -86,12 +83,17 @@ namespace NoCap.Extensions.Default.Commands {
             remove { this.propertyChanged -= value; }
         }
 
-        protected void Notify(string propertyName) {
+        private void Notify(string propertyName) {
             var handler = this.propertyChanged;
 
             if (handler != null) {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        ExtensionDataObject IExtensibleDataObject.ExtensionData {
+            get;
+            set;
         }
     }
 }
