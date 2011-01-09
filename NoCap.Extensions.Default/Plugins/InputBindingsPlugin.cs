@@ -73,6 +73,8 @@ namespace NoCap.Extensions.Default.Plugins {
         [DataMember(Name = "InputProviderTypeName")]
         private string inputProviderTypeName;
 
+        private IBindableCollection<ICommand> standAloneCommands;
+
         public UIElement GetEditor(ICommandProvider commandProvider) {
             return new InputBindingsEditor(this, commandProvider);
         }
@@ -80,13 +82,9 @@ namespace NoCap.Extensions.Default.Plugins {
         public void Initialize(IPluginContext pluginContext) {
             this.commandRunner = pluginContext.CommandRunner;
 
-            var commands = pluginContext.CommandProvider.StandAloneCommands;
+            this.standAloneCommands = pluginContext.CommandProvider.StandAloneCommands;
 
-            foreach (var command in commands) {
-                IncludeDefaultBindings(command);
-            }
-
-            commands.CollectionChanged += (sender, e) => {
+            this.standAloneCommands.CollectionChanged += (sender, e) => {
                 foreach (var command in e.NewItems.OfType<ICommand>()) {
                     IncludeDefaultBindings(command);
                 }
@@ -103,12 +101,12 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         private void IncludeDefaultBindings(ICommand command) {
-            if (this.Bindings.Any((binding) => binding.Command == command)) {
+            if (Bindings.Any((binding) => binding.Command == command)) {
                 return;
             }
 
-            foreach (var defaultBinding in GetDefaultBindings(this.InputProvider, command)) {
-                this.Bindings.Add(defaultBinding);
+            foreach (var defaultBinding in GetDefaultBindings(InputProvider, command)) {
+                Bindings.Add(defaultBinding);
             }
         }
 
@@ -127,6 +125,10 @@ namespace NoCap.Extensions.Default.Plugins {
             }
 
             InputProvider = newProvider;
+
+            foreach (var command in this.standAloneCommands) {
+                IncludeDefaultBindings(command);
+            }
         }
 
         internal void SetUp() {
