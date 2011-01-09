@@ -186,6 +186,6 @@
       <dotNetInstallPath>$(MSBuildProjectDirectory)\..\vendor\dotNetInstaller</dotNetInstallPath>
       <BootstrapperConfig>$(MSBuildProjectDirectory)\bootstrapper.xml</BootstrapperConfig>
     </PropertyGroup>
-    <Exec Command="&quot;$(dotNetInstallPath)\InstallerLinker.exe&quot; &quot;/Output:$(TargetDir)\NoCapSetup.exe&quot; &quot;/Template:$(dotNetInstallPath)\dotNetInstaller.exe&quot; &quot;/Configuration:$(BootstrapperConfig)&quot; &quot;/Manifest:$(MSBuildProjectDirectory)\app.manifest&quot; &quot;/Icon:$(MSBuildProjectDirectory)\nocap-icon.ico&quot; &quot;/Embed+&quot;" WorkingDirectory="$(TargetDir)" />
+    <Exec Command="&quot;$(dotNetInstallPath)\InstallerLinker.exe&quot; &quot;/Output:$(TargetDir)\NoCapSetup.exe&quot; &quot;/Template:$(dotNetInstallPath)\dotNetInstaller.exe&quot; &quot;/Configuration:$(BootstrapperConfig)&quot; &quot;/Manifest:$(MSBuildProjectDirectory)\app.manifest&quot; &quot;/Embed+&quot;" WorkingDirectory="$(TargetDir)" />
   </Target>
 </Project>
