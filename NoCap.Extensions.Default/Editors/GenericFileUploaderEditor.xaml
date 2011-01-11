@@ -13,8 +13,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
@@ -31,7 +30,43 @@
         <Label Grid.Row="2" Grid.Column="0">File POST parameter</Label>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding FileParameterName}" />
 
-        <Label Grid.Row="3" Grid.Column="0">Other POST parameters</Label>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Name}" />
+        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Other POST parameters">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <ListView Grid.Row="0"
+                    ItemsSource="{Binding PostParameters}"
+                    Name="parameterEditor"
+                    Margin="6">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="100" x:Name="keyColumn">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Key}" Width="{Binding Width, ElementName=keyColumn, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            
+                            <GridViewColumn Header="Value" Width="140" x:Name="valueColumn">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Value}" Width="{Binding Width, ElementName=valueColumn, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource PaddedCommandButtonStyle}" Margin="6,0" Command="New">_Add</Button>
+                    <Button Style="{StaticResource PaddedCommandButtonStyle}" Margin="6,0" Command="Delete">_Delete</Button>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>
