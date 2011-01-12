@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using log4net;
+using log4net.Config;
 using Mono.Options;
 using NoCap.GUI.WPF.Runtime;
 using NoCap.GUI.WPF.Settings;
@@ -15,6 +17,8 @@ namespace NoCap.GUI.WPF {
     /// Interaction logic for App.xaml
     /// </summary>
     public sealed partial class App : IDisposable {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(App));
+
         private SettingsWindow settingsWindow;
 
         private ApplicationSettings applicationSettings;
@@ -25,8 +29,11 @@ namespace NoCap.GUI.WPF {
 
         private void Load() {
             var commandRunner = new CommandRunner();
+
+            Log.Info("Loading extension manager");
             this.extensionManager = new ExtensionManager(Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Extensions")));
 
+            Log.Info("Loading application settings");
             this.applicationSettings = new ApplicationSettings(new ProgramSettingsDataSerializer(this.extensionManager));
 
             var settingsData = this.applicationSettings.LoadSettingsData();
@@ -34,6 +41,8 @@ namespace NoCap.GUI.WPF {
             bool loadCommandDefaults = false;
 
             if (settingsData == null) {
+                Log.Debug("Application settings not found; using defaults");
+
                 settingsData = new ProgramSettingsData();
 
                 loadCommandDefaults = true;
@@ -43,6 +52,7 @@ namespace NoCap.GUI.WPF {
 
             var featureRegistry = this.settings.FeatureRegistry;
 
+            // TODO Move elsewhere
             featureRegistry.Register(CommandFeatures.ImageUploader, "Image uploader");
             featureRegistry.Register(CommandFeatures.UrlShortener,  "Url shortener" );
             featureRegistry.Register(CommandFeatures.FileUploader,  "File uploader" );
@@ -54,6 +64,8 @@ namespace NoCap.GUI.WPF {
         }
 
         private bool TryParseArguments(IEnumerable<string> args, out int exitCode) {
+            Log.Debug("Parsing command line arguments");
+
             bool showHelp = false;
 
             var optionSet = new OptionSet {
@@ -117,6 +129,10 @@ namespace NoCap.GUI.WPF {
         }
 
         private void StartUpApplication(object sender, StartupEventArgs e) {
+            InitializeLogging();
+
+            Log.Info("Initializing application");
+
             int exitCode;
 
             if (!TryParseArguments(e.Args, out exitCode)) {
@@ -127,12 +143,34 @@ namespace NoCap.GUI.WPF {
 
             Load();
             Start();
+
+            Log.Info("Application initialized");
+        }
+
+        private static void InitializeLogging() {
+            AppDomain.CurrentDomain.UnhandledException += UnhandleExceptionOccured;
+
+            XmlConfigurator.Configure();
+        }
+
+        private static void UnhandleExceptionOccured(object sender, UnhandledExceptionEventArgs e) {
+            var exception = e.ExceptionObject as Exception;
+
+            if (exception != null) {
+                Log.Error("Unhandled exception", exception);
+            } else {
+                Log.ErrorFormat("Unhandled unknown exception: {0}", e.ExceptionObject);
+            }
         }
 
         private void ExitApplication(object sender, ExitEventArgs e) {
+            Log.Info("Shutting down application");
+
             Dispose();
 
             Process.FlushDOPE();
+
+            Log.Info("Application shut down");
         }
 
         public void Dispose() {

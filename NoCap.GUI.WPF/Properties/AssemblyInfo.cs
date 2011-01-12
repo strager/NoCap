@@ -58,3 +58,5 @@ using System.Windows;
 
 [assembly: ContractNamespace("http://strager.net/nocap/gui", ClrNamespace = "NoCap.GUI.WPF.Settings")]
 [assembly: ContractNamespace("http://strager.net/nocap/gui", ClrNamespace = "NoCap.GUI.WPF.Runtime")]
+
+[assembly: log4net.Config.XmlConfigurator]
