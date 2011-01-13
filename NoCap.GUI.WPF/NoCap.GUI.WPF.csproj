@@ -170,11 +170,18 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <PropertyGroup>
+      <MSVC2010>..\vendor\MSVC2010</MSVC2010>
+    </PropertyGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <Dependency Include="$(MSVC2010)\msvcp100d.dll" />
+      <Dependency Include="$(MSVC2010)\msvcr100d.dll" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+      <Dependency Include="$(MSVC2010)\msvcp100.dll" />
+      <Dependency Include="$(MSVC2010)\msvcr100.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Dependency)" DestinationFolder="$(TargetDir)" />
   </Target>
-  -->
 </Project>
