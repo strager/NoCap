@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Bindable.Linq;
 using Hardcodet.Wpf.TaskbarNotification;
+using log4net;
 using NoCap.Extensions.Default.Helpers;
 using NoCap.Library;
 using NoCap.Library.Extensions;
@@ -30,6 +32,8 @@ namespace NoCap.Extensions.Default.Plugins {
     [Export(typeof(IPlugin))]
     [DataContract(Name = "TaskbarPlugin")]
     sealed class TaskbarPlugin : IPlugin, IExtensibleDataObject {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(TaskbarPlugin));
+
         public static readonly TimeSpan CompleteHideDelay = TimeSpan.FromSeconds(2);
         public static readonly TimeSpan CancelHideDelay = TimeSpan.FromSeconds(5);
 
@@ -121,16 +125,23 @@ namespace NoCap.Extensions.Default.Plugins {
                 return;
             }
 
-            var handle = new WindowInteropHelper(window).Handle;
+            try {
+                var handle = new WindowInteropHelper(window).Handle;
 
-            if (progress >= 1) {
-                Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
-            } else {
-                Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
+                if (progress >= 1) {
+                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.NoProgress);
+                } else {
+                    Windows7Taskbar.SetProgressState(handle, Windows7Taskbar.ThumbnailProgressState.Normal);
 
-                const ulong max = 9001;
+                    const ulong max = 9001;
 
-                Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
+                    Windows7Taskbar.SetProgressValue(handle, (ulong) (progress * max), max);
+                }
+            } catch (Exception e) {
+                // Likely the user isn't running Windows 7
+                // or somehow has disabled the API's.
+                // Ignore the exception.
+                Log.Debug("Exception while setting window progress", e);
             }
         }
 
