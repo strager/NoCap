@@ -43,7 +43,13 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\vendor\log4net\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\vendor\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -65,6 +71,8 @@
     <Compile Include="Commands\FtpUploader.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
     <Compile Include="Commands\ImgurUploader.cs" />
+    <Compile Include="Commands\MinUsUploader.cs" />
+    <Compile Include="Factories\MinUsUploaderFactory.cs" />
     <Compile Include="Commands\SendSpaceUploader.cs" />
     <Compile Include="DefaultBindingAttribute.cs" />
     <Compile Include="Editors\SendSpaceUploaderEditor.xaml.cs">

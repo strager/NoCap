@@ -6,6 +6,7 @@ using System.Net.Cache;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Newtonsoft.Json.Linq;
 using NoCap.Library.Progress;
 using NoCap.Web;
 using NoCap.Web.Multipart;
@@ -18,6 +19,54 @@ namespace NoCap.Library.Util {
 
     public static class HttpRequest {
         private const string UserAgent = "NoCap HttpUploader";
+
+        public static HttpWebResponse Execute(Uri uri, Stream requestData, IMutableProgressTracker progress, CancellationToken cancelToken) {
+            // QUICK HACK
+
+            var requestProgress = new MutableProgressTracker();
+            var responseProgress = new MutableProgressTracker();
+
+            var aggregateProgress = new AggregateProgressTracker(new ProgressTrackerCollection {
+                { requestProgress,  TimeEstimates.LongOperation.ProgressWeight },
+                { responseProgress, TimeEstimates.ShortOperation.ProgressWeight }, 
+            });
+
+            aggregateProgress.BindTo(progress);
+
+            try {
+                var request = CreateRequest(uri, @"POST");
+                request.ContentLength = requestData.Length;
+
+                using (var requestStream = request.GetRequestStream())
+                using (var progressStream = new ProgressTrackingStreamWrapper(requestStream, request.ContentLength)) {
+                    progressStream.BindTo(requestProgress);
+
+                    requestData.CopyTo(progressStream, cancelToken);
+                }
+
+                bool canCancel = true;
+
+                cancelToken.Register(() => {
+                    if (canCancel) {
+                        request.Abort();
+                    }
+                });
+
+                var response = (HttpWebResponse) request.GetResponse();
+
+                responseProgress.Progress = 1; // TODO HTTP download Progress
+
+                canCancel = false;
+
+                return response;
+            } catch (WebException e) {
+                if (e.Status == WebExceptionStatus.RequestCanceled) {
+                    throw new OperationCanceledException(e.Message, e, cancelToken);
+                }
+
+                throw new OperationCanceledException(e.Message, e, cancelToken);
+            }
+        }
 
         public static HttpWebResponse Execute(Uri uri, MultipartData requestData, HttpRequestMethod requestMethod, IMutableProgressTracker progress, CancellationToken cancelToken) {
             var requestProgress = new MutableProgressTracker();
@@ -105,6 +154,8 @@ namespace NoCap.Library.Util {
                 WritePostData(request, data, progress, cancelToken);
             }
 
+            progress.Progress = 1;
+
             return request;
         }
 
@@ -170,6 +221,12 @@ namespace NoCap.Library.Util {
             document.LoadXml(responseText);
 
             return document;
+        }
+
+        public static JObject GetResponseJson(HttpWebResponse response) {
+            string responseText = GetResponseText(response);
+
+            return JObject.Parse(responseText);
         }
     }
 }

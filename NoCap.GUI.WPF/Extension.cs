@@ -6,10 +6,13 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Ionic.Zip;
+using log4net;
 using NoCap.Library.Util;
 
 namespace NoCap.GUI.WPF {
     class Extension : IDisposable {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Extension));
+
         public string Name { get; private set; }
         public IEnumerable<string> Authors { get; private set; }
         public string Namespace { get; private set; }
@@ -60,6 +63,8 @@ namespace NoCap.GUI.WPF {
         }
 
         private void LoadConfiguration() {
+            Log.DebugFormat("Loading extension '{0}' configuration", RootDirectory);
+
             var config = new XmlDocument();
             config.Load(Path.Combine(this.dataDirectoryPath, "nocap.xml"));
 
@@ -91,12 +96,22 @@ namespace NoCap.GUI.WPF {
         }
 
         public void LoadAssemblies() {
-            var assemblies = this.assemblyFileNames.Select((fileName) => Assembly.LoadFile(Path.Combine(this.dataDirectoryPath, fileName)));
+            var assemblies = new List<Assembly>();
+            
+            foreach (var assemblyFileName in this.assemblyFileNames) {
+                Log.DebugFormat("Loading assembly '{0}'", assemblyFileName);
 
-            Assemblies = new ReadOnlyCollection<Assembly>(assemblies.ToArray());
+                var assembly = Assembly.LoadFile(Path.Combine(this.dataDirectoryPath, assemblyFileName));
+
+                assemblies.Add(assembly);
+            }
+
+            Assemblies = new ReadOnlyCollection<Assembly>(assemblies);
         }
 
         public void Dispose() {
+            Log.DebugFormat("Unloading extension '{0}'", RootDirectory);
+
             if (this.dataDirectoryPath != null) {
                 FileSystem.DeleteLater(this.dataDirectoryPath);
             }
