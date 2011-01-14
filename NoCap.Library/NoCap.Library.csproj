@@ -85,7 +85,6 @@
     <Compile Include="CommandCanceledException.cs" />
     <Compile Include="CommandFeatures.cs" />
     <Compile Include="Commands\HighLevelCommand.cs" />
-    <Compile Include="Imaging\CommandProviderExtensions.cs" />
     <Compile Include="Imaging\JpegBitmapCodec.cs" />
     <Compile Include="Imaging\JpegBitmapCodecEditor.xaml.cs">
       <DependentUpon>JpegBitmapCodecEditor.xaml</DependentUpon>
