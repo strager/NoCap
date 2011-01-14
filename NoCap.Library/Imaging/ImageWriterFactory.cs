@@ -16,7 +16,7 @@
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
-            return new ImageWriterEditor(commandProvider);
+            return new ImageWriterEditor();
         }
 
         public CommandFeatures CommandFeatures {

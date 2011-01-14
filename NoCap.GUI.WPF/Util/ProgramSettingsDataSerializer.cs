@@ -48,22 +48,12 @@ namespace NoCap.GUI.WPF.Util {
         }
 
         private static void Serialize(object obj, XmlWriter writer, XmlObjectSerializer serializer) {
-            try {
-                serializer.WriteObject(writer, obj);
-            } catch (SerializationException e) {
-                // TODO Error handling
-                throw;
-            }
+            serializer.WriteObject(writer, obj);
         }
 
         private static object Deserialize(XmlElement node, XmlObjectSerializer serializer) {
             using (var xmlReader = new XmlNodeReader(node)) {
-                try {
-                    return serializer.ReadObject(xmlReader);
-                } catch (SerializationException e) {
-                    // TODO Error handling
-                    throw;
-                }
+                return serializer.ReadObject(xmlReader);
             }
         }
 

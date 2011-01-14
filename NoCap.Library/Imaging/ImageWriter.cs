@@ -49,7 +49,22 @@ namespace NoCap.Library.Imaging {
                 throw new InvalidOperationException("Codec must be non-null and support bitmap encoding");
             }
 
-            return Codec.Process(data, progress, cancelToken);
+            // No dispose
+            var processedImage = Codec.Process(data, progress, cancelToken);
+
+            var name = processedImage.Name;
+            return new TypedData(processedImage.DataType, processedImage.Data, GetDataName(name));
+        }
+
+        private string GetDataName(string originalName) {
+            string name = originalName;
+            string extension = Extension;
+
+            if (!string.IsNullOrEmpty(extension)) {
+                name += "." + extension;
+            }
+
+            return name;
         }
 
         public ICommandFactory GetFactory() {

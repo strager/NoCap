@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Windows;
 using log4net;
 using log4net.Config;
@@ -26,7 +27,7 @@ namespace NoCap.GUI.WPF {
         private ProgramSettings settings;
         private ExtensionManager extensionManager;
 
-        private bool showSettingsOnStart = true;
+        private bool guiMode = true;
 
         private void Load() {
             var commandRunner = new CommandRunner();
@@ -37,7 +38,22 @@ namespace NoCap.GUI.WPF {
             Log.Info("Loading application settings");
             this.applicationSettings = new ApplicationSettings(new ProgramSettingsDataSerializer(this.extensionManager));
 
-            var settingsData = this.applicationSettings.LoadSettingsData();
+            ProgramSettingsData settingsData = null;
+
+            try {
+                settingsData = this.applicationSettings.LoadSettingsData();
+            } catch (SerializationException e) {
+                Log.Warn("Loading settings failed", e);
+
+                if (this.guiMode) {
+                    MessageBox.Show(
+                        "An error occurred loading your NoCap settings.  Settings will be restored to their defaults.",
+                        "Error loading settings",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation
+                    );
+                }
+            }
 
             bool loadCommandDefaults = false;
 
@@ -70,7 +86,7 @@ namespace NoCap.GUI.WPF {
             bool showHelp = false;
 
             var optionSet = new OptionSet {
-                { "x|hide", "do not show the settings window on startup", (v) => this.showSettingsOnStart = v == null },
+                { "x|hide", "do not show the settings window on startup", (v) => this.guiMode = v == null },
                 { "h|help", "show this message and exit", (v) => showHelp = v != null },
             };
 
@@ -124,7 +140,7 @@ namespace NoCap.GUI.WPF {
         }
 
         private void Start() {
-            if (this.showSettingsOnStart) {
+            if (this.guiMode) {
                 ShowSettings();
             }
         }

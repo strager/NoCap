@@ -32,7 +32,9 @@ namespace NoCap.GUI.WPF.Runtime {
         }
 
         public ExtensionManager(DirectoryInfo rootDirectory) {
+            // FRAGILE; FIXME
             this.aggregateCatalog = new AggregateCatalog();
+            this.aggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(NoCap.Library.ICommand).Assembly));
 
             this.commandCompositionContainer = new CompositionContainer(this.aggregateCatalog);
 
