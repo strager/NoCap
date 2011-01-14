@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:Helpers="clr-namespace:NoCap.Extensions.Default.Helpers" mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignHeight="262" d:DesignWidth="354">
     <UserControl.Resources>
         <Helpers:UriStringConverter x:Key="UriStringConverter" />
     </UserControl.Resources>
@@ -40,7 +40,8 @@
                 <ListView Grid.Row="0"
                     ItemsSource="{Binding PostParameters}"
                     Name="parameterEditor"
-                    Margin="6">
+                    Margin="6"
+                    SelectionChanged="DisableSelection">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" Width="100" x:Name="keyColumn">
@@ -50,11 +51,21 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            
+
                             <GridViewColumn Header="Value" Width="140" x:Name="valueColumn">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBox Text="{Binding Value}" Width="{Binding Width, ElementName=valueColumn, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="Delete">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Hyperlink Command="Delete" CommandParameter="{Binding}">(delete)</Hyperlink>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -64,7 +75,6 @@
 
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
                     <Button Style="{StaticResource PaddedCommandButtonStyle}" Margin="6,0" Command="New">_Add</Button>
-                    <Button Style="{StaticResource PaddedCommandButtonStyle}" Margin="6,0" Command="Delete">_Delete</Button>
                 </StackPanel>
             </Grid>
         </GroupBox>

@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Controls;
+using System.Windows.Input;
 using NoCap.Extensions.Default.Commands;
 using NoCap.Library;
 
@@ -17,7 +19,7 @@ namespace NoCap.Extensions.Default.Editors {
             InitializeComponent();
 
             CommandBindings.Add(new CommandBinding(ApplicationCommands.New, AddNewParameter));
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteParameter, CanDeleteParameter));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteParameter));
         }
 
         private void AddNewParameter(object sender, ExecutedRoutedEventArgs e) {
@@ -25,14 +27,13 @@ namespace NoCap.Extensions.Default.Editors {
         }
 
         private void DeleteParameter(object sender, ExecutedRoutedEventArgs e) {
-            var kvp = (StringPair) this.parameterEditor.SelectedItem;
+            var kvp = (StringPair) e.Parameter;
 
             Command.PostParameters.Remove(kvp);
         }
 
-        private void CanDeleteParameter(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = this.parameterEditor.SelectedIndex >= 0;
-            e.Handled = true;
+        private void DisableSelection(object sender, SelectionChangedEventArgs e) {
+            this.parameterEditor.SelectedIndex = -1;
         }
     }
 }
