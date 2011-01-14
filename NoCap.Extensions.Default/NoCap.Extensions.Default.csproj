@@ -69,6 +69,12 @@
     <Compile Include="Commands\ClipboardUploaderCommand.cs" />
     <Compile Include="Commands\CropShotUploaderCommand.cs" />
     <Compile Include="Commands\FtpUploader.cs" />
+    <Compile Include="Commands\GenericFileUploader.cs" />
+    <Compile Include="Editors\GenericFileUploaderEditor.xaml.cs">
+      <DependentUpon>GenericFileUploaderEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\UriStringConverter.xaml.cs" />
+    <Compile Include="Factories\GenericFileUploaderFactory.cs" />
     <Compile Include="Commands\ImageFileUploader.cs" />
     <Compile Include="Commands\ImgurUploader.cs" />
     <Compile Include="Commands\MinUsUploader.cs" />
@@ -227,6 +233,10 @@
     <Page Include="Editors\ClipboardUploaderCommandEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Editors\GenericFileUploaderEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Editors\ImagebinCaUploaderEditor.xaml">
       <SubType>Designer</SubType>
