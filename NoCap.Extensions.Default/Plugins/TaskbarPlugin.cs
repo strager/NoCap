@@ -71,7 +71,14 @@ namespace NoCap.Extensions.Default.Plugins {
         }
 
         public void UpdateProgress(object sender, EventArgs e) {
-            UpdateProgress(this.taskCollection.Progress);
+            var progress = this.taskCollection.Progress;
+
+            if (this.taskCollection.Count == 0) {
+                // If there are no tasks, show we are done with all tasks.
+                progress = 1;
+            }
+
+            UpdateProgress(progress);
         }
 
         private void UpdateProgress(double progress) {
