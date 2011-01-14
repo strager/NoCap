@@ -19,7 +19,7 @@ namespace NoCap.Extensions.Default.Factories {
         public void PopulateCommand(ICommand command, ICommandProvider commandProvider) {
             var uploader = (CropShotUploaderCommand) command;
             uploader.ImageUploader = commandProvider.GetDefaultCommand(CommandFeatures.ImageUploader);
-            uploader.Renamer = new Renamer { NameFormat = "screenshot-%sequence%" };
+            uploader.Renamer = new Renamer { NameFormat = "screenshot-{sequence}" };
         }
 
         public ICommandEditor GetCommandEditor(ICommandProvider commandProvider) {
